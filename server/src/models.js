@@ -104,7 +104,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(() =
       title: 'Vei problem',
       description: 'Pls sett opp brøytestikker her.',
       status: 3,
-      categoryId: 2
+      categoryId: 2,
+      userId: 1
     });
     News.create({
       title: 'Problem ved vei i TRD sentrum,.',
