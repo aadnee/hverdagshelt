@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 
-let sequelize = new Sequelize('School', 'root', '', {
-  host: process.env.CI ? 'mysql' : 'localhost', // The host is 'mysql' when running in gitlab CI
+let sequelize = new Sequelize('fs_tdat2003_a_hverdagshelt', 'fs_tdat2003_a_hverdagshelt', 'slackmaster', {
+  host: process.env.CI ? 'mysql' : 'mysql.stud.ntnu.no', // The host is 'mysql' when running in gitlab CI
   dialect: 'mysql',
 
   pool: {
