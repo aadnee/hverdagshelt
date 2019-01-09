@@ -16,8 +16,8 @@ export let Users = sequelize.define('users', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   firstName: Sequelize.STRING,
   lastName: Sequelize.STRING,
-  email: Sequelize.STRING,
-  phone: Sequelize.INTEGER,
+  email: { type: Sequelize.STRING, unique: true },
+  phone: { type: Sequelize.INTEGER, unique: true },
   password: Sequelize.STRING,
   rank: Sequelize.INTEGER
 });
@@ -25,20 +25,20 @@ export let Users = sequelize.define('users', {
 export let Companies = sequelize.define('companies', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   name: Sequelize.STRING,
-  email: Sequelize.STRING,
-  phone: Sequelize.INTEGER,
+  email: { type: Sequelize.STRING, unique: true },
+  phone: { type: Sequelize.INTEGER, unique: true },
   password: Sequelize.STRING
 });
 
 export let Municipals = sequelize.define('municipals', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: Sequelize.STRING,
-  postalCode: Sequelize.INTEGER
+  name: { type: Sequelize.STRING, unique: true },
+  postalCode: { type: Sequelize.INTEGER, unique: true }
 });
 
 export let Categories = sequelize.define('categories', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: Sequelize.STRING
+  name: { type: Sequelize.STRING, unique: true }
 });
 
 export let Tickets = sequelize.define('tickets', {
@@ -56,19 +56,24 @@ export let News = sequelize.define('news', {
   description: { type: Sequelize.TEXT, length: 'medium' },
   status: Sequelize.INTEGER,
   lat: Sequelize.FLOAT,
-  lon: Sequelize.FLOAT
+  lon: Sequelize.FLOAT,
+  companyStatus: Sequelize.BOOLEAN
 });
 
 export let Subscriptions = sequelize.define('subscriptions');
 News.belongsToMany(Users, { through: Subscriptions });
 Users.belongsToMany(News, { through: Subscriptions });
 
-Tickets.belongsTo(Users);
-Users.belongsTo(Municipals);
-Companies.belongsTo(Municipals);
-Categories.belongsTo(Categories, { as: 'parent' });
-Tickets.belongsTo(Categories);
-News.belongsTo(Categories);
+Users.hasMany(Tickets);
+Municipals.hasMany(Users);
+Municipals.hasMany(Companies);
+Categories.hasMany(Categories, { as: 'parent' });
+Categories.hasMany(Tickets);
+Categories.hasMany(News);
+Companies.hasMany(News);
+News.hasMany(Tickets);
+Municipals.hasMany(Tickets);
+Municipals.hasMany(News);
 
 let production = process.env.NODE_ENV === 'production';
 export let sync = sequelize.sync({ force: production ? false : true }).then(() => {
