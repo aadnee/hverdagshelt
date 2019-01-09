@@ -1,6 +1,6 @@
 module.exports = {
-  getFeed: function() {
-    // res....
+  getTickets: function(req, res){
+    //res.....
     console.log('test');
   }
 };
