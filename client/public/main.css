@@ -1,1 +1,6 @@
 /* Custom CSS here */
+.leaflet-container {
+    height: 600px;
+    width: 80%;
+    margin: 5% auto 0 auto;
+}
