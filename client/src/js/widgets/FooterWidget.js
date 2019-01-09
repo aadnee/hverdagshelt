@@ -1,4 +1,5 @@
 import React from 'react';
+import { Component } from 'react';
 import {Segment, Container, Grid, List, Header, Image} from 'semantic-ui-react';
 
 //import {} from './';
@@ -6,20 +7,21 @@ import {Segment, Container, Grid, List, Header, Image} from 'semantic-ui-react';
 export class FooterWidget extends Component {
     render() {
         return (
+            <Segment inverted fluid color='black'>
                 <Container>
                     <Grid divided inverted stackable>
                         <Grid.Row>
                             <Grid.Column width={3}>
                                 <Image
-                                    src='hverdagshelt/client/public/img/hverdagshelt_logo_hvit.png'
+                                    src='img/hverdagshelt_logo_hvit.png'
                                     as='a'
                                     size='medium'
-                                    href='//localhost:3000/#/widget'
+                                    href='http://localhost:3000/#/widget'
                                     target='_blank'
-                                />  
+                                />
                             </Grid.Column>
                             <Grid.Column width={3}>
-                                <Header inverted as='h4' content='Kontakt' />
+                                <Header inverted as='h4' content='Kontakt'/>
                                 <List link inverted>
                                     <List.Item as='a'>Scrumgruppe 8</List.Item>
                                     <List.Item as='a'>Rom 203 i Terningen</List.Item>
@@ -30,13 +32,14 @@ export class FooterWidget extends Component {
                             </Grid.Column>
                             <Grid.Column width={7}>
                                 <Header as='h4' inverted>
-                                    Hva skjer her egt
+                                    Kort beskrivende info
                                 </Header>
-                                <p>Hmmmmm...</p>
+                                <p>Enda mer kort beskrivende info</p>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
                 </Container>
+            </Segment>
         );
     }
 }
