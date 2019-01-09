@@ -1,6 +1,7 @@
 import { Users } from './models.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
+import mailManager from './mailManager';
 
 module.exports = {
   login: function(req, res) {
@@ -85,10 +86,14 @@ module.exports = {
               rank: rank,
               municipalId: municipalId
             });
+            mailManager.send(
+              'Hverdagshelt registrering',
+              '<h1>Velkommen til Hverdagshelt!</h1><h3>Ditt passord er: <b>' + password + '</b></h3>',
+              email
+            );
             res.json({
               success: true,
-              message: 'Registration successful.',
-              password: password
+              message: 'Registration successful.'
             });
           }
         });
