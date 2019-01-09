@@ -16,12 +16,16 @@ app.use(express.static(public_path));
 app.use(express.json());
 app.use(cookieParser());
 
-app.get('/api/feed', function(req, res) {
+app.get('/api/news', function(req, res) {
   return feed.getFeed();
 });
 
-app.put('/api/news', function(req, res) {
-  return newsManager.updateNews();
+app.put('/api/news/:id', function(req, res) {
+  return newsManager.updateNews(req, res);
+});
+
+app.post('/api/news', function(req, res) {
+  return newsManager.addArticle(req, res);
 });
 
 // email, password

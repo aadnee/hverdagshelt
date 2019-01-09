@@ -4,9 +4,10 @@ beforeAll(async () => {
   await sync;
 });
 
+// Testing the Users table in the database
 describe('Users test', () => {
   it('correct data', async () => {
-    let user = await Users.find({where: {id: 1}});
+    let user = await Users.findOne({where: {id: 1}});
     expect({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -27,9 +28,10 @@ describe('Users test', () => {
   });
 });
 
+// Testing the Companies table in the database
 describe('Companies test', () => {
   it('correct data', async () => {
-    let company = await Companies.find({where: {id: 1}});
+    let company = await Companies.findOne({where: {id: 1}});
     expect({
       name: company.name,
       email: company.email,
@@ -48,9 +50,10 @@ describe('Companies test', () => {
   });
 });
 
+// Testing the Municipals table in the database
 describe('Municipals test', () => {
   it('correct data', async () => {
-    let municipal = await Municipals.find({where: {id: 1}});
+    let municipal = await Municipals.findOne({where: {id: 1}});
     expect({
       name: municipal.name
     }).toEqual(
@@ -61,9 +64,10 @@ describe('Municipals test', () => {
   });
 });
 
+// Testing the Categories table in the database
 describe('Categories test', () => {
   it('correct data', async () => {
-    let category = await Categories.find({where: {id: 1}});
+    let category = await Categories.findOne({where: {id: 1}});
     expect({
       name: category.name,
     }).toEqual(
@@ -74,9 +78,10 @@ describe('Categories test', () => {
   });
 });
 
+// Testing the Tickets table in the database
 describe('Tickets test', () => {
   it('correct data', async () => {
-    let ticket = await Tickets.find({where: {id: 1}});
+    let ticket = await Tickets.findOne({where: {id: 1}});
     expect({
       title: ticket.title,
       description: ticket.description,
