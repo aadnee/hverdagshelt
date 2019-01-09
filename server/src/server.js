@@ -19,34 +19,59 @@ app.use(cookieParser());
 dotenv.config();
 
 app.get('/api/news', function(req, res) {
-  return newsManager.getLocalNews(req, res);
+  newsManager.getLocalNews(req.cookies['token']).then(result => res.json(result));
 });
 
 app.put('/api/news/:id', function(req, res) {
-  return newsManager.updateNews(req, res);
+  newsManager
+    .updateNews(
+      req.params.id,
+      req.body.title,
+      req.body.description,
+      req.body.status,
+      req.body.categoryId,
+      req.body.companyId
+    )
+    .then(result => res.json(result));
 });
 
 app.post('/api/news', function(req, res) {
-  return newsManager.addArticle(req, res);
+  newsManager
+    .addArticle(
+      req.body.title,
+      req.body.description,
+      req.body.status,
+      req.body.categoryId,
+      req.body.lat,
+      req.body.lon,
+      req.body.municipalId
+    )
+    .then(result => res.json(result));
 });
 
 // email, password
 app.post('/api/login', function(req, res) {
-  return userManager.login(req, res);
+  userManager.login(req.body.email, req.body.password).then(result => {
+    res.cookie('token', result.token);
+    res.cookie('rank', result.rank);
+    res.json(result);
+  });
 });
 
 // firstName, lastName, email, phone, municipalId
 app.post('/api/register', function(req, res) {
-  return userManager.register(req, res);
+  userManager
+    .register(req.body.firstName, req.body.lastName, req.body.email, req.body.phone, req.body.municipalId)
+    .then(result => res.json(result));
 });
 
 app.get('/api/users', ensureAdmin, (req, res) => {
-  return userManager.getUsers(req, res);
+  userManager.getUsers().then(result => res.json(result));
 });
 
 // id
 app.get('/api/users/:id', ensureAdmin, (req, res) => {
-  return userManager.getUser(req, res);
+  userManager.getUser(req.params.id).then(result => res.json(result));
 });
 
 function ensureLogin(req, res, next) {
