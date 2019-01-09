@@ -17,6 +17,7 @@
     "@babel/polyfill": "^7.0.0",
     "axios": "^0.18.0",
     "react": "^16.7.0",
+    "react-bootstrap": "^0.32.4",
     "react-dom": "^16.7.0",
     "react-router-dom": "^4.3.1",
     "semantic-ui-css": "^2.4.1",
