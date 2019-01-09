@@ -12,7 +12,6 @@ module.exports = {
           message: 'Authentication failed. User not found.'
         });
       } else if (user) {
-        console.log(user.password);
         bcrypt.compare(req.body.password, user.password, function(err, eq) {
           if (err) throw err;
           if (eq == true) {
@@ -20,7 +19,7 @@ module.exports = {
               id: user.id,
               rank: user.rank
             };
-            var token = jwt.sign(payload, 'MY TOKEN HERE EY LMAO', {
+            var token = jwt.sign(payload, process.env.JWT, {
               expiresIn: 86400
             });
             res.cookie('token', token);
@@ -99,6 +98,19 @@ module.exports = {
         });
       });
     });
+  },
+
+  getUsers: function(req, res) {
+    return Users.findAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'rank', 'municipalId'] }).then(
+      users => res.send(users)
+    );
+  },
+
+  getUser: function(req, res) {
+    return Users.findOne({
+      where: { id: Number(req.params.id) },
+      attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'rank', 'municipalId']
+    }).then(user => (user ? res.send(user) : res.sendStatus(404)));
   }
 };
 
