@@ -3,8 +3,8 @@ import path from 'path';
 import reload from 'reload';
 import fs from 'fs';
 import { Users } from './models.js';
-import userManager from './manager/userManager';
-import newsManager from './manager/newsManager';
+import userManager from './managers/userManager';
+import newsManager from './managers/newsManager';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
@@ -19,7 +19,7 @@ app.use(cookieParser());
 dotenv.config();
 
 app.get('/api/news', function(req, res) {
-  return newsManager.getLocalNews(req,res);
+  return newsManager.getLocalNews(req, res);
 });
 
 app.put('/api/news/:id', function(req, res) {
