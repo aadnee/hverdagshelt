@@ -5,6 +5,7 @@ import fs from 'fs';
 import { Users } from './models.js';
 import feed from './feed';
 import userManager from './userManager';
+import newsManager from './newsManager';
 import cookieParser from 'cookie-parser';
 
 const public_path = path.join(__dirname, '/../../client/public');
@@ -17,6 +18,10 @@ app.use(cookieParser());
 
 app.get('/api/feed', function(req, res) {
   return feed.getFeed();
+});
+
+app.put('/api/news', function(req, res) {
+  return newsManager.updateNews();
 });
 
 // email, password
