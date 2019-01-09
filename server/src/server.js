@@ -3,7 +3,6 @@ import path from 'path';
 import reload from 'reload';
 import fs from 'fs';
 import { Users } from './models.js';
-import feed from './feed';
 import userManager from './userManager';
 import newsManager from './newsManager';
 import cookieParser from 'cookie-parser';
@@ -20,7 +19,7 @@ app.use(cookieParser());
 dotenv.config();
 
 app.get('/api/news', function(req, res) {
-  return feed.getFeed();
+  return newsManager.getLocalNews(req,res);
 });
 
 app.put('/api/news/:id', function(req, res) {
