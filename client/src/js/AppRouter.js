@@ -28,6 +28,7 @@ import {
 //Edit MyWidget inside curlybrackets and in the file link.
 import { FooterWidget as Widget } from './widgets/FooterWidget';
 
+
 export class AppRouter extends Component {
   render() {
     return (

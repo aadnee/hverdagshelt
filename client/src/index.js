@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom';
 import * as React from 'react';
 import { HashRouter, Route, NavLink } from 'react-router-dom';
+import 'semantic-ui-css/semantic.min.css';
 import { AppRouter } from './js/AppRouter';
 
 // Reload application when not in production environment
