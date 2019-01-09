@@ -11,7 +11,10 @@
     "testURL": "http://localhost"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
+    "jsonwebtoken": "^8.4.0",
     "mysql2": "^1.6.1",
     "reload": "^2.3.1",
     "sequelize": "^4.41.0"

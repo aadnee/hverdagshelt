@@ -32,8 +32,7 @@ export let Companies = sequelize.define('companies', {
 
 export let Municipals = sequelize.define('municipals', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: Sequelize.STRING, unique: true },
-  postalCode: { type: Sequelize.INTEGER, unique: true }
+  name: { type: Sequelize.STRING, unique: true }
 });
 
 export let Categories = sequelize.define('categories', {
@@ -79,8 +78,7 @@ let production = process.env.NODE_ENV === 'production';
 export let sync = sequelize.sync({ force: production ? false : true }).then(() => {
   if (!production) {
     Municipals.create({
-      name: 'Lindesnes',
-      postalCode: 4520
+      name: 'Lindesnes'
     });
     Categories.create({
       name: 'Vei og trafikk'
