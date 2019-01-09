@@ -16,7 +16,7 @@ export class FooterWidget extends Component {
                                     size='medium'
                                     href='//localhost:3000/#/widget'
                                     target='_blank'
-                                />
+                                />  
                             </Grid.Column>
                             <Grid.Column width={3}>
                                 <Header inverted as='h4' content='Kontakt' />

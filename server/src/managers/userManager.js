@@ -1,4 +1,4 @@
-import { Users } from './models.js';
+import { Users } from '../models.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
 import mailManager from './mailManager';
@@ -17,7 +17,8 @@ module.exports = {
           if (eq == true) {
             const payload = {
               id: user.id,
-              rank: user.rank
+              rank: user.rank,
+              municipalId: user.municipalId
             };
             var token = jwt.sign(payload, process.env.JWT, {
               expiresIn: 86400

@@ -1,7 +1,8 @@
-import { News } from './models.js';
+import { News } from '../models.js';
+import jwt from 'jsonwebtoken';
 
 module.exports = {
-  
+
   addArticle: function(req, res){
     const title = req.body.title
     const description = req.body.description
@@ -9,7 +10,7 @@ module.exports = {
     const categoryId = req.body.categoryId
     const lat = req.body.lat
     const lon = req.body.lon
-    
+
     if (
       title == null ||
       title == '' ||
@@ -85,5 +86,15 @@ module.exports = {
       }
     })
   },
-  
+
+getLocalNews: function(req, res){
+   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
+     if (decoded && decoded.municipalId) {
+       News.findAll({where: {municipalId: decoded.municipalId}}).then(news => res.send(news))
+     } else {
+       res.sendStatus(403);
+     }
+   });
+ }
+
 };
