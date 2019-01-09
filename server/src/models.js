@@ -3,7 +3,7 @@ import Sequelize from 'sequelize';
 let sequelize = new Sequelize('fs_tdat2003_a_hverdagshelt', 'fs_tdat2003_a_hverdagshelt', 'slackmaster', {
   host: process.env.CI ? 'mysql' : 'mysql.stud.ntnu.no', // The host is 'mysql' when running in gitlab CI
   dialect: 'mysql',
-
+  logging: false,
   pool: {
     max: 5,
     min: 0,
@@ -89,10 +89,10 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(() =
     });
     Users.create({
       firstName: 'Ola',
-      lastName: 'Jensen',
-      email: 'ola.jensen@ntnu.no',
+      lastName: 'Nordmann',
+      email: 'test@test.com',
       phone: 123,
-      password: '123',
+      password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
       rank: 3,
       municipalId: 1
     });

@@ -1,6 +1,7 @@
 import { Users } from './models.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
+import mailManager from './mailManager';
 
 module.exports = {
   login: function(req, res) {
@@ -11,7 +12,6 @@ module.exports = {
           message: 'Authentication failed. User not found.'
         });
       } else if (user) {
-        console.log(user.password);
         bcrypt.compare(req.body.password, user.password, function(err, eq) {
           if (err) throw err;
           if (eq == true) {
@@ -19,7 +19,7 @@ module.exports = {
               id: user.id,
               rank: user.rank
             };
-            var token = jwt.sign(payload, 'MY TOKEN HERE EY LMAO', {
+            var token = jwt.sign(payload, process.env.JWT, {
               expiresIn: 86400
             });
             res.cookie('token', token);
@@ -85,15 +85,32 @@ module.exports = {
               rank: rank,
               municipalId: municipalId
             });
+            mailManager.send(
+              'Hverdagshelt registrering',
+              '<h1>Velkommen til Hverdagshelt!</h1><h3>Ditt passord er: <b>' + password + '</b></h3>',
+              email
+            );
             res.json({
               success: true,
-              message: 'Registration successful.',
-              password: password
+              message: 'Registration successful.'
             });
           }
         });
       });
     });
+  },
+
+  getUsers: function(req, res) {
+    return Users.findAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'rank', 'municipalId'] }).then(
+      users => res.send(users)
+    );
+  },
+
+  getUser: function(req, res) {
+    return Users.findOne({
+      where: { id: Number(req.params.id) },
+      attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'rank', 'municipalId']
+    }).then(user => (user ? res.send(user) : res.sendStatus(404)));
   }
 };
 
