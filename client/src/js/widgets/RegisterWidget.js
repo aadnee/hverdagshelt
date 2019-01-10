@@ -1,4 +1,5 @@
 import { Button, Container, Image, Input, Message, Segment, Grid, Form, Dropdown } from 'semantic-ui-react';
+import { userService } from '../services/UserServices';
 
 import { NavLink } from 'react-router-dom';
 import React from 'react';
@@ -9,9 +10,9 @@ export class RegisterWidget extends React.Component {
 
     this.state = {
       firstname: '',
-      surname: '',
+      lastname: '',
       email: '',
-      number: '',
+      phone: '',
       selectedOption: '',
 
       options: []
@@ -35,7 +36,15 @@ export class RegisterWidget extends React.Component {
   handleSubmit = () => {
     //USERSERICE -> request cookie
     console.log('submitting');
-    console.log(this.state);
+    userService
+      .register(
+        this.state.firstname,
+        this.state.lastname,
+        this.state.email,
+        this.state.phone,
+        this.state.selectedOption
+      )
+      .then(res => console.log(res));
   };
   /*
   componentWillMount() {
@@ -82,9 +91,9 @@ export class RegisterWidget extends React.Component {
                     iconPosition="left"
                     placeholder="Nordmann"
                     type="text"
-                    value={this.state.surname}
+                    value={this.state.lastname}
                     onChange={(event, data) => {
-                      this.handleInput('surname', data.value);
+                      this.handleInput('lastname', data.value);
                     }}
                   />
                 </Form.Field>
@@ -109,9 +118,9 @@ export class RegisterWidget extends React.Component {
                     iconPosition="left"
                     placeholder={'Ditt telefonnumer'}
                     type={'number'}
-                    value={this.state.number}
+                    value={this.state.phone}
                     onChange={(event, data) => {
-                      this.handleInput('number', data.value);
+                      this.handleInput('phone', data.value);
                     }}
                   />
                 </Form.Field>
