@@ -5,3 +5,4 @@ client/public/bundle.js
 .idea
 npm
 .env
+AppRouter.js
