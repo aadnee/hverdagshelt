@@ -1,7 +1,10 @@
 import Sequelize from 'sequelize';
+import dotenv from 'dotenv';
+dotenv.config();
 
-let sequelize = new Sequelize('fs_tdat2003_a_hverdagshelt', 'fs_tdat2003_a_hverdagshelt', 'slackmaster', {
-  host: process.env.CI ? 'mysql' : 'mysql.stud.ntnu.no', // The host is 'mysql' when running in gitlab CI
+console.log(process.env.MYSQL_DB);
+let sequelize = new Sequelize(process.env.MYSQL_DB, process.env.MYSQL_USR, process.env.MYSQL_PWD, {
+  host: process.env.CI ? 'mysql' : process.env.MYSQL_HOST, // The host is 'mysql' when running in gitlab CI
   dialect: 'mysql',
   logging: false,
   pool: {
@@ -14,20 +17,11 @@ let sequelize = new Sequelize('fs_tdat2003_a_hverdagshelt', 'fs_tdat2003_a_hverd
 
 export let Users = sequelize.define('users', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  firstName: Sequelize.STRING,
-  lastName: Sequelize.STRING,
+  name: Sequelize.STRING,
   email: { type: Sequelize.STRING, unique: true },
   phone: { type: Sequelize.INTEGER, unique: true },
   password: Sequelize.STRING,
   rank: Sequelize.INTEGER
-});
-
-export let Companies = sequelize.define('companies', {
-  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: Sequelize.STRING,
-  email: { type: Sequelize.STRING, unique: true },
-  phone: { type: Sequelize.INTEGER, unique: true },
-  password: Sequelize.STRING
 });
 
 export let Municipals = sequelize.define('municipals', {
@@ -65,11 +59,10 @@ Users.belongsToMany(News, { through: Subscriptions });
 
 Users.hasMany(Tickets);
 Municipals.hasMany(Users);
-Municipals.hasMany(Companies);
 Categories.hasMany(Categories, { as: 'parent' });
 Categories.hasMany(Tickets);
 Categories.hasMany(News);
-Companies.hasMany(News);
+Users.hasMany(News);
 News.hasMany(Tickets);
 Municipals.hasMany(Tickets);
 Municipals.hasMany(News);
@@ -88,19 +81,19 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(() =
       parentId: 1
     });
     Users.create({
-      firstName: 'Ola',
-      lastName: 'Nordmann',
+      name: 'Ola',
       email: 'test@test.com',
       phone: 123,
       password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
       rank: 3,
       municipalId: 1
     });
-    Companies.create({
+    Users.create({
       name: 'SmartPark',
       email: 'admin@smartpark.no',
       phone: 12345678,
       password: '12345',
+      rank: 2,
       municipalId: 1
     });
     Tickets.create({

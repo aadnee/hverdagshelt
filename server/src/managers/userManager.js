@@ -42,16 +42,13 @@ module.exports = {
     });
   },
 
-  register: function(firstName, lastName, email, phone, municipalId) {
+  register: function(name, email, phone, municipalId, rank) {
     return new Promise(function(resolve, reject) {
       const password = generatePassword();
-      const rank = 1;
 
       if (
-        firstName == null ||
-        firstName == '' ||
-        lastName == null ||
-        lastName == '' ||
+        name == null ||
+        name == '' ||
         email == null ||
         email == '' ||
         phone == null ||
@@ -76,8 +73,7 @@ module.exports = {
               });
             } else {
               Users.create({
-                firstName: firstName,
-                lastName: lastName,
+                name: name,
                 email: email,
                 phone: phone,
                 password: hash,
@@ -101,24 +97,17 @@ module.exports = {
   },
 
   getUsers: function() {
-    return Users.findAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'rank', 'municipalId'] }).then(
-      users => users
-    );
+    return Users.findAll({
+      attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId'],
+      where: { rank: { $not: 2 } }
+    });
   },
 
   getUser: function(id) {
     return Users.findOne({
-      where: { id: Number(id) },
-      attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'rank', 'municipalId']
-    }).then(
-      user =>
-        user
-          ? user
-          : {
-              success: false,
-              message: 'Not found.'
-            }
-    );
+      where: { $and: { id: Number(id), rank: { $not: 2 } } },
+      attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId']
+    });
   }
 };
 
