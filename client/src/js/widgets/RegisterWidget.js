@@ -2,6 +2,7 @@ import { Button, Container, Image, Input, Message, Segment, Grid, Form, Dropdown
 
 import { NavLink } from 'react-router-dom';
 import React from 'react';
+import { RegisterPage } from '../pages/RegisterPage';
 
 export class RegisterWidget extends React.Component {
   constructor(props) {
@@ -55,7 +56,7 @@ export class RegisterWidget extends React.Component {
     return (
       <Container>
         <h1>Registrer deg</h1>
-        <Grid centered>
+        <Grid centered divided="vertically">
           <Grid.Column mobile={16}>
             {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
             <Form size="large">
@@ -115,7 +116,6 @@ export class RegisterWidget extends React.Component {
                     }}
                   />
                 </Form.Field>
-
                 <Form.Field>
                   <label>Kommune</label>
 
@@ -130,7 +130,6 @@ export class RegisterWidget extends React.Component {
                     }}
                   />
                 </Form.Field>
-
                 <Button
                   color="blue"
                   fluid
@@ -139,7 +138,17 @@ export class RegisterWidget extends React.Component {
                     this.handleSubmit();
                   }}
                 >
-                  Logg inn
+                  Registrer deg
+                </Button>
+                <Button
+                  color="grey"
+                  fluid
+                  size="large"
+                  onClick={() => {
+                    this.handleSubmit();
+                  }}
+                >
+                  Avbryt
                 </Button>
               </Segment>
             </Form>
