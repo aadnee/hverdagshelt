@@ -33,7 +33,7 @@ module.exports = {
           lat: lat,
           lon: lon,
           municipalId: municipalId
-        }).then(result => result.id)
+        }).then(result => result.id);
         resolve({
           success: true,
           message: 'Article added.'

@@ -2,6 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Container, Grid, Header, Image, Segment, Form, Message, Button, Input } from 'semantic-ui-react';
+import { userService } from '../services/UserServices';
 
 //import {} from './';
 
@@ -28,6 +29,8 @@ export class LoginWidget extends Component {
   handleSubmit = () => {
     //USERSERICE -> request cookie
     console.log('submitting');
+    console.log(this.state);
+    userService.login(this.state.email, this.state.password).then(res => console.log(res));
   };
 
   render() {
