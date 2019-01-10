@@ -2,67 +2,37 @@ import { News } from '../models.js';
 import jwt from 'jsonwebtoken';
 
 module.exports = {
-  addArticle: function(title, description, status, categoryId, lat, lon, municipalId) {
-    return new Promise(function(resolve, reject) {
-      if (
-        title == null ||
-        title == '' ||
-        description == null ||
-        description == '' ||
-        status == null ||
-        status == '' ||
-        categoryId == null ||
-        categoryId == '' ||
-        lat == null ||
-        lat == '' ||
-        lon == null ||
-        lon == '' ||
-        municipalId == null ||
-        municipalId == ''
-      ) {
-        resolve({
-          success: false,
-          message: 'Fields cannot be empty.'
-        });
-      } else {
-        News.create({
-          title: title,
-          description: description,
-          status: status,
-          categoryId: categoryId,
-          lat: lat,
-          lon: lon,
-          municipalId: municipalId
-        }).then(result =>
-          resolve({
-            success: true,
-            message: 'Article added.',
-            id: result.id
-          })
-        );
-      }
-    });
+  addArticle: function(title, description, categoryId, lat, lon, municipalId, callback) {
+    News.create({
+      title: title,
+      description: description,
+      categoryId: categoryId,
+      status: 1,
+      lat: lat,
+      lon: lon,
+      municipalId: municipalId
+    })
+      .then(result =>
+        callback({
+          success: true,
+          message: 'Article added.',
+          id: result.id
+        })
+      )
+      .catch(function(err) {
+        callback({ success: false, message: 'Sequelize error' });
+      });
   },
 
-  updateNews: function(id, title, description, status, categoryId, companyId) {
-    return new Promise(function(resolve, reject) {
-      News.findOne({ where: { id: id } }).then(article => {
-        if (
-          !article ||
-          title == null ||
-          title == '' ||
-          description == null ||
-          description == '' ||
-          status == null ||
-          status == '' ||
-          categoryId == null ||
-          categoryId == ''
-        ) {
-          resolve({
+  updateNews: function(id, title, description, status, categoryId, companyId, callback) {
+    News.findOne({ where: { id: id } })
+      .then(article => {
+        if (!article) {
+          callback({
             success: false,
             message: 'Article not found.'
           });
-        } else if (article) {
+        } else {
           News.update(
             {
               title: title,
@@ -74,17 +44,28 @@ module.exports = {
             {
               where: { id: id }
             }
-          );
-          resolve({
-            success: true,
-            message: 'Article updated successfully'
-          });
+          )
+            .then(() =>
+              callback({
+                success: true,
+                message: 'Article updated successfully'
+              })
+            )
+            .catch(function(err) {
+              callback({ success: false, message: 'Sequelize error' });
+            });
         }
+      })
+      .catch(function(err) {
+        callback({ success: false, message: 'Sequelize error' });
       });
-    });
   },
 
-  getLocalNews: function(municipalId) {
-    return News.findAll({ where: { municipalId: municipalId } });
+  getLocalNews: function(municipalId, callback) {
+    News.findAll({ where: { municipalId: municipalId } })
+      .then(res => callback({ success: true, data: res }))
+      .catch(function(err) {
+        callback({ success: false, message: 'Sequelize error' });
+      });
   }
 };
