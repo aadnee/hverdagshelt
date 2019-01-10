@@ -5,6 +5,7 @@ import fs from 'fs';
 import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
+import ticketManager from './managers/ticketManager';
 import companyManager from './managers/companyManager';
 import cookieParser from 'cookie-parser';
 
@@ -89,6 +90,32 @@ app.post('/api/companies', function(req, res) {
     .register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 2)
     .then(result => res.json(result));
 });
+
+app.post('/api/tickets', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    ticketManager
+      .addTicket(
+        req.body.title,
+        req.body.description,
+        req.body.lat,
+        req.body.lon,
+        req.body.categoryId,
+        req.body.municipalId,
+        userId
+      )
+      .then(result => res.json(result));
+  });
+});
+
+function getUserId(req, callback) {
+  jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
+    if (decoded && decoded.id) {
+      callback(decoded.id);
+    } else {
+      callback(false);
+    }
+  });
+}
 
 function ensureLogin(req, res, next) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {

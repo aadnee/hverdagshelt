@@ -19,20 +19,20 @@ import {
 
 //import {} from './';
 
-export class TicketFormWidget extends Component {
+export class PublishNewsFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      headline: '',
-      details: '',
-      category: '',
+      headline: this.props.headline,
+      details: this.props.details,
+      category: this.props.category,
       categoryOptions: [],
-      subcategory: '',
+      subcategory: this.props.subcategory,
       subCategoryOptions: [],
       position: [null, null],
       subscription: false,
       selectedCategory: false,
-      image: false
+      image: this.props.image
     }
   }
 
@@ -41,12 +41,12 @@ export class TicketFormWidget extends Component {
   };
 
   submit = () => {
-    //TODO SERVICE for submitting a new ticket
+    //TODO SERVICE for submitting a new newscase
     console.log('submit');
   };
 
   getSubCategories(category) {
-    //SERVICE to get subcategories based on a category and put into this.state.subCategoryOptions[]
+    //TODO SERVICE to get subcategories based on a category and put into this.state.subCategoryOptions[]
   }
 
   render() {
@@ -57,7 +57,7 @@ export class TicketFormWidget extends Component {
               <Form size="large">
                 <Segment stacked>
                   <Form.Field>
-                    <label>Hva vil du melde inn?</label>
+                    <label>Brukeren har meldt inn feil om:</label>
                     <Input
                         fluid
                         icon="warning"
@@ -69,7 +69,7 @@ export class TicketFormWidget extends Component {
                         }}/>
                   </Form.Field>
                   <Form.Field>
-                    <label>Utdyp problemet</label>
+                    <label>Utdypet:</label>
                     <TextArea
                         placeholder={"Beskrivelse"}
                         value={this.state.details}
@@ -109,22 +109,15 @@ export class TicketFormWidget extends Component {
                       </Grid.Column>
                     </Grid>
                   </Form.Field>
-                  <Segment placeholder>
-                    <Header icon>
-                      <Icon name='image file outline'/>
-                      Bildemodul her.
-                    </Header>
-                    <Button primary>Legg til bilde</Button>
-                  </Segment>
-                  <Form.Field>
-                    <Checkbox
-                        label={<label>Jeg ønsker å abonnere på saken</label>}
-                        fluid
-                        value={this.state.subscription}
-                        onChange={(event, data) => {
-                          this.handleInput('subscription', data.checked);
-                        }}/>
-                  </Form.Field>
+                  {this.state.image ? (
+                      <Segment placeholder>
+                        <Header icon>
+                          <Icon name='image file outline'/>
+                          Bildemodul her.
+                        </Header>
+                        <Button primary>Legg til bilde</Button>
+                      </Segment>
+                  ) : null}
                   <Button
                       color="blue"
                       fluid
@@ -132,7 +125,7 @@ export class TicketFormWidget extends Component {
                       onClick={() => {
                         this.submit();
                       }}>
-                    Send inn
+                    Publiser
                   </Button>
                 </Segment>
               </Form>

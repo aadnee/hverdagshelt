@@ -25,7 +25,16 @@ export class MapWidget extends Component {
         <Marker position={this.state.marker}>
           <Popup><b>Info</b><br/>{info}</Popup>
         </Marker>) : null;
-    let map = (<Map center={pos} zoom={this.state.zoom} onClick={this.handleClick} zoomControl={false} maxZoom={18} minZoom={10}>
+    let map =
+        (<Map
+            center={pos}
+            zoom={this.state.zoom}
+            onClick={this.handleClick}
+            zoomControl={false}
+            maxZoom={18}
+            minZoom={10}
+            animateZoom={true}
+        >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                  attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"/>
       {this.state.placedMarker ? selectedMarker : null}
@@ -41,8 +50,10 @@ export class MapWidget extends Component {
 
   handleClick = (e) => {
     console.log(e.latlng);
+    const lat = e.latlng.lat;
+    const lng = e.latlng.lng;
     const marker = e.latlng;
     this.state.placedMarker = true;
-    this.setState({marker: marker});
+    this.setState({marker: marker, lat: lat, lng: lng, zoom: 17});
   }
 }
