@@ -4,5 +4,5 @@ client/public/bundle.js
 *.ai
 .idea
 npm
-.env
+server/.env
 client/src/js/AppRouter.js
