@@ -1,8 +1,15 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Card, Image, Icon, Button, Header, Placeholder, Label } from 'semantic-ui-react';
 
 //import {} from './';
+
+/**
+ * Options:
+ * logo (boolean) - Adds a logo on top of the login Segment
+ * register (boolean) - Displays a message underneath with link to the register page
+ */
 
 export class TicketWidget extends Component {
   constructor(props) {
@@ -10,34 +17,67 @@ export class TicketWidget extends Component {
   }
 
   render() {
-    //let warning = this.props;
-    let warning = this.props;
     return (
-      <Panel bsStyle="primary">
-        <Panel.Heading>
-          <Panel.Title componentClass="h3">
-            <NavLink to="/widget2">Varsel #{warning.id}</NavLink>
-          </Panel.Title>
-        </Panel.Heading>
-        <Panel.Body>
-          <Grid>
-            <Row className="show-grid">
-              <Col xs={12} md={8}>
-                <p>Description</p>
-                <p>
-                  <Button bsStyle="primary">Button</Button>
-
-                  <Button bsStyle="default">Button</Button>
-                </p>
-              </Col>
-              <Col xs={6} md={4}>
-                <Image src="/img/thumbnaildiv.png" alt="242x200" />
-                <h3>Thumbnail label</h3>
-              </Col>
-            </Row>
-          </Grid>
-        </Panel.Body>
-      </Panel>
+      <Card>
+        <Image>
+          <Image src="img/thumbnaildiv.png" />
+          <Label color="yellow" ribbon="right">
+            Under behandling
+          </Label>
+        </Image>
+        <Card.Content>
+          <Header>
+            <Header.Content>
+              Kategori
+              <Header.Subheader>Underkategori</Header.Subheader>
+            </Header.Content>
+          </Header>
+          <Card.Meta>dd/mm/yyyy</Card.Meta>
+          <Card.Description>
+            <Placeholder>
+              <Placeholder.Paragraph>
+                <Placeholder.Line />
+                <Placeholder.Line />
+                <Placeholder.Line />
+                <Placeholder.Line />
+              </Placeholder.Paragraph>
+            </Placeholder>
+          </Card.Description>
+        </Card.Content>
+        {this.props.admin ? (
+          !this.props.published ? (
+            <Card.Content extra>
+              <Button.Group fluid size="small">
+                <Button inverted primary>
+                  Godkjenn
+                </Button>
+                <Button inverted secondary>
+                  Avslå
+                </Button>
+              </Button.Group>
+            </Card.Content>
+          ) : null
+        ) : this.props.published ? (
+          <Card.Content extra>
+            <Button.Group fluid size="small">
+              <Button inverted primary>
+                Gå til nyheten
+              </Button>
+            </Button.Group>
+          </Card.Content>
+        ) : (
+          <Card.Content extra>
+            <Button.Group fluid size="small">
+              <Button inverted primary>
+                Endre
+              </Button>
+              <Button inverted secondary>
+                Trekk tilbake
+              </Button>
+            </Button.Group>
+          </Card.Content>
+        )}
+      </Card>
     );
   }
 }
