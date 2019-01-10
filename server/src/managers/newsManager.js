@@ -82,18 +82,7 @@ module.exports = {
     });
   },
 
-  getLocalNews: function(token) {
-    return new Promise(function(resolve, reject) {
-      jwt.verify(token, process.env.JWT, function(err, decoded) {
-        if (decoded && decoded.municipalId) {
-          News.findAll({ where: { municipalId: decoded.municipalId } }).then(news => resolve(news));
-        } else {
-          resolve({
-            success: false,
-            message: 'Not found.'
-          });
-        }
-      });
-    });
+  getLocalNews: function(municipalId) {
+    return News.findAll({ where: { municipalId: municipalId } });
   }
 };

@@ -5,8 +5,9 @@ import fs from 'fs';
 import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
+import companyManager from './managers/companyManager';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
+
 import jwt from 'jsonwebtoken';
 
 const public_path = path.join(__dirname, '/../../client/public');
@@ -16,10 +17,10 @@ let app = express();
 app.use(express.static(public_path));
 app.use(express.json());
 app.use(cookieParser());
-dotenv.config();
 
-app.get('/api/news', function(req, res) {
-  newsManager.getLocalNews(req.cookies['token']).then(result => res.json(result));
+// municipalId
+app.get('/api/news/municipal/:municipalId', function(req, res) {
+  newsManager.getLocalNews(req.params.municipalId).then(result => res.json(result));
 });
 
 app.put('/api/news/:id', function(req, res) {
@@ -61,7 +62,7 @@ app.post('/api/login', function(req, res) {
 // firstName, lastName, email, phone, municipalId
 app.post('/api/register', function(req, res) {
   userManager
-    .register(req.body.firstName, req.body.lastName, req.body.email, req.body.phone, req.body.municipalId)
+    .register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 1)
     .then(result => res.json(result));
 });
 
@@ -72,6 +73,21 @@ app.get('/api/users', ensureAdmin, (req, res) => {
 // id
 app.get('/api/users/:id', ensureAdmin, (req, res) => {
   userManager.getUser(req.params.id).then(result => res.json(result));
+});
+
+app.get('/api/companies', ensureEmployee, (req, res) => {
+  companyManager.getCompanies().then(result => res.json(result));
+});
+
+// municipalId
+app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
+  companyManager.getLocalCompanies(req.params.municipalId).then(result => res.json(result));
+});
+
+app.post('/api/companies', function(req, res) {
+  userManager
+    .register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 2)
+    .then(result => res.json(result));
 });
 
 function ensureLogin(req, res, next) {
