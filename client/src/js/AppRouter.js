@@ -60,7 +60,7 @@ export class AppRouter extends Component {
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/logout" component={LogoutPage} />
           {/* Develoopment */}
-          <Route exact path="/widget" component={Widget} />
+          <Route exact path="/map" component={Widget} />
         </div>
       </HashRouter>
     );
