@@ -68,19 +68,19 @@ Municipals.hasMany(Tickets);
 Municipals.hasMany(News);
 
 let production = process.env.NODE_ENV === 'production';
-export let sync = sequelize.sync({ force: production ? false : true }).then(() => {
+export let sync = sequelize.sync({ force: production ? false : true }).then(async () => {
   if (!production) {
-    Municipals.create({
+    await Municipals.create({
       name: 'Lindesnes'
     });
-    Categories.create({
+    await Categories.create({
       name: 'Vei og trafikk'
     });
-    Categories.create({
+    await Categories.create({
       name: 'Setting av brøytestikker',
       parentId: 1
     });
-    Users.create({
+    await Users.create({
       name: 'Ola',
       email: 'test@test.com',
       phone: 123,
@@ -88,7 +88,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(() =
       rank: 3,
       municipalId: 1
     });
-    Users.create({
+    await Users.create({
       name: 'SmartPark',
       email: 'admin@smartpark.no',
       phone: 12345678,
@@ -96,20 +96,20 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(() =
       rank: 2,
       municipalId: 1
     });
-    Tickets.create({
+    await Tickets.create({
       title: 'Vei problem',
       description: 'Pls sett opp brøytestikker her.',
       status: 3,
       categoryId: 2,
       userId: 1
     });
-    News.create({
+    await News.create({
       title: 'Problem ved vei i TRD sentrum,.',
       description: 'Brøytestikker skal bli satt opp.',
       status: 1,
       categoryId: 2
     });
-    Subscriptions.create({
+    await Subscriptions.create({
       newsId: 1,
       userId: 1
     });
