@@ -13,21 +13,19 @@ describe('Users test', () => {
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
-        password: user.password,
         rank: user.rank
     }).toEqual(
       {
         firstName: 'Ola',
-        lastName: 'Jensen',
-        email: 'ola.jensen@ntnu.no',
+        lastName: 'Nordmann',
+        email: 'test@test.com',
         phone: 123,
-        password: '123',
         rank: 3
       }
     );
   });
 });
-
+/*
 // Testing the Companies table in the database
 describe('Companies test', () => {
   it('correct data', async () => {
@@ -97,3 +95,4 @@ describe('Tickets test', () => {
     );
   });
 });
+*/

@@ -33,11 +33,13 @@ module.exports = {
           lat: lat,
           lon: lon,
           municipalId: municipalId
-        });
-        resolve({
-          success: true,
-          message: 'Article added.'
-        });
+        }).then(result =>
+          resolve({
+            success: true,
+            message: 'Article added.',
+            id: result.id
+          })
+        );
       }
     });
   },
