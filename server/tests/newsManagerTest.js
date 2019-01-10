@@ -1,9 +1,10 @@
+/*
 import { News, sync } from '../src/models';
 import newsManager from '../src/managers/newsManager';
 
 //let id;
 
-beforeAll(async () => {
+beforeEach(async () => {
   await sync;
   //id = await newsManager.addArticle('TestArticle', 'Dette er en test som skal funke', 1, 1, 1.123, 2.234, 1);
 });
@@ -15,7 +16,7 @@ describe('Adding article', () => {
   it('correct data', async () => {
     //let news = await newsManager.addArticle(title, description, status, categoryId, lat, lon, municipalId)
     let article = await newsManager.addArticle('TestArticle', 'Dette er en test som skal funke', 1, 1, 1.123, 2.234, 1);
-    console.log(article.id)
+    console.log('adding article - test');
     let news = await News.findOne({ where: { id: article.id }});
     {
       expect({
@@ -38,3 +39,4 @@ describe('Adding article', () => {
     }
   });
 });
+*/

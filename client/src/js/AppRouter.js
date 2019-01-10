@@ -26,7 +26,7 @@ import {
 } from './pages/files';
 
 //Edit MyWidget inside curlybrackets and in the file link.
-import { MapWidget as Widget } from './widgets/MapWidget';
+import { TicketWidget as Widget } from './widgets/TicketWidget';
 
 export class AppRouter extends Component {
   render() {

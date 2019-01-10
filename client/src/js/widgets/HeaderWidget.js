@@ -1,13 +1,16 @@
 import * as React from 'react';
+import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu, Dropdown, Button, Icon, Image } from 'semantic-ui-react';
 
 export class HeaderWidget extends React.Component {
-  loggedIn = true;
-
   render() {
+    let loggedIn = true;
     return (
       <Menu inverted color="blue" size="small">
+        <Menu.Item onClick={this.props.toggle}>
+          <Icon name="list layout" />
+        </Menu.Item>
         <Menu.Item>
           <NavLink to="/">
             <Image src="img/vector-logo-lav-hvit.png" size="medium" />

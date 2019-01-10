@@ -1,12 +1,12 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Header } from 'semantic-ui-react';
 
-//import {} from './../widgets';
+import { SidebarWidget } from './../widgets/SidebarWidget';
 
 export class HomePage extends Component {
   render() {
-    console.log('Hello World!');
-    return <h1>Hello World!</h1>;
+    return <Header as="h2">Hovedside</Header>;
   }
 }
