@@ -1,10 +1,10 @@
 import * as React from "react";
 import {NavLink} from "react-router-dom";
 
-import {Button, Header, Icon, Image, Menu, Segment, Sidebar} from 'semantic-ui-react'
+import {Button, Header, Icon, Image, Menu, Segment, Sidebar, Grid} from 'semantic-ui-react'
 
 
-export class Menubarold extends React.Component {
+export class SidebarWidget extends React.Component {
     state = {visible: false};
 
     handleHideClick = () => this.setState({visible: false});
@@ -13,7 +13,13 @@ export class Menubarold extends React.Component {
 
     //Variable that decides the type of user that is logged in.
     //Use this to decide what type of options in the menu to render
-    permission = 0;
+    //1 regular
+    //2 municipal
+    //3 admin
+    //4 Company
+    //5 All for development purposes
+    permission = 5;
+
 
     render() {
         const {visible} = this.state;
@@ -24,6 +30,7 @@ export class Menubarold extends React.Component {
         return (
             <div style={style}>
                 <Button.Group>
+                    /*Buttons for opening and closing the sidebar, will be added as an icon on the header*/
                     <Button disabled={visible} onClick={this.handleShowClick}>
                         Show sidebar
                     </Button>
@@ -44,16 +51,27 @@ export class Menubarold extends React.Component {
                         visible={visible}
                         width='wide'
                     >
-                        //Header
+
                         <Header size="huge" inverted={true} id={"sidebarHeader"}>Menu</Header>
 
-                        <Header size='large' className='sidebarHeaders' inverted={true}>Privatperson</Header>
-                        <Menu.Item as='a' className={'ui grey header sidebarLink borderless'}>Mine varsler</Menu.Item>
-                        <Menu.Item as='a' className={'ui grey header sidebarLink borderless'}>Nyhetsoppdateringer</Menu.Item>
-                        <Menu.Item as='a' className={'ui grey header sidebarLink borderless'}>Nyheter jeg følger</Menu.Item>
 
+                        <div className="sidebarComponents">
 
+                            <Header size='large' className='sidebarHeaders' inverted={true}>Privatperson</Header>
+                            <Menu.Item href='/subscriptions' as='a' className={' ui grey header sidebarLink borderless'}>Mine
+                                varsler</Menu.Item>
+                            <Menu.Item href={'/feed'} as='a'
+                                       className={'ui grey header sidebarLink borderless'}>Nyhetsoppdateringer</Menu.Item>
+                            <Menu.Item href={'/subscriptions'} as='a' className={'ui grey header sidebarLink borderless'}>Nyheter jeg
+                                følger</Menu.Item>
 
+                            {(this.permission === 2) ? <MunicipalOptions/> : null}
+                            {(this.permission === 3) ? <div><AdminOptions/><CompanyOptions/></div> : null}
+                            {(this.permission === 4) ? <CompanyOptions/> : null}
+                            {(this.permission === 5) ?
+                                <div><MunicipalOptions/> <AdminOptions/><CompanyOptions/></div> : null}
+
+                        </div>
 
                     </Sidebar>
 
@@ -76,8 +94,8 @@ class AdminOptions extends React.Component {
         return (
             <div>
                 <Header size='large' className='sidebarHeaders' inverted={true}>Administrator</Header>
-                <Menu.Item as='a' className={'ui grey header sidebarLink borderless'}>Adm. brukere</Menu.Item>
-                <Menu.Item as='a' className={'ui grey header sidebarLink borderless'}>Adm. kategorier</Menu.Item>
+                <Menu.Item href='/admin/users'as='a' className={'ui grey header sidebarLink borderless'}>Adm. brukere</Menu.Item>
+                <Menu.Item href={'/admin/categories'} as='a' className={'ui grey header sidebarLink borderless'}>Adm. kategorier</Menu.Item>
             </div>
         )
     }
@@ -89,8 +107,8 @@ class MunicipalOptions extends React.Component {
         return (
             <div>
                 <Header size='large' className='sidebarHeaders' inverted={true}>Komunneansatt</Header>
-                <Menu.Item as='a' className={'ui grey header sidebarLink borderless'}>Behandle varsler</Menu.Item>
-                <Menu.Item as='a' className={'ui grey header sidebarLink borderless'}>Adm. nyhetsvarlser</Menu.Item>
+                <Menu.Item href={'/employee/tickets'} as='a' className={'ui grey header sidebarLink borderless'}>Behandle varsler</Menu.Item>
+                <Menu.Item href={'/employee/news'} as='a' className={'ui grey header sidebarLink borderless'}>Adm. nyhetsvarlser</Menu.Item>
             </div>
         )
     }
@@ -102,7 +120,7 @@ class CompanyOptions extends React.Component {
         return (
             <div>
                 <Header size='large' className='sidebarHeaders' inverted={true}>Bedrift</Header>
-                <Menu.Item as='a' className={' ui grey header sidebarLink borderless'}>Mine oppdrag</Menu.Item>
+                <Menu.Item href={'/assignments'} as='a' className={' ui grey header sidebarLink borderless'}>Mine oppdrag</Menu.Item>
             </div>
         )
     }

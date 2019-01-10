@@ -13,12 +13,24 @@ body {
 .sidebarLink {
     font-size: 18px;
     color: gray;
+    text-align: left !important;
 }
 
 .sidebarHeaders {
     padding-top: 10px;
+    text-align: left;
+}
+
+.sidebarComponents{
+    margin-left: 30px;
+
 }
 
 #sidebarHeader {
     margin-top: 10px;
+    text-align:  left;
+    margin-left: 30px;
+    font-size: 40px;
+
 }
+
