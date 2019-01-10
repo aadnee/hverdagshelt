@@ -22,7 +22,7 @@ export class LoginWidget extends Component {
   }
 
   handleInput = (key, value) => {
-    this.setState({ key: value });
+    this.setState({ [key]: value });
   };
 
   handleSubmit = () => {
@@ -59,7 +59,7 @@ export class LoginWidget extends Component {
                     iconPosition="left"
                     placeholder="Passord"
                     type="password"
-                    value={this.state.email}
+                    value={this.state.password}
                     onChange={(event, data) => {
                       this.handleInput('password', data.value);
                     }}
@@ -67,7 +67,7 @@ export class LoginWidget extends Component {
                 </Form.Field>
 
                 <Button
-                  color="blue"
+                  color="twitter"
                   fluid
                   size="large"
                   onClick={() => {
