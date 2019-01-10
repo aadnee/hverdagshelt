@@ -33,8 +33,8 @@ export class LoginWidget extends Component {
   render() {
     return (
       <Container>
-        <Grid verticalAlign="middle">
-          <Grid.Column style={{ maxWidth: 450 }}>
+        <Grid centered>
+          <Grid.Column mobile={16}>
             {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
             <Form size="large">
               <Segment piled>

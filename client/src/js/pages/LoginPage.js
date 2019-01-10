@@ -10,7 +10,7 @@ export class LoginPage extends Component {
     return (
       <Container>
         <Grid centered columns={2}>
-          <Grid.Column>
+          <Grid.Column mobile={16} tablet={8} computer={6} largeScreen={6} widescreen={6}>
             <LoginWidget logo register />
           </Grid.Column>
         </Grid>
