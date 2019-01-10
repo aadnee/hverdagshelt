@@ -38,8 +38,9 @@ export class LoginWidget extends Component {
       <Container>
         <Grid centered>
           <Grid.Column mobile={16}>
-            {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
-            <Form size="large">
+        {this.props.logo ? <NavLink to={'/'}>
+        <Image src="img/vector-logo-lav-farge.png" /> </NavLink> : null}
+          <Form size="large">
               <Segment piled>
                 <Form.Field>
                   <label>E-postadresse</label>
