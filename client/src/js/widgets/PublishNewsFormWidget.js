@@ -1,6 +1,6 @@
 import React from 'react';
-import {Component} from 'react';
-import {NavLink} from 'react-router-dom';
+import { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   Button,
   Checkbox,
@@ -33,11 +33,11 @@ export class PublishNewsFormWidget extends Component {
       subscription: false,
       selectedCategory: false,
       image: this.props.image
-    }
+    };
   }
 
   handleInput = (key, value) => {
-    this.setState({[key]: value});
+    this.setState({ [key]: value });
   };
 
   submit = () => {
@@ -51,87 +51,92 @@ export class PublishNewsFormWidget extends Component {
 
   render() {
     return (
-        <Container>
-          <Grid verticalAlign="middle">
-            <Grid.Column>
-              <Form size="large">
-                <Segment stacked>
-                  <Form.Field>
-                    <label>Brukeren har meldt inn feil om:</label>
-                    <Input
+      <Container>
+        <Grid verticalAlign="middle">
+          <Grid.Column>
+            <Form size="large">
+              <Segment stacked>
+                <Form.Field>
+                  <label>Brukeren har meldt inn feil om:</label>
+                  <Input
+                    fluid
+                    icon="warning"
+                    iconPosition="left"
+                    placeholder={'Hva er problemet?'}
+                    value={this.state.headline}
+                    onChange={(event, data) => {
+                      this.handleInput('headline', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Utdypet:</label>
+                  <TextArea
+                    placeholder={'Beskrivelse'}
+                    value={this.state.details}
+                    onChange={(event, data) => {
+                      this.handleInput('details', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Grid columns={'equal'}>
+                    <Grid.Column>
+                      <label>Kategori:</label>
+                      <Dropdown
                         fluid
-                        icon="warning"
-                        iconPosition="left"
-                        placeholder={"Hva er problemet?"}
-                        value={this.state.headline}
+                        search
+                        selection
+                        options={this.state.categoryOptions}
+                        placeholder="Kategori"
                         onChange={(event, data) => {
-                          this.handleInput('headline', data.value);
-                        }}/>
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Utdypet:</label>
-                    <TextArea
-                        placeholder={"Beskrivelse"}
-                        value={this.state.details}
+                          this.handleInput('category', data.value);
+                          this.setState({ selectedCategory: true });
+                          this.getSubCategories();
+                        }}
+                      />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <label>Underkategori:</label>
+                      <Dropdown
+                        disabled={!this.state.selectedCategory}
+                        fluid
+                        search
+                        selection
+                        options={this.state.subCategoryOptions}
+                        placeholder={'Underkategori'}
+                        value={this.state.subcategory}
                         onChange={(event, data) => {
-                          this.handleInput('details', data.value);
-                        }}/>
-                  </Form.Field>
-                  <Form.Field>
-                    <Grid columns={'equal'}>
-                      <Grid.Column>
-                        <label>Kategori:</label>
-                        <Dropdown
-                            fluid
-                            search
-                            selection
-                            options={this.state.categoryOptions}
-                            placeholder="Kategori"
-                            onChange={(event, data) => {
-                              this.handleInput('category', data.value);
-                              this.setState({selectedCategory: true});
-                              this.getSubCategories();
-                            }}/>
-                      </Grid.Column>
-                      <Grid.Column>
-                        <label>Underkategori:</label>
-                        <Dropdown
-                            disabled={!this.state.selectedCategory}
-                            fluid
-                            search
-                            selection
-                            options={this.state.subCategoryOptions}
-                            placeholder={"Underkategori"}
-                            value={this.state.subcategory}
-                            onChange={(event, data) => {
-                              this.handleInput('subcategory', data.value);
-                            }}/>
-                      </Grid.Column>
-                    </Grid>
-                  </Form.Field>
-                  {this.state.image ? (
-                      <Segment placeholder>
-                        <Header icon>
-                          <Icon name='image file outline'/>
-                          Bildemodul her.
-                        </Header>
-                        <Button primary>Legg til bilde</Button>
-                      </Segment>
-                  ) : null}
-                  <Button
-                      color="blue"
-                      fluid
-                      size="large"
-                      onClick={() => {
-                        this.submit();
-                      }}>
-                    Publiser
-                  </Button>
-                </Segment>
-              </Form>
-            </Grid.Column>
-          </Grid>
-        </Container>
+                          this.handleInput('subcategory', data.value);
+                        }}
+                      />
+                    </Grid.Column>
+                  </Grid>
+                </Form.Field>
+                {this.state.image ? (
+                  <Segment placeholder>
+                    <Header icon>
+                      <Icon name="image file outline" />
+                      Bildemodul her.
+                    </Header>
+                    <Button primary>Legg til bilde</Button>
+                  </Segment>
+                ) : null}
+                <Button
+                  color="blue"
+                  fluid
+                  size="large"
+                  onClick={() => {
+                    this.submit();
+                  }}
+                >
+                  Publiser
+                </Button>
+              </Segment>
+            </Form>
+          </Grid.Column>
+        </Grid>
+      </Container>
     );
   }
 }
