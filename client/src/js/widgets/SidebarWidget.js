@@ -66,7 +66,7 @@ export class SidebarWidget extends React.Component {
                                 følger</Menu.Item>
 
                             {(this.permission === 2) ? <MunicipalOptions/> : null}
-                            {(this.permission === 3) ? <div><AdminOptions/><CompanyOptions/></div> : null}
+                            {(this.permission === 3) ? <div><AdminOptions/><MunicipalOptions/></div> : null}
                             {(this.permission === 4) ? <CompanyOptions/> : null}
                             {(this.permission === 5) ?
                                 <div><MunicipalOptions/> <AdminOptions/><CompanyOptions/></div> : null}
