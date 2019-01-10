@@ -2,6 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Container, Grid, Header, Image, Segment, Form, Message, Button, Input } from 'semantic-ui-react';
+import { userService } from '../services/UserServices';
 
 //import {} from './';
 
@@ -22,19 +23,21 @@ export class LoginWidget extends Component {
   }
 
   handleInput = (key, value) => {
-    this.setState({ key: value });
+    this.setState({ [key]: value });
   };
 
   handleSubmit = () => {
     //USERSERICE -> request cookie
     console.log('submitting');
+    console.log(this.state);
+    userService.login(this.state.email, this.state.password).then(res => console.log(res));
   };
 
   render() {
     return (
       <Container>
-        <Grid verticalAlign="middle">
-          <Grid.Column style={{ maxWidth: 450 }}>
+        <Grid centered>
+          <Grid.Column mobile={16}>
             {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
             <Form size="large">
               <Segment piled>
@@ -59,7 +62,7 @@ export class LoginWidget extends Component {
                     iconPosition="left"
                     placeholder="Passord"
                     type="password"
-                    value={this.state.email}
+                    value={this.state.password}
                     onChange={(event, data) => {
                       this.handleInput('password', data.value);
                     }}
@@ -67,7 +70,7 @@ export class LoginWidget extends Component {
                 </Form.Field>
 
                 <Button
-                  color="blue"
+                  color="twitter"
                   fluid
                   size="large"
                   onClick={() => {
