@@ -2,6 +2,7 @@ import * as React from 'react';
 import { List, Button } from 'semantic-ui-react';
 import { DeleteUserWidget } from './DeleteUserWidget';
 import { AdminRegisterWidget } from './AdminRegisterWidget';
+import { EditUserWidget } from './EditUserWidget';
 
 export class UserComponentListWidget extends React.Component {
   constructor(props) {
@@ -12,14 +13,16 @@ export class UserComponentListWidget extends React.Component {
         name: 'hallo1',
         email: 'email@e.com',
         phone: '41122142142',
-        municipalId: '1'
+        municipalId: '1',
+        rank: 3
       },
       {
         id: '1',
         name: 'hallo2',
         email: 'email@a.com',
         phone: '41122142142',
-        municipalId: '2'
+        municipalId: '2',
+        rank: 3
       }
     ];
   }
@@ -47,9 +50,10 @@ export class UserComponentListItemWidget extends React.Component {
     return (
       <List.Item>
         <List.Content floated="right">
-          <List.Content>
+          <Button.Group compact={false}>
+            <EditUserWidget user={this.props.user} userEdit />
             <DeleteUserWidget user={this.props.user} />
-          </List.Content>
+          </Button.Group>
         </List.Content>
         <List.Icon name="user" size="large" verticalAlign="middle" />
         <List.Content>

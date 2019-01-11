@@ -6,6 +6,8 @@ import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
+import municipalManager from './managers/municipalManager';
+import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
@@ -214,6 +216,30 @@ app.get('/api/mytickets', ensureLogin, function(req, res) {
 //Get all tickets within a specific municipal.
 app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
   ticketManager.getLocalTickets(req.params.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/categories', ensureLogin, function(req, res) {
+  categoryManager.getCategories(function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/categories', ensureEmployee, (req, res) => {
+  categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/municipals', ensureLogin, function(req, res) {
+  municipalManager.getMunicipals(function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/municipals', ensureAdmin, (req, res) => {
+  municipalManager.addMunicipal(req.body.name, function(result) {
     res.json(result);
   });
 });
