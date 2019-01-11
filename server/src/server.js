@@ -84,7 +84,9 @@ app.get('/api/users/:id', ensureAdmin, (req, res) => {
 
 // id
 app.delete('/api/users/:id', ensureAdmin, (req, res) => {
-  userManager.deleteUser(req.params.id).then(result => res.json(result));
+  userManager.deleteUser(req.params.id, function(result) {
+    res.json(result);
+  });
 });
 
 app.get('/api/companies', ensureEmployee, (req, res) => {

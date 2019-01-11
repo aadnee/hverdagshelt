@@ -105,10 +105,20 @@ module.exports = {
 
   getUser: function(id, callback) {
     Users.findOne({
-      where: { $and: { id: Number(id), rank: { $not: 2 } } },
+      where: { $and: { id: id, rank: { $not: 2 } } },
       attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId']
     })
       .then(res => callback({ success: true, data: res }))
+      .catch(function(err) {
+        callback({ success: false, message: 'Sequelize error' });
+      });
+  },
+
+  deleteUser: function(id, callback) {
+    Users.destroy({
+      where: { id: id }
+    })
+      .then(() => callback({ success: true, message: 'User deleted.' }))
       .catch(function(err) {
         callback({ success: false, message: 'Sequelize error' });
       });
