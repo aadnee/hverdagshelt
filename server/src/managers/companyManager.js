@@ -12,7 +12,7 @@ module.exports = {
   getLocalCompanies: function(municipalId, callback) {
     Users.findAll({
       attributes: ['id', 'name', 'email', 'phone'],
-      where: { $and: { municipalId: municipalId, rank: 2 } }
+      where: { municipalId: municipalId, rank: 2 }
     }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: 'Sequelize error' })

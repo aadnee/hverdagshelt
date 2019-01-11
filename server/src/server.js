@@ -58,6 +58,7 @@ app.post('/api/login', function(req, res) {
   userManager.login(req.body.email, req.body.password, function(result) {
     res.cookie('token', result.token);
     res.cookie('rank', result.rank);
+    res.cookie('municipalId', result.municipalId);
     res.json(result);
   });
 });
