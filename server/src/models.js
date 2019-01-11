@@ -114,7 +114,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await Tickets.create({
       title: 'Vei problem',
       description: 'Pls sett opp brøytestikker her.',
-      status: 3,
+      status: 1,
       lat: 1,
       lon: 1,
       categoryId: 2,

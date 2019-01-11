@@ -182,10 +182,25 @@ app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
   });
 });
 
-app.put('/api/tickets/:ticketId/status', ensureEmployee, function(req, res) {
-  ticketManager.setStatus(req.body.status, req.body.ticketId, function(result) {
+app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
+  ticketManager.setStatus(4, req.params.ticketId, function(result) {
     res.json(result);
   });
+});
+
+app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
+  ticketManager.makeNews(
+    req.body.ticketId,
+    req.body.title,
+    req.body.description,
+    req.body.lat,
+    req.body.lon,
+    req.body.categoryId,
+    req.body.municipalId,
+    function(result) {
+      res.json(result);
+    }
+  );
 });
 
 app.get('/api/mytickets', ensureLogin, function(req, res) {
