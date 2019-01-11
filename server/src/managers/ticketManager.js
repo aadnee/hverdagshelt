@@ -32,7 +32,7 @@ module.exports = {
         categoryId: categoryId,
         municipalId: municipalId
       },
-      { where: { $and: { id: ticketId, userId: userId } } }
+      { where: { id: ticketId, userId: userId } }
     ).then(
       res =>
         callback({
@@ -56,7 +56,7 @@ module.exports = {
 
   //get all tickets submitted by a specific user
   getMyTickets: function(userId, callback) {
-    Tickets.findAll({ where: { id: userId } }).then(
+    Tickets.findAll({ where: { userId: userId } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
