@@ -25,8 +25,7 @@ import {
   LogoutPage
 } from './pages/files';
 
-//Edit MyWidget inside curlybrackets and in the file link.
-import { TicketWidget as Widget } from './widgets/TicketWidget';
+import { UserEditFormWidget as Widget } from './widgets/UserEditFormWidget';
 
 export class AppRouter extends Component {
   render() {
