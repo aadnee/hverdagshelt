@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { List, Button } from 'semantic-ui-react';
 import { DeleteUserWidget } from './DeleteUserWidget';
+import { AdminRegisterWidget } from './AdminRegisterWidget';
 
 export class UserComponentListWidget extends React.Component {
   constructor(props) {
@@ -25,11 +26,14 @@ export class UserComponentListWidget extends React.Component {
 
   render() {
     return (
-      <List divided relaxed>
-        {this.users.map((user, i) => {
-          return <UserComponentListItemWidget key={i} user={this.users[i]} />;
-        })}
-      </List>
+      <div>
+        <List divided relaxed>
+          {this.users.map((user, i) => {
+            return <UserComponentListItemWidget key={i} user={this.users[i]} />;
+          })}
+        </List>
+        <AdminRegisterWidget />
+      </div>
     );
   }
 }
