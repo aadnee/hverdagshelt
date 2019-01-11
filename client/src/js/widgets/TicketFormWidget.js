@@ -16,7 +16,7 @@ import {
   Segment
 } from 'semantic-ui-react';
 
-import {ticketService} from '../services/TicketServices';
+import { ticketService } from '../services/TicketServices';
 
 export class TicketFormWidget extends Component {
   constructor(props) {
@@ -25,10 +25,7 @@ export class TicketFormWidget extends Component {
       headline: '',
       details: '',
       category: '',
-      categoryOptions: [
-        { key: 1, value: 2, text: 'cat 1' },
-        { key: 2, value: 2, text: 'cat 2' },
-      ],
+      categoryOptions: [{ key: 1, value: 2, text: 'cat 1' }, { key: 2, value: 2, text: 'cat 2' }],
       subcategory: '',
       subCategoryOptions: [],
       position: [null, null],
@@ -45,13 +42,15 @@ export class TicketFormWidget extends Component {
     //SERVICE
     console.log(this.state);
     //lat, lon and municipalId is fetched from the map
-    ticketService.addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1).then(res => console.log(res));
+    ticketService
+      .addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1)
+      .then(res => console.log(res));
   };
 
   getSubCategories(category) {
     //Get subcategories based on the chosen category
-    let subcats = [{key: 1, value: 1, text: 'subcat 1'}, {key: 2, value: 2, text: 'subcat 2'}];
-    this.setState({'subCategoryOptions': subcats});
+    let subcats = [{ key: 1, value: 1, text: 'subcat 1' }, { key: 2, value: 2, text: 'subcat 2' }];
+    this.setState({ subCategoryOptions: subcats });
   }
 
   render() {
@@ -133,9 +132,9 @@ export class TicketFormWidget extends Component {
                     label={<label>Jeg ønsker å abonnere på saken</label>}
                     value={this.state.subscription}
                     onChange={(event, data) => {
-                      if(data.checked) {
+                      if (data.checked) {
                         this.handleInput('subscription', 'true');
-                      }else{
+                      } else {
                         this.handleInput('subscription', 'false');
                       }
                     }}
