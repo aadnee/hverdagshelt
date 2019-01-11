@@ -1,38 +1,44 @@
-import { News, sync } from '../src/models';
-import newsManager from '../src/managers/newsManager';
+import { Tickets, sync } from '../src/models';
+import ticketManager from '../src/managers/ticketManager';
 
 beforeAll(async () => {
   await sync;
 });
 
 // Testing adding a new article
-describe('Adding article', () => {
+describe('Adding ticket', () => {
   let id;
   it('correct data', done => {
-    newsManager.addArticle('TestArticle', 'Dette er en test som skal funke', 1, 1.123, 2.234, 1, function(article) {
-      id = article.id;
-      News.findOne({ where: { id: article.id } }).then(news => {
+    ticketManager.addTicket('TicketTest', 'Dette er en test som skal funke', 1.11, 2.22, 1, 1, 1, function(ticket) {
+      id = ticket.id;
+      Tickets.findOne({ where: { id: ticket.id } }).then(tickets => {
+        //console.log(tickets);
         expect({
-          title: news.title,
-          description: news.description,
-          status: news.status,
-          categoryId: news.categoryId,
-          lat: news.lat,
-          lon: news.lon,
-          municipalId: news.municipalId
+          title: tickets.title,
+          description: tickets.description,
+          status: 1,
+          lat: tickets.lat,
+          lon: tickets.lon,
+          categoryId: tickets.categoryId,
+          municipalId: tickets.municipalId,
+          userId: tickets.userId
         }).toEqual({
-          title: 'TestArticle',
+          title: 'TicketTest',
           description: 'Dette er en test som skal funke',
           status: 1,
+          lat: 1.11,
+          lon: 2.22,
           categoryId: 1,
-          lat: 1.123,
-          lon: 2.234,
-          municipalId: 1
+          municipalId: 1,
+          userId: 1
         });
         done();
       });
     });
   });
+});
+
+/*
   it('correct data', done => {
     newsManager.updateNews(id, 'TestArticle', 'Nå skal det ha skjedd en endring', 1, 1, 1, function(article) {
       News.findOne({ where: { id: id } }).then(news => {
@@ -68,3 +74,4 @@ describe('Get news by municipal', () => {
     });
   });
 });
+*/

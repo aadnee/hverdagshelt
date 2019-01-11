@@ -58,6 +58,7 @@ app.post('/api/login', function(req, res) {
   userManager.login(req.body.email, req.body.password, function(result) {
     res.cookie('token', result.token);
     res.cookie('rank', result.rank);
+    res.cookie('municipalId', result.municipalId);
     res.json(result);
   });
 });
@@ -82,21 +83,66 @@ app.get('/api/users/:id', ensureAdmin, (req, res) => {
   });
 });
 
+// id
+app.delete('/api/users/:id', ensureAdmin, (req, res) => {
+  userManager.deleteUser(req.params.id, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/users/:id', ensureAdmin, function(req, res) {
+  getUserId(req, function(userId) {
+    userManager.editUser(
+      req.body.name,
+      req.body.email,
+      req.body.phone,
+      req.body.municipalId,
+      userId,
+      req.body.rank,
+      function(result) {
+        res.json(result);
+      }
+    );
+  });
+});
+
 app.get('/api/companies', ensureEmployee, (req, res) => {
   companyManager.getCompanies(function(result) {
     res.json(result);
   });
 });
 
-// municipalId
-app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
-  companyManager.getLocalCompanies(req.params.municipalId, function(result) {
+app.get('/api/companies/:companyId', ensureEmployee, (req, res) => {
+  companyManager.getCompany(req.params.companyId, function(result) {
     res.json(result);
   });
 });
 
-app.post('/api/companies', function(req, res) {
-  userManager.register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 2, function(result) {
+app.delete('/api/companies/:id', ensureEmployee, (req, res) => {
+  companyManager.deleteCompany(req.params.id, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/companies', ensureEmployee, (req, res) => {
+  companyManager.addCompany(req.body.name, req.body.email, req.body.phone, req.body.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/companies/:id', ensureEmployee, function(req, res) {
+  getUserId(req, function(userId) {
+    companyManager.editCompany(req.body.name, req.body.email, req.body.phone, req.body.municipalId, userId, function(
+      result
+    ) {
+      res.json(result);
+    });
+  });
+});
+
+// municipalId
+app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
+  companyManager.getLocalCompanies(req.params.municipalId, function(result) {
     res.json(result);
   });
 });
@@ -138,6 +184,21 @@ app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
 
 app.put('/api/tickets/:ticketId/status', ensureEmployee, function(req, res) {
   ticketManager.setStatus(req.body.status, req.body.ticketId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/mytickets', ensureLogin, function(req, res) {
+  getUserId(req, function(id) {
+    ticketManager.getMyTickets(id, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+//Get all tickets within a specific municipal.
+app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
+  ticketManager.getLocalTickets(req.params.municipalId, function(result) {
     res.json(result);
   });
 });

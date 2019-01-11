@@ -20,7 +20,8 @@ let sequelize = new Sequelize(process.env.MYSQL_DB, process.env.MYSQL_USR, proce
     $gt: Op.gt,
     $lt: Op.lt,
     $lte: Op.lte,
-    $like: Op.like
+    $like: Op.like,
+    $not: Op.ne
   }
 });
 

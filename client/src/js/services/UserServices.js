@@ -1,16 +1,13 @@
-import axios from 'axios';
-
-axios.interceptors.response.use(response => response.data);
+import api from './api';
 
 class UserService {
   login(email, password) {
-    return axios.post('/api/login', { email: email, password: password });
+    return api.post('/api/login', { email: email, password: password });
   }
 
-  register(firstName, lastName, email, phone, municipalId) {
-    return axios.post('/api/register', {
-      firstName: firstName,
-      lastName: lastName,
+  register(name, email, phone, municipalId) {
+    return api.post('/api/register', {
+      name: name,
       email: email,
       phone: phone,
       municipalId: municipalId
@@ -18,11 +15,24 @@ class UserService {
   }
 
   getUsers() {
-    return axios.get('/api/users');
+    return api.get('/api/users');
   }
 
   getUser(id) {
-    return axios.get('/api/users/' + id);
+    return api.get('/api/users/' + id);
+  }
+
+  editUser(id, name, email, phone, municipalId) {
+    return api.put('/api/users/' + id, {
+      name: name,
+      email: email,
+      phone: phone,
+      municipalId: municipalId
+    });
+  }
+
+  deleteUser(id) {
+    return axios.delete('/api/users/' + id);
   }
 }
 export let userService = new UserService();

@@ -11,22 +11,20 @@ module.exports = {
       lat: lat,
       lon: lon,
       municipalId: municipalId
-    })
-      .then(result =>
+    }).then(
+      result =>
         callback({
           success: true,
           message: 'Article added.',
           id: result.id
-        })
-      )
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+        }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   },
 
   updateNews: function(id, title, description, status, categoryId, companyId, callback) {
-    News.findOne({ where: { id: id } })
-      .then(article => {
+    News.findOne({ where: { id: id } }).then(
+      article => {
         if (!article) {
           callback({
             success: false,
@@ -44,28 +42,24 @@ module.exports = {
             {
               where: { id: id }
             }
-          )
-            .then(() =>
+          ).then(
+            res =>
               callback({
                 success: true,
                 message: 'Article updated successfully'
-              })
-            )
-            .catch(function(err) {
-              callback({ success: false, message: 'Sequelize error' });
-            });
+              }),
+            err => callback({ success: false, message: 'Sequelize error' })
+          );
         }
-      })
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+      },
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   },
 
   getLocalNews: function(municipalId, callback) {
-    News.findAll({ where: { municipalId: municipalId } })
-      .then(res => callback({ success: true, data: res }))
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+    News.findAll({ where: { municipalId: municipalId } }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   }
 };

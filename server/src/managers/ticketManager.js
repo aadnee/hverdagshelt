@@ -11,16 +11,15 @@ module.exports = {
       categoryId: categoryId,
       userId: userId,
       municipalId: municipalId
-    })
-      .then(() =>
+    }).then(
+      res =>
         callback({
           success: true,
-          message: 'Ticket sent.'
-        })
-      )
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+          message: 'Ticket sent.',
+          id: res.id
+        }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   },
 
   editTicket: function(title, description, lat, lon, categoryId, municipalId, userId, ticketId, callback) {
@@ -33,29 +32,41 @@ module.exports = {
         categoryId: categoryId,
         municipalId: municipalId
       },
-      { where: { $and: { id: ticketId, userId: userId } } }
-    )
-      .then(() =>
+      { where: { id: ticketId, userId: userId } }
+    ).then(
+      res =>
         callback({
           success: true,
           message: 'Ticket saved.'
-        })
-      )
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+        }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   },
 
   setStatus: function(status, ticketId, callback) {
-    Tickets.update({ status: status }, { where: { id: ticketId } })
-      .then(() =>
+    Tickets.update({ status: status }, { where: { id: ticketId } }).then(
+      res =>
         callback({
           success: true,
           message: 'Status updated.'
-        })
-      )
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+        }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
+  },
+
+  //get all tickets submitted by a specific user
+  getMyTickets: function(userId, callback) {
+    Tickets.findAll({ where: { userId: userId } }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
+  },
+
+  //get all tickets in a specific municipal
+  getLocalTickets: function(municipalId, callback) {
+    Tickets.findAll({ where: { municipalId: municipalId } }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   }
 };
