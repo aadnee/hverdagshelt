@@ -1,10 +1,11 @@
+
 import { Users, Companies, Municipals, Categories, Tickets, News, Subscriptions, sync } from '../src/models.js';
 import newsManager from '../src/managers/newsManager';
 
 beforeAll(async () => {
   await sync;
 });
-
+/*
 // Testing the Users table in the database
 describe('Users test', () => {
   it('correct data', async () => {
@@ -23,7 +24,7 @@ describe('Users test', () => {
     });
   });
 });
-/*
+
 // Testing the Companies table in the database
 describe('Companies test', () => {
   it('correct data', async () => {
@@ -90,7 +91,7 @@ describe('Tickets test', () => {
     });
   });
 });
-
+/*
 //Test for adding a new article to the database
 describe('Adding article', () => {
   it('correct data', async () => {
@@ -119,3 +120,4 @@ describe('Adding article', () => {
     }
   });
 });
+*/
