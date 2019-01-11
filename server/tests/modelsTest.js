@@ -72,7 +72,7 @@ describe('Categories test', () => {
     });
   });
 });
-*/
+
 // Testing the Tickets table in the database
 describe('Tickets test', () => {
   it('correct data', async () => {
@@ -91,7 +91,7 @@ describe('Tickets test', () => {
     });
   });
 });
-
+/*
 //Test for adding a new article to the database
 describe('Adding article', () => {
   it('correct data', async () => {
@@ -120,3 +120,4 @@ describe('Adding article', () => {
     }
   });
 });
+*/

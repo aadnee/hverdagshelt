@@ -2,48 +2,6 @@ import { News } from '../models.js';
 import jwt from 'jsonwebtoken';
 
 module.exports = {
-<<<<<<< HEAD
-  addArticle: function(title, description, status, categoryId, lat, lon, municipalId) {
-    return new Promise(function(resolve, reject) {
-      if (
-        title == null ||
-        title == '' ||
-        description == null ||
-        description == '' ||
-        status == null ||
-        status == '' ||
-        categoryId == null ||
-        categoryId == '' ||
-        lat == null ||
-        lat == '' ||
-        lon == null ||
-        lon == '' ||
-        municipalId == null ||
-        municipalId == ''
-      ) {
-        resolve({
-          success: false,
-          message: 'Fields cannot be empty.'
-        });
-      } else {
-        News.create({
-          title: title,
-          description: description,
-          status: status,
-          categoryId: categoryId,
-          lat: lat,
-          lon: lon,
-          municipalId: municipalId
-        }).then(result =>
-          resolve({
-            success: true,
-            message: 'Article added.',
-            id: result.id
-          })
-        )
-      }
-    });
-=======
   addArticle: function(title, description, categoryId, lat, lon, municipalId, callback) {
     News.create({
       title: title,
@@ -64,7 +22,6 @@ module.exports = {
       .catch(function(err) {
         callback({ success: false, message: 'Sequelize error' });
       });
->>>>>>> cdabbf3d26714bbc8218de038f79d10228da2fdd
   },
 
   updateNews: function(id, title, description, status, categoryId, companyId, callback) {
