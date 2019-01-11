@@ -187,6 +187,21 @@ app.put('/api/tickets/:ticketId/status', ensureEmployee, function(req, res) {
   });
 });
 
+app.get('/api/mytickets', ensureLogin, function(req, res) {
+  getUserId(req, function(id) {
+    ticketManager.getMyTickets(id, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+//Get all tickets within a specific municipal.
+app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
+  ticketManager.getLocalTickets(req.params.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
 function getUserId(req, callback) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
     callback(decoded.id);
