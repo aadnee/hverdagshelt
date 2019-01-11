@@ -3,27 +3,32 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const Op = Sequelize.Op;
-let sequelize = new Sequelize(process.env.MYSQL_DB, process.env.MYSQL_USR, process.env.MYSQL_PWD, {
-  host: process.env.CI ? 'mysql' : process.env.MYSQL_HOST,
-  dialect: 'mysql',
-  logging: false,
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  operatorsAliases: {
-    $and: Op.and,
-    $or: Op.or,
-    $eq: Op.eq,
-    $gt: Op.gt,
-    $lt: Op.lt,
-    $lte: Op.lte,
-    $like: Op.like,
-    $not: Op.ne
+let sequelize = new Sequelize(
+  process.env.CI ? 'School' : process.env.MYSQL_DB,
+  process.env.CI ? 'root' : process.env.MYSQL_USR,
+  process.env.CI ? '' : process.env.MYSQL_PWD,
+  {
+    host: process.env.CI ? 'mysql' : process.env.MYSQL_HOST,
+    dialect: 'mysql',
+    logging: false,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    },
+    operatorsAliases: {
+      $and: Op.and,
+      $or: Op.or,
+      $eq: Op.eq,
+      $gt: Op.gt,
+      $lt: Op.lt,
+      $lte: Op.lte,
+      $like: Op.like,
+      $not: Op.ne
+    }
   }
-});
+);
 
 export let Users = sequelize.define('users', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
