@@ -53,8 +53,17 @@ module.exports = {
     );
   },
 
+  //get all tickets submitted by a specific user
   getMyTickets: function(userId, callback) {
     Tickets.findAll({ where: { id: userId } }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
+  },
+
+  //get all tickets in a specific municipal
+  getLocalTickets: function(municipalId, callback) {
+    Tickets.findAll({ where: { municipalId: municipalId } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
