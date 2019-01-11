@@ -16,9 +16,13 @@ export class TicketWidget extends Component {
     super(props);
   }
 
+  //STATUS:
+  //
+  //
+  //
   render() {
     return (
-      <Card>
+      <Card centered>
         <Image>
           <Image src="img/thumbnaildiv.png" />
           <Label color="yellow" ribbon="right">
@@ -28,21 +32,15 @@ export class TicketWidget extends Component {
         <Card.Content>
           <Header>
             <Header.Content>
-              Kategori
-              <Header.Subheader>Underkategori</Header.Subheader>
+              {this.props.ticket.title}
+              <Header.Subheader>{this.props.ticket.category}</Header.Subheader>
+              {this.props.ticket.subCategory ? (
+                <Header.Subheader>{this.props.ticket.subCategory}</Header.Subheader>
+              ) : null}
             </Header.Content>
           </Header>
-          <Card.Meta>dd/mm/yyyy</Card.Meta>
-          <Card.Description>
-            <Placeholder>
-              <Placeholder.Paragraph>
-                <Placeholder.Line />
-                <Placeholder.Line />
-                <Placeholder.Line />
-                <Placeholder.Line />
-              </Placeholder.Paragraph>
-            </Placeholder>
-          </Card.Description>
+          <Card.Meta>{this.props.ticket.createdAt}</Card.Meta>
+          <Card.Description>{this.props.ticket.description}</Card.Description>
         </Card.Content>
         {this.props.admin ? (
           !this.props.published ? (
