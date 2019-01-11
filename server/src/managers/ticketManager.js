@@ -31,7 +31,7 @@ module.exports = {
         categoryId: categoryId,
         municipalId: municipalId
       },
-      { where: { $and: { id: ticketId, userId: userId } } }
+      { where: { id: ticketId, userId: userId } }
     ).then(
       res =>
         callback({
