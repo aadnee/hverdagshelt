@@ -15,7 +15,8 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: 'Ticket sent.'
+          message: 'Ticket sent.',
+          id: res.id
         }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
