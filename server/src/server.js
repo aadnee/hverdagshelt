@@ -95,6 +95,12 @@ app.get('/api/companies', ensureEmployee, (req, res) => {
   });
 });
 
+app.post('/api/companies', ensureEmployee, (req, res) => {
+  companyManager.addCompany(req.body.name, req.body.email, req.body.phone, req.body.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
 // municipalId
 app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
   companyManager.getLocalCompanies(req.params.municipalId, function(result) {
