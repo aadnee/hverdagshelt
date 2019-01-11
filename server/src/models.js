@@ -25,7 +25,6 @@ let sequelize = new Sequelize(process.env.MYSQL_DB, process.env.MYSQL_USR, proce
   }
 });
 
-
 export let Users = sequelize.define('users', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: Sequelize.STRING, allowNull: false },

@@ -3,7 +3,6 @@ import { userService } from '../services/UserServices';
 
 import { NavLink } from 'react-router-dom';
 import React from 'react';
-import { RegisterPage } from '../pages/RegisterPage';
 
 export class RegisterWidget extends React.Component {
   constructor(props) {
@@ -15,7 +14,6 @@ export class RegisterWidget extends React.Component {
       email: '',
       phone: '',
       selectedOption: '',
-
       options: []
     };
 

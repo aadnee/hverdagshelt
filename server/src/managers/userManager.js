@@ -18,8 +18,7 @@ module.exports = {
             if (eq == true) {
               const payload = {
                 id: user.id,
-                rank: user.rank,
-                municipalId: user.municipalId
+                rank: user.rank
               };
               var token = jwt.sign(payload, process.env.JWT, {
                 expiresIn: 86400
@@ -28,7 +27,8 @@ module.exports = {
                 success: true,
                 message: 'Authentication successful.',
                 token: token,
-                rank: user.rank
+                rank: user.rank,
+                municipalId: user.municipalId
               });
             } else {
               callback({
