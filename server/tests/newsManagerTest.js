@@ -1,19 +1,14 @@
 import { News, sync } from '../src/models';
 import newsManager from '../src/managers/newsManager';
 
-//let id;
-
 beforeAll(async () => {
   await sync;
-  //id = await newsManager.addArticle('TestArticle', 'Dette er en test som skal funke', 1, 1, 1.123, 2.234, 1);
 });
 
 // Testing adding a new article
 describe('Adding article', () => {
-  it('correct data', async () => {
-    //let news = await newsManager.addArticle(title, description, status, categoryId, lat, lon, municipalId)
-    newsManager.addArticle('TestArticle', 'Dette er en test som skal funke', 1, 1, 1.123, 2.234, 1, function(article) {
-      console.log('adding article - test');
+  it('correct data', done => {
+    newsManager.addArticle('TestArticle', 'Dette er en test som skal funke', 1, 1.123, 2.234, 1, function(article) {
       News.findOne({ where: { id: article.id } }).then(news => {
         expect({
           title: news.title,
@@ -32,6 +27,7 @@ describe('Adding article', () => {
           lon: 2.234,
           municipalId: 1
         });
+        done();
       });
     });
   });
