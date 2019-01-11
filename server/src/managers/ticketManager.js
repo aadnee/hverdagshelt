@@ -57,5 +57,13 @@ module.exports = {
       .catch(function(err) {
         callback({ success: false, message: 'Sequelize error' });
       });
+  },
+
+  getMyTickets: function(userId, callback) {
+    Tickets.findAll({ where: { id: userId } })
+      .then(res => callback({ success: true, data: res }))
+      .catch(function(err) {
+        callback({ success: false, message: 'Sequelize error' });
+      });
   }
 };
