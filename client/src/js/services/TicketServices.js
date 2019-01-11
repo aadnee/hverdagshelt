@@ -12,12 +12,16 @@ class TicketServices {
     });
   }
 
-  getTickets(){
+  getTickets() {
     return api.get('api/mytickets');
   }
 
-  getMunicipalTickets(id){
+  getMunicipalTickets(id) {
     return api.get('api/tickets/municipal/' + id);
+  }
+
+  rejectTicket(id) {
+    return api.put('/api/tickets/' + id + '/reject');
   }
 
   //edit, delete, fetch functions

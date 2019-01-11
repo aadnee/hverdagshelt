@@ -3,20 +3,26 @@ import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Card, Image, Icon, Button, Header, Placeholder, Label } from 'semantic-ui-react';
 
-import {PENDING, DONE, REJECTED, STATUS} from '../commons';
-
+import { PENDING, DONE, REJECTED, STATUS } from '../commons';
+import { ticketService } from '../services/TicketServices';
 
 export class TicketWidget extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      id: ''
+    };
+  }
+
+  componentWillMount() {
+    this.setState({ id: this.props.ticket.id });
   }
 
   //STATUS:
   // PENDING = 1;
   // DONE = 3;
   // REJECTED = 4;
-  //
-  //
+
   render() {
     return (
       <Card centered>
@@ -24,20 +30,19 @@ export class TicketWidget extends Component {
           <Image src="img/thumbnaildiv.png" />
           {this.props.ticket.status === PENDING && !this.props.employee ? (
             <Label color="yellow" ribbon="right">
-              {STATUS[PENDING-1].norwegian}
+              {STATUS[PENDING - 1].norwegian}
             </Label>
-        ) : null}
+          ) : null}
           {this.props.ticket.status === DONE && !this.props.employee ? (
-              <Label color="green" ribbon="right">
-                {STATUS[DONE-1].norwegian}
-              </Label>
+            <Label color="green" ribbon="right">
+              {STATUS[DONE - 1].norwegian}
+            </Label>
           ) : null}
           {this.props.ticket.status === REJECTED && !this.props.employee ? (
-              <Label color="red" ribbon="right">
-                {STATUS[REJECTED-1].norwegian}
-              </Label>
+            <Label color="red" ribbon="right">
+              {STATUS[REJECTED - 1].norwegian}
+            </Label>
           ) : null}
-
         </Image>
         <Card.Content>
           <Header>
@@ -56,10 +61,10 @@ export class TicketWidget extends Component {
           this.props.ticket.status === PENDING ? (
             <Card.Content extra>
               <Button.Group fluid size="small">
-                <Button inverted primary>
+                <Button inverted primary onClick={this.props.approve}>
                   Godkjenn
                 </Button>
-                <Button inverted secondary>
+                <Button inverted secondary onClick={this.props.reject}>
                   Avslå
                 </Button>
               </Button.Group>
@@ -84,8 +89,12 @@ export class TicketWidget extends Component {
               </Button>
             </Button.Group>
           </Card.Content>
-        ): null}
+        ) : null}
       </Card>
     );
+  }
+
+  approve() {
+    console.log('approve');
   }
 }
