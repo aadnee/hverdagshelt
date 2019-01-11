@@ -11,16 +11,14 @@ module.exports = {
       categoryId: categoryId,
       userId: userId,
       municipalId: municipalId
-    })
-      .then(() =>
+    }).then(
+      res =>
         callback({
           success: true,
           message: 'Ticket sent.'
-        })
-      )
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+        }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   },
 
   editTicket: function(title, description, lat, lon, categoryId, municipalId, userId, ticketId, callback) {
@@ -34,28 +32,24 @@ module.exports = {
         municipalId: municipalId
       },
       { where: { $and: { id: ticketId, userId: userId } } }
-    )
-      .then(() =>
+    ).then(
+      res =>
         callback({
           success: true,
           message: 'Ticket saved.'
-        })
-      )
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+        }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   },
 
   setStatus: function(status, ticketId, callback) {
-    Tickets.update({ status: status }, { where: { id: ticketId } })
-      .then(() =>
+    Tickets.update({ status: status }, { where: { id: ticketId } }).then(
+      res =>
         callback({
           success: true,
           message: 'Status updated.'
-        })
-      )
-      .catch(function(err) {
-        callback({ success: false, message: 'Sequelize error' });
-      });
+        }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   }
 };
