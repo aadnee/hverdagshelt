@@ -1,4 +1,3 @@
-
 import { Users, Companies, Municipals, Categories, Tickets, News, Subscriptions, sync } from '../src/models.js';
 import newsManager from '../src/managers/newsManager';
 
@@ -51,7 +50,6 @@ describe('Companies test', () => {
 describe('Municipals test', () => {
   it('correct data', async () => {
     let municipal = await Municipals.findOne({ where: { id: 1 } });
-    console.log('Municipals test');
     expect({
       name: municipal.name
     }).toEqual({
@@ -64,7 +62,6 @@ describe('Municipals test', () => {
 describe('Categories test', () => {
   it('correct data', async () => {
     let category = await Categories.findOne({ where: { id: 1 } });
-    console.log('categories test');
     expect({
       name: category.name
     }).toEqual({
@@ -77,7 +74,6 @@ describe('Categories test', () => {
 describe('Tickets test', () => {
   it('correct data', async () => {
     let ticket = await Tickets.findOne({ where: { id: 1 } });
-    console.log('Tickets test');
     expect({
       title: ticket.title,
       description: ticket.description,
