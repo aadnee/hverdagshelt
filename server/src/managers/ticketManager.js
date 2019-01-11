@@ -55,7 +55,7 @@ module.exports = {
 
   //get all tickets submitted by a specific user
   getMyTickets: function(userId, callback) {
-    Tickets.findAll({ where: { id: userId } }).then(
+    Tickets.findAll({ where: { userId: userId } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
