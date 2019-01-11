@@ -18,8 +18,7 @@ module.exports = {
             if (eq == true) {
               const payload = {
                 id: user.id,
-                rank: user.rank,
-                municipalId: user.municipalId
+                rank: user.rank
               };
               var token = jwt.sign(payload, process.env.JWT, {
                 expiresIn: 86400
@@ -28,7 +27,8 @@ module.exports = {
                 success: true,
                 message: 'Authentication successful.',
                 token: token,
-                rank: user.rank
+                rank: user.rank,
+                municipalId: user.municipalId
               });
             } else {
               callback({
@@ -101,7 +101,7 @@ module.exports = {
 
   getUser: function(id, callback) {
     Users.findOne({
-      where: { $and: { id: id, rank: { $not: 2 } } },
+      where: { id: id, rank: { $not: 2 } },
       attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId']
     }).then(
       res => callback({ success: true, data: res }),
@@ -111,9 +111,25 @@ module.exports = {
 
   deleteUser: function(id, callback) {
     Users.destroy({
-      where: { id: id }
+      where: { id: id, rank: { $not: 2 } }
     }).then(
       res => callback({ success: true, message: 'User deleted.' }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
+  },
+
+  editUser: function(name, email, phone, municipalId, userId, rank, callback) {
+    Users.update(
+      {
+        name: name,
+        email: email,
+        phone: phone,
+        municipalId: municipalId,
+        rank: rank
+      },
+      { where: { id: userId, rank: { $not: 2 } } }
+    ).then(
+      res => callback({ success: true, message: 'User updated.' }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
   }

@@ -42,8 +42,7 @@ module.exports = {
             {
               where: { id: id }
             }
-          )
-          .then(
+          ).then(
             res =>
               callback({
                 success: true,

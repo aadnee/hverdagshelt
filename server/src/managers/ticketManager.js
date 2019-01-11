@@ -1,4 +1,5 @@
 import { Tickets } from '../models';
+import newsManager from './newsManager';
 
 module.exports = {
   addTicket: function(title, description, lat, lon, categoryId, municipalId, userId, callback) {
@@ -15,7 +16,8 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: 'Ticket sent.'
+          message: 'Ticket sent.',
+          id: res.id
         }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
@@ -31,7 +33,7 @@ module.exports = {
         categoryId: categoryId,
         municipalId: municipalId
       },
-      { where: { $and: { id: ticketId, userId: userId } } }
+      { where: { id: ticketId, userId: userId } }
     ).then(
       res =>
         callback({
@@ -67,5 +69,26 @@ module.exports = {
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
+  },
+
+  makeNews: function(ticketId, title, description, lat, lon, categoryId, municipalId, callback) {
+    this.setStatus(3, ticketId, function(result) {
+      if (result.success) {
+        newsManager.addArticle(title, description, categoryId, lat, lon, municipalId, function(result) {
+          if (result.success) {
+            Tickets.update(
+              {
+                newsId: result.id
+              },
+              { where: { id: ticketId } }
+            ).then(res => callback(result), err => callback({ success: false, message: 'Sequelize error' }));
+          } else {
+            callback(result);
+          }
+        });
+      } else {
+        callback(result);
+      }
+    });
   }
 };

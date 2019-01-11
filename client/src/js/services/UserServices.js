@@ -1,15 +1,13 @@
 import api from './api';
 
-
 class UserService {
   login(email, password) {
     return api.post('/api/login', { email: email, password: password });
   }
 
-  register(firstName, lastName, email, phone, municipalId) {
+  register(name, email, phone, municipalId) {
     return api.post('/api/register', {
-      firstName: firstName,
-      lastName: lastName,
+      name: name,
       email: email,
       phone: phone,
       municipalId: municipalId
@@ -22,6 +20,15 @@ class UserService {
 
   getUser(id) {
     return api.get('/api/users/' + id);
+  }
+
+  editUser(id, name, email, phone, municipalId) {
+    return api.put('/api/users/' + id, {
+      name: name,
+      email: email,
+      phone: phone,
+      municipalId: municipalId
+    });
   }
 
   deleteUser(id) {
