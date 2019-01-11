@@ -1,10 +1,8 @@
-import axios from 'axios';
-
-axios.interceptors.response.use(response => response.data);
+import api from './api';
 
 class NewsService {
   addArticle(title, description, status, categoryId, lat, lon, municipalId) {
-    return axios.post('/api/news', {
+    return api.post('/api/news', {
       title: title,
       description: description,
       status: status,
@@ -16,7 +14,7 @@ class NewsService {
   }
 
   updateNews(id, title, description, status, categoryId, companyId) {
-    return axios.put('/api/news/' + id, {
+    return api.put('/api/news/' + id, {
       title: title,
       description: description,
       status: status,
@@ -26,7 +24,7 @@ class NewsService {
   }
 
   getLocalNews(municipalId) {
-    return axios.get('/api/news/municipal/' + municipalId);
+    return api.get('/api/news/municipal/' + municipalId);
   }
 }
 

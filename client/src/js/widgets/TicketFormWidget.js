@@ -16,7 +16,7 @@ import {
   Segment
 } from 'semantic-ui-react';
 
-//import {} from './';
+import {ticketService} from '../services/TicketServices';
 
 export class TicketFormWidget extends Component {
   constructor(props) {
@@ -26,19 +26,13 @@ export class TicketFormWidget extends Component {
       details: '',
       category: '',
       categoryOptions: [
-        { key: 'bl', value: 'bl', text: 'blå' },
-        { key: 'gr', value: 'gr', text: 'grønn' },
-        {
-          key: '8',
-          value: '8',
-          text: 8
-        },
-        { key: '666', value: '666', text: 666 }
+        { key: 1, value: 2, text: 'cat 1' },
+        { key: 2, value: 2, text: 'cat 2' },
       ],
       subcategory: '',
       subCategoryOptions: [],
       position: [null, null],
-      subscription: false,
+      subscription: 'false',
       selectedCategory: false
     };
   }
@@ -49,11 +43,15 @@ export class TicketFormWidget extends Component {
 
   submit = () => {
     //SERVICE
-    console.log('submit');
+    console.log(this.state);
+    //lat, lon and municipalId is fetched from the map
+    ticketService.addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1).then(res => console.log(res));
   };
 
   getSubCategories(category) {
-    //SERVICE to get subcategories based on a category and put into this.state.subCategoryOptions[]
+    //Get subcategories based on the chosen category
+    let subcats = [{key: 1, value: 1, text: 'subcat 1'}, {key: 2, value: 2, text: 'subcat 2'}];
+    this.setState({'subCategoryOptions': subcats});
   }
 
   render() {
@@ -133,10 +131,13 @@ export class TicketFormWidget extends Component {
                 <Form.Field>
                   <Checkbox
                     label={<label>Jeg ønsker å abonnere på saken</label>}
-                    fluid
                     value={this.state.subscription}
                     onChange={(event, data) => {
-                      this.handleInput('subscription', data.checked);
+                      if(data.checked) {
+                        this.handleInput('subscription', 'true');
+                      }else{
+                        this.handleInput('subscription', 'false');
+                      }
                     }}
                   />
                 </Form.Field>
