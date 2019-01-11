@@ -24,5 +24,9 @@ class UserService {
   getUser(id) {
     return axios.get('/api/users/' + id);
   }
+
+  deleteUser(id) {
+    return axios.delete('/api/users/' + id);
+  }
 }
 export let userService = new UserService();

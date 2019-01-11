@@ -1,14 +1,19 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { Button, Header, Icon, Image, Menu, Segment, Sidebar, Grid } from 'semantic-ui-react';
+import { Button, Header, Icon, Image, Menu, Segment, Sidebar, Grid, Divider } from 'semantic-ui-react';
 
 export class SidebarWidget extends React.Component {
-  state = { visible: false };
+  constructor(props) {
+    super(props);
+    this.state = { visible: this.props.visible };
+  }
 
   handleHideClick = () => this.setState({ visible: false });
   handleShowClick = () => this.setState({ visible: true });
-  handleSidebarHide = () => this.setState({ visible: false });
+  handleSidebarHide = () => {
+    this.props.response();
+  };
 
   //Variable that decides the type of user that is logged in.
   //Use this to decide what type of options in the menu to render
@@ -19,76 +24,74 @@ export class SidebarWidget extends React.Component {
   //5 All for development purposes
   permission = 5;
 
-  render() {
-    const { visible } = this.state;
+  // <Button.Group>
+  //   /*Buttons for opening and closing the sidebar, will be added as an icon on the header*/
+  //   <Button disabled={visible} onClick={this.handleShowClick}>
+  //     Show sidebar
+  //   </Button>
+  //   <Button disabled={!visible} onClick={this.handleHideClick}>
+  //     Hide sidebar
+  //   </Button>
+  // </Button.Group>
 
-    const style = { height: '100vh' };
+  componentWillUpdate(prevProps) {
+    if (this.state.visible != prevProps.visible) {
+      if (this.props.visible) {
+        this.handleShowClick();
+      } else {
+        this.handleHideClick();
+      }
+    }
+  }
+
+  render() {
+    let visible = this.state.visible;
 
     return (
-      <div style={style}>
-        <Button.Group>
-          /*Buttons for opening and closing the sidebar, will be added as an icon on the header*/
-          <Button disabled={visible} onClick={this.handleShowClick}>
-            Show sidebar
-          </Button>
-          <Button disabled={!visible} onClick={this.handleHideClick}>
-            Hide sidebar
-          </Button>
-        </Button.Group>
+      <Sidebar
+        as={Menu}
+        animation="overlay"
+        icon="labeled"
+        inverted
+        onHide={this.handleSidebarHide}
+        vertical
+        visible={visible}
+        width="wide"
+      >
+        <Header size="huge" inverted={true} id={'sidebarHeader'}>
+          Menu
+        </Header>
 
-        <Sidebar.Pushable>
-          <Sidebar
-            as={Menu}
-            animation="overlay"
-            icon="labeled"
-            inverted
-            onHide={this.handleSidebarHide}
-            vertical
-            visible={visible}
-            width="wide"
-          >
-            <Header size="huge" inverted={true} id={'sidebarHeader'}>
-              Menu
-            </Header>
+        <div className="sidebarComponents">
+          <Header size="large" className="sidebarHeaders" inverted={true}>
+            Privatperson
+          </Header>
+          <Menu.Item href="/subscriptions" as="a" className={' ui grey header sidebarLink borderless'}>
+            Mine varsler
+          </Menu.Item>
+          <Menu.Item href={'/feed'} as="a" className={'ui grey header sidebarLink borderless'}>
+            Nyhetsoppdateringer
+          </Menu.Item>
+          <Menu.Item href={'/subscriptions'} as="a" className={'ui grey header sidebarLink borderless'}>
+            Nyheter jeg følger
+          </Menu.Item>
 
-            <div className="sidebarComponents">
-              <Header size="large" className="sidebarHeaders" inverted={true}>
-                Privatperson
-              </Header>
-              <Menu.Item href="/subscriptions" as="a" className={' ui grey header sidebarLink borderless'}>
-                Mine varsler
-              </Menu.Item>
-              <Menu.Item href={'/feed'} as="a" className={'ui grey header sidebarLink borderless'}>
-                Nyhetsoppdateringer
-              </Menu.Item>
-              <Menu.Item href={'/subscriptions'} as="a" className={'ui grey header sidebarLink borderless'}>
-                Nyheter jeg følger
-              </Menu.Item>
-
-              {this.permission === 2 ? <MunicipalOptions /> : null}
-              {this.permission === 3 ? (
-                <div>
-                  <AdminOptions />
-                  <CompanyOptions />
-                </div>
-              ) : null}
-              {this.permission === 4 ? <CompanyOptions /> : null}
-              {this.permission === 5 ? (
-                <div>
-                  <MunicipalOptions /> <AdminOptions />
-                  <CompanyOptions />
-                </div>
-              ) : null}
+          {this.permission === 2 ? <MunicipalOptions /> : null}
+          {this.permission === 3 ? (
+            <div>
+              <AdminOptions />
+              <CompanyOptions />
             </div>
-          </Sidebar>
-
-          <Sidebar.Pusher>
-            <Segment basic>
-              <Header as="h3">Application Content</Header>
-            </Segment>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
-      </div>
+          ) : null}
+          {this.permission === 4 ? <CompanyOptions /> : null}
+          {this.permission === 5 ? (
+            <div>
+              <MunicipalOptions /> <AdminOptions />
+              <CompanyOptions />
+            </div>
+          ) : null}
+        </div>
+      </Sidebar>
     );
   }
 }
@@ -100,11 +103,15 @@ class AdminOptions extends React.Component {
         <Header size="large" className="sidebarHeaders" inverted={true}>
           Administrator
         </Header>
-        <Menu.Item href="/admin/users" as="a" className={'ui grey header sidebarLink borderless'}>
-          Adm. brukere
+        <Menu.Item className={'ui grey header sidebarLink borderless'}>
+          <NavLink to="/admin/users" activeClassName="active">
+            Adm. brukere
+          </NavLink>
         </Menu.Item>
-        <Menu.Item href={'/admin/categories'} as="a" className={'ui grey header sidebarLink borderless'}>
-          Adm. kategorier
+        <Menu.Item className={'ui grey header sidebarLink borderless'}>
+          <NavLink to="/admin/categories" activeClassName="active">
+            Adm. kategorier
+          </NavLink>
         </Menu.Item>
       </div>
     );
