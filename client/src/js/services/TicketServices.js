@@ -12,11 +12,11 @@ class TicketServices {
     });
   }
 
-  getTickets(){
+  getTickets() {
     return api.get('api/mytickets');
   }
 
-  getMunicipalTickets(id){
+  getMunicipalTickets(id) {
     return api.get('api/tickets/municipal/' + id);
   }
 

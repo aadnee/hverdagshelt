@@ -3,8 +3,7 @@ import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Card, Image, Icon, Button, Header, Placeholder, Label } from 'semantic-ui-react';
 
-import {PENDING, DONE, REJECTED, STATUS} from '../commons';
-
+import { PENDING, DONE, REJECTED, STATUS } from '../commons';
 
 export class TicketWidget extends Component {
   constructor(props) {
@@ -24,20 +23,19 @@ export class TicketWidget extends Component {
           <Image src="img/thumbnaildiv.png" />
           {this.props.ticket.status === PENDING && !this.props.employee ? (
             <Label color="yellow" ribbon="right">
-              {STATUS[PENDING-1].norwegian}
+              {STATUS[PENDING - 1].norwegian}
             </Label>
-        ) : null}
+          ) : null}
           {this.props.ticket.status === DONE && !this.props.employee ? (
-              <Label color="green" ribbon="right">
-                {STATUS[DONE-1].norwegian}
-              </Label>
+            <Label color="green" ribbon="right">
+              {STATUS[DONE - 1].norwegian}
+            </Label>
           ) : null}
           {this.props.ticket.status === REJECTED && !this.props.employee ? (
-              <Label color="red" ribbon="right">
-                {STATUS[REJECTED-1].norwegian}
-              </Label>
+            <Label color="red" ribbon="right">
+              {STATUS[REJECTED - 1].norwegian}
+            </Label>
           ) : null}
-
         </Image>
         <Card.Content>
           <Header>
@@ -84,7 +82,7 @@ export class TicketWidget extends Component {
               </Button>
             </Button.Group>
           </Card.Content>
-        ): null}
+        ) : null}
       </Card>
     );
   }
