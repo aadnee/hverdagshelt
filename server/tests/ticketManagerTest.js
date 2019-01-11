@@ -36,31 +36,37 @@ describe('Adding ticket', () => {
       });
     });
   });
-});
 
-/*
   it('correct data', done => {
-    newsManager.updateNews(id, 'TestArticle', 'Nå skal det ha skjedd en endring', 1, 1, 1, function(article) {
-      News.findOne({ where: { id: id } }).then(news => {
+    ticketManager.editTicket('TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, 1, id, function(
+      ticket
+    ) {
+      Tickets.findOne({ where: { id: id } }).then(tickets => {
         expect({
-          title: news.title,
-          description: news.description,
-          status: news.status,
-          categoryId: news.categoryId,
-          companyId: news.companyId
+          title: tickets.title,
+          description: tickets.description,
+          status: tickets.status,
+          lat: tickets.lat,
+          lon: tickets.lon,
+          categoryId: tickets.categoryId,
+          municipalId: tickets.municipalId,
+          userId: tickets.userId
         }).toEqual({
-          title: 'TestArticle',
+          title: 'TicketTest',
           description: 'Nå skal det ha skjedd en endring',
           status: 1,
+          lat: 1.11,
+          lon: 2.22,
           categoryId: 1,
-          companyId: 1
+          municipalId: 1,
+          userId: 1
         });
         done();
       });
     });
   });
 });
-
+/*
 describe('Get news by municipal', () => {
   it('correct data', done => {
     newsManager.getLocalNews(1, function(news) {
