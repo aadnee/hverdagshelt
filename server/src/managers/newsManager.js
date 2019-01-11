@@ -39,7 +39,7 @@ module.exports = {
             message: 'Article added.',
             id: result.id
           })
-        );
+        )
       }
     });
   },
