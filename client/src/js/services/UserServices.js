@@ -1,14 +1,13 @@
-import axios from 'axios';
+import api from './api';
 
-axios.interceptors.response.use(response => response.data);
 
 class UserService {
   login(email, password) {
-    return axios.post('/api/login', { email: email, password: password });
+    return api.post('/api/login', { email: email, password: password });
   }
 
   register(firstName, lastName, email, phone, municipalId) {
-    return axios.post('/api/register', {
+    return api.post('/api/register', {
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -18,11 +17,11 @@ class UserService {
   }
 
   getUsers() {
-    return axios.get('/api/users');
+    return api.get('/api/users');
   }
 
   getUser(id) {
-    return axios.get('/api/users/' + id);
+    return api.get('/api/users/' + id);
   }
 
   deleteUser(id) {
