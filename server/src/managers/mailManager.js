@@ -14,7 +14,7 @@ module.exports = {
       from: 'Hverdagshelt <hverdagshelt8@gmail.com>',
       to: reciever,
       subject: title,
-      html: message
+      html: '<div style=\'font-family:"Times New Roman"\'>' + message + '</div>'
     };
 
     transporter.sendMail(mailOptions, function(error, info) {
