@@ -1,4 +1,5 @@
 import { Users } from '../models';
+import userManager from './userManager';
 
 module.exports = {
   getCompanies: function(callback) {
@@ -15,5 +16,8 @@ module.exports = {
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
+  },
+  addCompany: function(name, email, phone, municipalId, callback) {
+    userManager.register(name, email, phone, municipalId, 2, result => callback(result));
   }
 };
