@@ -6,9 +6,10 @@ import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
+import municipalManager from './managers/municipalManager';
+import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
 import cookieParser from 'cookie-parser';
-
 import jwt from 'jsonwebtoken';
 
 const public_path = path.join(__dirname, '/../../client/public');
@@ -21,99 +22,231 @@ app.use(cookieParser());
 
 // municipalId
 app.get('/api/news/municipal/:municipalId', function(req, res) {
-  newsManager.getLocalNews(req.params.municipalId).then(result => res.json(result));
+  newsManager.getLocalNews(req.params.municipalId, function(result) {
+    res.json(result);
+  });
 });
 
-app.put('/api/news/:id', function(req, res) {
-  newsManager
-    .updateNews(
-      req.params.id,
-      req.body.title,
-      req.body.description,
-      req.body.status,
-      req.body.categoryId,
-      req.body.companyId
-    )
-    .then(result => res.json(result));
+app.put('/api/news/:id', ensureEmployee, function(req, res) {
+  newsManager.updateNews(
+    req.params.id,
+    req.body.title,
+    req.body.description,
+    req.body.status,
+    req.body.categoryId,
+    req.body.companyId,
+    function(result) {
+      res.json(result);
+    }
+  );
 });
 
-app.post('/api/news', function(req, res) {
-  newsManager
-    .addArticle(
-      req.body.title,
-      req.body.description,
-      req.body.status,
-      req.body.categoryId,
-      req.body.lat,
-      req.body.lon,
-      req.body.municipalId
-    )
-    .then(result => res.json(result));
+app.post('/api/news', ensureEmployee, function(req, res) {
+  newsManager.addArticle(
+    req.body.title,
+    req.body.description,
+    req.body.categoryId,
+    req.body.lat,
+    req.body.lon,
+    req.body.municipalId,
+    function(result) {
+      res.json(result);
+    }
+  );
 });
 
 // email, password
 app.post('/api/login', function(req, res) {
-  userManager.login(req.body.email, req.body.password).then(result => {
+  userManager.login(req.body.email, req.body.password, function(result) {
     res.cookie('token', result.token);
     res.cookie('rank', result.rank);
+    res.cookie('municipalId', result.municipalId);
     res.json(result);
   });
 });
 
 // firstName, lastName, email, phone, municipalId
 app.post('/api/register', function(req, res) {
-  userManager
-    .register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 1)
-    .then(result => res.json(result));
+  userManager.register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 1, function(result) {
+    res.json(result);
+  });
 });
 
 app.get('/api/users', ensureAdmin, (req, res) => {
-  userManager.getUsers().then(result => res.json(result));
+  userManager.getUsers(function(result) {
+    res.json(result);
+  });
 });
 
 // id
 app.get('/api/users/:id', ensureAdmin, (req, res) => {
-  userManager.getUser(req.params.id).then(result => res.json(result));
+  userManager.getUser(req.params.id, function(result) {
+    res.json(result);
+  });
+});
+
+// id
+app.delete('/api/users/:id', ensureAdmin, (req, res) => {
+  userManager.deleteUser(req.params.id, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/users/:id', ensureAdmin, function(req, res) {
+  getUserId(req, function(userId) {
+    userManager.editUser(
+      req.body.name,
+      req.body.email,
+      req.body.phone,
+      req.body.municipalId,
+      userId,
+      req.body.rank,
+      function(result) {
+        res.json(result);
+      }
+    );
+  });
 });
 
 app.get('/api/companies', ensureEmployee, (req, res) => {
-  companyManager.getCompanies().then(result => res.json(result));
+  companyManager.getCompanies(function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/companies/:companyId', ensureEmployee, (req, res) => {
+  companyManager.getCompany(req.params.companyId, function(result) {
+    res.json(result);
+  });
+});
+
+app.delete('/api/companies/:id', ensureEmployee, (req, res) => {
+  companyManager.deleteCompany(req.params.id, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/companies', ensureEmployee, (req, res) => {
+  companyManager.addCompany(req.body.name, req.body.email, req.body.phone, req.body.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/companies/:id', ensureEmployee, function(req, res) {
+  getUserId(req, function(userId) {
+    companyManager.editCompany(req.body.name, req.body.email, req.body.phone, req.body.municipalId, userId, function(
+      result
+    ) {
+      res.json(result);
+    });
+  });
 });
 
 // municipalId
 app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
-  companyManager.getLocalCompanies(req.params.municipalId).then(result => res.json(result));
-});
-
-app.post('/api/companies', function(req, res) {
-  userManager
-    .register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 2)
-    .then(result => res.json(result));
+  companyManager.getLocalCompanies(req.params.municipalId, function(result) {
+    res.json(result);
+  });
 });
 
 app.post('/api/tickets', ensureLogin, function(req, res) {
   getUserId(req, function(userId) {
-    ticketManager
-      .addTicket(
-        req.body.title,
-        req.body.description,
-        req.body.lat,
-        req.body.lon,
-        req.body.categoryId,
-        req.body.municipalId,
-        userId
-      )
-      .then(result => res.json(result));
+    ticketManager.addTicket(
+      req.body.title,
+      req.body.description,
+      req.body.lat,
+      req.body.lon,
+      req.body.categoryId,
+      req.body.municipalId,
+      userId,
+      function(result) {
+        res.json(result);
+      }
+    );
+  });
+});
+
+app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    ticketManager.editTicket(
+      req.body.title,
+      req.body.description,
+      req.body.lat,
+      req.body.lon,
+      req.body.categoryId,
+      req.body.municipalId,
+      userId,
+      req.params.ticketId,
+      function(result) {
+        res.json(result);
+      }
+    );
+  });
+});
+
+app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
+  ticketManager.setStatus(4, req.params.ticketId, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
+  ticketManager.makeNews(
+    req.body.ticketId,
+    req.body.title,
+    req.body.description,
+    req.body.lat,
+    req.body.lon,
+    req.body.categoryId,
+    req.body.municipalId,
+    function(result) {
+      res.json(result);
+    }
+  );
+});
+
+app.get('/api/mytickets', ensureLogin, function(req, res) {
+  getUserId(req, function(id) {
+    ticketManager.getMyTickets(id, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+//Get all tickets within a specific municipal.
+app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
+  ticketManager.getLocalTickets(req.params.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/categories', ensureLogin, function(req, res) {
+  categoryManager.getCategories(function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/categories', ensureEmployee, (req, res) => {
+  categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/municipals', ensureLogin, function(req, res) {
+  municipalManager.getMunicipals(function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/municipals', ensureAdmin, (req, res) => {
+  municipalManager.addMunicipal(req.body.name, function(result) {
+    res.json(result);
   });
 });
 
 function getUserId(req, callback) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
-    if (decoded && decoded.id) {
-      callback(decoded.id);
-    } else {
-      callback(false);
-    }
+    callback(decoded.id);
   });
 }
 

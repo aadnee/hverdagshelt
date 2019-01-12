@@ -4,70 +4,54 @@ import bcrypt from 'bcrypt-nodejs';
 import mailManager from './mailManager';
 
 module.exports = {
-  login: function(email, password) {
-    return new Promise(function(resolve, reject) {
-      Users.findOne({ where: { email: email } }).then(user => {
+  login: function(email, password, callback) {
+    Users.findOne({ where: { email: email } }).then(
+      user => {
         if (!user) {
-          resolve({
+          callback({
             success: false,
             message: 'Authentication failed. User not found.'
           });
-        } else if (user) {
+        } else {
           bcrypt.compare(password, user.password, function(err, eq) {
             if (err) throw err;
             if (eq == true) {
               const payload = {
                 id: user.id,
-                rank: user.rank,
-                municipalId: user.municipalId
+                rank: user.rank
               };
               var token = jwt.sign(payload, process.env.JWT, {
                 expiresIn: 86400
               });
-              resolve({
+              callback({
                 success: true,
                 message: 'Authentication successful.',
                 token: token,
-                rank: user.rank
+                rank: user.rank,
+                municipalId: user.municipalId
               });
             } else {
-              resolve({
+              callback({
                 success: false,
                 message: 'Authentication failed. Wrong password.'
               });
             }
           });
         }
-      });
-    });
+      },
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   },
 
-  register: function(name, email, phone, municipalId, rank) {
-    return new Promise(function(resolve, reject) {
-      const password = generatePassword();
-
-      if (
-        name == null ||
-        name == '' ||
-        email == null ||
-        email == '' ||
-        phone == null ||
-        phone == '' ||
-        municipalId == null ||
-        municipalId == ''
-      ) {
-        resolve({
-          success: false,
-          message: 'Fields cannot be empty.'
-        });
-      }
-
-      bcrypt.genSalt(12, function(err, salt) {
-        bcrypt.hash(password, salt, null, function(err, hash) {
-          if (err) throw er;
-          Users.findOne({ where: { $or: [({ email: email }, { phone: phone })] } }).then(user => {
+  register: function(name, email, phone, municipalId, rank, callback) {
+    const password = generatePassword();
+    bcrypt.genSalt(12, function(err, salt) {
+      bcrypt.hash(password, salt, null, function(err, hash) {
+        if (err) throw er;
+        Users.findOne({ where: { $or: [({ email: email }, { phone: phone })] } }).then(
+          user => {
             if (user) {
-              resolve({
+              callback({
                 success: false,
                 message: 'Registration failed. Email or phone number already in use.'
               });
@@ -79,35 +63,75 @@ module.exports = {
                 password: hash,
                 rank: rank,
                 municipalId: municipalId
-              });
-              mailManager.send(
-                'Hverdagshelt registrering',
-                '<h1>Velkommen til Hverdagshelt!</h1><h3>Ditt passord er: <b>' + password + '</b></h3>',
-                email
+              }).then(
+                res => {
+                  mailManager.send(
+                    'Hverdagshelt registrering',
+                    '<h1>' +
+                      name +
+                      ',</h1><h2>Velkommen til Hverdagshelt!</h2><h3>Ditt passord er: <b>' +
+                      password +
+                      '</b></h3>',
+                    email
+                  );
+                  callback({
+                    success: true,
+                    message: 'Registration successful.'
+                  });
+                },
+                err => callback({ success: false, message: 'Sequelize error' })
               );
-              resolve({
-                success: true,
-                message: 'Registration successful.'
-              });
             }
-          });
-        });
+          },
+          err => callback({ success: false, message: 'Sequelize error' })
+        );
       });
     });
   },
 
-  getUsers: function() {
-    return Users.findAll({
+  getUsers: function(callback) {
+    Users.findAll({
       attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId'],
       where: { rank: { $not: 2 } }
-    });
+    }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   },
 
-  getUser: function(id) {
-    return Users.findOne({
-      where: { $and: { id: Number(id), rank: { $not: 2 } } },
+  getUser: function(id, callback) {
+    Users.findOne({
+      where: { id: id, rank: { $not: 2 } },
       attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId']
-    });
+    }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
+  },
+
+  deleteUser: function(id, callback) {
+    Users.destroy({
+      where: { id: id, rank: { $not: 2 } }
+    }).then(
+      res => callback({ success: true, message: 'User deleted.' }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
+  },
+
+  editUser: function(name, email, phone, municipalId, userId, rank, callback) {
+    Users.update(
+      {
+        name: name,
+        email: email,
+        phone: phone,
+        municipalId: municipalId,
+        rank: rank
+      },
+      { where: { id: userId, rank: { $not: 2 } } }
+    ).then(
+      res => callback({ success: true, message: 'User updated.' }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   }
 };
 

@@ -3,61 +3,74 @@ import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Card, Image, Icon, Button, Header, Placeholder, Label } from 'semantic-ui-react';
 
-//import {} from './';
-
-/**
- * Options:
- * logo (boolean) - Adds a logo on top of the login Segment
- * register (boolean) - Displays a message underneath with link to the register page
- */
+import { PENDING, DONE, REJECTED, STATUS } from '../commons';
+import { ticketService } from '../services/TicketServices';
 
 export class TicketWidget extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      id: ''
+    };
   }
+
+  componentWillMount() {
+    this.setState({ id: this.props.ticket.id });
+  }
+
+  //STATUS:
+  // PENDING = 1;
+  // DONE = 3;
+  // REJECTED = 4;
 
   render() {
     return (
-      <Card>
+      <Card centered>
         <Image>
           <Image src="img/thumbnaildiv.png" />
-          <Label color="yellow" ribbon="right">
-            Under behandling
-          </Label>
+          {this.props.ticket.status === PENDING && !this.props.employee ? (
+            <Label color="yellow" ribbon="right">
+              {STATUS[PENDING - 1].norwegian}
+            </Label>
+          ) : null}
+          {this.props.ticket.status === DONE && !this.props.employee ? (
+            <Label color="green" ribbon="right">
+              {STATUS[DONE - 1].norwegian}
+            </Label>
+          ) : null}
+          {this.props.ticket.status === REJECTED && !this.props.employee ? (
+            <Label color="red" ribbon="right">
+              {STATUS[REJECTED - 1].norwegian}
+            </Label>
+          ) : null}
         </Image>
         <Card.Content>
           <Header>
             <Header.Content>
-              Kategori
-              <Header.Subheader>Underkategori</Header.Subheader>
+              {this.props.ticket.title}
+              <Header.Subheader>{this.props.ticket.category}</Header.Subheader>
+              {this.props.ticket.subCategory ? (
+                <Header.Subheader>{this.props.ticket.subCategory}</Header.Subheader>
+              ) : null}
             </Header.Content>
           </Header>
-          <Card.Meta>dd/mm/yyyy</Card.Meta>
-          <Card.Description>
-            <Placeholder>
-              <Placeholder.Paragraph>
-                <Placeholder.Line />
-                <Placeholder.Line />
-                <Placeholder.Line />
-                <Placeholder.Line />
-              </Placeholder.Paragraph>
-            </Placeholder>
-          </Card.Description>
+          <Card.Meta>{this.props.ticket.createdAt}</Card.Meta>
+          <Card.Description>{this.props.ticket.description}</Card.Description>
         </Card.Content>
-        {this.props.admin ? (
-          !this.props.published ? (
+        {this.props.employee ? (
+          this.props.ticket.status === PENDING ? (
             <Card.Content extra>
               <Button.Group fluid size="small">
-                <Button inverted primary>
+                <Button inverted primary onClick={this.props.approve}>
                   Godkjenn
                 </Button>
-                <Button inverted secondary>
+                <Button inverted secondary onClick={this.props.reject}>
                   Avslå
                 </Button>
               </Button.Group>
             </Card.Content>
           ) : null
-        ) : this.props.published ? (
+        ) : this.props.ticket.status === DONE ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
               <Button inverted primary>
@@ -65,7 +78,7 @@ export class TicketWidget extends Component {
               </Button>
             </Button.Group>
           </Card.Content>
-        ) : (
+        ) : this.props.ticket.status === PENDING ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
               <Button inverted primary>
@@ -76,8 +89,12 @@ export class TicketWidget extends Component {
               </Button>
             </Button.Group>
           </Card.Content>
-        )}
+        ) : null}
       </Card>
     );
+  }
+
+  approve() {
+    console.log('approve');
   }
 }
