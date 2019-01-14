@@ -45,7 +45,7 @@ module.exports = {
   },
 
   setStatus: function(status, ticketId, callback) {
-    Tickets.update({ status: status }, { where: { id: ticketId } }).then(
+    Tickets.update({ status: status }, { where: { id: ticketId, status: 1 } }).then(
       res =>
         callback({
           success: true,
