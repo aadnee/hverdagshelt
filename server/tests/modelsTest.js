@@ -1,6 +1,8 @@
 import { Users, Companies, Municipals, Categories, Tickets, News, Subscriptions, sync } from '../src/models.js';
 import newsManager from '../src/managers/newsManager';
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
   await sync;
 });

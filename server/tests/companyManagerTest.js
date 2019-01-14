@@ -1,6 +1,8 @@
 import { Users, sync } from '../src/models';
 import companyManager from '../src/managers/companyManager';
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
   await sync;
 });
