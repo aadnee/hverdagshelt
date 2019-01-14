@@ -34,7 +34,7 @@ class TicketServices {
     });
   }
 
-  //edit, delete, fetch functions
+  //edit, delete, add
 }
 
 export let ticketService = new TicketServices();

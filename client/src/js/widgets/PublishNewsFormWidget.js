@@ -16,6 +16,7 @@ import {
   Segment,
   TextArea
 } from 'semantic-ui-react';
+import { categoryServices } from '../services/CategoryServices';
 
 //import {} from './';
 
@@ -45,10 +46,31 @@ export class PublishNewsFormWidget extends Component {
     //Use ticketService.acceptTicket() with params: ticketId, title, description, lat, lon,
     // categoryId, municipalId for createing a new news
     console.log('submit');
+    console.log(this.state);
   };
 
   getSubCategories(category) {
-    //TODO SERVICE to get subcategories based on a category and put into this.state.subCategoryOptions[]
+    //Get subcategories based on the chosen category
+    console.log(category);
+    categoryServices.getSubCategories(category).then(res => {
+      let subcats = [];
+      res.data.map(subCat => {
+        subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
+      });
+      this.setState({ subCategoryOptions: subcats });
+      console.log(this.state.subCategoryOptions);
+    });
+  }
+
+  componentWillMount() {
+    categoryServices.getCategories().then(res => {
+      let cats = [];
+      res.data.map(cat => {
+        cats.push({ key: cat.id, value: cat.id, text: cat.name });
+      });
+      this.setState({ categoryOptions: cats });
+      console.log(this.state.categoryOptions);
+    });
   }
 
   render() {
@@ -94,7 +116,7 @@ export class PublishNewsFormWidget extends Component {
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
                           this.setState({ selectedCategory: true });
-                          this.getSubCategories();
+                          this.getSubCategories(data.value);
                         }}
                       />
                     </Grid.Column>
