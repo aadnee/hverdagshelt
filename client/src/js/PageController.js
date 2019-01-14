@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import * as React from 'react';
 import { Component } from 'react';
 import { HashRouter } from 'react-router-dom';
-import { Sidebar, Container } from 'semantic-ui-react';
+import { Sidebar, Container, Segment } from 'semantic-ui-react';
 
 import { AppRouter } from './AppRouter';
 import { SidebarWidget } from './widgets/SidebarWidget';
@@ -13,14 +13,14 @@ export class PageController extends Component {
     super(props);
 
     this.state = {
-      visible: false
+      visible: true
     };
 
     this.toggleSideBar = this.toggleSideBar.bind(this);
   }
 
-  toggleSideBar() {
-    this.setState({ visible: !this.state.visible });
+  toggleSideBar(action) {
+    this.setState({ visible: action });
   }
 
   render() {

@@ -22,12 +22,14 @@ class UserService {
     return api.get('/api/users/' + id);
   }
 
-  editUser(id, name, email, phone, municipalId) {
+  editUser(id, name, email, phone, municipalId, rank) {
+    console.log(id, name, email, phone, municipalId, rank);
     return api.put('/api/users/' + id, {
       name: name,
       email: email,
       phone: phone,
-      municipalId: municipalId
+      municipalId: municipalId,
+      rank: rank
     });
   }
 

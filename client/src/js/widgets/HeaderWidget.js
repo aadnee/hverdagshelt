@@ -8,7 +8,7 @@ export class HeaderWidget extends React.Component {
     let loggedIn = true;
     return (
       <Menu inverted color="blue" size="small">
-        <Menu.Item onClick={this.props.toggle}>
+        <Menu.Item onClick={() => this.props.toggle(true)}>
           <Icon name="list layout" />
         </Menu.Item>
         <Menu.Item>

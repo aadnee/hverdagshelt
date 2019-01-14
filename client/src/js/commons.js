@@ -16,8 +16,8 @@ export const EMPLOYEE = 3;
 export const ADMIN = 4;
 
 export const USERTYPE = [
-  { value: USER, norwegian: 'Bruker', english: 'User' },
-  { value: COMPANY, norwegian: 'Bedrift', english: 'Company' },
-  { value: EMPLOYEE, norwegian: 'Ansatt', english: 'Employee' },
-  { value: ADMIN, norwegian: 'Administrator', english: 'Administrator' }
+  { key: USER, text: 'Bruker', value: USER, norwegian: 'Bruker', english: 'User' },
+  { key: COMPANY, text: 'Bedrift', value: COMPANY, norwegian: 'Bedrift', english: 'Company' },
+  { key: EMPLOYEE, text: 'Ansatt', value: EMPLOYEE, norwegian: 'Ansatt', english: 'Employee' },
+  { key: ADMIN, text: 'Administrator', value: ADMIN, norwegian: 'Administrator', english: 'Administrator' }
 ];

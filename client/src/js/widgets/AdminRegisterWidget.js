@@ -191,7 +191,7 @@ export class AdminRegisterWidget extends React.Component {
                           this.handleSubmit();
                         }}
                       >
-                        Registrer bruker
+                        {this.state.user ? 'Registrer bruker' : 'Registrer bruker'}
                       </Button>
                       <Button
                         color="grey"
