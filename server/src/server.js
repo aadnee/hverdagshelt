@@ -72,7 +72,7 @@ app.post('/api/register', function(req, res) {
   });
 });
 
-app.get('/api/me', function(req, res) {
+app.get('/api/me', ensureLogin, function(req, res) {
   getUserId(req, function(userId) {
     userManager.getUser(userId, function(result) {
       res.json(result);
@@ -80,7 +80,7 @@ app.get('/api/me', function(req, res) {
   });
 });
 
-app.put('/api/me', function(req, res) {
+app.put('/api/me', ensureLogin, function(req, res) {
   getUserId(req, function(userId) {
     getUserRank(req, function(userRank) {
       userManager.editUser(
@@ -91,7 +91,18 @@ app.put('/api/me', function(req, res) {
         userId,
         userRank,
         function(result) {
-          res.json(result);
+          if (
+            req.body.oldPassword &&
+            req.body.newPassword &&
+            req.body.oldPassword != '' &&
+            req.body.newPassword != ''
+          ) {
+            userManager.changePass(userId, req.body.oldPassword, req.body.newPassword, function(result2) {
+              res.json(result2);
+            });
+          } else {
+            res.json(result);
+          }
         }
       );
     });
