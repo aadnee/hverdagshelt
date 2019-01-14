@@ -2,11 +2,17 @@ import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 
-//import {} from './../widgets';
+import { NewsCaseWidget } from '../widgets/NewsCaseWidget';
+import { newsService } from '../services/NewsServices';
 
 export class UserSubscriptionPage extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentWillMount() {}
+
   render() {
-    console.log('Hello World!');
     return <h1>Hello World!</h1>;
   }
 }
