@@ -20,11 +20,6 @@ export class TicketWidget extends Component {
     console.log(this.props.ticket);
   }
 
-  //STATUS:
-  // PENDING = 1;
-  // DONE = 3;
-  // REJECTED = 4;
-
   render() {
     const { open, size } = this.state;
 

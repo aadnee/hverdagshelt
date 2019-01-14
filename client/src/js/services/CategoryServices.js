@@ -15,4 +15,4 @@ class CategoryServices {
   deleteCategory() {}
 }
 
-export let categoryServices = new CategoryServices();
+export let categoryService = new CategoryServices();

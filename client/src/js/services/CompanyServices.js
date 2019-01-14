@@ -36,4 +36,4 @@ class CompanyServices {
   }
 }
 
-export let companyServices = new CompanyServices();
+export let companyService = new CompanyServices();
