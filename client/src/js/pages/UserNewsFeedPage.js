@@ -5,30 +5,42 @@ import { Container, Grid, Rail, Segment, Sticky, Header, Icon, Divider, Dropdown
 
 import { NewsCaseWidget } from './../widgets/NewsCaseWidget';
 
+import { municipalServices } from './../services/MunicipalServices';
+import { categoryServices } from './../services/CategoryServices';
+
 export class UserNewsFeedPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      municipals: [
-        { key: 'a', value: 'a', text: 'Café with accent' },
-        { key: 'b', value: 'b', text: 'Cafe without accent' },
-        { key: 'c', value: 'c', text: 'Déjà vu' },
-        { key: 'd', value: 'd', text: 'Deja vu' },
-        { key: 'e', value: 'e', text: 'Scandinavian å ä æ ø ö' },
-        { key: 'f', value: 'f', text: 'Scandinavian a a ae o o' }
-      ],
+      municipals: [],
       selectedMunicipals: [],
-      categories: [
-        { key: 'a', value: 'a', text: 'Café with accent' },
-        { key: 'b', value: 'b', text: 'Cafe without accent' },
-        { key: 'c', value: 'c', text: 'Déjà vu' },
-        { key: 'd', value: 'd', text: 'Deja vu' },
-        { key: 'e', value: 'e', text: 'Scandinavian å ä æ ø ö' },
-        { key: 'f', value: 'f', text: 'Scandinavian a a ae o o' }
-      ],
-      selectedCategories: []
+      categories: [],
+      selectedCategories: [],
+      news: []
     };
+  }
+
+  componentWillMount() {
+    municipalServices
+      .getMunicipals()
+      .then(res => {
+        let muns = res.data.map(r => {
+          return { key: r.id, value: r.name, text: r.name };
+        });
+        this.setState({ municipals: muns });
+      })
+      .catch(res => console.error(res));
+
+    categoryServices
+      .getCategories()
+      .then(res => {
+        let cat = res.data.map(r => {
+          return { key: r.id, value: r.name, text: r.name };
+        });
+        this.setState({ categories: cat });
+      })
+      .catch(res => console.error(res));
   }
 
   selectMunicipal(value) {

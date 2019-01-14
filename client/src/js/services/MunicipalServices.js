@@ -9,3 +9,5 @@ class MunicipalServices {
     return api.post('/api/municipals');
   }
 }
+
+export let municipalServices = new MunicipalServices();
