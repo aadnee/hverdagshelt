@@ -88,6 +88,9 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await Municipals.create({
       name: 'Lindesnes'
     });
+    await Municipals.create({
+      name: 'Risør'
+    });
     await Categories.create({
       name: 'Vei og trafikk'
     });
