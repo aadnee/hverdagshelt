@@ -6,6 +6,7 @@ import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
+import subscriptionManager from './managers/subscriptionManager';
 import municipalManager from './managers/municipalManager';
 import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
@@ -247,6 +248,14 @@ app.get('/api/municipals', ensureLogin, function(req, res) {
 app.post('/api/municipals', ensureAdmin, (req, res) => {
   municipalManager.addMunicipal(req.body.name, function(result) {
     res.json(result);
+  });
+});
+
+app.get('/api/subscriptions', ensureLogin, function(req, res) {
+  getUserId(req, function(id) {
+    subscriptionManager.getSubscriptions(id, function(result) {
+      res.json(result);
+    });
   });
 });
 
