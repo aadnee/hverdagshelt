@@ -1,6 +1,8 @@
 import { Tickets, sync } from '../src/models';
 import ticketManager from '../src/managers/ticketManager';
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
   await sync;
 });

@@ -39,7 +39,7 @@ module.exports = {
           });
         }
       },
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -48,7 +48,7 @@ module.exports = {
     bcrypt.genSalt(12, function(err, salt) {
       bcrypt.hash(password, salt, null, function(err, hash) {
         if (err) throw er;
-        Users.findOne({ where: { $or: [({ email: email }, { phone: phone })] } }).then(
+        Users.findOne({ where: { $or: { email: email, phone: phone } } }).then(
           user => {
             if (user) {
               callback({
@@ -79,11 +79,11 @@ module.exports = {
                     message: 'Registration successful.'
                   });
                 },
-                err => callback({ success: false, message: 'Sequelize error' })
+                err => callback({ success: false, message: err })
               );
             }
           },
-          err => callback({ success: false, message: 'Sequelize error' })
+          err => callback({ success: false, message: err })
         );
       });
     });
@@ -93,20 +93,14 @@ module.exports = {
     Users.findAll({
       attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId'],
       where: { rank: { $not: 2 } }
-    }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
-    );
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   getUser: function(id, callback) {
     Users.findOne({
       where: { id: id, rank: { $not: 2 } },
       attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId']
-    }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
-    );
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   deleteUser: function(id, callback) {
@@ -114,7 +108,7 @@ module.exports = {
       where: { id: id, rank: { $not: 2 } }
     }).then(
       res => callback({ success: true, message: 'User deleted.' }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -130,7 +124,7 @@ module.exports = {
       { where: { id: userId, rank: { $not: 2 } } }
     ).then(
       res => callback({ success: true, message: 'User updated.' }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   }
 };

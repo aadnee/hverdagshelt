@@ -1,6 +1,8 @@
 import { News, sync } from '../src/models';
 import newsManager from '../src/managers/newsManager';
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
   await sync;
 });
@@ -58,7 +60,6 @@ describe('Adding article', () => {
 describe('Get news by municipal', () => {
   it('correct data', done => {
     newsManager.getLocalNews(1, function(news) {
-      console.log(news.success);
       expect({
         success: news.success
       }).toEqual({
