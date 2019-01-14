@@ -4,7 +4,7 @@ module.exports = {
   getMunicipals: function(callback) {
     Municipals.findAll().then(
       res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -18,7 +18,7 @@ module.exports = {
           message: 'Municipal added.',
           id: result.id
         }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   }
 };

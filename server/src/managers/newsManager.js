@@ -18,7 +18,7 @@ module.exports = {
           message: 'Article added.',
           id: result.id
         }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -48,18 +48,18 @@ module.exports = {
                 success: true,
                 message: 'Article updated successfully'
               }),
-            err => callback({ success: false, message: 'Sequelize error' })
+            err => callback({ success: false, message: err })
           );
         }
       },
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
   getLocalNews: function(municipalId, callback) {
     News.findAll({ where: { municipalId: municipalId } }).then(
       res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   }
 };

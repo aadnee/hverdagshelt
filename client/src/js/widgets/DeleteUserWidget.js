@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
+import { companyServices } from '../services/CompanyServices';
 
 export class DeleteUserWidget extends Component {
   state = { open: false };
-
   show = size => () => this.setState({ size, open: true });
   close = () => this.setState({ open: false });
   handleDelete = () => {
-    console.log('dd');
-    userService.deleteUser(this.props.user.id).then(res => console.log(res));
+    this.props.userDelete
+      ? userService.deleteUser(this.props.user.id).then(res => console.log(res))
+      : companyServices.deleteCompany(this.props.user.id);
     this.close();
   };
 
