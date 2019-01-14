@@ -27,7 +27,7 @@ import {
 } from './pages/files';
 
 //Edit MyWidget inside curlybrackets and in the file link.
-import { UserComponentListWidget as Widget } from './widgets/UserComponentWidget';
+import { UserEditFormWidget as Widget } from './widgets/UserEditFormWidget';
 
 export class AppRouter extends Component {
   render() {
