@@ -3,39 +3,39 @@ import { List, Button } from 'semantic-ui-react';
 import { DeleteUserWidget } from './DeleteUserWidget';
 import { AdminRegisterWidget } from './AdminRegisterWidget';
 import { EditUserWidget } from './EditUserWidget';
+import { userService } from '../services/UserServices';
+import { companyServices } from '../services/CompanyServices';
 
 export class UserComponentListWidget extends React.Component {
   constructor(props) {
     super(props);
-    this.users = [
-      {
-        id: '2',
-        name: 'hallo1',
-        email: 'email@e.com',
-        phone: '41122142142',
-        municipalId: '1',
-        rank: 3
-      },
-      {
-        id: '1',
-        name: 'hallo2',
-        email: 'email@a.com',
-        phone: '41122142142',
-        municipalId: '2',
-        rank: 3
-      }
-    ];
+    this.state = {
+      users: []
+    };
+  }
+
+  componentWillMount() {
+    this.props.user
+      ? userService.getUsers().then(res => {
+          this.setState({
+            users: res.data
+          });
+        })
+      : companyServices.getCompanies().then(res => {
+          this.setState({
+            users: res.data
+          });
+        });
   }
 
   render() {
     return (
       <div>
         <List divided relaxed>
-          {this.users.map((user, i) => {
-            return <UserComponentListItemWidget key={i} user={this.users[i]} />;
+          {this.state.users.map((user, i) => {
+            return <UserComponentListItemWidget key={i} user={this.state.users[i]} />;
           })}
         </List>
-        <AdminRegisterWidget />
       </div>
     );
   }
@@ -52,7 +52,7 @@ export class UserComponentListItemWidget extends React.Component {
         <List.Content floated="right">
           <Button.Group compact={false}>
             <EditUserWidget user={this.props.user} userEdit />
-            <DeleteUserWidget user={this.props.user} />
+            <DeleteUserWidget user={this.props.user} userDelete />
           </Button.Group>
         </List.Content>
         <List.Icon name="user" size="large" verticalAlign="middle" />

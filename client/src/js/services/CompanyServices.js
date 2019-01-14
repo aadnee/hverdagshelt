@@ -31,8 +31,8 @@ class CompanyServices {
     });
   }
 
-  deleteCompany(municipalId) {
-    return api.delete('/api/companies/:' + municipalId);
+  deleteCompany(id) {
+    return api.delete('/api/companies/:' + id);
   }
 }
 

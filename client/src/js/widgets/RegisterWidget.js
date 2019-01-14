@@ -7,7 +7,6 @@ import React from 'react';
 export class RegisterWidget extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       firstname: '',
       lastname: '',

@@ -1,5 +1,6 @@
 export * from './HomePage';
 export * from './AdminUsersPage';
+export * from './AdminCompanyPage';
 export * from './AdminEditUserPage';
 export * from './AdminCategoriesPage';
 export * from './AdminEditCategoryPage';

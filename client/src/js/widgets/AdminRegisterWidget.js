@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form, Icon } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
+import { companyServices } from '../services/CompanyServices';
 
 export class AdminRegisterWidget extends React.Component {
   constructor(props) {
@@ -59,7 +60,19 @@ export class AdminRegisterWidget extends React.Component {
             res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
             this.setState({ showRegisterModal: true });
           })
-      : null;
+      : companyServices
+          .addCompany(
+            this.state.firstname + this.state.lastname,
+            this.state.email,
+            this.state.phone,
+            this.state.selectedOption
+          )
+          .then(res => {
+            console.log(res);
+            this.setState({ popupMessage: res.message });
+            res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
+            this.setState({ showRegisterModal: true });
+          });
   };
 
   closeModals = () => {
@@ -79,14 +92,7 @@ export class AdminRegisterWidget extends React.Component {
           closeIcon
         >
           <Modal.Header>
-            <Button.Group fluid>
-              <Button active={this.state.user} color="green" inverted onClick={this.changeUser(true)}>
-                Register Bruker
-              </Button>
-              <Button color="green" inverted onClick={this.changeUser(false)}>
-                Register Bedrift
-              </Button>
-            </Button.Group>
+            <h1>{this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}</h1>
           </Modal.Header>
           <Modal.Content>
             <Container>
@@ -95,7 +101,7 @@ export class AdminRegisterWidget extends React.Component {
                   {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
                   <Form size="large">
                     <Segment piled>
-                      {this.state.user ? (
+                      {this.props.user ? (
                         <div>
                           <Form.Field>
                             <label>Fornavn</label>
@@ -191,7 +197,7 @@ export class AdminRegisterWidget extends React.Component {
                           this.handleSubmit();
                         }}
                       >
-                        {this.state.user ? 'Registrer bruker' : 'Registrer bruker'}
+                        {this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}
                       </Button>
                       <Button
                         color="grey"

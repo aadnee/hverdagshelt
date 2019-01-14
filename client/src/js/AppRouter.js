@@ -6,6 +6,7 @@ import {
   HomePage,
   AdminUsersPage,
   AdminEditUserPage,
+  AdminCompanyPage,
   AdminCategoriesPage,
   AdminEditCategoryPage,
   EmployeeManageTicketsPage,
@@ -26,8 +27,7 @@ import {
 } from './pages/files';
 
 //Edit MyWidget inside curlybrackets and in the file link.
-import { PublishNewsFormWidget as Widget } from './widgets/PublishNewsFormWidget';
-import { LoginWidget as login } from './widgets/LoginWidget';
+import { UserComponentListWidget as Widget } from './widgets/UserComponentWidget';
 
 export class AppRouter extends Component {
   render() {
@@ -37,6 +37,7 @@ export class AppRouter extends Component {
           <Route exact path="/" component={HomePage} />
           {/* Admin Routes */}
           <Route exact path="/admin/users" component={AdminUsersPage} />
+          <Route exact path="/admin/company" component={AdminCompanyPage} />
           <Route exact path="/admin/users/:userid/edit" component={AdminEditUserPage} />
           <Route exact path="/admin/categories" component={AdminCategoriesPage} />
           <Route exact path="/admin/categories/:categoryid/edit" component={AdminEditCategoryPage} />
