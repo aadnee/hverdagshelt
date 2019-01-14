@@ -20,7 +20,7 @@ export class EmployeeManageTicketsPage extends React.Component {
     //Fetch id based on user bound to municipal
 
     console.log(Cookies.get('municipalId'));
-    ticketService.getTickets(Cookies.get('municipalId')).then(res => {
+    ticketService.getMunicipalTickets(Cookies.get('municipalId')).then(res => {
       console.log(res);
       this.setState({ tickets: res.data });
     });
