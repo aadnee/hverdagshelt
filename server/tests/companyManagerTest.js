@@ -9,7 +9,6 @@ beforeAll(async () => {
 describe('Finding all companies', () => {
   it('correct data', done => {
     companyManager.getCompanies(function(companies) {
-      console.log(companies.success);
       expect({
         success: companies.success
       }).toEqual({
@@ -21,7 +20,6 @@ describe('Finding all companies', () => {
 
   it('correct data', done => {
     companyManager.getLocalCompanies(1, function(companies) {
-      console.log(companies.success);
       expect({
         success: companies.success
       }).toEqual({

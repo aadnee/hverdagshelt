@@ -4,7 +4,7 @@ dotenv.config();
 
 const Op = Sequelize.Op;
 let sequelize = new Sequelize(
-  process.env.CI ? 'School' : process.env.MYSQL_DB,
+  process.env.CI ? 'Group8' : process.env.MYSQL_DB,
   process.env.CI ? 'root' : process.env.MYSQL_USR,
   process.env.CI ? '' : process.env.MYSQL_PWD,
   {
