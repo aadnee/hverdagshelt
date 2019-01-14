@@ -42,6 +42,8 @@ export class PublishNewsFormWidget extends Component {
 
   submit = () => {
     //TODO SERVICE for submitting a new newscase
+    //Use ticketService.acceptTicket() with params: ticketId, title, description, lat, lon,
+    // categoryId, municipalId for createing a new news
     console.log('submit');
   };
 
