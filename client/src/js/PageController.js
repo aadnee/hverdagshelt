@@ -13,7 +13,7 @@ export class PageController extends Component {
     super(props);
 
     this.state = {
-      visible: true
+      visible: false
     };
 
     this.toggleSideBar = this.toggleSideBar.bind(this);
