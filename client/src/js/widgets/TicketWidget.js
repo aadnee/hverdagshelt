@@ -1,21 +1,18 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Card, Image, Icon, Button, Header, Placeholder, Label } from 'semantic-ui-react';
-
+import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal } from 'semantic-ui-react';
 import { PENDING, DONE, REJECTED, STATUS } from '../commons';
-import { ticketService } from '../services/TicketServices';
+
+import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 
 export class TicketWidget extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      id: ''
-    };
   }
 
-  componentWillMount() {
-    this.setState({ id: this.props.ticket.id });
+  componentDidMount() {
+    console.log(this.props.ticket);
   }
 
   //STATUS:
@@ -61,9 +58,24 @@ export class TicketWidget extends Component {
           this.props.ticket.status === PENDING ? (
             <Card.Content extra>
               <Button.Group fluid size="small">
-                <Button inverted primary onClick={this.props.approve}>
-                  Godkjenn
-                </Button>
+                <Modal
+                  trigger={
+                    <Button inverted primary onClick={this.props.accept}>
+                      Godkjenn
+                    </Button>
+                  }
+                >
+                  <Modal.Header>Registrer varselen som nyhet</Modal.Header>
+                  <Modal.Content>
+                    <Modal.Description>
+                      <PublishNewsFormWidget
+                        headline={this.props.ticket.title}
+                        details={this.props.ticket.description}
+                        category={this.props.ticket.categoryId}
+                      />
+                    </Modal.Description>
+                  </Modal.Content>
+                </Modal>
                 <Button inverted secondary onClick={this.props.reject}>
                   Avslå
                 </Button>
@@ -92,9 +104,5 @@ export class TicketWidget extends Component {
         ) : null}
       </Card>
     );
-  }
-
-  approve() {
-    console.log('approve');
   }
 }

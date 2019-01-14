@@ -26,7 +26,7 @@ import {
 } from './pages/files';
 
 //Edit MyWidget inside curlybrackets and in the file link.
-import { UserComponentListWidget as Widget } from './widgets/UserComponentWidget';
+import { PublishNewsFormWidget as Widget } from './widgets/PublishNewsFormWidget';
 import { LoginWidget as login } from './widgets/LoginWidget';
 
 export class AppRouter extends Component {
@@ -62,7 +62,6 @@ export class AppRouter extends Component {
           <Route exact path="/logout" component={LogoutPage} />
           {/* Develoopment */}
           <Route exact path="/widget" component={Widget} />
-          <Route exact path="/widget" component={login} />
         </div>
       </HashRouter>
     );
