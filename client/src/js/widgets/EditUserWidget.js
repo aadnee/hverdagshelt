@@ -33,8 +33,6 @@ export class EditUserWidget extends Component {
 
   close = () => this.setState({ open: false });
   handleEdit = () => {
-    console.log(this.state);
-    console.log(this.props.user.id);
     userService
       .editUser(
         this.props.user.id,

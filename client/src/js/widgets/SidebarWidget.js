@@ -74,6 +74,9 @@ class AdminOptions extends Component {
         <NavLink to="/admin/users" activeClassName="active" className="ui item">
           Administrer brukere
         </NavLink>
+        <NavLink to="/admin/company" activeClassName="active" className="ui item">
+          Administrer bedrifter
+        </NavLink>
         <NavLink to="/admin/categories" activeClassName="active" className="ui item">
           Administrer kategorier
         </NavLink>
