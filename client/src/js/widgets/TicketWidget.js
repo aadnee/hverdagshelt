@@ -67,7 +67,7 @@ export class TicketWidget extends Component {
               <Button.Group fluid size="small">
                 <Modal
                   trigger={
-                    <Button inverted primary onClick={this.props.accept}>
+                    <Button inverted primary>
                       Godkjenn
                     </Button>
                   }
@@ -76,9 +76,11 @@ export class TicketWidget extends Component {
                   <Modal.Content>
                     <Modal.Description>
                       <PublishNewsFormWidget
-                        headline={this.props.ticket.title}
-                        details={this.props.ticket.description}
+                        title={this.props.ticket.title}
+                        description={this.props.ticket.description}
                         category={this.props.ticket.categoryId}
+                        submit={this.props.accept}
+                        image
                       />
                     </Modal.Description>
                   </Modal.Content>
