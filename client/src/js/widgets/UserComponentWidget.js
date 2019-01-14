@@ -4,7 +4,7 @@ import { DeleteUserWidget } from './DeleteUserWidget';
 import { AdminRegisterWidget } from './AdminRegisterWidget';
 import { EditUserWidget } from './EditUserWidget';
 import { userService } from '../services/UserServices';
-import { companyServices } from '../services/CompanyServices';
+import { companyService } from '../services/CompanyServices';
 
 export class UserComponentListWidget extends React.Component {
   constructor(props) {
@@ -21,7 +21,7 @@ export class UserComponentListWidget extends React.Component {
             users: res.data
           });
         })
-      : companyServices.getCompanies().then(res => {
+      : companyService.getCompanies().then(res => {
           this.setState({
             users: res.data
           });
