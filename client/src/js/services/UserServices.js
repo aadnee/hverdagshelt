@@ -47,7 +47,9 @@ class UserService {
       name: name,
       email: email,
       phone: phone,
-      municipalId: municipalId
+      municipalId: municipalId,
+      oldPassword: oldPassword,
+      newPassword: newPassword
     });
   }
 }
