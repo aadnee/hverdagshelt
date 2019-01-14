@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header } from 'semantic-ui-react';
+import { Grid, Header, Message, Reveal } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
 import Cookies from 'js-cookie';
@@ -10,7 +10,8 @@ export class EmployeeManageTicketsPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tickets: []
+      tickets: [],
+      hasTickets: true
     };
     this.reject = this.reject.bind(this);
     this.accept = this.accept.bind(this);
@@ -22,6 +23,10 @@ export class EmployeeManageTicketsPage extends React.Component {
     console.log(Cookies.get('municipalId'));
     ticketService.getMunicipalTickets(Cookies.get('municipalId')).then(res => {
       console.log(res);
+      if (res.data.length < 1) {
+        console.log('Du har ingen varsler fra brukere');
+        this.setState({ hasTickets: false });
+      }
       this.setState({ tickets: res.data });
     });
   }
@@ -33,6 +38,13 @@ export class EmployeeManageTicketsPage extends React.Component {
           Varslinger fra brukerne
         </Header>
         <Grid stackable container columns={3}>
+          {!this.state.hasTickets ? (
+            <Grid.Row centered>
+              <Message size={'massive'}>
+                <p>Du har ingen flere varsler å administrere</p>
+              </Message>
+            </Grid.Row>
+          ) : null}
           {this.state.tickets.map(ticket => (
             <Grid.Column key={ticket.id}>
               <TicketWidget
@@ -55,6 +67,10 @@ export class EmployeeManageTicketsPage extends React.Component {
       console.log(res);
       this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
       console.log(this.state.tickets);
+      if (this.state.tickets.length < 1) {
+        console.log('Du har ingen varsler fra brukere');
+        this.setState({ hasTickets: false });
+      }
     });
   }
 

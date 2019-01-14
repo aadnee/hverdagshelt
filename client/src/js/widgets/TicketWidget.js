@@ -9,7 +9,12 @@ import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 export class TicketWidget extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      open: false
+    };
   }
+  show = size => () => this.setState({ size, open: true });
+  close = () => this.setState({ open: false });
 
   componentDidMount() {
     console.log(this.props.ticket);
@@ -21,6 +26,8 @@ export class TicketWidget extends Component {
   // REJECTED = 4;
 
   render() {
+    const { open, size } = this.state;
+
     return (
       <Card centered>
         <Image>
@@ -76,9 +83,21 @@ export class TicketWidget extends Component {
                     </Modal.Description>
                   </Modal.Content>
                 </Modal>
-                <Button inverted secondary onClick={this.props.reject}>
+                <Button inverted secondary onClick={this.show('mini')}>
                   Avslå
                 </Button>
+                <Modal size={size} open={open} onClose={this.close}>
+                  <Modal.Header>Avslå innsendt varsel</Modal.Header>
+                  <Modal.Content>
+                    <p>Er du sikker på at du vil avlså denne varselen</p>
+                  </Modal.Content>
+                  <Modal.Actions>
+                    <Button negative onClick={this.close}>
+                      Nei
+                    </Button>
+                    <Button positive icon="checkmark" labelPosition="right" content="Ja" onClick={this.props.reject} />
+                  </Modal.Actions>
+                </Modal>
               </Button.Group>
             </Card.Content>
           ) : null
