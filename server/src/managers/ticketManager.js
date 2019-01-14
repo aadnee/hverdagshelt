@@ -45,7 +45,7 @@ module.exports = {
   },
 
   setStatus: function(status, ticketId, callback) {
-    Tickets.update({ status: status }, { where: { id: ticketId, status: 1 } }).then(
+    Tickets.update({ status: status }, { where: { id: ticketId } }).then(
       res =>
         callback({
           success: true,
@@ -65,7 +65,7 @@ module.exports = {
 
   //get all tickets in a specific municipal
   getLocalTickets: function(municipalId, callback) {
-    Tickets.findAll({ where: { municipalId: municipalId } }).then(
+    Tickets.findAll({ where: { municipalId: municipalId, status: 1 } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
