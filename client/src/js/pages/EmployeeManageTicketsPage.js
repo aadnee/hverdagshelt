@@ -68,14 +68,23 @@ export class EmployeeManageTicketsPage extends React.Component {
       this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
       console.log(this.state.tickets);
       if (this.state.tickets.length < 1) {
-        console.log('Du har ingen varsler fra brukere');
-        this.setState({ hasTickets: false });
       }
     });
   }
 
-  accept(id) {
+  accept(id, title, description, lat, lon, categoryId, municipalId) {
     console.log('approve');
     console.log(id);
+    console.log(title);
+
+    ticketService.acceptTicket(id, title, description, lat, lon, categoryId, municipalId).then(res => {
+      console.log(res);
+      this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
+
+      if (this.state.tickets.length < 1) {
+        console.log('Du har ingen varsler fra brukere');
+        this.setState({ hasTickets: false });
+      }
+    });
   }
 }
