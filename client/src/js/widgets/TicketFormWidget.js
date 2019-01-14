@@ -17,6 +17,7 @@ import {
 } from 'semantic-ui-react';
 
 import { ticketService } from '../services/TicketServices';
+import { categoryServices } from '../services/CategoryServices';
 
 export class TicketFormWidget extends Component {
   constructor(props) {
@@ -25,7 +26,7 @@ export class TicketFormWidget extends Component {
       headline: '',
       details: '',
       category: '',
-      categoryOptions: [{ key: 1, value: 2, text: 'cat 1' }, { key: 2, value: 2, text: 'cat 2' }],
+      categoryOptions: [],
       subcategory: '',
       subCategoryOptions: [],
       position: [null, null],
@@ -39,9 +40,9 @@ export class TicketFormWidget extends Component {
   };
 
   submit = () => {
-    //SERVICE
     console.log(this.state);
     //lat, lon and municipalId is fetched from the map
+    //municipalId could also be fetched from Cookie
     ticketService
       .addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1)
       .then(res => console.log(res));
@@ -49,8 +50,26 @@ export class TicketFormWidget extends Component {
 
   getSubCategories(category) {
     //Get subcategories based on the chosen category
-    let subcats = [{ key: 1, value: 1, text: 'subcat 1' }, { key: 2, value: 2, text: 'subcat 2' }];
-    this.setState({ subCategoryOptions: subcats });
+    console.log(category);
+    categoryServices.getSubCategories(category).then(res => {
+      let subcats = [];
+      res.data.map(subCat => {
+        subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
+      });
+      this.setState({ subCategoryOptions: subcats });
+      console.log(this.state.subCategoryOptions);
+    });
+  }
+
+  componentWillMount() {
+    categoryServices.getCategories().then(res => {
+      let cats = [];
+      res.data.map(cat => {
+        cats.push({ key: cat.id, value: cat.id, text: cat.name });
+      });
+      this.setState({ categoryOptions: cats });
+      console.log(this.state.categoryOptions);
+    });
   }
 
   render() {
@@ -99,7 +118,7 @@ export class TicketFormWidget extends Component {
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
                           this.setState({ selectedCategory: true });
-                          this.getSubCategories();
+                          this.getSubCategories(data.value);
                         }}
                       />
                     </Grid.Column>

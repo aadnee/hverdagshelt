@@ -5,7 +5,7 @@ module.exports = {
   getCompanies: function(callback) {
     Users.findAll({ attributes: ['id', 'name', 'email', 'phone'], where: { rank: 2 } }).then(
       res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -13,10 +13,7 @@ module.exports = {
     Users.findAll({
       attributes: ['id', 'name', 'email', 'phone'],
       where: { municipalId: municipalId, rank: 2 }
-    }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
-    );
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   addCompany: function(name, email, phone, municipalId, callback) {
@@ -27,10 +24,7 @@ module.exports = {
     Users.findOne({
       where: { id: id, rank: 2 },
       attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId']
-    }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
-    );
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   deleteCompany: function(id, callback) {
@@ -38,7 +32,7 @@ module.exports = {
       where: { id: id, rank: 2 }
     }).then(
       res => callback({ success: true, message: 'Company deleted.' }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -53,7 +47,7 @@ module.exports = {
       { where: { id: userId, rank: 2 } }
     ).then(
       res => callback({ success: true, message: 'Company updated.' }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   }
 };

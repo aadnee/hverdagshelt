@@ -1,6 +1,8 @@
 import { Users, Companies, Municipals, Categories, Tickets, News, Subscriptions, sync } from '../src/models.js';
 import newsManager from '../src/managers/newsManager';
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
   await sync;
 });
@@ -82,7 +84,7 @@ describe('Tickets test', () => {
     }).toEqual({
       title: 'Vei problem',
       description: 'Pls sett opp brøytestikker her.',
-      status: 3,
+      status: 1,
       categoryId: 2
     });
   });

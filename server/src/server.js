@@ -226,6 +226,12 @@ app.get('/api/categories', ensureLogin, function(req, res) {
   });
 });
 
+app.get('/api/categories/:parentId', ensureLogin, function(req, res) {
+  categoryManager.getSubCategories(req.params.parentId, function(result) {
+    res.json(result);
+  });
+});
+
 app.post('/api/categories', ensureEmployee, (req, res) => {
   categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
     res.json(result);
@@ -264,7 +270,7 @@ function ensureLogin(req, res, next) {
 
 function ensureEmployee(req, res, next) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
-    if (decoded && decoded.rank && decoded.rank >= 2) {
+    if (decoded && decoded.rank && decoded.rank >= 3) {
       next();
     } else {
       res.sendStatus(403);
@@ -274,7 +280,7 @@ function ensureEmployee(req, res, next) {
 
 function ensureAdmin(req, res, next) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
-    if (decoded && decoded.rank && decoded.rank >= 3) {
+    if (decoded && decoded.rank && decoded.rank >= 4) {
       next();
     } else {
       res.sendStatus(403);

@@ -19,7 +19,7 @@ module.exports = {
           message: 'Ticket sent.',
           id: res.id
         }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -40,7 +40,7 @@ module.exports = {
           success: true,
           message: 'Ticket saved.'
         }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -51,7 +51,7 @@ module.exports = {
           success: true,
           message: 'Status updated.'
         }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -59,15 +59,15 @@ module.exports = {
   getMyTickets: function(userId, callback) {
     Tickets.findAll({ where: { userId: userId } }).then(
       res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
   //get all tickets in a specific municipal
   getLocalTickets: function(municipalId, callback) {
-    Tickets.findAll({ where: { municipalId: municipalId } }).then(
+    Tickets.findAll({ where: { municipalId: municipalId, status: 1 } }).then(
       res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: 'Sequelize error' })
+      err => callback({ success: false, message: err })
     );
   },
 
@@ -81,7 +81,7 @@ module.exports = {
                 newsId: result.id
               },
               { where: { id: ticketId } }
-            ).then(res => callback(result), err => callback({ success: false, message: 'Sequelize error' }));
+            ).then(res => callback(result), err => callback({ success: false, message: err }));
           } else {
             callback(result);
           }
