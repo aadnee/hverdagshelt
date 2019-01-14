@@ -1,6 +1,8 @@
 import { News, sync } from '../src/models';
 import newsManager from '../src/managers/newsManager';
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
   await sync;
 });
