@@ -13,7 +13,7 @@ export class EmployeeManageTicketsPage extends React.Component {
       tickets: []
     };
     this.reject = this.reject.bind(this);
-    this.approve = this.approve.bind(this);
+    this.accept = this.accept.bind(this);
   }
 
   componentWillMount() {
@@ -38,8 +38,8 @@ export class EmployeeManageTicketsPage extends React.Component {
               <TicketWidget
                 employee
                 ticket={ticket}
+                accept={this.accept.bind(this, ticket.id)}
                 reject={this.reject.bind(this, ticket.id)}
-                approve={this.approve.bind(this, ticket.id)}
               />
             </Grid.Column>
           ))}
@@ -57,7 +57,9 @@ export class EmployeeManageTicketsPage extends React.Component {
       console.log(this.state.tickets);
     });
   }
-  approve(id, i) {
+
+  accept(id) {
     console.log('approve');
+    console.log(id);
   }
 }
