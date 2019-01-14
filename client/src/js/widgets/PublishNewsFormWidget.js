@@ -99,7 +99,7 @@ export class PublishNewsFormWidget extends Component {
                     placeholder={'Beskrivelse'}
                     value={this.state.description}
                     onChange={(event, data) => {
-                      this.handleInput('details', data.value);
+                      this.handleInput('description', data.value);
                     }}
                   />
                 </Form.Field>
