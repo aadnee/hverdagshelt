@@ -6,12 +6,12 @@ import { AdminRegisterWidget } from '../widgets/AdminRegisterWidget';
 
 //import {} from './../widgets';
 
-export class AdminUsersPage extends Component {
+export class AdminCompanyPage extends Component {
   render() {
     return (
-      <div>
-        <UserComponentListWidget user />
-        <AdminRegisterWidget user />
+      <div className={'container'}>
+        <UserComponentListWidget company />
+        <AdminRegisterWidget />
       </div>
     );
   }
