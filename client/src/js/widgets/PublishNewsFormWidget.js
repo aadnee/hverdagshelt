@@ -16,6 +16,7 @@ import {
   Segment,
   TextArea
 } from 'semantic-ui-react';
+import { categoryServices } from '../services/CategoryServices';
 
 //import {} from './';
 
@@ -49,6 +50,13 @@ export class PublishNewsFormWidget extends Component {
 
   getSubCategories(category) {
     //TODO SERVICE to get subcategories based on a category and put into this.state.subCategoryOptions[]
+  }
+
+  componentWillMount() {
+    categoryServices.getCategories().then(res => {
+      console.table(res.data);
+      this.setState({ categoryOptions: res.data });
+    });
   }
 
   render() {
