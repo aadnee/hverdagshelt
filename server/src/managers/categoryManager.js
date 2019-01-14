@@ -2,7 +2,7 @@ import { Categories } from '../models';
 
 module.exports = {
   getCategories: function(callback) {
-    Categories.findAll().then(
+    Categories.findAll({ where: { parentId: null } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
