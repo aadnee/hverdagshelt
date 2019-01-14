@@ -46,6 +46,7 @@ export class PublishNewsFormWidget extends Component {
     //Use ticketService.acceptTicket() with params: ticketId, title, description, lat, lon,
     // categoryId, municipalId for createing a new news
     console.log('submit');
+    console.log(this.state);
   };
 
   getSubCategories(category) {
