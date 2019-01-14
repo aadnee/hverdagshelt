@@ -73,6 +73,43 @@ app.post('/api/register', function(req, res) {
   });
 });
 
+app.get('/api/me', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    userManager.getUser(userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.put('/api/me', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    getUserRank(req, function(userRank) {
+      userManager.editUser(
+        req.body.name,
+        req.body.email,
+        req.body.phone,
+        req.body.municipalId,
+        userId,
+        userRank,
+        function(result) {
+          if (
+            req.body.oldPassword &&
+            req.body.newPassword &&
+            req.body.oldPassword != '' &&
+            req.body.newPassword != ''
+          ) {
+            userManager.changePass(userId, req.body.oldPassword, req.body.newPassword, function(result2) {
+              res.json(result2);
+            });
+          } else {
+            res.json(result);
+          }
+        }
+      );
+    });
+  });
+});
+
 app.get('/api/users', ensureAdmin, (req, res) => {
   userManager.getUsers(function(result) {
     res.json(result);
@@ -262,6 +299,12 @@ app.get('/api/subscriptions', ensureLogin, function(req, res) {
 function getUserId(req, callback) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
     callback(decoded.id);
+  });
+}
+
+function getUserRank(req, callback) {
+  jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
+    callback(decoded.rank);
   });
 }
 

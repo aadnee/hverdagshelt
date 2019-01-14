@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form, Icon } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
 import { companyServices } from '../services/CompanyServices';
+import { municipalServices } from '../services/MunicipalServices';
 
 export class AdminRegisterWidget extends React.Component {
   constructor(props) {
@@ -20,16 +21,18 @@ export class AdminRegisterWidget extends React.Component {
       popupMessage: '',
       popupSuccess: ''
     };
+  }
 
-    this.stateOptions = [
-      { key: '1', value: '1', text: 'Risør' },
-      { key: '2', value: '2', text: 'Lindesnes' },
-      { key: '3', value: '3', text: 'Tvedestrand' },
-      { key: '4', value: '4', text: 'Test 1' },
-      { key: '5', value: '5', text: 'Test 2' },
-      { key: '6', value: '6', text: 'Test 3' },
-      { key: '7', value: '7', text: 'Test 4' }
-    ];
+  componentWillMount() {
+    municipalServices.getMunicipals().then(res => {
+      let options = [];
+      res.data.map(munic => {
+        options.push({ key: munic.id, value: munic.id, text: munic.name });
+      });
+      this.setState({
+        options: options
+      });
+    });
   }
 
   modalChange = () => {
@@ -46,7 +49,7 @@ export class AdminRegisterWidget extends React.Component {
     //USERSERICE -> request cookie
     console.log('submitting');
     console.log(this.state);
-    this.state.user
+    this.props.user
       ? userService
           .register(
             this.state.firstname + this.state.lastname,
@@ -58,7 +61,14 @@ export class AdminRegisterWidget extends React.Component {
             console.log(res);
             this.setState({ popupMessage: res.message });
             res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-            this.setState({ showRegisterModal: true });
+            this.setState({
+              showRegisterModal: true,
+              firstname: '',
+              lastname: '',
+              email: '',
+              phone: '',
+              selectedOption: ''
+            });
           })
       : companyServices
           .addCompany(
@@ -71,7 +81,14 @@ export class AdminRegisterWidget extends React.Component {
             console.log(res);
             this.setState({ popupMessage: res.message });
             res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-            this.setState({ showRegisterModal: true });
+            this.setState({
+              showRegisterModal: true,
+              firstname: '',
+              lastname: '',
+              email: '',
+              phone: '',
+              selectedOption: ''
+            });
           });
   };
 
@@ -183,7 +200,7 @@ export class AdminRegisterWidget extends React.Component {
                           selection
                           search
                           placeholder="Velg kommune"
-                          options={this.stateOptions}
+                          options={this.state.options}
                           onChange={(event, data) => {
                             this.handleInput('selectedOption', data.value);
                           }}

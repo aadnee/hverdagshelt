@@ -20,11 +20,13 @@ export class UserComponentListWidget extends React.Component {
           this.setState({
             users: res.data
           });
+          console.table(this.state.users);
         })
       : companyServices.getCompanies().then(res => {
           this.setState({
             users: res.data
           });
+          console.table(this.state.users);
         });
   }
 
@@ -47,12 +49,21 @@ export class UserComponentListItemWidget extends React.Component {
   }
 
   render() {
+    console.log(this.props.user);
     return (
       <List.Item>
         <List.Content floated="right">
           <Button.Group compact={false}>
-            <EditUserWidget user={this.props.user} userEdit />
-            <DeleteUserWidget user={this.props.user} userDelete />
+            {this.props.user ? (
+              <EditUserWidget user={this.props.user} userEdit />
+            ) : (
+              <EditUserWidget user={this.props.user} />
+            )}
+            {this.props.user ? (
+              <DeleteUserWidget user={this.props.user} userDelete />
+            ) : (
+              <DeleteUserWidget user={this.props.user} />
+            )}
           </Button.Group>
         </List.Content>
         <List.Icon name="user" size="large" verticalAlign="middle" />

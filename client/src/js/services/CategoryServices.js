@@ -10,7 +10,12 @@ class CategoryServices {
   }
 
   //maybe add a municipalId as param
-  addCategory() {}
+  addCategory(name, parentId) {
+    return api.post('api/categories', {
+      name: name,
+      parentId: parentId
+    });
+  }
 
   deleteCategory() {}
 }
