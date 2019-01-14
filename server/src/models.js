@@ -97,15 +97,31 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     });
     await Users.create({
       name: 'Ola',
-      email: 'test@test.com',
+      email: 'user@user.com',
       phone: 123,
+      password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
+      rank: 1,
+      municipalId: 1
+    });
+    await Users.create({
+      name: 'Ola',
+      email: 'employee@employee.com',
+      phone: 1234,
       password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
       rank: 3,
       municipalId: 1
     });
     await Users.create({
+      name: 'Ola',
+      email: 'admin@admin.com',
+      phone: 12345,
+      password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
+      rank: 4,
+      municipalId: 1
+    });
+    await Users.create({
       name: 'SmartPark',
-      email: 'admin@smartpark.no',
+      email: 'company@company.com',
       phone: 12345678,
       password: '12345',
       rank: 2,
