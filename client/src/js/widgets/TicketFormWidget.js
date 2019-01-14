@@ -42,6 +42,7 @@ export class TicketFormWidget extends Component {
   submit = () => {
     console.log(this.state);
     //lat, lon and municipalId is fetched from the map
+    //municipalId could also be fetched from Cookie
     ticketService
       .addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1)
       .then(res => console.log(res));
@@ -49,8 +50,15 @@ export class TicketFormWidget extends Component {
 
   getSubCategories(category) {
     //Get subcategories based on the chosen category
-    let subcats = [{ key: 1, value: 1, text: 'subcat 1' }, { key: 2, value: 2, text: 'subcat 2' }];
-    this.setState({ subCategoryOptions: subcats });
+    console.log(category);
+    categoryServices.getSubCategories(category).then(res => {
+      let subcats = [];
+      res.data.map(subCat => {
+        subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
+      });
+      this.setState({ subCategoryOptions: subcats });
+      console.log(this.state.subCategoryOptions);
+    });
   }
 
   componentWillMount() {
@@ -110,7 +118,7 @@ export class TicketFormWidget extends Component {
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
                           this.setState({ selectedCategory: true });
-                          this.getSubCategories();
+                          this.getSubCategories(data.value);
                         }}
                       />
                     </Grid.Column>

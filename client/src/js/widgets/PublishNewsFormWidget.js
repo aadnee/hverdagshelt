@@ -49,13 +49,26 @@ export class PublishNewsFormWidget extends Component {
   };
 
   getSubCategories(category) {
-    //TODO SERVICE to get subcategories based on a category and put into this.state.subCategoryOptions[]
+    //Get subcategories based on the chosen category
+    console.log(category);
+    categoryServices.getSubCategories(category).then(res => {
+      let subcats = [];
+      res.data.map(subCat => {
+        subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
+      });
+      this.setState({ subCategoryOptions: subcats });
+      console.log(this.state.subCategoryOptions);
+    });
   }
 
   componentWillMount() {
     categoryServices.getCategories().then(res => {
-      console.table(res.data);
-      this.setState({ categoryOptions: res.data });
+      let cats = [];
+      res.data.map(cat => {
+        cats.push({ key: cat.id, value: cat.id, text: cat.name });
+      });
+      this.setState({ categoryOptions: cats });
+      console.log(this.state.categoryOptions);
     });
   }
 
@@ -102,7 +115,7 @@ export class PublishNewsFormWidget extends Component {
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
                           this.setState({ selectedCategory: true });
-                          this.getSubCategories();
+                          this.getSubCategories(data.value);
                         }}
                       />
                     </Grid.Column>
