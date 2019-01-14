@@ -72,6 +72,32 @@ app.post('/api/register', function(req, res) {
   });
 });
 
+app.get('/api/me', function(req, res) {
+  getUserId(req, function(userId) {
+    userManager.getUser(userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.put('/api/me', function(req, res) {
+  getUserId(req, function(userId) {
+    getUserRank(req, function(userRank) {
+      userManager.editUser(
+        req.body.name,
+        req.body.email,
+        req.body.phone,
+        req.body.municipalId,
+        userId,
+        userRank,
+        function(result) {
+          res.json(result);
+        }
+      );
+    });
+  });
+});
+
 app.get('/api/users', ensureAdmin, (req, res) => {
   userManager.getUsers(function(result) {
     res.json(result);
@@ -253,6 +279,12 @@ app.post('/api/municipals', ensureAdmin, (req, res) => {
 function getUserId(req, callback) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
     callback(decoded.id);
+  });
+}
+
+function getUserRank(req, callback) {
+  jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
+    callback(decoded.rank);
   });
 }
 
