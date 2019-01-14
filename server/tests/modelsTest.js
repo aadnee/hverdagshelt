@@ -84,7 +84,7 @@ describe('Tickets test', () => {
     }).toEqual({
       title: 'Vei problem',
       description: 'Pls sett opp brøytestikker her.',
-      status: 1,
+      status: 4,
       categoryId: 2
     });
   });

@@ -20,7 +20,7 @@ module.exports = {
                 id: user.id,
                 rank: user.rank
               };
-              var token = jwt.sign(payload, process.env.JWT, {
+              var token = jwt.sign(payload, process.env.CI ? 'TESTKEY' : process.env.JWT, {
                 expiresIn: 86400
               });
               callback({

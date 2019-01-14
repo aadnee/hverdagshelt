@@ -88,11 +88,21 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await Municipals.create({
       name: 'Lindesnes'
     });
+    await Municipals.create({
+      name: 'Risør'
+    });
     await Categories.create({
       name: 'Vei og trafikk'
     });
     await Categories.create({
+      name: 'Brøyting av snø'
+    });
+    await Categories.create({
       name: 'Setting av brøytestikker',
+      parentId: 1
+    });
+    await Categories.create({
+      name: 'Setting av brøytestikker 2',
       parentId: 1
     });
     await Users.create({
@@ -130,7 +140,27 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await Tickets.create({
       title: 'Vei problem',
       description: 'Pls sett opp brøytestikker her.',
+      status: 4,
+      lat: 1,
+      lon: 1,
+      categoryId: 2,
+      userId: 1,
+      municipalId: 1
+    });
+    await Tickets.create({
+      title: 'Vei problem',
+      description: 'Pls sett opp brøytestikker her.',
       status: 1,
+      lat: 1,
+      lon: 1,
+      categoryId: 2,
+      userId: 1,
+      municipalId: 1
+    });
+    await Tickets.create({
+      title: 'Vei problem',
+      description: 'Pls sett opp brøytestikker her.',
+      status: 3,
       lat: 1,
       lon: 1,
       categoryId: 2,
@@ -146,8 +176,34 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       municipalId: 1
     });
+    await News.create({
+      title: 'Enda en nyhet!',
+      description: 'Brøytestikker skal bli satt opp.',
+      status: 1,
+      lat: 1,
+      lon: 1,
+      categoryId: 1,
+      municipalId: 1
+    });
+    await News.create({
+      title: 'En nyhet',
+      description: 'Nyhet beskrivelse.',
+      status: 1,
+      lat: 1,
+      lon: 1,
+      categoryId: 1,
+      municipalId: 1
+    });
     await Subscriptions.create({
       newsId: 1,
+      userId: 1
+    });
+    await Subscriptions.create({
+      newsId: 2,
+      userId: 1
+    });
+    await Subscriptions.create({
+      newsId: 3,
       userId: 1
     });
     return true;
