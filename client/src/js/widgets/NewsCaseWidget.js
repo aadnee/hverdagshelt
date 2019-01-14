@@ -21,12 +21,12 @@ export class NewsCaseWidget extends Component {
           <Segment vertical>
             <Grid divided inverted stackable>
               <Grid.Column width={12} textAlign="left">
-                <Header as="h2">{this.props.title}</Header>
+                <Header as="h2">{this.props.news.title}</Header>
               </Grid.Column>
               <Grid.Column width={4} textAlign="right">
-                <p>{this.props.date}</p>
+                <p>{this.props.news.date}</p>
                 <p>
-                  <i>{this.props.time}</i>
+                  <i>{this.props.news.time}</i>
                 </p>
               </Grid.Column>
             </Grid>
@@ -37,19 +37,19 @@ export class NewsCaseWidget extends Component {
                 <Grid.Column width={4} align="right" only="mobile">
                   <Image
                     fluid
-                    src={this.props.imageURL}
+                    src={this.props.news.imageURL}
                     //as='a'
                     //href='http://localhost:3000/#/widget'
                     target="_blank"
                   />
                 </Grid.Column>
                 <Grid.Column width={12} textAlign="left">
-                  <p>{this.props.description}</p>
+                  <p>{this.props.news.description}</p>
                 </Grid.Column>
                 <Grid.Column width={4} align="right" only="tablet computer">
                   <Image
                     fluid
-                    src={this.props.imageURL}
+                    src={this.props.news.imageURL}
                     //as='a'
                     //href='http://localhost:3000/#/widget'
                     target="_blank"
@@ -59,8 +59,8 @@ export class NewsCaseWidget extends Component {
             </Container>
           </Segment>
           <List link>
-            <List.Item as="a">Hendelses-adresse: {this.props.address}</List.Item>
-            <List.Item as="a">Oppdrag utføres av: {this.props.company}</List.Item>
+            <List.Item as="a">Hendelses-adresse: {this.props.news.address}</List.Item>
+            <List.Item as="a">Oppdrag utføres av: {this.props.news.company}</List.Item>
           </List>
         </Container>
       </Segment>
