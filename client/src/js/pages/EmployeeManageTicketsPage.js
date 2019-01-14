@@ -68,6 +68,8 @@ export class EmployeeManageTicketsPage extends React.Component {
       this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
       console.log(this.state.tickets);
       if (this.state.tickets.length < 1) {
+        console.log('Du har ingen varsler fra brukere');
+        this.setState({ hasTickets: false });
       }
     });
   }

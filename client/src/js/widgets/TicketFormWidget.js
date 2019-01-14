@@ -13,7 +13,7 @@ import {
   Input,
   Image,
   Message,
-  Segment
+  Segment, TextArea
 } from 'semantic-ui-react';
 
 import { ticketService } from '../services/TicketServices';
@@ -94,15 +94,13 @@ export class TicketFormWidget extends Component {
                 </Form.Field>
                 <Form.Field>
                   <label>Utdyp problemet</label>
-                  <Input
-                    fluid
-                    icon="comment"
-                    iconPosition="left"
-                    placeholder={'Utdyp'}
-                    value={this.state.details}
-                    onChange={(event, data) => {
-                      this.handleInput('details', data.value);
-                    }}
+                  <TextArea
+                      autoHeight
+                      placeholder={'Beskrivelse'}
+                      value={this.state.details}
+                      onChange={(event, data) => {
+                        this.handleInput('details', data.value);
+                      }}
                   />
                 </Form.Field>
                 <Form.Field>

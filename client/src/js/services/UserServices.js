@@ -42,11 +42,14 @@ class UserService {
   }
 
   editMe(name, email, phone, municipalId) {
-    return axios.put('/api/me', {
+    console.log(name + ' ' + email);
+    return api.put('/api/me', {
       name: name,
       email: email,
       phone: phone,
-      municipalId: municipalId
+      municipalId: municipalId,
+      oldPassword: oldPassword,
+      newPassword: newPassword
     });
   }
 }
