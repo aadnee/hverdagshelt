@@ -23,7 +23,7 @@ module.exports = {
   getCompany: function(id, callback) {
     Users.findOne({
       where: { id: id, rank: 2 },
-      attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId']
+      attributes: ['id', 'name', 'email', 'phone', 'municipalId']
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 

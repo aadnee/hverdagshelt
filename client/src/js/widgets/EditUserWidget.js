@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { userService } from '../services/UserServices';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form } from 'semantic-ui-react';
 import { USER, COMPANY, EMPLOYEE, ADMIN, USERTYPE } from '../commons';
+import { municipalServices } from '../services/MunicipalServices';
 
 export class EditUserWidget extends Component {
   constructor(props) {
@@ -19,16 +20,27 @@ export class EditUserWidget extends Component {
       popupSuccess: '',
       rank: null
     };
+  }
 
-    this.stateOptions = [
-      { key: '1', value: '1', text: 'Risør' },
-      { key: '2', value: '2', text: 'Lindesnes' },
-      { key: '3', value: '3', text: 'Tvedestrand' },
-      { key: '4', value: '4', text: 'Test 1' },
-      { key: '5', value: '5', text: 'Test 2' },
-      { key: '6', value: '6', text: 'Test 3' },
-      { key: '7', value: '7', text: 'Test 4' }
-    ];
+  componentWillMount() {
+    municipalServices.getMunicipals().then(res => {
+      let options = [];
+      res.data.map(munic => {
+        options.push({ key: munic.id, value: munic.id, text: munic.name });
+      });
+      this.setState({
+        options: options
+      });
+    });
+    console.log(this.props.user.municipalId);
+    console.log(this.props.user.name);
+    this.setState({
+      name: this.props.user.name,
+      email: this.props.user.email,
+      phone: this.props.user.phone,
+      municipalId: this.props.user.municipalId,
+      rank: this.props.user.rank
+    });
   }
 
   close = () => this.setState({ open: false });
@@ -65,15 +77,7 @@ export class EditUserWidget extends Component {
     this.setState({ [key]: value });
   };
 
-  componentDidMount() {
-    this.setState({
-      name: this.props.user.name,
-      email: this.props.user.email,
-      phone: this.props.user.phone,
-      municipalId: this.props.user.municipalId,
-      rank: this.props.user.rank
-    });
-  }
+  componentDidMount() {}
 
   render() {
     return (
@@ -157,28 +161,30 @@ export class EditUserWidget extends Component {
                         selection
                         search
                         placeholder="Velg kommune"
-                        value={this.state.municipalId}
-                        options={this.stateOptions}
+                        defaultValue={this.state.municipalId}
+                        options={this.state.options}
                         onChange={(event, data) => {
                           this.handleInput('municipalId', data.value);
                         }}
                       />
                     </Form.Field>
-                    <Form.Field>
-                      <label>Velg rang til bruker</label>
+                    {this.props.userEdit ? (
+                      <Form.Field>
+                        <label>Velg rang til bruker</label>
 
-                      <Dropdown
-                        fluid
-                        selection
-                        search
-                        placeholder="Velg bruker rang"
-                        value={this.state.rank}
-                        options={USERTYPE}
-                        onChange={(event, data) => {
-                          this.handleInput('rank', data.value);
-                        }}
-                      />
-                    </Form.Field>
+                        <Dropdown
+                          fluid
+                          selection
+                          search
+                          placeholder="Velg bruker rang"
+                          value={this.state.rank}
+                          options={USERTYPE}
+                          onChange={(event, data) => {
+                            this.handleInput('rank', data.value);
+                          }}
+                        />
+                      </Form.Field>
+                    ) : null}
                     <Button
                       color="blue"
                       fluid
