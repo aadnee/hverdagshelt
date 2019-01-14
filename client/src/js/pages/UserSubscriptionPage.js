@@ -8,7 +8,6 @@ import { newsService } from '../services/NewsServices';
 export class UserSubscriptionPage extends Component {
   constructor(props) {
     super(props);
-    state = {};
   }
 
   componentWillMount() {}
