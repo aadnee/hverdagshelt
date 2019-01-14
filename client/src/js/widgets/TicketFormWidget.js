@@ -17,6 +17,7 @@ import {
 } from 'semantic-ui-react';
 
 import { ticketService } from '../services/TicketServices';
+import { categoryServices } from '../services/CategoryServices';
 
 export class TicketFormWidget extends Component {
   constructor(props) {
@@ -25,7 +26,7 @@ export class TicketFormWidget extends Component {
       headline: '',
       details: '',
       category: '',
-      categoryOptions: [{ key: 1, value: 2, text: 'cat 1' }, { key: 2, value: 2, text: 'cat 2' }],
+      categoryOptions: [],
       subcategory: '',
       subCategoryOptions: [],
       position: [null, null],
@@ -39,7 +40,6 @@ export class TicketFormWidget extends Component {
   };
 
   submit = () => {
-    //SERVICE
     console.log(this.state);
     //lat, lon and municipalId is fetched from the map
     ticketService
@@ -51,6 +51,17 @@ export class TicketFormWidget extends Component {
     //Get subcategories based on the chosen category
     let subcats = [{ key: 1, value: 1, text: 'subcat 1' }, { key: 2, value: 2, text: 'subcat 2' }];
     this.setState({ subCategoryOptions: subcats });
+  }
+
+  componentWillMount() {
+    categoryServices.getCategories().then(res => {
+      let cats = [];
+      res.data.map(cat => {
+        cats.push({ key: cat.id, value: cat.id, text: cat.name });
+      });
+      this.setState({ categoryOptions: cats });
+      console.log(this.state.categoryOptions);
+    });
   }
 
   render() {
