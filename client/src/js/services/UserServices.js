@@ -42,7 +42,7 @@ class UserService {
   }
 
   editMe(name, email, phone, municipalId) {
-    console.log(name + " " + email);
+    console.log(name + ' ' + email);
     return api.put('/api/me', {
       name: name,
       email: email,
