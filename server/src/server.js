@@ -72,6 +72,32 @@ app.post('/api/register', function(req, res) {
   });
 });
 
+app.get('/api/me', function(req, res) {
+  getUserId(req, function(userId) {
+    userManager.getUser(userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.put('/api/me', function(req, res) {
+  getUserId(req, function(userId) {
+    getUserRank(req, function(userRank) {
+      userManager.editUser(
+        req.body.name,
+        req.body.email,
+        req.body.phone,
+        req.body.municipalId,
+        userId,
+        userRank,
+        function(result) {
+          res.json(result);
+        }
+      );
+    });
+  });
+});
+
 app.get('/api/users', ensureAdmin, (req, res) => {
   userManager.getUsers(function(result) {
     res.json(result);
@@ -192,7 +218,7 @@ app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
 
 app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
   ticketManager.makeNews(
-    req.body.ticketId,
+    req.params.ticketId,
     req.body.title,
     req.body.description,
     req.body.lat,
@@ -253,6 +279,12 @@ app.post('/api/municipals', ensureAdmin, (req, res) => {
 function getUserId(req, callback) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
     callback(decoded.id);
+  });
+}
+
+function getUserRank(req, callback) {
+  jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
+    callback(decoded.rank);
   });
 }
 

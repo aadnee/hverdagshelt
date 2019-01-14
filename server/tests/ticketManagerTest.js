@@ -14,7 +14,6 @@ describe('Adding ticket', () => {
     ticketManager.addTicket('TicketTest', 'Dette er en test som skal funke', 1.11, 2.22, 1, 1, 1, function(ticket) {
       id = ticket.id;
       Tickets.findOne({ where: { id: ticket.id } }).then(tickets => {
-        //console.log(tickets);
         expect({
           title: tickets.title,
           description: tickets.description,
@@ -68,18 +67,3 @@ describe('Adding ticket', () => {
     });
   });
 });
-/*
-describe('Get news by municipal', () => {
-  it('correct data', done => {
-    newsManager.getLocalNews(1, function(news) {
-      console.log(news.success);
-      expect({
-        success: news.success
-      }).toEqual({
-        success: true
-      });
-      done();
-    });
-  });
-});
-*/

@@ -36,5 +36,18 @@ class UserService {
   deleteUser(id) {
     return axios.delete('/api/users/' + id);
   }
+
+  getMe() {
+    return axios.get('/api/me');
+  }
+
+  editMe(name, email, phone, municipalId) {
+    return axios.put('/api/me', {
+      name: name,
+      email: email,
+      phone: phone,
+      municipalId: municipalId
+    });
+  }
 }
 export let userService = new UserService();
