@@ -21,5 +21,12 @@ module.exports = {
         }),
       err => callback({ success: false, message: 'Sequelize error' })
     );
+  },
+
+  getSubCategories: function(parentId, callback) {
+    Categories.findAll({ where: { parentId: parentId } }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: 'Sequelize error' })
+    );
   }
 };

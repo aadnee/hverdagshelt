@@ -226,6 +226,12 @@ app.get('/api/categories', ensureLogin, function(req, res) {
   });
 });
 
+app.get('/api/categories/:parentId', ensureLogin, function(req, res) {
+  categoryManager.getSubCategories(req.params.parentId, function(result) {
+    res.json(result);
+  });
+});
+
 app.post('/api/categories', ensureEmployee, (req, res) => {
   categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
     res.json(result);
