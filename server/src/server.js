@@ -192,7 +192,7 @@ app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
 
 app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
   ticketManager.makeNews(
-    req.body.ticketId,
+    req.params.ticketId,
     req.body.title,
     req.body.description,
     req.body.lat,

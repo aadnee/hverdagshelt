@@ -25,7 +25,7 @@ class TicketServices {
   }
   acceptTicket(id, title, description, lat, lon, categoryId, municipalId) {
     return api.put('/api/tickets/' + id + '/accept', {
-      ticketId: title,
+      title: title,
       description: description,
       lat: lat,
       lon: lon,
