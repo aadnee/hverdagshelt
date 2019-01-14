@@ -58,17 +58,19 @@ export class AdminRegisterWidget extends React.Component {
             this.state.selectedOption
           )
           .then(res => {
-            console.log(res);
             this.setState({ popupMessage: res.message });
             res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-            this.setState({
-              showRegisterModal: true,
-              firstname: '',
-              lastname: '',
-              email: '',
-              phone: '',
-              selectedOption: ''
-            });
+            this.setState({ showRegisterModal: true });
+            if (res.success) {
+              this.setState({
+                firstname: '',
+                lastname: '',
+                email: '',
+                phone: '',
+                selectedOption: ''
+              });
+              this.modalChange();
+            }
           })
       : companyServices
           .addCompany(
@@ -78,23 +80,24 @@ export class AdminRegisterWidget extends React.Component {
             this.state.selectedOption
           )
           .then(res => {
-            console.log(res);
             this.setState({ popupMessage: res.message });
             res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-            this.setState({
-              showRegisterModal: true,
-              firstname: '',
-              lastname: '',
-              email: '',
-              phone: '',
-              selectedOption: ''
-            });
+            this.setState({ showRegisterModal: true });
+            if (res.success) {
+              this.setState({
+                firstname: '',
+                lastname: '',
+                email: '',
+                phone: '',
+                selectedOption: ''
+              });
+              this.modalChange();
+            }
           });
   };
 
   closeModals = () => {
     this.setState({
-      showMainModal: false,
       showRegisterModal: false
     });
   };

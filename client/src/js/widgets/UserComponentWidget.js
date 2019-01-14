@@ -12,10 +12,12 @@ export class UserComponentListWidget extends React.Component {
     this.state = {
       users: []
     };
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   componentWillMount() {
-    this.props.user
+    this.props.usertype
       ? userService.getUsers().then(res => {
           this.setState({
             users: res.data
@@ -29,14 +31,61 @@ export class UserComponentListWidget extends React.Component {
           console.table(this.state.users);
         });
   }
+  handleDelete = id => {
+    this.props.usertype
+      ? userService.deleteUser(id).then(res => {
+          console.log(res);
+          this.setState({ users: this.state.users.filter(u => u.id !== id) });
+        })
+      : companyServices.deleteCompany(id).then(res => {
+          console.log(res);
+          this.setState({ users: this.state.users.filter(u => u.id !== id) });
+        });
+  };
+
+  handleEdit = user => {
+    console.table(user);
+    this.props.usertype
+      ? userService.editUser(user.id, user.name, user.email, user.phone, user.municipalId, user.rank).then(res => {
+          console.log(res);
+          this.setState({ popupMessage: res.message });
+          res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
+          this.setState({ showRegisterModal: true });
+        })
+      : companyServices.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
+          console.log(res);
+          this.setState({ popupMessage: res.message });
+          res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
+          this.setState({ showRegisterModal: true });
+        });
+  };
 
   render() {
     return (
       <div>
         <List divided relaxed>
-          {this.state.users.map((user, i) => {
-            return <UserComponentListItemWidget key={i} user={this.state.users[i]} />;
-          })}
+          {this.props.usertype
+            ? this.state.users.map((user, i) => {
+                return (
+                  <UserComponentListItemWidget
+                    handleDelete={this.handleDelete.bind(this, user.id)}
+                    handleEdit={this.handleEdit}
+                    usertype
+                    key={i}
+                    user={this.state.users[i]}
+                  />
+                );
+              })
+            : this.state.users.map((user, i) => {
+                return (
+                  <UserComponentListItemWidget
+                    handleDelete={this.handleDelete.bind(this, user.id)}
+                    handleEdit={this.handleEdit}
+                    key={i}
+                    user={user}
+                  />
+                );
+              })}
         </List>
       </div>
     );
@@ -49,21 +98,16 @@ export class UserComponentListItemWidget extends React.Component {
   }
 
   render() {
-    console.log(this.props.user);
     return (
       <List.Item>
         <List.Content floated="right">
           <Button.Group compact={false}>
-            {this.props.user ? (
-              <EditUserWidget user={this.props.user} userEdit />
+            {this.props.usertype ? (
+              <EditUserWidget user={this.props.user} handleEdit={this.props.handleEdit} userEdit />
             ) : (
-              <EditUserWidget user={this.props.user} />
+              <EditUserWidget user={this.props.user} handleEdit={this.props.handleEdit} />
             )}
-            {this.props.user ? (
-              <DeleteUserWidget user={this.props.user} userDelete />
-            ) : (
-              <DeleteUserWidget user={this.props.user} />
-            )}
+            <DeleteUserWidget handleDelete={this.props.handleDelete} user={this.props.user} />
           </Button.Group>
         </List.Content>
         <List.Icon name="user" size="large" verticalAlign="middle" />

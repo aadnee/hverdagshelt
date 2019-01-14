@@ -7,11 +7,9 @@ export class DeleteUserWidget extends Component {
   state = { open: false };
   show = size => () => this.setState({ size, open: true });
   close = () => this.setState({ open: false });
-  handleDelete = () => {
-    this.props.userDelete
-      ? userService.deleteUser(this.props.user.id).then(res => console.log(res))
-      : companyServices.deleteCompany(this.props.user.id);
+  handle = () => {
     this.close();
+    this.props.handleDelete(this.props.user.id);
   };
 
   render() {
@@ -29,7 +27,7 @@ export class DeleteUserWidget extends Component {
             <Button negative onClick={this.close}>
               No
             </Button>
-            <Button onClick={this.handleDelete} positive icon="checkmark" labelPosition="right" content="Yes" />
+            <Button onClick={this.handle} positive icon="checkmark" labelPosition="right" content="Yes" />
           </Modal.Actions>
         </Modal>
       </div>

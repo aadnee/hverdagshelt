@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { userService } from '../services/UserServices';
+import { companyServices } from '../services/CompanyServices';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form } from 'semantic-ui-react';
 import { USER, COMPANY, EMPLOYEE, ADMIN, USERTYPE } from '../commons';
 import { municipalServices } from '../services/MunicipalServices';
@@ -32,8 +33,6 @@ export class EditUserWidget extends Component {
         options: options
       });
     });
-    console.log(this.props.user.municipalId);
-    console.log(this.props.user.name);
     this.setState({
       name: this.props.user.name,
       email: this.props.user.email,
@@ -44,23 +43,6 @@ export class EditUserWidget extends Component {
   }
 
   close = () => this.setState({ open: false });
-  handleEdit = () => {
-    userService
-      .editUser(
-        this.props.user.id,
-        this.state.name,
-        this.state.email,
-        this.state.phone,
-        this.state.municipalId,
-        this.state.rank
-      )
-      .then(res => {
-        console.log(res);
-        this.setState({ popupMessage: res.message });
-        res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-        this.setState({ showRegisterModal: true });
-      });
-  };
 
   close = () => {
     this.setState({ showModal: false });
@@ -72,7 +54,19 @@ export class EditUserWidget extends Component {
       showRegisterModal: false
     });
   };
-
+  handle = () => {
+    let editedUser = {
+      id: this.props.user.id,
+      name: this.state.name,
+      email: this.state.email,
+      phone: this.state.phone,
+      municipalId: this.state.municipalId,
+      rank: this.state.rank
+    };
+    console.log(editedUser);
+    this.props.handleEdit(editedUser);
+    this.closeModals();
+  };
   handleInput = (key, value) => {
     this.setState({ [key]: value });
   };
@@ -80,6 +74,7 @@ export class EditUserWidget extends Component {
   componentDidMount() {}
 
   render() {
+    console.log(this.props.userEdit);
     return (
       <div>
         <Button color="green" onClick={() => this.setState({ showModal: true })}>
@@ -119,9 +114,9 @@ export class EditUserWidget extends Component {
                           iconPosition="left"
                           placeholder="Bedriftsnavn"
                           type="text"
-                          value={this.state.firstname}
+                          value={this.state.name}
                           onChange={(event, data) => {
-                            this.handleInput('firstname', data.value);
+                            this.handleInput('name', data.value);
                           }}
                         />
                       </Form.Field>
@@ -185,15 +180,8 @@ export class EditUserWidget extends Component {
                         />
                       </Form.Field>
                     ) : null}
-                    <Button
-                      color="blue"
-                      fluid
-                      size="large"
-                      onClick={() => {
-                        this.handleEdit();
-                      }}
-                    >
-                      Registrer bruker
+                    <Button color="blue" fluid size="large" onClick={this.handle}>
+                      Endre Bruker
                     </Button>
                     <Button
                       color="grey"
