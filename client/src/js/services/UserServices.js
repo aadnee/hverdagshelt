@@ -34,15 +34,16 @@ class UserService {
   }
 
   deleteUser(id) {
-    return axios.delete('/api/users/' + id);
+    return api.delete('/api/users/' + id);
   }
 
   getMe() {
-    return axios.get('/api/me');
+    return api.get('/api/me');
   }
 
   editMe(name, email, phone, municipalId) {
-    return axios.put('/api/me', {
+    console.log(name + " " + email);
+    return api.put('/api/me', {
       name: name,
       email: email,
       phone: phone,
