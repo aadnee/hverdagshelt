@@ -82,3 +82,51 @@ describe('Setting status', () => {
     });
   });
 });
+
+describe('Get news by userId', () => {
+  it('correct data', done => {
+    ticketManager.getMyTickets(1, function(tickets) {
+      Tickets.findAll({ where: { userId: 1 } }).then(res => {
+        expect({
+          success: tickets.success,
+          data: res
+        }).toEqual({
+          success: true,
+          data: res
+        });
+        done();
+      });
+    });
+  });
+});
+
+describe('Get local tickets', () => {
+  it('correct data', done => {
+    ticketManager.getLocalTickets(1, function(tickets) {
+      Tickets.findAll({ where: { municipalId: 1, status: 1 } }).then(res => {
+        expect({
+          success: tickets.success,
+          data: res
+        }).toEqual({
+          success: true,
+          data: res
+        });
+        done();
+      });
+    });
+  });
+});
+/*
+describe('Make a ticket to an article', () => {
+  it('correct data', done => {
+    ticketManager.makeNews(4, 'TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, function(result) {
+      console.log(result.success);
+      expect({
+        success: result.success
+      }).toEqual({
+        success: true
+      });
+    });
+  });
+});
+*/
