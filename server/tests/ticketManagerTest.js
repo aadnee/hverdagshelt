@@ -67,3 +67,18 @@ describe('Adding ticket', () => {
     });
   });
 });
+
+describe('Setting status', () => {
+  it('correct data', done => {
+    ticketManager.setStatus(1, 4, function(ticket) {
+      expect({
+        success: ticket.success,
+        message: ticket.message.en
+      }).toEqual({
+        success: true,
+        message: 'Status updated.'
+      });
+      done();
+    });
+  });
+});

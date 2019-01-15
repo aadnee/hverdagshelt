@@ -31,7 +31,7 @@ module.exports = {
     Users.destroy({
       where: { id: id, rank: 2 }
     }).then(
-      res => callback({ success: true, message: 'Company deleted.' }),
+      res => callback({ success: true, message: { en: 'Company deleted.', no: 'Firmaet ble slettet.' } }),
       err => callback({ success: false, message: err })
     );
   },
@@ -46,7 +46,7 @@ module.exports = {
       },
       { where: { id: userId, rank: 2 } }
     ).then(
-      res => callback({ success: true, message: 'Company updated.' }),
+      res => callback({ success: true, message: { en: 'Company updated.', no: 'Firmaet ble oppdatert.' } }),
       err => callback({ success: false, message: err })
     );
   }

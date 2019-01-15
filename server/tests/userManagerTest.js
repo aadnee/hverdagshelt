@@ -12,7 +12,7 @@ describe('Registering in use account', () => {
     userManager.register('Test', 'user@user.com', 889988, 1, 1, function(result) {
       expect({
         success: result.success,
-        message: result.message
+        message: result.message.en
       }).toEqual({
         success: false,
         message: 'Registration failed. Email or phone number already in use.'
@@ -27,7 +27,7 @@ describe('Login with correct details', () => {
     userManager.login('user@user.com', '123', function(result) {
       expect({
         success: result.success,
-        message: result.message,
+        message: result.message.en,
         rank: result.rank,
         municipalId: result.municipalId
       }).toEqual({
@@ -87,7 +87,7 @@ describe('Edit and delete user', () => {
     userManager.editUser('Nytt Navn', 'user1@user1.com', 321, 1, 1, 2, function(result) {
       expect({
         success: result.success,
-        message: result.message
+        message: result.message.en
       }).toEqual({
         success: true,
         message: 'User updated.'
@@ -100,7 +100,7 @@ describe('Edit and delete user', () => {
     userManager.deleteUser(1, function(result) {
       expect({
         success: result.success,
-        message: result.message
+        message: result.message.en
       }).toEqual({
         success: true,
         message: 'User deleted.'
