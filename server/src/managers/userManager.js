@@ -10,7 +10,10 @@ module.exports = {
         if (!user) {
           callback({
             success: false,
-            message: 'Authentication failed. User not found.'
+            message: {
+              en: 'Authentication failed. User not found.',
+              no: 'Autentisering feilet. Brukeren kunne ikke bli funnet.'
+            }
           });
         } else {
           bcrypt.compare(password, user.password, function(err, eq) {
@@ -25,7 +28,7 @@ module.exports = {
               });
               callback({
                 success: true,
-                message: 'Authentication successful.',
+                message: { en: 'Authentication successful.', no: 'Autentisering vellykket.' },
                 token: token,
                 rank: user.rank,
                 municipalId: user.municipalId
@@ -33,7 +36,7 @@ module.exports = {
             } else {
               callback({
                 success: false,
-                message: 'Authentication failed. Wrong password.'
+                message: { en: 'Authentication failed. Wrong password.', no: 'Autentisering feilet. Feil passord.' }
               });
             }
           });
@@ -53,7 +56,10 @@ module.exports = {
             if (user) {
               callback({
                 success: false,
-                message: 'Registration failed. Email or phone number already in use.'
+                message: {
+                  en: 'Registration failed. Email or phone number already in use.',
+                  no: 'Registering feilet. Email eller tlf.nr. er allerede i bruk.'
+                }
               });
             } else {
               Users.create({
@@ -76,7 +82,7 @@ module.exports = {
                   );
                   callback({
                     success: true,
-                    message: 'Registration successful.'
+                    message: { en: 'Registration successful.', no: 'Registrering vellykket.' }
                   });
                 },
                 err => callback({ success: false, message: err })
@@ -107,7 +113,7 @@ module.exports = {
     Users.destroy({
       where: { id: id, rank: { $not: 2 } }
     }).then(
-      res => callback({ success: true, message: 'User deleted.' }),
+      res => callback({ success: true, message: { en: 'User deleted.', no: 'Brukeren ble slettet.' } }),
       err => callback({ success: false, message: err })
     );
   },
@@ -123,7 +129,7 @@ module.exports = {
       },
       { where: { id: userId, rank: { $not: 2 } } }
     ).then(
-      res => callback({ success: true, message: 'User updated.' }),
+      res => callback({ success: true, message: { en: 'User updated.', no: 'Brukeren ble oppdatert.' } }),
       err => callback({ success: false, message: err })
     );
   },
@@ -132,7 +138,7 @@ module.exports = {
     Users.findOne({ where: { id: userId } }).then(
       user => {
         if (user == null) {
-          callback({ success: false, message: 'User not found.' });
+          callback({ success: false, message: { en: 'User not found.', no: 'Brukeren kunne ikke bli funnet.' } });
         } else {
           bcrypt.compare(oldPassword, user.password, function(err, eq) {
             if (err) throw err;
@@ -146,13 +152,17 @@ module.exports = {
                     },
                     { where: { id: userId } }
                   ).then(
-                    res => callback({ success: true, message: 'User and password updated.' }),
+                    res =>
+                      callback({
+                        success: true,
+                        message: { en: 'User and password updated.', no: 'Informasjonen ble oppdatert.' }
+                      }),
                     err => callback({ success: false, message: err })
                   );
                 });
               });
             } else {
-              callback({ success: false, message: 'Wrong password.' });
+              callback({ success: false, message: { en: 'Wrong password.', no: 'Feil passord.' } });
             }
           });
         }

@@ -16,7 +16,7 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: 'Ticket sent.',
+          message: { en: 'Ticket sent.', no: 'Varselen ble sent.' },
           id: res.id
         }),
       err => callback({ success: false, message: err })
@@ -38,7 +38,7 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: 'Ticket saved.'
+          message: { en: 'Ticket saved.', no: 'Varselen ble lagret.' }
         }),
       err => callback({ success: false, message: err })
     );
@@ -49,7 +49,7 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: 'Status updated.'
+          message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
         }),
       err => callback({ success: false, message: err })
     );

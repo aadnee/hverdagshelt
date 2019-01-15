@@ -15,7 +15,7 @@ module.exports = {
       result =>
         callback({
           success: true,
-          message: 'Municipal added.',
+          message: { en: 'Municipal added.', no: 'Kommunen ble lagt til.' },
           id: result.id
         }),
       err => callback({ success: false, message: err })
