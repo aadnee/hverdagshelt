@@ -34,7 +34,8 @@ export class TicketFormWidget extends Component {
       subCategoryOptions: [],
       position: [null, null],
       subscription: 'false',
-      selectedCategory: false
+      selectedCategory: false,
+      image: null
     };
   }
 
@@ -54,7 +55,8 @@ export class TicketFormWidget extends Component {
         1,
         this.state.subcategory ? this.state.subcategory : this.state.category,
         Cookies.get('municipalId'),
-        this.state.subscription === 'true'
+        this.state.subscription === 'true',
+        this.state.image
       )
       .then(res => console.log(res));
   };
@@ -149,6 +151,13 @@ export class TicketFormWidget extends Component {
                   <Header icon>
                     <Icon name="image file outline" />
                     Bildemodul her.
+                    <input
+                      type="file"
+                      onChange={(event, data) => {
+                        this.handleInput('image', event.target.files);
+                      }}
+                      className="inputfile"
+                    />
                   </Header>
                   <Button primary>Legg til bilde</Button>
                 </Segment>
