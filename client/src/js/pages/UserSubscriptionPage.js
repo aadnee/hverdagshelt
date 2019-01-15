@@ -12,16 +12,18 @@ export class UserSubscriptionPage extends Component {
     this.state = {
       news: [
         {
+          categoryId: 2,
+          createdAt: '2019-01-15T07:33:32.000Z',
+          description: 'Pls sett opp brøytestikker her.',
           id: 1,
-          title: 'testnyhet',
-          date: '28/09/2019',
-          time: '19:20',
-          imageURL:
-            'http://www.sunnydalegardencentre.co.uk/files/images/news/picture-an-oak-1534331433-1534331463_n.jpg',
-
-          description: 'nyhetsbeskrivelse' + 'yeet' + 'yeet',
-          address: 'prinsengate 20',
-          company: 'company name'
+          lat: 1,
+          lon: 1,
+          municipalId: 1,
+          newsId: null,
+          status: 4,
+          title: 'Vei problem',
+          updatedAt: '2019-01-15T07:33:32.000Z',
+          userId: 1
         }
       ]
     };
@@ -39,7 +41,7 @@ export class UserSubscriptionPage extends Component {
           {this.state.news.map(news => {
             return (
               <Grid.Row key={news.id}>
-                <NewsCaseWidget news={news} />
+                <NewsCaseWidget newscase={news} />
               </Grid.Row>
             );
           })}
