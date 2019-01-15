@@ -196,6 +196,7 @@ app.post('/api/tickets', ensureLogin, function(req, res) {
       req.body.lon,
       req.body.categoryId,
       req.body.municipalId,
+      req.body.subscribed,
       userId,
       function(result) {
         res.json(result);
@@ -213,6 +214,8 @@ app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
       req.body.lon,
       req.body.categoryId,
       req.body.municipalId,
+      req.body.subscribed,
+
       userId,
       req.params.ticketId,
       function(result) {
@@ -237,6 +240,7 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
     req.body.lon,
     req.body.categoryId,
     req.body.municipalId,
+    req.body.subscribed,
     function(result) {
       res.json(result);
     }
