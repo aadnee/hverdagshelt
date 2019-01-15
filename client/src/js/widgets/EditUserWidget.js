@@ -3,7 +3,7 @@ import { userService } from '../services/UserServices';
 import { companyServices } from '../services/CompanyServices';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form } from 'semantic-ui-react';
 import { USER, COMPANY, EMPLOYEE, ADMIN, USERTYPE } from '../commons';
-import { municipalServices } from '../services/MunicipalServices';
+import { municipalService } from '../services/MunicipalServices';
 
 export class EditUserWidget extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ export class EditUserWidget extends Component {
   }
 
   componentWillMount() {
-    municipalServices.getMunicipals().then(res => {
+    municipalService.getMunicipals().then(res => {
       let options = [];
       res.data.map(munic => {
         options.push({ key: munic.id, value: munic.id, text: munic.name });

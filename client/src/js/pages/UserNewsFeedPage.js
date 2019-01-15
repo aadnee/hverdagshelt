@@ -144,7 +144,7 @@ export class UserNewsFeedPage extends Component {
                   Henter informasjon
                 </Message.Content>
               </Message>
-            ) : this.state.news.length > 0 ? (
+            ) : this.state.news > 0 ? (
               this.state.news.map(nc => <NewsCaseWidget key={nc.id} newscase={nc} />)
             ) : (
               <Message icon success>

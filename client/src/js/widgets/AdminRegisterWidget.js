@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form, Icon } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
-import { companyServices } from '../services/CompanyServices';
-import { municipalServices } from '../services/MunicipalServices';
+import { companyService } from '../services/CompanyServices';
+import { municipalService } from '../services/MunicipalServices';
 
 export class AdminRegisterWidget extends React.Component {
   constructor(props) {
@@ -24,7 +24,7 @@ export class AdminRegisterWidget extends React.Component {
   }
 
   componentWillMount() {
-    municipalServices.getMunicipals().then(res => {
+    municipalService.getMunicipals().then(res => {
       let options = [];
       res.data.map(munic => {
         options.push({ key: munic.id, value: munic.id, text: munic.name });
@@ -72,7 +72,7 @@ export class AdminRegisterWidget extends React.Component {
               this.modalChange();
             }
           })
-      : companyServices
+      : companyService
           .addCompany(
             this.state.firstname + this.state.lastname,
             this.state.email,

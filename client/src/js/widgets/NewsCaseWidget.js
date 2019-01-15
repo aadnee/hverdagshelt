@@ -40,7 +40,6 @@ export class NewsCaseWidget extends Component {
           <Segment vertical>
             <Container>
               <Grid divided inverted stackable>
-                {newscase.imageURL ? (
                 <Grid.Column width={12} textAlign="left">
                   <p>{newscase.description}</p>
                 </Grid.Column>
