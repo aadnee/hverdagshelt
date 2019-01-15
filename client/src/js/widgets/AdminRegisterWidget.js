@@ -56,8 +56,7 @@ export class AdminRegisterWidget extends React.Component {
       municipalId: this.state.selectedOption
     };
     console.log(newUser);
-    this.setState({ showMainModal: this.props.handleRegister(newUser) });
-    this.closeModals();
+    console.log(this.props.handleRegister(newUser));
   };
 
   render() {

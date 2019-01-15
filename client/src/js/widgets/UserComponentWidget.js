@@ -50,7 +50,7 @@ export class UserComponentListWidget extends React.Component {
     this.props.usertype
       ? userService.editUser(user.id, user.name, user.email, user.phone, user.municipalId, user.rank).then(res => {
           console.log(res);
-          this.setState({ popupMessage: res.message });
+          this.setState({ popupMessage: res.message.no });
           res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
           this.setState({ showRegisterModal: true });
           let oldUser = 0;
@@ -63,7 +63,7 @@ export class UserComponentListWidget extends React.Component {
         })
       : companyService.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
           console.log(res);
-          this.setState({ popupMessage: res.message });
+          this.setState({ popupMessage: res.message.no });
           res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
           this.setState({ showRegisterModal: true });
           let oldUser = 0;
@@ -82,26 +82,22 @@ export class UserComponentListWidget extends React.Component {
   };
 
   handleRegister = newUser => {
-    console.log('reg');
     //USERSERICE -> request cookie
     this.props.user
       ? userService.register(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
           this.setState({ popupMessage: res.message.no });
           res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
           this.setState({ showRegisterModal: true });
-          if (res.success) {
-            this.modalChange();
-          }
+          return res.success;
         })
       : companyService.addCompany(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
+          console.log(res);
           this.setState({ popupMessage: res.message.no });
           res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
           this.setState({ showRegisterModal: true });
-          if (res.success) {
-            this.modalChange();
-          }
+          return res.success;
         });
-    return true;
+    return false;
   };
 
   render() {
