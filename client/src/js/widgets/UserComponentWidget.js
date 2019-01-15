@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { List, Button } from 'semantic-ui-react';
+import { List, Button, Modal } from 'semantic-ui-react';
 import { DeleteUserWidget } from './DeleteUserWidget';
 import { AdminRegisterWidget } from './AdminRegisterWidget';
 import { EditUserWidget } from './EditUserWidget';
@@ -10,10 +10,14 @@ export class UserComponentListWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: []
+      users: [],
+      showRegisterModal: false,
+      popupMessage: '',
+      popupSuccess: ''
     };
     this.handleDelete = this.handleDelete.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
   }
 
   componentWillMount() {
@@ -22,13 +26,11 @@ export class UserComponentListWidget extends React.Component {
           this.setState({
             users: res.data
           });
-          console.table(this.state.users);
         })
       : companyService.getCompanies().then(res => {
           this.setState({
             users: res.data
           });
-          console.table(this.state.users);
         });
   }
   handleDelete = id => {
@@ -51,13 +53,55 @@ export class UserComponentListWidget extends React.Component {
           this.setState({ popupMessage: res.message });
           res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
           this.setState({ showRegisterModal: true });
+          let oldUser = 0;
+          this.state.users.find((u, i) => {
+            user.id = u.id ? (oldUser = i) : null;
+          });
+          console.log(oldUser);
+          this.state.users[oldUser] = user;
+          this.forceUpdate();
         })
-      : companyServices.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
+      : companyService.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
           console.log(res);
           this.setState({ popupMessage: res.message });
           res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
           this.setState({ showRegisterModal: true });
+          let oldUser = 0;
+          this.state.users.find((u, i) => {
+            user.id = u.id ? (oldUser = i) : null;
+          });
+          console.log(oldUser);
+          this.state.users[oldUser] = user;
+          this.forceUpdate();
         });
+  };
+  closeModals = () => {
+    this.setState({
+      showRegisterModal: false
+    });
+  };
+
+  handleRegister = newUser => {
+    console.log('reg');
+    //USERSERICE -> request cookie
+    this.props.user
+      ? userService.register(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
+          this.setState({ popupMessage: res.message.no });
+          res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
+          this.setState({ showRegisterModal: true });
+          if (res.success) {
+            this.modalChange();
+          }
+        })
+      : companyService.addCompany(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
+          this.setState({ popupMessage: res.message.no });
+          res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
+          this.setState({ showRegisterModal: true });
+          if (res.success) {
+            this.modalChange();
+          }
+        });
+    return true;
   };
 
   render() {
@@ -87,6 +131,16 @@ export class UserComponentListWidget extends React.Component {
                 );
               })}
         </List>
+        <AdminRegisterWidget handleRegister={this.handleRegister} user />
+        <Modal size={'tiny'} open={this.state.showRegisterModal}>
+          <Modal.Header>Registreringsstatus: {this.state.popupSuccess ? 'Suksess' : 'Error'}</Modal.Header>
+          <Modal.Content>
+            <p>{this.state.popupMessage}</p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button icon="check" content="Ok" onClick={this.closeModals} />
+          </Modal.Actions>
+        </Modal>
       </div>
     );
   }

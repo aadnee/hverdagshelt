@@ -74,7 +74,6 @@ export class EditUserWidget extends Component {
   componentDidMount() {}
 
   render() {
-    console.log(this.props.userEdit);
     return (
       <div>
         <Button color="green" onClick={() => this.setState({ showModal: true })}>
