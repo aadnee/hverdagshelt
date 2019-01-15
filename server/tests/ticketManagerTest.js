@@ -11,7 +11,9 @@ beforeAll(async () => {
 describe('Adding ticket', () => {
   let id;
   it('correct data', done => {
-    ticketManager.addTicket('TicketTest', 'Dette er en test som skal funke', 1.11, 2.22, 1, 1, 1, function(ticket) {
+    ticketManager.addTicket('TicketTest', 'Dette er en test som skal funke', 1.11, 2.22, 1, 1, true, 1, function(
+      ticket
+    ) {
       id = ticket.id;
       Tickets.findOne({ where: { id: ticket.id } }).then(tickets => {
         expect({
@@ -22,6 +24,7 @@ describe('Adding ticket', () => {
           lon: tickets.lon,
           categoryId: tickets.categoryId,
           municipalId: tickets.municipalId,
+          subscribed: tickets.subscribed,
           userId: tickets.userId
         }).toEqual({
           title: 'TicketTest',
@@ -31,6 +34,7 @@ describe('Adding ticket', () => {
           lon: 2.22,
           categoryId: 1,
           municipalId: 1,
+          subscribed: true,
           userId: 1
         });
         done();
@@ -39,7 +43,7 @@ describe('Adding ticket', () => {
   });
 
   it('correct data', done => {
-    ticketManager.editTicket('TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, 1, id, function(
+    ticketManager.editTicket('TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, true, 1, id, function(
       ticket
     ) {
       Tickets.findOne({ where: { id: id } }).then(tickets => {
@@ -51,6 +55,7 @@ describe('Adding ticket', () => {
           lon: tickets.lon,
           categoryId: tickets.categoryId,
           municipalId: tickets.municipalId,
+          subscribed: tickets.subscribed,
           userId: tickets.userId
         }).toEqual({
           title: 'TicketTest',
@@ -60,6 +65,7 @@ describe('Adding ticket', () => {
           lon: 2.22,
           categoryId: 1,
           municipalId: 1,
+          subscribed: true,
           userId: 1
         });
         done();
