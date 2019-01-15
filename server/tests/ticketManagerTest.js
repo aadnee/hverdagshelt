@@ -73,10 +73,10 @@ describe('Setting status', () => {
     ticketManager.setStatus(1, 4, function(ticket) {
       expect({
         success: ticket.success,
-        message: ticket.message
+        message: ticket.message.en
       }).toEqual({
         success: true,
-        message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
+        message: 'Status updated.'
       });
       done();
     });
