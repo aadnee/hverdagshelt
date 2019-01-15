@@ -35,7 +35,8 @@ export class TicketFormWidget extends Component {
       subscription: 'false',
       selectedCategory: false,
       modalMessage: '',
-      modalOpen: false
+      modalOpen: false,
+      image: null
     };
   }
   close = () => this.setState({ modalOpen: false });
@@ -55,7 +56,8 @@ export class TicketFormWidget extends Component {
         1,
         this.state.subcategory ? this.state.subcategory : this.state.category,
         Cookies.get('municipalId'),
-        this.state.subscription === 'true'
+        this.state.subscription === 'true',
+        this.state.image
       )
       .then(res => {
         this.setState({ modalMessage: res.message.no, modalOpen: true });
@@ -158,6 +160,13 @@ export class TicketFormWidget extends Component {
                   <Header icon>
                     <Icon name="image file outline" />
                     Bildemodul her.
+                    <input
+                      type="file"
+                      onChange={(event, data) => {
+                        this.handleInput('image', event.target.files);
+                      }}
+                      className="inputfile"
+                    />
                   </Header>
                   <Button primary>Legg til bilde</Button>
                 </Segment>

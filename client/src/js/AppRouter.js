@@ -32,7 +32,7 @@ import { MapWidget as Widget } from './widgets/MapWidget';
 export class AppRouter extends Component {
   render() {
     return (
-      <HashRouter>
+      <>
         <div>
           <Route exact path="/" component={HomePage} />
           {/* Admin Routes */}
@@ -64,7 +64,7 @@ export class AppRouter extends Component {
           {/* Develoopment */}
           <Route exact path="/widget" component={Widget} />
         </div>
-      </HashRouter>
+      </>
     );
   }
 }
