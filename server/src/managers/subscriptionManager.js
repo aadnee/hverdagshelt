@@ -30,7 +30,7 @@ module.exports = {
         callback({
           success: true,
           message: { en: 'Subscription added.', no: 'Abonnement har blitt lagt til.' },
-          id: result.id
+          id: res.id
         }),
       err => callback({ success: false, message: err })
     );
