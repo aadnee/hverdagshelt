@@ -4,7 +4,7 @@ module.exports = {
   getSubscriptions: function(userId, callback) {
     Subscriptions.findAll({
       attributes: ['newsId'],
-      where: { userId: id },
+      where: { userId: userId },
       raw: true
     }).then(res => {
       News.findAll({
