@@ -57,7 +57,7 @@ export class NewsCaseWidget extends Component {
               </Grid>
             </Container>
           </Segment>
-          <List link>
+          <List link floated={'left'}>
             <List.Item as="a">Hendelses-adresse: {newscase.address}</List.Item>
             <List.Item as="a">Oppdrag utføres av: {newscase.company}</List.Item>
           </List>
