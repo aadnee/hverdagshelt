@@ -55,7 +55,7 @@ export class UserComponentListWidget extends React.Component {
           this.setState({ showRegisterModal: true });
           let oldUser = 0;
           this.state.users.find((u, i) => {
-            (user.id = u.id) ? (oldUser = i) : null;
+            user.id === u.id ? (oldUser = i) : null;
           });
           console.log(oldUser);
           this.state.users[oldUser] = user;
@@ -68,7 +68,7 @@ export class UserComponentListWidget extends React.Component {
           this.setState({ showRegisterModal: true });
           let oldUser = 0;
           this.state.users.find((u, i) => {
-            user.id = u.id ? (oldUser = i) : null;
+            user.id === u.id ? (oldUser = i) : null;
           });
           console.log(oldUser);
           this.state.users[oldUser] = user;
@@ -82,20 +82,22 @@ export class UserComponentListWidget extends React.Component {
   };
 
   handleRegister = newUser => {
+    let success = false;
     //USERSERICE -> request cookie
     this.props.user
       ? userService.register(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
           this.setState({ popupMessage: res.message.no });
           res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
           this.setState({ showRegisterModal: true });
-          return res.success;
+          success = true;
+          return true;
         })
       : companyService.addCompany(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
-          console.log(res);
           this.setState({ popupMessage: res.message.no });
           res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
           this.setState({ showRegisterModal: true });
-          return res.success;
+          success = true;
+          return true;
         });
     return false;
   };
