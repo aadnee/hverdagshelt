@@ -26,11 +26,27 @@ module.exports = {
       newsId: newsId,
       userId: id
     }).then(
-      result =>
+      res =>
         callback({
           success: true,
           message: { en: 'Subscription added.', no: 'Abonnement har blitt lagt til.' },
           id: result.id
+        }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  deleteSubscription: function(newsId, id, callback) {
+    Subscriptions.destroy({
+      where: {
+        newsId: newsId,
+        userId: id
+      }
+    }).then(
+      res =>
+        callback({
+          success: true,
+          message: { en: 'Subscription deleted.', no: 'Abonnement har blitt fjernet.' }
         }),
       err => callback({ success: false, message: err })
     );

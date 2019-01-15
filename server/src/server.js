@@ -308,6 +308,14 @@ app.post('/api/subscriptions', ensureLogin, function(req, res) {
   });
 });
 
+app.delete('/api/subscriptions', ensureLogin, function(req, res) {
+  getUserId(req, function(id) {
+    subscriptionManager.deleteSubscription(req.body.newsId, id, function(result) {
+      res.json(result);
+    });
+  });
+});
+
 function getUserId(req, callback) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
     callback(decoded.id);
@@ -358,16 +366,12 @@ if (process.env.NODE_ENV !== 'production') {
   fs.watch(public_path, () => reloadServer.reload());
 }
 
-http
-  .createServer(function(req, res) {
-    res.writeHead(301, { Location: 'https://hverdagshelt.pro:3001' + req.url });
-    res.end();
-  })
-  .listen(3000);
+http.createServer(app).listen(3000);
 
 const options = {
   key: fs.readFileSync('./src/security/private.key'),
   cert: fs.readFileSync('./src/security/certificate.crt')
 };
+
 https.createServer(options, app).listen(3001);
 console.log('Server started');

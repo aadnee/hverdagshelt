@@ -26,10 +26,6 @@ class NewsService {
   getLocalNews(municipalId) {
     return api.get('/api/news/municipal/' + municipalId);
   }
-
-  getPersonalNews() {
-    return api.get('api/subscriptions');
-  }
 }
 
 export let newsService = new NewsService();
