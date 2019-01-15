@@ -1,5 +1,7 @@
 import express from 'express';
 import path from 'path';
+import http from 'http';
+import https from 'https';
 import reload from 'reload';
 import fs from 'fs';
 import { Users } from './models.js';
@@ -131,19 +133,17 @@ app.delete('/api/users/:id', ensureAdmin, (req, res) => {
 });
 
 app.put('/api/users/:id', ensureAdmin, function(req, res) {
-  getUserId(req, function(userId) {
-    userManager.editUser(
-      req.body.name,
-      req.body.email,
-      req.body.phone,
-      req.body.municipalId,
-      userId,
-      req.body.rank,
-      function(result) {
-        res.json(result);
-      }
-    );
-  });
+  userManager.editUser(
+    req.body.name,
+    req.body.email,
+    req.body.phone,
+    req.body.municipalId,
+    req.params.id,
+    req.body.rank,
+    function(result) {
+      res.json(result);
+    }
+  );
 });
 
 app.get('/api/companies', ensureEmployee, (req, res) => {
@@ -358,11 +358,16 @@ if (process.env.NODE_ENV !== 'production') {
   fs.watch(public_path, () => reloadServer.reload());
 }
 
-// The listen promise can be used to wait for the web server to start (for instance in your tests)
-export let listen = new Promise((resolve, reject) => {
-  app.listen(3000, error => {
-    if (error) reject(error.message);
-    console.log('Server started');
-    resolve();
-  });
-});
+http
+  .createServer(function(req, res) {
+    res.writeHead(301, { Location: 'https://hverdagshelt.pro:3001' + req.url });
+    res.end();
+  })
+  .listen(3000);
+
+const options = {
+  key: fs.readFileSync('./src/security/private.key'),
+  cert: fs.readFileSync('./src/security/certificate.crt')
+};
+https.createServer(options, app).listen(3001);
+console.log('Server started');
