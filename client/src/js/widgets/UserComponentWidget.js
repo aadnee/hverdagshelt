@@ -39,40 +39,50 @@ export class UserComponentListWidget extends React.Component {
           console.log(res);
           this.setState({ users: this.state.users.filter(u => u.id !== id) });
         })
-      : companyServices.deleteCompany(id).then(res => {
+      : companyService.deleteCompany(id).then(res => {
           console.log(res);
           this.setState({ users: this.state.users.filter(u => u.id !== id) });
         });
   };
 
-  handleEdit = user => {
+  handleEdit = async user => {
     console.table(user);
-    this.props.usertype
+    return this.props.usertype
       ? userService.editUser(user.id, user.name, user.email, user.phone, user.municipalId, user.rank).then(res => {
           console.log(res);
-          this.setState({ popupMessage: res.message.no });
-          res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-          this.setState({ showRegisterModal: true });
-          let oldUser = 0;
-          this.state.users.find((u, i) => {
-            user.id === u.id ? (oldUser = i) : null;
+          this.setState({
+            popupMessage: res.message.no,
+            popupSuccess: res.success,
+            showRegisterModal: true
           });
-          console.log(oldUser);
-          this.state.users[oldUser] = user;
-          this.forceUpdate();
+          let oldUser = null;
+          if (res.success) {
+            this.state.users.find((u, i) => {
+              user.id === u.id ? (oldUser = i) : null;
+            });
+            console.log(oldUser);
+            this.state.users[oldUser] = user;
+            this.forceUpdate();
+          }
+          return res.success;
         })
       : companyService.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
           console.log(res);
-          this.setState({ popupMessage: res.message.no });
-          res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-          this.setState({ showRegisterModal: true });
-          let oldUser = 0;
-          this.state.users.find((u, i) => {
-            user.id === u.id ? (oldUser = i) : null;
+          this.setState({
+            popupMessage: res.message.no,
+            popupSuccess: res.success,
+            showRegisterModal: true
           });
-          console.log(oldUser);
-          this.state.users[oldUser] = user;
-          this.forceUpdate();
+          let oldUser = null;
+          if (res.success) {
+            this.state.users.find((u, i) => {
+              user.id === u.id ? (oldUser = i) : null;
+            });
+            console.log(oldUser);
+            this.state.users[oldUser] = user;
+            this.forceUpdate();
+          }
+          return res.success;
         });
   };
   closeModals = () => {
@@ -81,25 +91,29 @@ export class UserComponentListWidget extends React.Component {
     });
   };
 
-  handleRegister = newUser => {
-    let success = false;
+  handleRegister = async newUser => {
     //USERSERICE -> request cookie
-    this.props.user
+    return (await this.props.usertype)
       ? userService.register(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
-          this.setState({ popupMessage: res.message.no });
-          res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-          this.setState({ showRegisterModal: true });
-          success = true;
-          return true;
+          console.log(res);
+          this.setState({
+            popupMessage: res.message.no,
+            popupSuccess: res.success,
+            showRegisterModal: true
+          });
+          res.success ? this.state.users.push(newUser) : null;
+          return res.success;
         })
       : companyService.addCompany(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
-          this.setState({ popupMessage: res.message.no });
-          res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-          this.setState({ showRegisterModal: true });
-          success = true;
-          return true;
+          console.log(res);
+          this.setState({
+            popupMessage: res.message.no,
+            popupSuccess: res.success,
+            showRegisterModal: true
+          });
+          res.success ? this.state.users.push(newUser) : null;
+          return res.success;
         });
-    return false;
   };
 
   render() {
@@ -164,8 +178,8 @@ export class UserComponentListItemWidget extends React.Component {
         </List.Content>
         <List.Icon name="user" size="large" verticalAlign="middle" />
         <List.Content>
-          <List.Header as="a">{this.props.user.name}</List.Header>
-          <List.Description as="a">{this.props.user.email}</List.Description>
+          <List.Header>{this.props.user.name}</List.Header>
+          <List.Description>{this.props.user.email}</List.Description>
         </List.Content>
       </List.Item>
     );

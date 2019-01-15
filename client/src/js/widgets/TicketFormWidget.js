@@ -11,15 +11,14 @@ import {
   Header,
   Icon,
   Input,
-  Image,
-  Message,
+  Modal,
   Segment,
   TextArea
 } from 'semantic-ui-react';
 
 import { ticketService } from '../services/TicketServices';
 import { categoryService } from '../services/CategoryServices';
-
+import { MessageWidget } from './MessageWidget';
 import Cookies from 'js-cookie';
 
 export class TicketFormWidget extends Component {
@@ -30,11 +29,13 @@ export class TicketFormWidget extends Component {
       details: '',
       category: '',
       categoryOptions: [],
-      subcategory: null,
+      subcategory: '',
       subCategoryOptions: [],
       position: [null, null],
       subscription: 'false',
-      selectedCategory: false
+      selectedCategory: false,
+      modalMessage: '',
+      modalOpen: false
     };
   }
 
@@ -45,7 +46,6 @@ export class TicketFormWidget extends Component {
   submit = () => {
     console.log(this.state);
     //lat, lon and municipalId is fetched from the map
-    //municipalId could also be fetched from Cookie
     ticketService
       .addTicket(
         this.state.headline,
@@ -56,7 +56,11 @@ export class TicketFormWidget extends Component {
         Cookies.get('municipalId'),
         this.state.subscription === 'true'
       )
-      .then(res => console.log(res));
+      .then(res => {
+        console.log(res);
+        this.setState({ modalMessage: res.message.no, modalOpen: true });
+        console.log(this.state.modalMessage);
+      });
   };
 
   getSubCategories(category) {
@@ -83,6 +87,7 @@ export class TicketFormWidget extends Component {
   render() {
     return (
       <Container>
+        <MessageWidget modalOpen={this.state.modalOpen} modalMessage={this.state.modalMessage} size={'tiny'} />
         <Grid verticalAlign="middle">
           <Grid.Column>
             <Form size="large">
