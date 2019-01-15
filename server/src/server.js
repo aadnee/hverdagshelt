@@ -248,8 +248,8 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
 });
 
 app.get('/api/mytickets', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    ticketManager.getMyTickets(id, function(result) {
+  getUserId(req, function(userId) {
+    ticketManager.getMyTickets(userId, function(result) {
       res.json(result);
     });
   });
@@ -293,24 +293,30 @@ app.post('/api/municipals', ensureAdmin, (req, res) => {
 });
 
 app.get('/api/subscriptions', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    subscriptionManager.getSubscriptions(id, function(result) {
+  getUserId(req, function(userId) {
+    subscriptionManager.getSubscriptions(userId, function(result) {
       res.json(result);
     });
   });
 });
 
 app.post('/api/subscriptions', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    subscriptionManager.addSubscription(req.body.newsId, id, function(result) {
+  getUserId(req, function(userId) {
+    subscriptionManager.addSubscription(req.body.newsId, userId, function(result) {
       res.json(result);
     });
   });
 });
 
-app.delete('/api/subscriptions', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    subscriptionManager.deleteSubscription(req.body.newsId, id, function(result) {
+app.post('/api/subscriptions', ensureAdmin, function(req, res) {
+  subscriptionManager.addSubscription(req.body.newsId, req.body.userId, function(result) {
+    res.json(result);
+  });
+});
+
+app.delete('/api/subscriptions/:newsId', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    subscriptionManager.deleteSubscription(req.params.newsId, userId, function(result) {
       res.json(result);
     });
   });
