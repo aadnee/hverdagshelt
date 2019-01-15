@@ -11,13 +11,15 @@ import {
   Header,
   Icon,
   Input,
-  Image,
-  Message,
-  Segment, TextArea
+  Modal,
+  Segment,
+  TextArea
 } from 'semantic-ui-react';
 
 import { ticketService } from '../services/TicketServices';
 import { categoryService } from '../services/CategoryServices';
+import { MessageWidget } from './MessageWidget';
+import Cookies from 'js-cookie';
 
 export class TicketFormWidget extends Component {
   constructor(props) {
@@ -31,9 +33,13 @@ export class TicketFormWidget extends Component {
       subCategoryOptions: [],
       position: [null, null],
       subscription: 'false',
-      selectedCategory: false
+      selectedCategory: false,
+      modalMessage: '',
+      modalOpen: false,
+      image: null
     };
   }
+  close = () => this.setState({ modalOpen: false });
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
@@ -42,22 +48,30 @@ export class TicketFormWidget extends Component {
   submit = () => {
     console.log(this.state);
     //lat, lon and municipalId is fetched from the map
-    //municipalId could also be fetched from Cookie
     ticketService
-      .addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1)
-      .then(res => console.log(res));
+      .addTicket(
+        this.state.headline,
+        this.state.details,
+        1,
+        1,
+        this.state.subcategory ? this.state.subcategory : this.state.category,
+        Cookies.get('municipalId'),
+        this.state.subscription === 'true',
+        this.state.image
+      )
+      .then(res => {
+        this.setState({ modalMessage: res.message.no, modalOpen: true });
+      });
   };
 
   getSubCategories(category) {
     //Get subcategories based on the chosen category
-    console.log(category);
     categoryService.getSubCategories(category).then(res => {
       let subcats = [];
       res.data.map(subCat => {
         subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
       });
       this.setState({ subCategoryOptions: subcats });
-      console.log(this.state.subCategoryOptions);
     });
   }
 
@@ -68,13 +82,18 @@ export class TicketFormWidget extends Component {
         cats.push({ key: cat.id, value: cat.id, text: cat.name });
       });
       this.setState({ categoryOptions: cats });
-      console.log(this.state.categoryOptions);
     });
   }
 
   render() {
     return (
       <Container>
+        <MessageWidget
+          callback={this.close}
+          modalOpen={this.state.modalOpen}
+          modalMessage={this.state.modalMessage}
+          size={'tiny'}
+        />
         <Grid verticalAlign="middle">
           <Grid.Column>
             <Form size="large">
@@ -95,12 +114,12 @@ export class TicketFormWidget extends Component {
                 <Form.Field>
                   <label>Utdyp problemet</label>
                   <TextArea
-                      autoHeight
-                      placeholder={'Beskrivelse'}
-                      value={this.state.details}
-                      onChange={(event, data) => {
-                        this.handleInput('details', data.value);
-                      }}
+                    autoHeight
+                    placeholder={'Beskrivelse'}
+                    value={this.state.details}
+                    onChange={(event, data) => {
+                      this.handleInput('details', data.value);
+                    }}
                   />
                 </Form.Field>
                 <Form.Field>
@@ -141,6 +160,13 @@ export class TicketFormWidget extends Component {
                   <Header icon>
                     <Icon name="image file outline" />
                     Bildemodul her.
+                    <input
+                      type="file"
+                      onChange={(event, data) => {
+                        this.handleInput('image', event.target.files);
+                      }}
+                      className="inputfile"
+                    />
                   </Header>
                   <Button primary>Legg til bilde</Button>
                 </Segment>

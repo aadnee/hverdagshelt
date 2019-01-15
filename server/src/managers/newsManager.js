@@ -15,7 +15,7 @@ module.exports = {
       result =>
         callback({
           success: true,
-          message: 'Article added.',
+          message: { en: 'Article added.', no: 'Artikkelen ble lagt til.' },
           id: result.id
         }),
       err => callback({ success: false, message: err })
@@ -28,7 +28,7 @@ module.exports = {
         if (!article) {
           callback({
             success: false,
-            message: 'Article not found.'
+            message: { en: 'Article not found.', no: 'Artikkelen kunne ikke bli funnet.' }
           });
         } else {
           News.update(
@@ -46,7 +46,7 @@ module.exports = {
             res =>
               callback({
                 success: true,
-                message: 'Article updated successfully'
+                message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
               }),
             err => callback({ success: false, message: err })
           );

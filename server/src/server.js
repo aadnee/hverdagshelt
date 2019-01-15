@@ -1,7 +1,12 @@
 import express from 'express';
 import path from 'path';
+import http from 'http';
+import https from 'https';
 import reload from 'reload';
 import fs from 'fs';
+import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
+import multer from 'multer';
 import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
@@ -10,18 +15,23 @@ import subscriptionManager from './managers/subscriptionManager';
 import municipalManager from './managers/municipalManager';
 import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
-import cookieParser from 'cookie-parser';
-import jwt from 'jsonwebtoken';
 
 const public_path = path.join(__dirname, '/../../client/public');
 
 let app = express();
 
+let storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: function(req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+let upload = multer({ storage: storage });
+
 app.use(express.static(public_path));
 app.use(express.json());
 app.use(cookieParser());
 
-// municipalId
 app.get('/api/news/municipal/:municipalId', function(req, res) {
   newsManager.getLocalNews(req.params.municipalId, function(result) {
     res.json(result);
@@ -56,7 +66,6 @@ app.post('/api/news', ensureEmployee, function(req, res) {
   );
 });
 
-// email, password
 app.post('/api/login', function(req, res) {
   userManager.login(req.body.email, req.body.password, function(result) {
     res.cookie('token', result.token);
@@ -66,7 +75,6 @@ app.post('/api/login', function(req, res) {
   });
 });
 
-// firstName, lastName, email, phone, municipalId
 app.post('/api/register', function(req, res) {
   userManager.register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 1, function(result) {
     res.json(result);
@@ -116,14 +124,12 @@ app.get('/api/users', ensureAdmin, (req, res) => {
   });
 });
 
-// id
 app.get('/api/users/:id', ensureAdmin, (req, res) => {
   userManager.getUser(req.params.id, function(result) {
     res.json(result);
   });
 });
 
-// id
 app.delete('/api/users/:id', ensureAdmin, (req, res) => {
   userManager.deleteUser(req.params.id, function(result) {
     res.json(result);
@@ -131,19 +137,17 @@ app.delete('/api/users/:id', ensureAdmin, (req, res) => {
 });
 
 app.put('/api/users/:id', ensureAdmin, function(req, res) {
-  getUserId(req, function(userId) {
-    userManager.editUser(
-      req.body.name,
-      req.body.email,
-      req.body.phone,
-      req.body.municipalId,
-      userId,
-      req.body.rank,
-      function(result) {
-        res.json(result);
-      }
-    );
-  });
+  userManager.editUser(
+    req.body.name,
+    req.body.email,
+    req.body.phone,
+    req.body.municipalId,
+    req.params.id,
+    req.body.rank,
+    function(result) {
+      res.json(result);
+    }
+  );
 });
 
 app.get('/api/companies', ensureEmployee, (req, res) => {
@@ -180,14 +184,13 @@ app.put('/api/companies/:id', ensureEmployee, function(req, res) {
   });
 });
 
-// municipalId
 app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
   companyManager.getLocalCompanies(req.params.municipalId, function(result) {
     res.json(result);
   });
 });
 
-app.post('/api/tickets', ensureLogin, function(req, res) {
+app.post('/api/tickets', upload.single('image'), ensureLogin, function(req, res) {
   getUserId(req, function(userId) {
     ticketManager.addTicket(
       req.body.title,
@@ -196,8 +199,11 @@ app.post('/api/tickets', ensureLogin, function(req, res) {
       req.body.lon,
       req.body.categoryId,
       req.body.municipalId,
+      req.body.subscribed,
       userId,
       function(result) {
+        let file = req.file;
+        //console.log(file);
         res.json(result);
       }
     );
@@ -213,6 +219,7 @@ app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
       req.body.lon,
       req.body.categoryId,
       req.body.municipalId,
+      req.body.subscribed,
       userId,
       req.params.ticketId,
       function(result) {
@@ -237,6 +244,7 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
     req.body.lon,
     req.body.categoryId,
     req.body.municipalId,
+
     function(result) {
       res.json(result);
     }
@@ -244,14 +252,13 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
 });
 
 app.get('/api/mytickets', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    ticketManager.getMyTickets(id, function(result) {
+  getUserId(req, function(userId) {
+    ticketManager.getMyTickets(userId, function(result) {
       res.json(result);
     });
   });
 });
 
-//Get all tickets within a specific municipal.
 app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
   ticketManager.getLocalTickets(req.params.municipalId, function(result) {
     res.json(result);
@@ -289,8 +296,54 @@ app.post('/api/municipals', ensureAdmin, (req, res) => {
 });
 
 app.get('/api/subscriptions', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    subscriptionManager.getSubscriptions(id, function(result) {
+  getUserId(req, function(userId) {
+    subscriptionManager.getSubscriptions(userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.post('/api/subscriptions', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    subscriptionManager.addSubscription(req.body.newsId, userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.post('/api/subscriptions', ensureAdmin, function(req, res) {
+  subscriptionManager.addSubscription(req.body.newsId, req.body.userId, function(result) {
+    res.json(result);
+  });
+});
+
+app.delete('/api/subscriptions/:newsId', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    subscriptionManager.deleteSubscription(req.params.newsId, userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.get('/api/mymunicipals', ensureLogin, (req, res) => {
+  getUserId(req, function(userId) {
+    userManager.getMunicipals(userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.post('/api/mymunicipals', ensureLogin, (req, res) => {
+  getUserId(req, function(userId) {
+    userManager.addMunicipal(userId, req.body.municipalId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
+  getUserId(req, function(userId) {
+    userManager.deleteMunicipal(userId, req.params.municipalId, function(result) {
       res.json(result);
     });
   });
@@ -346,11 +399,12 @@ if (process.env.NODE_ENV !== 'production') {
   fs.watch(public_path, () => reloadServer.reload());
 }
 
-// The listen promise can be used to wait for the web server to start (for instance in your tests)
-export let listen = new Promise((resolve, reject) => {
-  app.listen(3000, error => {
-    if (error) reject(error.message);
-    console.log('Server started');
-    resolve();
-  });
-});
+http.createServer(app).listen(3000);
+
+const options = {
+  key: fs.readFileSync('./src/security/private.key'),
+  cert: fs.readFileSync('./src/security/certificate.crt')
+};
+
+https.createServer(options, app).listen(3001);
+console.log('Server started');

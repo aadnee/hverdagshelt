@@ -28,25 +28,17 @@ export class PublishNewsFormWidget extends Component {
       description: this.props.description,
       category: this.props.category,
       categoryOptions: [],
-      subcategory: this.props.subcategory,
+      subcategory: '',
       subCategoryOptions: [],
       position: [1, 1],
       subscription: false,
-      selectedCategory: false,
       image: this.props.image
     };
+    this.getSubCategories(this.props.category);
   }
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
-  };
-
-  submit = () => {
-    //TODO SERVICE for submitting a new newscase
-    //Use ticketService.acceptTicket() with params: ticketId, title, description, lat, lon,
-    // categoryId, municipalId for createing a new news
-    console.log('submit');
-    console.log(this.state);
   };
 
   getSubCategories(category) {
@@ -116,7 +108,6 @@ export class PublishNewsFormWidget extends Component {
                         placeholder="Kategori"
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
-                          this.setState({ selectedCategory: true });
                           this.getSubCategories(data.value);
                         }}
                       />
@@ -124,7 +115,6 @@ export class PublishNewsFormWidget extends Component {
                     <Grid.Column>
                       <label>Underkategori:</label>
                       <Dropdown
-                        disabled={!this.state.selectedCategory}
                         fluid
                         search
                         selection

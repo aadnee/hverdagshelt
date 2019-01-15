@@ -55,7 +55,8 @@ export let Tickets = sequelize.define('tickets', {
   description: { type: Sequelize.TEXT, length: 'medium', allowNull: false },
   status: { type: Sequelize.INTEGER, allowNull: false },
   lat: { type: Sequelize.FLOAT, allowNull: false },
-  lon: { type: Sequelize.FLOAT, allowNull: false }
+  lon: { type: Sequelize.FLOAT, allowNull: false },
+  subscribed: { type: Sequelize.BOOLEAN, allowNull: true }
 });
 
 export let News = sequelize.define('news', {
@@ -71,6 +72,10 @@ export let News = sequelize.define('news', {
 export let Subscriptions = sequelize.define('subscriptions');
 News.belongsToMany(Users, { through: Subscriptions });
 Users.belongsToMany(News, { through: Subscriptions });
+
+export let UserMunicipals = sequelize.define('usermunicipals');
+Municipals.belongsToMany(Users, { through: UserMunicipals });
+Users.belongsToMany(Municipals, { through: UserMunicipals });
 
 Users.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Municipals.hasMany(Users, { foreignKey: { allowNull: false } });
@@ -133,7 +138,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       name: 'SmartPark',
       email: 'company@company.com',
       phone: 12345678,
-      password: '12345',
+      password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
       rank: 2,
       municipalId: 1
     });
@@ -205,6 +210,14 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await Subscriptions.create({
       newsId: 3,
       userId: 1
+    });
+    await UserMunicipals.create({
+      userId: 1,
+      municipalId: 1
+    });
+    await UserMunicipals.create({
+      userId: 1,
+      municipalId: 2
     });
     return true;
   }

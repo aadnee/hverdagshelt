@@ -4,6 +4,8 @@ import { Component, createContext } from 'react';
 import Cookies from 'js-cookie';
 import { HashRouter } from 'react-router-dom';
 import { Sidebar, Container, Segment } from 'semantic-ui-react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { AppRouter } from './AppRouter';
 import { SidebarWidget } from './widgets/SidebarWidget';
@@ -64,13 +66,26 @@ export class PageController extends Component {
     return (
       <Provider value={this.state}>
         <HashRouter>
-          <Sidebar.Pushable style={{ height: '100vh' }}>
-            <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
-            <Sidebar.Pusher dimmed={this.state.visible}>
-              <HeaderWidget toggle={this.toggleSideBar} />
-              <AppRouter />
-            </Sidebar.Pusher>
-          </Sidebar.Pushable>
+          <>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnVisibilityChange
+              draggable
+              pauseOnHover
+            />
+            <Sidebar.Pushable style={{ height: '100vh' }}>
+              <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
+              <Sidebar.Pusher dimmed={this.state.visible}>
+                <HeaderWidget toggle={this.toggleSideBar} />
+                <AppRouter />
+              </Sidebar.Pusher>
+            </Sidebar.Pushable>
+          </>
         </HashRouter>
       </Provider>
     );

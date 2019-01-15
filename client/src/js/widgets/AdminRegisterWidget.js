@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form, Icon } from 'semantic-ui-react';
-import { userService } from '../services/UserServices';
-import { companyService } from '../services/CompanyServices';
 import { municipalService } from '../services/MunicipalServices';
 
 export class AdminRegisterWidget extends React.Component {
@@ -16,10 +14,7 @@ export class AdminRegisterWidget extends React.Component {
       selectedOption: '',
       options: [],
       user: true,
-      showMainModal: false,
-      showRegisterModal: false,
-      popupMessage: '',
-      popupSuccess: ''
+      showMainModal: false
     };
   }
 
@@ -45,60 +40,30 @@ export class AdminRegisterWidget extends React.Component {
     this.setState({ [key]: value });
   };
 
-  handleSubmit = () => {
-    //USERSERICE -> request cookie
-    console.log('submitting');
-    console.log(this.state);
-    this.props.user
-      ? userService
-          .register(
-            this.state.firstname + this.state.lastname,
-            this.state.email,
-            this.state.phone,
-            this.state.selectedOption
-          )
-          .then(res => {
-            this.setState({ popupMessage: res.message });
-            res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-            this.setState({ showRegisterModal: true });
-            if (res.success) {
-              this.setState({
-                firstname: '',
-                lastname: '',
-                email: '',
-                phone: '',
-                selectedOption: ''
-              });
-              this.modalChange();
-            }
-          })
-      : companyService
-          .addCompany(
-            this.state.firstname + this.state.lastname,
-            this.state.email,
-            this.state.phone,
-            this.state.selectedOption
-          )
-          .then(res => {
-            this.setState({ popupMessage: res.message });
-            res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-            this.setState({ showRegisterModal: true });
-            if (res.success) {
-              this.setState({
-                firstname: '',
-                lastname: '',
-                email: '',
-                phone: '',
-                selectedOption: ''
-              });
-              this.modalChange();
-            }
-          });
-  };
-
   closeModals = () => {
     this.setState({
       showRegisterModal: false
+    });
+  };
+
+  handle = () => {
+    let newUser = {
+      name: this.state.firstname + this.state.lastname,
+      email: this.state.email,
+      phone: this.state.phone,
+      municipalId: this.state.selectedOption
+    };
+    this.props.handleRegister(newUser).then(res => {
+      if (res) {
+        this.setState({
+          firstname: '',
+          lastname: '',
+          email: '',
+          phone: '',
+          selectedOption: ''
+        });
+        this.modalChange();
+      }
     });
   };
 
@@ -209,14 +174,7 @@ export class AdminRegisterWidget extends React.Component {
                           }}
                         />
                       </Form.Field>
-                      <Button
-                        color="blue"
-                        fluid
-                        size="large"
-                        onClick={() => {
-                          this.handleSubmit();
-                        }}
-                      >
+                      <Button color="blue" fluid size="large" onClick={() => this.handle()}>
                         {this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}
                       </Button>
                       <Button
@@ -235,15 +193,6 @@ export class AdminRegisterWidget extends React.Component {
               </Grid>
             </Container>
           </Modal.Content>
-        </Modal>
-        <Modal size={'tiny'} open={this.state.showRegisterModal}>
-          <Modal.Header>Registreringsstatus: {this.state.popupSuccess ? 'Suksess' : 'Error'}</Modal.Header>
-          <Modal.Content>
-            <p>{this.state.popupMessage}</p>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button icon="check" content="Ok" onClick={this.closeModals} />
-          </Modal.Actions>
         </Modal>
       </div>
     );

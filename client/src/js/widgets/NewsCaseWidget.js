@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import { Divider, Segment, Container, Grid, List, Header, Image, Form, Input } from 'semantic-ui-react';
+import { Divider, Segment, Container, Grid, List, Header, Image, Form, Input, Button } from 'semantic-ui-react';
 
 //import {} from './';
 
@@ -17,7 +17,6 @@ export class NewsCaseWidget extends Component {
   render() {
     let { newscase } = this.props;
     newscase.imageURL = null;
-    console.log(newscase);
     const date = newscase.createdAt.split('T')[0].split('-');
     const clock = newscase.createdAt.split('T')[1].split('.')[0];
 
@@ -58,9 +57,15 @@ export class NewsCaseWidget extends Component {
             </Container>
           </Segment>
           <List link>
-            <List.Item as="a">Hendelses-adresse: {newscase.address}</List.Item>
-            <List.Item as="a">Oppdrag utføres av: {newscase.company}</List.Item>
+            <List.Item as="a">
+              <List.Content floated={'left'}>Hendelses-adresse: {newscase.address}</List.Content>
+            </List.Item>
+            <List.Item as="a">
+              <List.Content floated={'left'}>Oppdrag utføres av: {newscase.company}</List.Content>
+            </List.Item>
           </List>
+
+          <Button onClick={this.props.unsubscribe}>Avslutt abonnement</Button>
         </Container>
       </Segment>
     );

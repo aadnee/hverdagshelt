@@ -11,7 +11,9 @@ beforeAll(async () => {
 describe('Adding ticket', () => {
   let id;
   it('correct data', done => {
-    ticketManager.addTicket('TicketTest', 'Dette er en test som skal funke', 1.11, 2.22, 1, 1, 1, function(ticket) {
+    ticketManager.addTicket('TicketTest', 'Dette er en test som skal funke', 1.11, 2.22, 1, 1, true, 1, function(
+      ticket
+    ) {
       id = ticket.id;
       Tickets.findOne({ where: { id: ticket.id } }).then(tickets => {
         expect({
@@ -22,6 +24,7 @@ describe('Adding ticket', () => {
           lon: tickets.lon,
           categoryId: tickets.categoryId,
           municipalId: tickets.municipalId,
+          subscribed: tickets.subscribed,
           userId: tickets.userId
         }).toEqual({
           title: 'TicketTest',
@@ -31,6 +34,7 @@ describe('Adding ticket', () => {
           lon: 2.22,
           categoryId: 1,
           municipalId: 1,
+          subscribed: true,
           userId: 1
         });
         done();
@@ -39,7 +43,7 @@ describe('Adding ticket', () => {
   });
 
   it('correct data', done => {
-    ticketManager.editTicket('TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, 1, id, function(
+    ticketManager.editTicket('TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, true, 1, id, function(
       ticket
     ) {
       Tickets.findOne({ where: { id: id } }).then(tickets => {
@@ -51,6 +55,7 @@ describe('Adding ticket', () => {
           lon: tickets.lon,
           categoryId: tickets.categoryId,
           municipalId: tickets.municipalId,
+          subscribed: tickets.subscribed,
           userId: tickets.userId
         }).toEqual({
           title: 'TicketTest',
@@ -60,10 +65,75 @@ describe('Adding ticket', () => {
           lon: 2.22,
           categoryId: 1,
           municipalId: 1,
+          subscribed: true,
           userId: 1
         });
         done();
       });
+    });
+  });
+});
+
+describe('Setting status', () => {
+  it('correct data', done => {
+    ticketManager.setStatus(1, 4, function(ticket) {
+      expect({
+        success: ticket.success,
+        message: ticket.message.en
+      }).toEqual({
+        success: true,
+        message: 'Status updated.'
+      });
+      done();
+    });
+  });
+});
+
+describe('Get news by userId', () => {
+  it('correct data', done => {
+    ticketManager.getMyTickets(1, function(tickets) {
+      Tickets.findAll({ where: { userId: 1 } }).then(res => {
+        expect({
+          success: tickets.success,
+          data: res
+        }).toEqual({
+          success: true,
+          data: res
+        });
+        done();
+      });
+    });
+  });
+});
+
+describe('Get local tickets', () => {
+  it('correct data', done => {
+    ticketManager.getLocalTickets(1, function(tickets) {
+      Tickets.findAll({ where: { municipalId: 1, status: 1 } }).then(res => {
+        expect({
+          success: tickets.success,
+          data: res
+        }).toEqual({
+          success: true,
+          data: res
+        });
+        done();
+      });
+    });
+  });
+});
+
+describe('Make a ticket to an article', () => {
+  it('correct data', done => {
+    ticketManager.makeNews(4, 'TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: true,
+        message: 'Article added.'
+      });
+      done();
     });
   });
 });

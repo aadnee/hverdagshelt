@@ -1,5 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
+import { toast } from 'react-toastify';
 import {
   Dropdown,
   Icon,
@@ -23,10 +24,14 @@ export class UserEditFormWidget extends Component {
     super(props);
 
     this.state = {
-      name: this.props.user.name,
+      firstName: this.props.user.firstName,
+      lastName: this.props.user.lastName,
       email: this.props.user.email,
       phone: this.props.user.phone,
       municipalId: this.props.user.municipalId,
+      newPassword: null,
+      oldPassword: null,
+      repeatedPassword: null,
       editFirstname: false,
       editLastname: false,
       editPhonenumber: false,
@@ -68,9 +73,71 @@ export class UserEditFormWidget extends Component {
 
   submit = () => {
     console.log(this.state);
-    userService
-      .editMe(this.state.name, this.state.email, this.state.phone, this.state.municipalId)
-      .then(res => console.log(res));
+    if (this.state.oldPassword === null && this.state.newPassword === null && this.state.repeatedPassword === null) {
+      userService
+        .editMe(
+          this.state.firstName,
+          this.state.lastName,
+          this.state.email,
+          this.state.phone,
+          this.state.municipalId,
+          null,
+          null
+        )
+        .then(
+          res => console.log(res),
+          toast.success('Bruker oppdatert!', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true
+          })
+        );
+    } else if (this.state.oldPassword != null && this.state.newPassword != this.state.repeatedPassword) {
+      toast.error('Passordene stemmer ikke overens. Prøv igjen.', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true
+      });
+    } else if (this.state.oldPassword != null && this.state.newPassword === this.state.repeatedPassword) {
+      userService
+        .editMe(
+          this.state.firstName,
+          this.state.lastName,
+          this.state.email,
+          this.state.phone,
+          this.state.municipalId,
+          this.state.oldPassword,
+          this.state.newPassword
+        )
+        .then(res => {
+          if (res.success) {
+            console.log(res.success),
+              toast.success('Bruker oppdatert!', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true
+              });
+          } else {
+            toast.error(res => res.success.message, {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true
+            });
+          }
+        });
+    }
   };
 
   render() {
@@ -95,9 +162,9 @@ export class UserEditFormWidget extends Component {
                       label="Fornavn"
                       placeholder="Fornavn"
                       action
-                      value={this.state.name}
+                      value={this.state.firstName}
                       onChange={(event, data) => {
-                        this.handleInput('name', data.value);
+                        this.handleInput('firstName', data.value);
                       }}
                     >
                       <input disabled={!this.state.editFirstname} />
@@ -118,9 +185,9 @@ export class UserEditFormWidget extends Component {
                       label="Etternavn"
                       placeholder="Etternavn"
                       action
-                      value={this.state.name}
+                      value={this.state.lastName}
                       onChange={(event, data) => {
-                        this.handleInput('name', data.value);
+                        this.handleInput('lastName', data.value);
                       }}
                     >
                       <input disabled={!this.state.editLastname} />
@@ -227,27 +294,38 @@ export class UserEditFormWidget extends Component {
               <Divider hidden />
 
               <Form.Field>
-                <Modal trigger={<Button fluid>Endre passord</Button>}>
-                  <Modal.Header>Endre passord</Modal.Header>
-                  <Modal.Content image>
-                    <Modal.Description>
-                      <Form>
-                        <Form.Field>
-                          <Input fluid label="Nåværende passord:" />
-                        </Form.Field>
-                        <Form.Field>
-                          <Input fluid label="Nytt passord:" />
-                        </Form.Field>
-                        <Form.Field>
-                          <Input fluid label="Gjenta nytt passord:" />
-                        </Form.Field>
-                        <Button floated="right" type="submit" color="blue">
-                          Endre passord
-                        </Button>
-                      </Form>
-                    </Modal.Description>
-                  </Modal.Content>
-                </Modal>
+                <label>Endre passord?</label>
+                <Divider hidden />
+                <Form.Field>
+                  <Input
+                    fluid
+                    type="password"
+                    label={{ size: 'small', content: 'Nåværende passord:' }}
+                    onChange={(event, data) => {
+                      this.handleInput('oldPassword', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Input
+                    fluid
+                    type="password"
+                    label={{ size: 'small', content: 'Nytt passord:' }}
+                    onChange={(event, data) => {
+                      this.handleInput('newPassword', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Input
+                    fluid
+                    type="password"
+                    label={{ size: 'small', content: 'Gjenta nytt passord:' }}
+                    onChange={(event, data) => {
+                      this.handleInput('repeatedPassword', data.value);
+                    }}
+                  />
+                </Form.Field>
               </Form.Field>
               <Button
                 color="blue"
