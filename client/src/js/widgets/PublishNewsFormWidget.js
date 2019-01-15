@@ -34,6 +34,7 @@ export class PublishNewsFormWidget extends Component {
       subscription: false,
       image: this.props.image
     };
+    this.getSubCategories(this.props.category);
   }
 
   handleInput = (key, value) => {
