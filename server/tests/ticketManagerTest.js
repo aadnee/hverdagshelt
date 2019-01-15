@@ -73,10 +73,59 @@ describe('Setting status', () => {
     ticketManager.setStatus(1, 4, function(ticket) {
       expect({
         success: ticket.success,
-        message: ticket.message
+        message: ticket.message.en
       }).toEqual({
         success: true,
-        message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
+        message: 'Status updated.'
+      });
+      done();
+    });
+  });
+});
+
+describe('Get news by userId', () => {
+  it('correct data', done => {
+    ticketManager.getMyTickets(1, function(tickets) {
+      Tickets.findAll({ where: { userId: 1 } }).then(res => {
+        expect({
+          success: tickets.success,
+          data: res
+        }).toEqual({
+          success: true,
+          data: res
+        });
+        done();
+      });
+    });
+  });
+});
+
+describe('Get local tickets', () => {
+  it('correct data', done => {
+    ticketManager.getLocalTickets(1, function(tickets) {
+      Tickets.findAll({ where: { municipalId: 1, status: 1 } }).then(res => {
+        expect({
+          success: tickets.success,
+          data: res
+        }).toEqual({
+          success: true,
+          data: res
+        });
+        done();
+      });
+    });
+  });
+});
+
+describe('Make a ticket to an article', () => {
+  it('correct data', done => {
+    ticketManager.makeNews(4, 'TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: true,
+        message: 'Article added.'
       });
       done();
     });

@@ -13,11 +13,14 @@ import {
   Input,
   Image,
   Message,
-  Segment, TextArea
+  Segment,
+  TextArea
 } from 'semantic-ui-react';
 
 import { ticketService } from '../services/TicketServices';
 import { categoryService } from '../services/CategoryServices';
+
+import Cookies from 'js-cookie';
 
 export class TicketFormWidget extends Component {
   constructor(props) {
@@ -44,7 +47,15 @@ export class TicketFormWidget extends Component {
     //lat, lon and municipalId is fetched from the map
     //municipalId could also be fetched from Cookie
     ticketService
-      .addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1)
+      .addTicket(
+        this.state.headline,
+        this.state.details,
+        1,
+        1,
+        this.state.category,
+        Cookies.get('municipalId'),
+        this.state.subscribed === 'true'
+      )
       .then(res => console.log(res));
   };
 
@@ -95,12 +106,12 @@ export class TicketFormWidget extends Component {
                 <Form.Field>
                   <label>Utdyp problemet</label>
                   <TextArea
-                      autoHeight
-                      placeholder={'Beskrivelse'}
-                      value={this.state.details}
-                      onChange={(event, data) => {
-                        this.handleInput('details', data.value);
-                      }}
+                    autoHeight
+                    placeholder={'Beskrivelse'}
+                    value={this.state.details}
+                    onChange={(event, data) => {
+                      this.handleInput('details', data.value);
+                    }}
                   />
                 </Form.Field>
                 <Form.Field>

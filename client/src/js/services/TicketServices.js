@@ -1,14 +1,15 @@
 import api from './api';
 
 class TicketServices {
-  addTicket(title, description, lat, lon, categoryId, municipalId) {
+  addTicket(title, description, lat, lon, categoryId, municipalId, subscribed) {
     return api.post('api/tickets', {
       title: title,
       description: description,
       lat: lat,
       lon: lon,
       categoryId: categoryId,
-      municipalId: municipalId
+      municipalId: municipalId,
+      subscribed: subscribed
     });
   }
 

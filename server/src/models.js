@@ -55,7 +55,8 @@ export let Tickets = sequelize.define('tickets', {
   description: { type: Sequelize.TEXT, length: 'medium', allowNull: false },
   status: { type: Sequelize.INTEGER, allowNull: false },
   lat: { type: Sequelize.FLOAT, allowNull: false },
-  lon: { type: Sequelize.FLOAT, allowNull: false }
+  lon: { type: Sequelize.FLOAT, allowNull: false },
+  subscribed: { type: Sequelize.BOOLEAN, allowNull: true }
 });
 
 export let News = sequelize.define('news', {

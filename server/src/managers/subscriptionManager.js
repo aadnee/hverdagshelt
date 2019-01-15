@@ -7,7 +7,6 @@ module.exports = {
       where: { userId: id },
       raw: true
     }).then(res => {
-      console.log(res.map(item => item.newsId));
       News.findAll({
         where: { id: res.map(item => item.newsId) }
       }).then(
@@ -20,5 +19,20 @@ module.exports = {
       );
     }),
       err => callback({ success: false, message: err });
+  },
+
+  addSubscription: function(newsId, id, callback) {
+    Subscriptions.create({
+      newsId: newsId,
+      userId: id
+    }).then(
+      result =>
+        callback({
+          success: true,
+          message: { en: 'Subscription added.', no: 'Abonnement har blitt lagt til.' },
+          id: result.id
+        }),
+      err => callback({ success: false, message: err })
+    );
   }
 };
