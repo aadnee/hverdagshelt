@@ -55,7 +55,7 @@ export class UserComponentListWidget extends React.Component {
           this.setState({ showRegisterModal: true });
           let oldUser = 0;
           this.state.users.find((u, i) => {
-            user.id = u.id ? (oldUser = i) : null;
+            (user.id = u.id) ? (oldUser = i) : null;
           });
           console.log(oldUser);
           this.state.users[oldUser] = user;
@@ -112,7 +112,7 @@ export class UserComponentListWidget extends React.Component {
                     handleEdit={this.handleEdit}
                     usertype
                     key={i}
-                    user={this.state.users[i]}
+                    user={user}
                   />
                 );
               })
