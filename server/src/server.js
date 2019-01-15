@@ -240,7 +240,7 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
     req.body.lon,
     req.body.categoryId,
     req.body.municipalId,
-    req.body.subscribed,
+
     function(result) {
       res.json(result);
     }
