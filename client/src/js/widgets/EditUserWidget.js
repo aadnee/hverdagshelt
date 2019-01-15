@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { userService } from '../services/UserServices';
+import { companyServices } from '../services/CompanyServices';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form } from 'semantic-ui-react';
 import { USER, COMPANY, EMPLOYEE, ADMIN, USERTYPE } from '../commons';
+import { municipalServices } from '../services/MunicipalServices';
 
 export class EditUserWidget extends Component {
   constructor(props) {
@@ -19,36 +21,28 @@ export class EditUserWidget extends Component {
       popupSuccess: '',
       rank: null
     };
+  }
 
-    this.stateOptions = [
-      { key: '1', value: '1', text: 'Risør' },
-      { key: '2', value: '2', text: 'Lindesnes' },
-      { key: '3', value: '3', text: 'Tvedestrand' },
-      { key: '4', value: '4', text: 'Test 1' },
-      { key: '5', value: '5', text: 'Test 2' },
-      { key: '6', value: '6', text: 'Test 3' },
-      { key: '7', value: '7', text: 'Test 4' }
-    ];
+  componentWillMount() {
+    municipalServices.getMunicipals().then(res => {
+      let options = [];
+      res.data.map(munic => {
+        options.push({ key: munic.id, value: munic.id, text: munic.name });
+      });
+      this.setState({
+        options: options
+      });
+    });
+    this.setState({
+      name: this.props.user.name,
+      email: this.props.user.email,
+      phone: this.props.user.phone,
+      municipalId: this.props.user.municipalId,
+      rank: this.props.user.rank
+    });
   }
 
   close = () => this.setState({ open: false });
-  handleEdit = () => {
-    userService
-      .editUser(
-        this.props.user.id,
-        this.state.name,
-        this.state.email,
-        this.state.phone,
-        this.state.municipalId,
-        this.state.rank
-      )
-      .then(res => {
-        console.log(res);
-        this.setState({ popupMessage: res.message });
-        res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-        this.setState({ showRegisterModal: true });
-      });
-  };
 
   close = () => {
     this.setState({ showModal: false });
@@ -60,22 +54,27 @@ export class EditUserWidget extends Component {
       showRegisterModal: false
     });
   };
-
+  handle = () => {
+    let editedUser = {
+      id: this.props.user.id,
+      name: this.state.name,
+      email: this.state.email,
+      phone: this.state.phone,
+      municipalId: this.state.municipalId,
+      rank: this.state.rank
+    };
+    console.log(editedUser);
+    this.props.handleEdit(editedUser);
+    this.closeModals();
+  };
   handleInput = (key, value) => {
     this.setState({ [key]: value });
   };
 
-  componentDidMount() {
-    this.setState({
-      name: this.props.user.name,
-      email: this.props.user.email,
-      phone: this.props.user.phone,
-      municipalId: this.props.user.municipalId,
-      rank: this.props.user.rank
-    });
-  }
+  componentDidMount() {}
 
   render() {
+    console.log(this.props.userEdit);
     return (
       <div>
         <Button color="green" onClick={() => this.setState({ showModal: true })}>
@@ -115,9 +114,9 @@ export class EditUserWidget extends Component {
                           iconPosition="left"
                           placeholder="Bedriftsnavn"
                           type="text"
-                          value={this.state.firstname}
+                          value={this.state.name}
                           onChange={(event, data) => {
-                            this.handleInput('firstname', data.value);
+                            this.handleInput('name', data.value);
                           }}
                         />
                       </Form.Field>
@@ -157,37 +156,32 @@ export class EditUserWidget extends Component {
                         selection
                         search
                         placeholder="Velg kommune"
-                        value={this.state.municipalId}
-                        options={this.stateOptions}
+                        defaultValue={this.state.municipalId}
+                        options={this.state.options}
                         onChange={(event, data) => {
                           this.handleInput('municipalId', data.value);
                         }}
                       />
                     </Form.Field>
-                    <Form.Field>
-                      <label>Velg rang til bruker</label>
+                    {this.props.userEdit ? (
+                      <Form.Field>
+                        <label>Velg rang til bruker</label>
 
-                      <Dropdown
-                        fluid
-                        selection
-                        search
-                        placeholder="Velg bruker rang"
-                        value={this.state.rank}
-                        options={USERTYPE}
-                        onChange={(event, data) => {
-                          this.handleInput('rank', data.value);
-                        }}
-                      />
-                    </Form.Field>
-                    <Button
-                      color="blue"
-                      fluid
-                      size="large"
-                      onClick={() => {
-                        this.handleEdit();
-                      }}
-                    >
-                      Registrer bruker
+                        <Dropdown
+                          fluid
+                          selection
+                          search
+                          placeholder="Velg bruker rang"
+                          value={this.state.rank}
+                          options={USERTYPE}
+                          onChange={(event, data) => {
+                            this.handleInput('rank', data.value);
+                          }}
+                        />
+                      </Form.Field>
+                    ) : null}
+                    <Button color="blue" fluid size="large" onClick={this.handle}>
+                      Endre Bruker
                     </Button>
                     <Button
                       color="grey"

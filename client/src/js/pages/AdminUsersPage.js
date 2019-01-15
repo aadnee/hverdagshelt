@@ -10,7 +10,7 @@ export class AdminUsersPage extends Component {
   render() {
     return (
       <div>
-        <UserComponentListWidget user />
+        <UserComponentListWidget usertype />
         <AdminRegisterWidget user />
       </div>
     );

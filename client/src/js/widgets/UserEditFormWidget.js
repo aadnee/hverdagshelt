@@ -16,12 +16,17 @@ import {
   Button,
   Modal
 } from 'semantic-ui-react';
+import { userService } from '../services/UserServices';
 
 export class UserEditFormWidget extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      name: this.props.user.name,
+      email: this.props.user.email,
+      phone: this.props.user.phone,
+      municipalId: this.props.user.municipalId,
       editFirstname: false,
       editLastname: false,
       editPhonenumber: false,
@@ -61,6 +66,13 @@ export class UserEditFormWidget extends Component {
     this.setState({ municipalOptions: this.state.municipalOptions.concat(deletedMun) }); //adds the deleted municipal back to the list of all municipals
   };
 
+  submit = () => {
+    console.log(this.state);
+    userService
+      .editMe(this.state.name, this.state.email, this.state.phone, this.state.municipalId)
+      .then(res => console.log(res));
+  };
+
   render() {
     return (
       <Container>
@@ -81,8 +93,12 @@ export class UserEditFormWidget extends Component {
                       fluid
                       id="form-subcomponent-shorthand-input-first-name"
                       label="Fornavn"
-                      placeholder={this.props.firstName}
+                      placeholder="Fornavn"
                       action
+                      value={this.state.name}
+                      onChange={(event, data) => {
+                        this.handleInput('name', data.value);
+                      }}
                     >
                       <input disabled={!this.state.editFirstname} />
                       <Button
@@ -100,8 +116,12 @@ export class UserEditFormWidget extends Component {
                       fluid
                       id="form-subcomponent-shorthand-input-last-name"
                       label="Etternavn"
-                      placeholder={this.props.lastName}
+                      placeholder="Etternavn"
                       action
+                      value={this.state.name}
+                      onChange={(event, data) => {
+                        this.handleInput('name', data.value);
+                      }}
                     >
                       <input disabled={!this.state.editLastname} />
                       <Button
@@ -119,7 +139,16 @@ export class UserEditFormWidget extends Component {
               <Form.Field>
                 <Grid columns={'equal'}>
                   <Grid.Column>
-                    <Form.Input label="Telefonnummer" iconPosition="left" placeholder={this.props.number} action>
+                    <Form.Input
+                      label="Telefonnummer"
+                      iconPosition="left"
+                      placeholder="Telefonnummer"
+                      action
+                      value={this.state.phone}
+                      onChange={(event, data) => {
+                        this.handleInput('phone', data.value);
+                      }}
+                    >
                       <Icon name="phone" color="blue" />
                       <input disabled={!this.state.editPhonenumber} />
                       <Button
@@ -133,7 +162,16 @@ export class UserEditFormWidget extends Component {
                     </Form.Input>
                   </Grid.Column>
                   <Grid.Column>
-                    <Form.Input label="E-mail" iconPosition="left" placeholder={this.props.email} action>
+                    <Form.Input
+                      label="E-mail"
+                      iconPosition="left"
+                      placeholder="E-mail"
+                      action
+                      value={this.state.email}
+                      onChange={(event, data) => {
+                        this.handleInput('email', data.value);
+                      }}
+                    >
                       <Icon name="mail" color="blue" />
                       <input disabled={!this.state.editEmail} />
                       <Button

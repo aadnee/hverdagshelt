@@ -10,7 +10,7 @@ export class AdminCompanyPage extends Component {
   render() {
     return (
       <div className={'container'}>
-        <UserComponentListWidget company />
+        <UserComponentListWidget />
         <AdminRegisterWidget />
       </div>
     );

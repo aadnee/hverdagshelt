@@ -1,6 +1,6 @@
 import React from 'react';
-import { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import {Component} from 'react';
+import {NavLink} from 'react-router-dom';
 import {
   Button,
   Checkbox,
@@ -24,13 +24,13 @@ export class PublishNewsFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      headline: this.props.headline,
-      details: this.props.details,
+      title: this.props.title,
+      description: this.props.description,
       category: this.props.category,
       categoryOptions: [],
       subcategory: this.props.subcategory,
       subCategoryOptions: [],
-      position: [null, null],
+      position: [1, 1],
       subscription: false,
       selectedCategory: false,
       image: this.props.image
@@ -87,9 +87,9 @@ export class PublishNewsFormWidget extends Component {
                     icon="warning"
                     iconPosition="left"
                     placeholder={'Hva er problemet?'}
-                    value={this.state.headline}
+                    value={this.state.title}
                     onChange={(event, data) => {
-                      this.handleInput('headline', data.value);
+                      this.handleInput('title', data.value);
                     }}
                   />
                 </Form.Field>
@@ -97,9 +97,9 @@ export class PublishNewsFormWidget extends Component {
                   <label>Utdypet:</label>
                   <TextArea
                     placeholder={'Beskrivelse'}
-                    value={this.state.details}
+                    value={this.state.description}
                     onChange={(event, data) => {
-                      this.handleInput('details', data.value);
+                      this.handleInput('description', data.value);
                     }}
                   />
                 </Form.Field>
@@ -111,6 +111,7 @@ export class PublishNewsFormWidget extends Component {
                         fluid
                         search
                         selection
+                        defaultValue={this.state.category}
                         options={this.state.categoryOptions}
                         placeholder="Kategori"
                         onChange={(event, data) => {
@@ -150,9 +151,15 @@ export class PublishNewsFormWidget extends Component {
                   color="blue"
                   fluid
                   size="large"
-                  onClick={() => {
-                    this.submit();
-                  }}
+                  onClick={this.props.submit.bind(
+                    this,
+                    this.state.title,
+                    this.state.description,
+                    this.state.position[0],
+                    this.state.position[1],
+                    this.state.category,
+                    /*municipalId*/ 1
+                  )}
                 >
                   Publiser
                 </Button>

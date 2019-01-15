@@ -22,7 +22,7 @@ class CompanyServices {
     });
   }
 
-  editCompany(municipalId, name, email, phone) {
+  editCompany(name, email, phone, municipalId) {
     return api.put('/api/companies/municipal/' + municipalId, {
       name: name,
       email: email,
@@ -32,7 +32,7 @@ class CompanyServices {
   }
 
   deleteCompany(id) {
-    return api.delete('/api/companies/:' + id);
+    return api.delete('/api/companies/' + id);
   }
 }
 

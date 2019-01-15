@@ -1,4 +1,4 @@
-import { Users, sync } from '../src/models';
+import { sync } from '../src/models';
 import userManager from '../src/managers/userManager';
 
 jest.setTimeout(30000);

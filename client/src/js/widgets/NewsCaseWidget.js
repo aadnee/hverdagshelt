@@ -41,16 +41,6 @@ export class NewsCaseWidget extends Component {
             <Container>
               <Grid divided inverted stackable>
                 {newscase.imageURL ? (
-                  <Grid.Column width={4} align="right" only="mobile">
-                    <Image
-                      fluid
-                      src={newscase.imageURL}
-                      //as='a'
-                      //href='http://localhost:3000/#/widget'
-                      target="_blank"
-                    />
-                  </Grid.Column>
-                ) : null}
                 <Grid.Column width={12} textAlign="left">
                   <p>{newscase.description}</p>
                 </Grid.Column>

@@ -126,6 +126,39 @@ module.exports = {
       res => callback({ success: true, message: 'User updated.' }),
       err => callback({ success: false, message: err })
     );
+  },
+
+  changePass: function(userId, oldPassword, newPassword, callback) {
+    Users.findOne({ where: { id: userId } }).then(
+      user => {
+        if (user == null) {
+          callback({ success: false, message: 'User not found.' });
+        } else {
+          bcrypt.compare(oldPassword, user.password, function(err, eq) {
+            if (err) throw err;
+            if (eq == true) {
+              bcrypt.genSalt(12, function(err, salt) {
+                bcrypt.hash(newPassword, salt, null, function(err, hash) {
+                  if (err) throw er;
+                  Users.update(
+                    {
+                      password: hash
+                    },
+                    { where: { id: userId } }
+                  ).then(
+                    res => callback({ success: true, message: 'User and password updated.' }),
+                    err => callback({ success: false, message: err })
+                  );
+                });
+              });
+            } else {
+              callback({ success: false, message: 'Wrong password.' });
+            }
+          });
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
   }
 };
 

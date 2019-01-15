@@ -13,6 +13,7 @@ export class TicketWidget extends Component {
       open: false
     };
   }
+
   show = size => () => this.setState({ size, open: true });
   close = () => this.setState({ open: false });
 
@@ -62,7 +63,7 @@ export class TicketWidget extends Component {
               <Button.Group fluid size="small">
                 <Modal
                   trigger={
-                    <Button inverted primary onClick={this.props.accept}>
+                    <Button inverted primary>
                       Godkjenn
                     </Button>
                   }
@@ -71,20 +72,24 @@ export class TicketWidget extends Component {
                   <Modal.Content>
                     <Modal.Description>
                       <PublishNewsFormWidget
-                        headline={this.props.ticket.title}
-                        details={this.props.ticket.description}
+                        title={this.props.ticket.title}
+                        description={this.props.ticket.description}
                         category={this.props.ticket.categoryId}
+                        submit={this.props.accept}
+                        image
                       />
                     </Modal.Description>
                   </Modal.Content>
                 </Modal>
+
                 <Button inverted secondary onClick={this.show('mini')}>
                   Avslå
                 </Button>
+
                 <Modal size={size} open={open} onClose={this.close}>
-                  <Modal.Header>Avslå innsendt varsel</Modal.Header>
+                  <Modal.Header>Slett innsendt varsel</Modal.Header>
                   <Modal.Content>
-                    <p>Er du sikker på at du vil avlså denne varselen</p>
+                    <p>Er du sikker på at du vil slette denne varselen</p>
                   </Modal.Content>
                   <Modal.Actions>
                     <Button negative onClick={this.close}>
