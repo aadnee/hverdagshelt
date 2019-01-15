@@ -215,7 +215,6 @@ app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
       req.body.categoryId,
       req.body.municipalId,
       req.body.subscribed,
-
       userId,
       req.params.ticketId,
       function(result) {
@@ -317,6 +316,30 @@ app.post('/api/subscriptions', ensureAdmin, function(req, res) {
 app.delete('/api/subscriptions/:newsId', ensureLogin, function(req, res) {
   getUserId(req, function(userId) {
     subscriptionManager.deleteSubscription(req.params.newsId, userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.get('/api/mymunicipals', ensureLogin, (req, res) => {
+  getUserId(req, function(userId) {
+    userManager.getMunicipals(userId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.post('/api/mymunicipals', ensureLogin, (req, res) => {
+  getUserId(req, function(userId) {
+    userManager.addMunicipal(userId, req.body.municipalId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
+  getUserId(req, function(userId) {
+    userManager.deleteMunicipal(userId, req.params.municipalId, function(result) {
       res.json(result);
     });
   });
