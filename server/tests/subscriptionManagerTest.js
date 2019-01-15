@@ -7,14 +7,16 @@ beforeAll(async () => {
   await sync;
 });
 
-// Testing if we can find companies
 describe('Finding users subscriptions', () => {
   it('correct data', done => {
-    expect({
-      success: true
-    }).toEqual({
-      success: true
+    subscriptionManager.getSubscriptions(1, function(subscriptions) {
+      subscriptions.data.map(subs => subs.toJSON()).map(subs => console.log(subs));
+      expect({
+        success: subscriptions.success
+      }).toEqual({
+        success: true
+      });
+      done();
     });
-    done();
   });
 });
