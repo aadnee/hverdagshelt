@@ -2,7 +2,7 @@ import api from './api';
 
 class TicketServices {
   addTicket(title, description, lat, lon, categoryId, municipalId, subscribed) {
-    console.log(subscribed);
+    console.log(categoryId);
     return api.post('api/tickets', {
       title: title,
       description: description,

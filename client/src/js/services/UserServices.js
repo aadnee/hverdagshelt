@@ -18,13 +18,13 @@ class UserService {
     return api.get('/api/users');
   }
 
-  getUser(id) {
-    return api.get('/api/users/' + id);
+  getUser(userId) {
+    return api.get('/api/users/' + userId);
   }
 
-  editUser(id, name, email, phone, municipalId, rank) {
-    console.log(id, name, email, phone, municipalId, rank);
-    return api.put('/api/users/' + id, {
+  editUser(userId, name, email, phone, municipalId, rank) {
+    console.log(userId, name, email, phone, municipalId, rank);
+    return api.put('/api/users/' + userId, {
       name: name,
       email: email,
       phone: phone,
@@ -33,8 +33,8 @@ class UserService {
     });
   }
 
-  deleteUser(id) {
-    return api.delete('/api/users/' + id);
+  deleteUser(userId) {
+    return api.delete('/api/users/' + userId);
   }
 
   async getMe() {
@@ -60,6 +60,20 @@ class UserService {
       oldPassword: oldPassword,
       newPassword: newPassword
     });
+  }
+
+  getMunicipals() {
+    return api.get('/api/mymunicipals');
+  }
+
+  addMunicipal(municipalId) {
+    return api.post('/api/mymunicipals', {
+      municipalId: municipalId
+    });
+  }
+
+  deleteMunicipal(municipalId) {
+    return api.delete('/api/mymunicipals/' + municipalId);
   }
 }
 export let userService = new UserService();

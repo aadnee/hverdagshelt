@@ -30,7 +30,7 @@ export class TicketFormWidget extends Component {
       details: '',
       category: '',
       categoryOptions: [],
-      subcategory: '',
+      subcategory: null,
       subCategoryOptions: [],
       position: [null, null],
       subscription: 'false',
@@ -40,7 +40,6 @@ export class TicketFormWidget extends Component {
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
-    console.log('changing state');
   };
 
   submit = () => {
@@ -53,7 +52,7 @@ export class TicketFormWidget extends Component {
         this.state.details,
         1,
         1,
-        this.state.category,
+        this.state.subcategory ? this.state.subcategory : this.state.category,
         Cookies.get('municipalId'),
         this.state.subscription === 'true'
       )

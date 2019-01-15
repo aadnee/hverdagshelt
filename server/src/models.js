@@ -73,6 +73,10 @@ export let Subscriptions = sequelize.define('subscriptions');
 News.belongsToMany(Users, { through: Subscriptions });
 Users.belongsToMany(News, { through: Subscriptions });
 
+export let UserMunicipals = sequelize.define('usermunicipals');
+Municipals.belongsToMany(Users, { through: UserMunicipals });
+Users.belongsToMany(Municipals, { through: UserMunicipals });
+
 Users.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Municipals.hasMany(Users, { foreignKey: { allowNull: false } });
 Categories.hasMany(Categories, { foreignKey: { name: 'parentId' } });
@@ -206,6 +210,14 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await Subscriptions.create({
       newsId: 3,
       userId: 1
+    });
+    await UserMunicipals.create({
+      userId: 1,
+      municipalId: 1
+    });
+    await UserMunicipals.create({
+      userId: 1,
+      municipalId: 2
     });
     return true;
   }

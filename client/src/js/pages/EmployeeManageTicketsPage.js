@@ -60,12 +60,11 @@ export class EmployeeManageTicketsPage extends React.Component {
   }
 
   reject(id) {
-    console.log('Decline');
     console.log(id);
     ticketService.rejectTicket(id).then(res => {
       console.log(res);
       this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
-      console.log(this.state.tickets);
+
       if (this.state.tickets.length < 1) {
         console.log('Du har ingen varsler fra brukere');
         this.setState({ hasTickets: false });
@@ -75,16 +74,13 @@ export class EmployeeManageTicketsPage extends React.Component {
 
   accept(id, title, description, lat, lon, categoryId, municipalId) {
     ticketService.acceptTicket(id, title, description, lat, lon, categoryId, municipalId).then(res => {
-      console.log(res);
-
-      console.log(this.state.tickets);
+      console.log(res.message.no);
 
       let ticket = this.state.tickets.find(t => t.id === id);
       console.log(ticket);
       if (ticket.subscribed) {
-        subscriptionService.addSubscription(res.id).then(res => {
-          console.log('add sub');
-          console.log(res);
+        subscriptionService.addSubscription(res.id, ticket.userId).then(res => {
+          console.log(res.message.no);
         });
       }
       this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
