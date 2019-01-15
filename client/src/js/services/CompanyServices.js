@@ -22,8 +22,8 @@ class CompanyServices {
     });
   }
 
-  editCompany(name, email, phone, municipalId) {
-    return api.put('/api/companies/municipal/' + municipalId, {
+  editCompany(id, name, email, phone, municipalId) {
+    return api.put('/api/companies/' + id, {
       name: name,
       email: email,
       phone: phone,
