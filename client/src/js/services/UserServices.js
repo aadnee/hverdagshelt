@@ -38,23 +38,22 @@ class UserService {
   }
 
   async getMe() {
-      let name;
-      let me = await api.get('/api/me')
-          .then((res) => {
-            name = res.data.name.split(" ");
-            if(name.length > 1) {
-              res.data.lastName = name.pop();
-              res.data.firstName = name.join(" ");
-            }
-            return res;
-          });
-      return me;
+    let name;
+    let me = await api.get('/api/me').then(res => {
+      name = res.data.name.split(' ');
+      if (name.length > 1) {
+        res.data.lastName = name.pop();
+        res.data.firstName = name.join(' ');
+      }
+      return res;
+    });
+    return me;
   }
 
   editMe(firstName, lastName, email, phone, municipalId, oldPassword, newPassword) {
     console.log(name + ' ' + email);
     return api.put('/api/me', {
-      name: String(firstName + " " + lastName),
+      name: String(firstName + ' ' + lastName),
       email: email,
       phone: phone,
       municipalId: municipalId,
