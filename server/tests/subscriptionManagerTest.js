@@ -60,3 +60,26 @@ describe('Finding users subscriptions', () => {
     });
   });
 });
+
+describe('Adding subscriptions', () => {
+  it('correct data', done => {
+    subscriptionManager.addSubscription(1, 3, function(subscription) {
+      expect({
+        success: subscription.success
+      }).toEqual({
+        success: true
+      });
+      done();
+    });
+  });
+  it('correct data', done => {
+    subscriptionManager.deleteSubscription(1, 3, function(subscription) {
+      expect({
+        success: subscription.success
+      }).toEqual({
+        success: true
+      });
+      done();
+    });
+  });
+});
