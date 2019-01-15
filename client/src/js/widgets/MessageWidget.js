@@ -25,6 +25,12 @@ export class MessageWidget extends React.Component {
     };
   }
 
+  customFunc() {
+    this.props.customFunc ? this.props.customFunc() : null;
+    this.close();
+    this.props.callback();
+  }
+
   show = () => () => this.setState({ open: true });
   close = () => this.setState({ open: false });
 
@@ -40,7 +46,7 @@ export class MessageWidget extends React.Component {
           <p>{this.state.modalMessage}</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button icon="checkmark" labelPosition="right" content="OK" onClick={this.close} />
+          <Button icon="checkmark" labelPosition="right" content="OK" onClick={() => this.customFunc()} />
         </Modal.Actions>
       </Modal>
     );

@@ -38,6 +38,7 @@ export class TicketFormWidget extends Component {
       modalOpen: false
     };
   }
+  close = () => this.setState({ modalOpen: false });
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
@@ -57,9 +58,7 @@ export class TicketFormWidget extends Component {
         this.state.subscription === 'true'
       )
       .then(res => {
-        console.log(res);
         this.setState({ modalMessage: res.message.no, modalOpen: true });
-        console.log(this.state.modalMessage);
       });
   };
 
@@ -87,7 +86,12 @@ export class TicketFormWidget extends Component {
   render() {
     return (
       <Container>
-        <MessageWidget modalOpen={this.state.modalOpen} modalMessage={this.state.modalMessage} size={'tiny'} />
+        <MessageWidget
+          callback={this.close}
+          modalOpen={this.state.modalOpen}
+          modalMessage={this.state.modalMessage}
+          size={'tiny'}
+        />
         <Grid verticalAlign="middle">
           <Grid.Column>
             <Form size="large">
