@@ -55,7 +55,6 @@ export class AdminRegisterWidget extends React.Component {
       phone: this.state.phone,
       municipalId: this.state.selectedOption
     };
-    console.log(newUser);
     console.log(this.props.handleRegister(newUser));
   };
 
