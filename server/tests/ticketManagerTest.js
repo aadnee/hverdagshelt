@@ -116,17 +116,18 @@ describe('Get local tickets', () => {
     });
   });
 });
-/*
+
 describe('Make a ticket to an article', () => {
   it('correct data', done => {
     ticketManager.makeNews(4, 'TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, function(result) {
-      console.log(result.success);
       expect({
-        success: result.success
+        success: result.success,
+        message: result.message.en
       }).toEqual({
-        success: true
+        success: true,
+        message: 'Article added.'
       });
+      done();
     });
   });
 });
-*/
