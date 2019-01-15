@@ -1,4 +1,4 @@
-import { Users } from '../models.js';
+import { Users, UserMunicipals, Municipals } from '../models.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
 import mailManager from './mailManager';
@@ -167,6 +167,57 @@ module.exports = {
           });
         }
       },
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  getMunicipals: function(userId, callback) {
+    Users.findOne({
+      attributes: [],
+      include: [
+        {
+          model: Municipals,
+          required: true
+        }
+      ],
+      where: { id: userId }
+    }).then(
+      res => callback({ success: true, data: res.municipals }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  addMunicipal: function(userId, municipalId, callback) {
+    UserMunicipals.findOne({ where: { userId: userId, municipalId: municipalId } }).then(
+      userMunicipal => {
+        if (userMunicipal == null) {
+          UserMunicipals.create({
+            userId: userId,
+            municipalId: municipalId
+          }).then(
+            res => callback({ success: true, message: { en: 'Municipal added.', no: 'Kommunen ble abbonert på.' } }),
+            err => callback({ success: false, message: err })
+          );
+        } else {
+          callback({
+            success: false,
+            message: { en: 'User already added this municipal.', no: 'Brukeren abonnerer allerede på denne kommunen.' }
+          });
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  deleteMunicipal: function(userId, municipalId, callback) {
+    UserMunicipals.destroy({
+      where: { userId: userId, municipalId: municipalId }
+    }).then(
+      res =>
+        callback({
+          success: true,
+          message: { en: 'Municipal deleted.', no: 'Kommunen blir ikke lengre abbonert på.' }
+        }),
       err => callback({ success: false, message: err })
     );
   }
