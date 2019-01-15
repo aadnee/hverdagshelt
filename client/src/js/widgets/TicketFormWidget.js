@@ -40,6 +40,7 @@ export class TicketFormWidget extends Component {
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
+    console.log('changing state');
   };
 
   submit = () => {
@@ -54,21 +55,19 @@ export class TicketFormWidget extends Component {
         1,
         this.state.category,
         Cookies.get('municipalId'),
-        this.state.subscribed === 'true'
+        this.state.subscription === 'true'
       )
       .then(res => console.log(res));
   };
 
   getSubCategories(category) {
     //Get subcategories based on the chosen category
-    console.log(category);
     categoryService.getSubCategories(category).then(res => {
       let subcats = [];
       res.data.map(subCat => {
         subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
       });
       this.setState({ subCategoryOptions: subcats });
-      console.log(this.state.subCategoryOptions);
     });
   }
 
@@ -79,7 +78,6 @@ export class TicketFormWidget extends Component {
         cats.push({ key: cat.id, value: cat.id, text: cat.name });
       });
       this.setState({ categoryOptions: cats });
-      console.log(this.state.categoryOptions);
     });
   }
 
