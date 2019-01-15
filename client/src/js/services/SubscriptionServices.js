@@ -8,8 +8,13 @@ class SubscriptionServices {
   }
 
   getSubscriptions() {
-    console.log('yyet');
     return api.get('/api/subscriptions');
+  }
+
+  deleteSubscription(newsId) {
+    return api.delete('api/subscriptions', {
+      newsId: newsId
+    });
   }
 }
 
