@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { Grid, Header } from 'semantic-ui-react';
 
 import { NewsCaseWidget } from '../widgets/NewsCaseWidget';
-import { newsService } from '../services/NewsServices';
+import { subscriptionService } from '../services/SubscriptionServices';
 
 export class UserSubscriptionPage extends Component {
   constructor(props) {
@@ -15,9 +15,10 @@ export class UserSubscriptionPage extends Component {
   }
 
   componentWillMount() {
-    newsService.getPersonalNews().then(n => {
-      if (n.length > 0) {
-        this.setState({ news: n });
+    subscriptionService.getSubscriptions().then(sub => {
+      console.log(sub.length);
+      if (sub.length > 0) {
+        this.setState({ news: sub });
       } else {
         console.log('Du følger ingen nyheter');
       }

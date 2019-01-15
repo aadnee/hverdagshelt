@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { Grid, Header, Message, Container } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
-import { subscriptionService } from '../services/SubscriptionSevices';
+import { subscriptionService } from '../services/SubscriptionServices';
 import Cookies from 'js-cookie';
 
 export class EmployeeManageTicketsPage extends React.Component {
