@@ -20,6 +20,8 @@ import {
 import { ticketService } from '../services/TicketServices';
 import { categoryService } from '../services/CategoryServices';
 
+import Cookies from 'js-cookie';
+
 export class TicketFormWidget extends Component {
   constructor(props) {
     super(props);
@@ -45,8 +47,12 @@ export class TicketFormWidget extends Component {
     //lat, lon and municipalId is fetched from the map
     //municipalId could also be fetched from Cookie
     ticketService
-      .addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1)
+      .addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, Cookies.get('municipalId'))
       .then(res => console.log(res));
+
+    if (this.state.subscription === 'true') {
+      console.log('e');
+    }
   };
 
   getSubCategories(category) {
