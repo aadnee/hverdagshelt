@@ -22,8 +22,8 @@ class CompanyServices {
     });
   }
 
-  editCompany(municipalId, name, email, phone) {
-    return api.put('/api/companies/municipal/' + municipalId, {
+  editCompany(id, name, email, phone, municipalId) {
+    return api.put('/api/companies/' + id, {
       name: name,
       email: email,
       phone: phone,
@@ -32,8 +32,8 @@ class CompanyServices {
   }
 
   deleteCompany(id) {
-    return api.delete('/api/companies/:' + id);
+    return api.delete('/api/companies/' + id);
   }
 }
 
-export let companyServices = new CompanyServices();
+export let companyService = new CompanyServices();

@@ -13,11 +13,14 @@ import {
   Input,
   Image,
   Message,
-  Segment
+  Segment,
+  TextArea
 } from 'semantic-ui-react';
 
 import { ticketService } from '../services/TicketServices';
-import { categoryServices } from '../services/CategoryServices';
+import { categoryService } from '../services/CategoryServices';
+
+import Cookies from 'js-cookie';
 
 export class TicketFormWidget extends Component {
   constructor(props) {
@@ -37,6 +40,7 @@ export class TicketFormWidget extends Component {
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
+    console.log('changing state');
   };
 
   submit = () => {
@@ -44,31 +48,36 @@ export class TicketFormWidget extends Component {
     //lat, lon and municipalId is fetched from the map
     //municipalId could also be fetched from Cookie
     ticketService
-      .addTicket(this.state.headline, this.state.details, 1, 1, this.state.category, 1)
+      .addTicket(
+        this.state.headline,
+        this.state.details,
+        1,
+        1,
+        this.state.category,
+        Cookies.get('municipalId'),
+        this.state.subscription === 'true'
+      )
       .then(res => console.log(res));
   };
 
   getSubCategories(category) {
     //Get subcategories based on the chosen category
-    console.log(category);
-    categoryServices.getSubCategories(category).then(res => {
+    categoryService.getSubCategories(category).then(res => {
       let subcats = [];
       res.data.map(subCat => {
         subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
       });
       this.setState({ subCategoryOptions: subcats });
-      console.log(this.state.subCategoryOptions);
     });
   }
 
   componentWillMount() {
-    categoryServices.getCategories().then(res => {
+    categoryService.getCategories().then(res => {
       let cats = [];
       res.data.map(cat => {
         cats.push({ key: cat.id, value: cat.id, text: cat.name });
       });
       this.setState({ categoryOptions: cats });
-      console.log(this.state.categoryOptions);
     });
   }
 
@@ -94,11 +103,9 @@ export class TicketFormWidget extends Component {
                 </Form.Field>
                 <Form.Field>
                   <label>Utdyp problemet</label>
-                  <Input
-                    fluid
-                    icon="comment"
-                    iconPosition="left"
-                    placeholder={'Utdyp'}
+                  <TextArea
+                    autoHeight
+                    placeholder={'Beskrivelse'}
                     value={this.state.details}
                     onChange={(event, data) => {
                       this.handleInput('details', data.value);

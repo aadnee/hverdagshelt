@@ -37,7 +37,7 @@ describe('Edit and delete company', () => {
     companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, 4, function(result) {
       expect({
         success: result.success,
-        message: result.message
+        message: result.message.en
       }).toEqual({
         success: true,
         message: 'Company updated.'
@@ -50,7 +50,7 @@ describe('Edit and delete company', () => {
     companyManager.deleteCompany(4, function(result) {
       expect({
         success: result.success,
-        message: result.message
+        message: result.message.en
       }).toEqual({
         success: true,
         message: 'Company deleted.'

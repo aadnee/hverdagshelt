@@ -1,9 +1,10 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Message, Reveal } from 'semantic-ui-react';
+import { Grid, Header, Message, Container } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
+import { subscriptionService } from '../services/SubscriptionSevices';
 import Cookies from 'js-cookie';
 
 export class EmployeeManageTicketsPage extends React.Component {
@@ -33,10 +34,8 @@ export class EmployeeManageTicketsPage extends React.Component {
 
   render() {
     return (
-      <div>
-        <Header textAlign={'center'} size={'huge'}>
-          Varslinger fra brukerne
-        </Header>
+      <Container>
+        <Header as="h2">Varslinger fra brukerne</Header>
         <Grid stackable container columns={3}>
           {!this.state.hasTickets ? (
             <Grid.Row centered>
@@ -56,7 +55,7 @@ export class EmployeeManageTicketsPage extends React.Component {
             </Grid.Column>
           ))}
         </Grid>
-      </div>
+      </Container>
     );
   }
 
@@ -68,19 +67,27 @@ export class EmployeeManageTicketsPage extends React.Component {
       this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
       console.log(this.state.tickets);
       if (this.state.tickets.length < 1) {
+        console.log('Du har ingen varsler fra brukere');
+        this.setState({ hasTickets: false });
       }
     });
   }
 
   accept(id, title, description, lat, lon, categoryId, municipalId) {
-    console.log('approve');
-    console.log(id);
-    console.log(title);
-
     ticketService.acceptTicket(id, title, description, lat, lon, categoryId, municipalId).then(res => {
       console.log(res);
-      this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
 
+      console.log(this.state.tickets);
+
+      let ticket = this.state.tickets.find(t => t.id === id);
+      console.log(ticket);
+      if (ticket.subscribed) {
+        subscriptionService.addSubscription(res.id).then(res => {
+          console.log('add sub');
+          console.log(res);
+        });
+      }
+      this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
       if (this.state.tickets.length < 1) {
         console.log('Du har ingen varsler fra brukere');
         this.setState({ hasTickets: false });

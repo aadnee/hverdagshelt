@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header } from 'semantic-ui-react';
+import { Grid, Header, Container } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
 
@@ -22,10 +22,8 @@ export class UserTicketsPage extends Component {
 
   render() {
     return (
-      <div>
-        <Header textAlign={'center'} size={'huge'}>
-          Mine varlsinger
-        </Header>
+      <Container>
+        <Header as="h2">Mine varslinger</Header>
         <Grid stackable container columns={3}>
           {this.state.tickets.map(ticket => (
             <Grid.Column key={ticket.id}>
@@ -33,7 +31,7 @@ export class UserTicketsPage extends Component {
             </Grid.Column>
           ))}
         </Grid>
-      </div>
+      </Container>
     );
   }
 }

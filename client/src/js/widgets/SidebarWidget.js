@@ -41,12 +41,11 @@ export class SidebarWidget extends Component {
         vertical
         visible={this.props.visible}
         color={menuColor}
+        onClick={() => this.handleSidebar()}
       >
         <Segment basic inverted color={menuColor}>
           <Menu borderless fluid inverted vertical color={menuColor}>
-            <Header as="h5" floated="right" inverted>
-              <Icon name="close" inverted onClick={() => this.handleSidebar()} />
-            </Header>
+            <Button floated="right" icon="close" inverted circular />
             <Header as="h2" floated="left" inverted>
               Meny
             </Header>

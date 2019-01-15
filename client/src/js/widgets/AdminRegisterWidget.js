@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form, Icon } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
-import { companyServices } from '../services/CompanyServices';
-import { municipalServices } from '../services/MunicipalServices';
+import { companyService } from '../services/CompanyServices';
+import { municipalService } from '../services/MunicipalServices';
 
 export class AdminRegisterWidget extends React.Component {
   constructor(props) {
@@ -16,15 +16,12 @@ export class AdminRegisterWidget extends React.Component {
       selectedOption: '',
       options: [],
       user: true,
-      showMainModal: false,
-      showRegisterModal: false,
-      popupMessage: '',
-      popupSuccess: ''
+      showMainModal: false
     };
   }
 
   componentWillMount() {
-    municipalServices.getMunicipals().then(res => {
+    municipalService.getMunicipals().then(res => {
       let options = [];
       res.data.map(munic => {
         options.push({ key: munic.id, value: munic.id, text: munic.name });
@@ -45,58 +42,21 @@ export class AdminRegisterWidget extends React.Component {
     this.setState({ [key]: value });
   };
 
-  handleSubmit = () => {
-    //USERSERICE -> request cookie
-    console.log('submitting');
-    console.log(this.state);
-    this.props.user
-      ? userService
-          .register(
-            this.state.firstname + this.state.lastname,
-            this.state.email,
-            this.state.phone,
-            this.state.selectedOption
-          )
-          .then(res => {
-            console.log(res);
-            this.setState({ popupMessage: res.message });
-            res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-            this.setState({
-              showRegisterModal: true,
-              firstname: '',
-              lastname: '',
-              email: '',
-              phone: '',
-              selectedOption: ''
-            });
-          })
-      : companyServices
-          .addCompany(
-            this.state.firstname + this.state.lastname,
-            this.state.email,
-            this.state.phone,
-            this.state.selectedOption
-          )
-          .then(res => {
-            console.log(res);
-            this.setState({ popupMessage: res.message });
-            res.success ? this.setState({ popupSuccess: true }) : this.setState({ popupSuccess: false });
-            this.setState({
-              showRegisterModal: true,
-              firstname: '',
-              lastname: '',
-              email: '',
-              phone: '',
-              selectedOption: ''
-            });
-          });
-  };
-
   closeModals = () => {
     this.setState({
-      showMainModal: false,
       showRegisterModal: false
     });
+  };
+
+  handle = () => {
+    let newUser = {
+      name: this.state.firstname + this.state.lastname,
+      email: this.state.email,
+      phone: this.state.phone,
+      municipalId: this.state.selectedOption
+    };
+    console.log(newUser);
+    console.log(this.props.handleRegister(newUser));
   };
 
   render() {
@@ -206,14 +166,7 @@ export class AdminRegisterWidget extends React.Component {
                           }}
                         />
                       </Form.Field>
-                      <Button
-                        color="blue"
-                        fluid
-                        size="large"
-                        onClick={() => {
-                          this.handleSubmit();
-                        }}
-                      >
+                      <Button color="blue" fluid size="large" onClick={() => this.handle()}>
                         {this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}
                       </Button>
                       <Button
@@ -232,15 +185,6 @@ export class AdminRegisterWidget extends React.Component {
               </Grid>
             </Container>
           </Modal.Content>
-        </Modal>
-        <Modal size={'tiny'} open={this.state.showRegisterModal}>
-          <Modal.Header>Registreringsstatus: {this.state.popupSuccess ? 'Suksess' : 'Error'}</Modal.Header>
-          <Modal.Content>
-            <p>{this.state.popupMessage}</p>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button icon="check" content="Ok" onClick={this.closeModals} />
-          </Modal.Actions>
         </Modal>
       </div>
     );

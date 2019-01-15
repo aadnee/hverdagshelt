@@ -1,12 +1,14 @@
 import React from 'react';
 import { Component } from 'react';
+import Cookies from 'js-cookie';
 import { NavLink } from 'react-router-dom';
-import { Container, Grid, Rail, Segment, Sticky, Header, Icon, Divider, Dropdown } from 'semantic-ui-react';
+import { Container, Grid, Segment, Header, Icon, Divider, Dropdown, Message } from 'semantic-ui-react';
 
 import { NewsCaseWidget } from './../widgets/NewsCaseWidget';
 
-import { municipalServices } from './../services/MunicipalServices';
-import { categoryServices } from './../services/CategoryServices';
+import { municipalService } from './../services/MunicipalServices';
+import { categoryService } from './../services/CategoryServices';
+import { newsService } from './../services/NewsServices';
 
 export class UserNewsFeedPage extends Component {
   constructor(props) {
@@ -22,38 +24,72 @@ export class UserNewsFeedPage extends Component {
   }
 
   componentWillMount() {
-    municipalServices
+    this.setState({ loading: true });
+    let munRes = municipalService
       .getMunicipals()
       .then(res => {
+        const munID = Cookies.get('municipalId');
         let muns = res.data.map(r => {
           return { key: r.id, value: r.name, text: r.name };
         });
-        this.setState({ municipals: muns });
+        let userMun = muns.find(mun => {
+          return mun.key == munID;
+        });
+        this.setState({ municipals: muns, selectedMunicipals: [userMun.text] });
+        return muns;
       })
       .catch(res => console.error(res));
 
-    categoryServices
+    let catRes = categoryService
       .getCategories()
       .then(res => {
-        let cat = res.data.map(r => {
+        let cats = res.data.map(r => {
           return { key: r.id, value: r.name, text: r.name };
         });
-        this.setState({ categories: cat });
+        this.setState({ categories: cats });
+        return cats;
       })
       .catch(res => console.error(res));
+
+    Promise.all([munRes, catRes])
+      .then(() => {
+        this.getNews();
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ loading: false });
+      });
+  }
+
+  getNews() {
+    this.setState({ loading: true });
+    setTimeout(() => {
+      newsService
+        .getLocalNews(Cookies.get('municipalId'))
+        .then(res => {
+          this.setState({ news: res.data, loading: false });
+        })
+        .catch(err => {
+          console.error(err);
+          this.setState({ loading: false });
+        });
+    }, 10);
   }
 
   selectMunicipal(value) {
     this.setState({ selectedMunicipals: value });
+    this.getNews();
   }
 
   selectCategory(value) {
     this.setState({ selectedCategories: value });
+    this.getNews();
   }
 
   render() {
     return (
       <Container>
+        <Header as="h2">Nyhetsstrøm</Header>
         <Grid divided columns={2}>
           <Grid.Column width={5}>
             <Segment>
@@ -100,157 +136,25 @@ export class UserNewsFeedPage extends Component {
           </Grid.Column>
 
           <Grid.Column width={11}>
-            <NewsCaseWidget title="Problemer, problemer" />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
-            <Divider hidden />
+            {this.state.loading ? (
+              <Message icon>
+                <Icon name="circle notched" loading />
+                <Message.Content>
+                  <Message.Header>Vennligst vent</Message.Header>
+                  Henter informasjon
+                </Message.Content>
+              </Message>
+            ) : this.state.news > 0 ? (
+              this.state.news.map(nc => <NewsCaseWidget key={nc.id} newscase={nc} />)
+            ) : (
+              <Message icon success>
+                <Icon name="thumbs up outline" />
+                <Message.Content>
+                  <Message.Header>Tomt!</Message.Header>
+                  Vi finner ingen nyhetsoppdateringer til de valgte kommunene.
+                </Message.Content>
+              </Message>
+            )}
           </Grid.Column>
         </Grid>
       </Container>

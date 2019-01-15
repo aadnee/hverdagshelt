@@ -17,7 +17,7 @@ import {
     Button,
     Modal
 } from 'semantic-ui-react';
-import {userService} from "../services/UserServices";
+import { userService } from '../services/UserServices';
 
 export class UserEditFormWidget extends Component {
     constructor(props) {
@@ -65,7 +65,6 @@ export class UserEditFormWidget extends Component {
         this.setState({municipalOptions: muns});
 
         this.setState({followedMunicipals: this.state.followedMunicipals.concat(deletedMun)});//adds the deleted municipal back to the list of followed municipals
-
     };
 
     deleteMunicipals = (index) => {

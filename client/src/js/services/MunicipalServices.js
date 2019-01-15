@@ -10,4 +10,4 @@ class MunicipalServices {
   }
 }
 
-export let municipalServices = new MunicipalServices();
+export let municipalService = new MunicipalServices();

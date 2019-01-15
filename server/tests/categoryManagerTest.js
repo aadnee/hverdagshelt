@@ -1,4 +1,4 @@
-import { Users, sync } from '../src/models';
+import { sync } from '../src/models';
 import categoryManager from '../src/managers/categoryManager';
 
 jest.setTimeout(30000);

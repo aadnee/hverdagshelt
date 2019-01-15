@@ -16,7 +16,7 @@ import {
   Segment,
   TextArea
 } from 'semantic-ui-react';
-import { categoryServices } from '../services/CategoryServices';
+import { categoryService } from '../services/CategoryServices';
 
 //import {} from './';
 
@@ -52,7 +52,7 @@ export class PublishNewsFormWidget extends Component {
   getSubCategories(category) {
     //Get subcategories based on the chosen category
     console.log(category);
-    categoryServices.getSubCategories(category).then(res => {
+    categoryService.getSubCategories(category).then(res => {
       let subcats = [];
       res.data.map(subCat => {
         subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
@@ -63,7 +63,7 @@ export class PublishNewsFormWidget extends Component {
   }
 
   componentWillMount() {
-    categoryServices.getCategories().then(res => {
+    categoryService.getCategories().then(res => {
       let cats = [];
       res.data.map(cat => {
         cats.push({ key: cat.id, value: cat.id, text: cat.name });
