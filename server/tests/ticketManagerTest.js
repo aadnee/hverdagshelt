@@ -76,7 +76,7 @@ describe('Setting status', () => {
         message: ticket.message
       }).toEqual({
         success: true,
-        message: 'Status updated.'
+        message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
       });
       done();
     });
