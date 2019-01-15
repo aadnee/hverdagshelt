@@ -13,11 +13,7 @@ class SubscriptionServices {
 
   deleteSubscription(newsId) {
     console.log(newsId);
-    return api.delete('/api/subscriptions', {
-      data: {
-        newsId: newsId
-      }
-    });
+    return api.delete('/api/subscriptions/' + newsId);
   }
 }
 
