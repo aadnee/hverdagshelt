@@ -18,7 +18,7 @@ export class LoginWidget extends Component {
     super(props);
 
     this.state = {
-      email: '',
+      email: this.props.email ? this.props.email : '',
       password: ''
     };
   }

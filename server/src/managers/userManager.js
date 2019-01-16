@@ -182,7 +182,7 @@ module.exports = {
       ],
       where: { id: userId }
     }).then(
-      res => callback({ success: true, data: res.municipals }),
+      res => (res == null ? callback({ success: true, data: [] }) : callback({ success: true, data: res.municipals })),
       err => callback({ success: false, message: err })
     );
   },
