@@ -214,8 +214,10 @@ export class TicketFormWidget extends Component {
                     this,
                     this.state.headline,
                     this.state.details,
-                    1,
-                    1,
+                    this.state.latlng.lat,
+                    this.state.latlng.lng,
+                    this.state.address,
+
                     this.state.subcategory ? this.state.subcategory : this.state.category,
                     Cookies.get('municipalId'),
                     this.state.subscription === 'true',

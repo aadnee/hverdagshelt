@@ -14,9 +14,7 @@ export class UserReportTicketPage extends Component {
     super(props);
     this.state = {
       latlng: [null, null],
-      address: null,
-      modalOpen: false,
-      modalMessage: ''
+      address: null
     };
     this.callback = this.callback.bind(this);
     this.submit = this.submit.bind(this);
@@ -28,29 +26,31 @@ export class UserReportTicketPage extends Component {
 
   callbackFake() {}
 
-  submit = (headline, description, lat, lon, catId, municipalId, subscribed, image) => {
+  submit = (headline, description, lat, lon, address, catId, municipalId, subscribed, image) => {
     console.log(this.state);
     //lat, lon  is fetched from the map
+
     if (!headline || !description || !lat || !lon || !catId || !municipalId) {
       toast.error('Vennligst fyll ut alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });
-      console.log('cs');
     } else {
-      ticketService.addTicket(headline, description, lat, lon, catId, municipalId, subscribed, image).then(res => {
-        this.setState({ modalMessage: res.message.no, modalOpen: true });
-        if (res.success) {
-          toast.success(res.message.no, {
-            position: toast.POSITION.TOP_RIGHT
-          });
-          Consumer._currentValue.history.push({ pathname: '/tickets' });
-        } else {
-          toast.error(res.message.no, {
-            position: toast.POSITION.TOP_RIGHT
-          });
-        }
-        console.log(res);
-      });
+      ticketService
+        .addTicket(headline, description, lat, lon, address, catId, municipalId, subscribed, image)
+        .then(res => {
+          console.log(res);
+          if (res.success) {
+            toast.success(res.message.no, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+            Consumer._currentValue.history.push({ pathname: '/tickets' });
+          } else {
+            toast.error(res.message.no, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+          }
+          console.log(res);
+        });
     }
   };
 
