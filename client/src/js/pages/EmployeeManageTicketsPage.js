@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Grid, Header, Message, Container } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
+import { MessageWidget } from '../widgets/MessageWidget';
 import { ticketService } from '../services/TicketServices';
 import { subscriptionService } from '../services/SubscriptionServices';
 import Cookies from 'js-cookie';
@@ -35,6 +36,7 @@ export class EmployeeManageTicketsPage extends React.Component {
   render() {
     return (
       <Container>
+
         <Header as="h2">Varslinger fra brukerne</Header>
         <Grid stackable container columns={3}>
           {!this.state.hasTickets ? (
