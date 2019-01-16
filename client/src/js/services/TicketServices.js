@@ -2,7 +2,7 @@ import api from './api';
 
 class TicketServices {
   addTicket(title, description, lat, lon, categoryId, municipalId, subscribed, image) {
-    var formData = new FormData();
+    let formData = new FormData();
     formData.append('image', image ? image[0] : null);
     formData.append('title', title);
     formData.append('description', description);
@@ -41,7 +41,7 @@ class TicketServices {
   }
 
   UpdateTicket(ticketId, title, description, lat, lon, categoryId, municipalId, subscribed, image) {
-    var formData = new FormData();
+    let formData = new FormData();
     formData.append('image', image ? image[0] : null);
     formData.append('title', title);
     formData.append('description', description);
