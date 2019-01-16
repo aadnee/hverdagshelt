@@ -1,37 +1,34 @@
 /* Custom CSS here */
 .leaflet-container {
-    height: 75vh;
-    width: 100vw;
-    margin: 2% 0;
+  height: 75vh;
+  width: 100%;
+  margin: 2% 0;
 }
 
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
 
 /* STYLING FOR SIDEBAR */
 .sidebarLink {
-    font-size: 18px;
-    color: gray;
-    text-align: left !important;
+  font-size: 18px;
+  color: gray;
+  text-align: left !important;
 }
 
 .sidebarHeaders {
-    padding-top: 10px;
-    text-align: left;
+  padding-top: 10px;
+  text-align: left;
 }
 
-.sidebarComponents{
-    margin-left: 30px;
-
+.sidebarComponents {
+  margin-left: 30px;
 }
 
 #sidebarHeader {
-    margin-top: 10px;
-    text-align:  left;
-    margin-left: 30px;
-    font-size: 40px;
+  margin-top: 10px;
+  text-align: left;
+  margin-left: 30px;
+  font-size: 40px;
 }
-
-

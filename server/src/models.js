@@ -96,6 +96,30 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await Municipals.create({
       name: 'Risør'
     });
+    await Municipals.create({
+      name: 'Kristiansand'
+    });
+    await Municipals.create({
+      name: 'Kristiansund'
+    });
+    await Municipals.create({
+      name: 'Rana'
+    });
+    await Municipals.create({
+      name: 'Oslo'
+    });
+    await Municipals.create({
+      name: 'Gramstad'
+    });
+    await Municipals.create({
+      name: 'Vennesla'
+    });
+    await Municipals.create({
+      name: 'Bergen'
+    });
+    await Municipals.create({
+      name: 'Stranda'
+    });
     await Categories.create({
       name: 'Vei og trafikk'
     });

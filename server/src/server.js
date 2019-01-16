@@ -23,7 +23,10 @@ let app = express();
 let storage = multer.diskStorage({
   destination: './uploads/',
   filename: function(req, file, cb) {
-    cb(null, file.originalname);
+    let fileParts = file.originalname.split('.');
+    let ext = fileParts.pop();
+    let name = fileParts.join();
+    cb(null, name + '-' + Date.now() + '.' + ext);
   }
 });
 let upload = multer({ storage: storage });
