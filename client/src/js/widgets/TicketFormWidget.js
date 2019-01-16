@@ -41,13 +41,12 @@ export class TicketFormWidget extends Component {
   }
   close = () => this.setState({ modalOpen: false });
 
-  componentDidUpdate(prevProps){
-    if(prevProps != this.props){
+  componentDidUpdate(prevProps) {
+    if (prevProps != this.props) {
       console.log(this.props);
-      this.setState({address: this.props.address, latlng: this.props.latlng});
+      this.setState({ address: this.props.address, latlng: this.props.latlng });
     }
   }
-
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
@@ -85,12 +84,13 @@ export class TicketFormWidget extends Component {
                 <Form.Field>
                   <label>Addresse:</label>
                   <Input
-                  fluid
-                  icon='map'
-                  iconPosition='left'
-                  placeholder='Velg posisjon på kartet'
-                  defaultValue={this.state.address}
-                  readOnly/>
+                    fluid
+                    icon="map"
+                    iconPosition="left"
+                    placeholder="Velg posisjon på kartet"
+                    defaultValue={this.state.address}
+                    readOnly
+                  />
                   <label>Hva vil du melde inn?</label>
                   <Input
                     fluid

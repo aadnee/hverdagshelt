@@ -15,12 +15,11 @@ export class UserReportTicketPage extends Component {
     this.state = {
       latlng: [null, null],
       address: null,
-        modalOpen: false,
-        modalMessage: ''
+      modalOpen: false,
+      modalMessage: ''
     };
     this.callback = this.callback.bind(this);
-      this.submit = this.submit.bind(this);
-
+    this.submit = this.submit.bind(this);
   }
 
   callback(latlng, address) {
@@ -29,31 +28,31 @@ export class UserReportTicketPage extends Component {
 
   callbackFake() {}
 
-    submit = (headline, description, lat, lon, catId, municipalId, subscribed, image) => {
-        console.log(this.state);
-        //lat, lon  is fetched from the map
-        if (!headline || !description || !lat || !lon || !catId || !municipalId) {
-            toast.error('Vennligst fyll ut alle felt', {
-                position: toast.POSITION.TOP_RIGHT
-            });
-            console.log('cs');
+  submit = (headline, description, lat, lon, catId, municipalId, subscribed, image) => {
+    console.log(this.state);
+    //lat, lon  is fetched from the map
+    if (!headline || !description || !lat || !lon || !catId || !municipalId) {
+      toast.error('Vennligst fyll ut alle felt', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+      console.log('cs');
+    } else {
+      ticketService.addTicket(headline, description, lat, lon, catId, municipalId, subscribed, image).then(res => {
+        this.setState({ modalMessage: res.message.no, modalOpen: true });
+        if (res.success) {
+          toast.success(res.message.no, {
+            position: toast.POSITION.TOP_RIGHT
+          });
+          Consumer._currentValue.history.push({ pathname: '/tickets' });
         } else {
-            ticketService.addTicket(headline, description, lat, lon, catId, municipalId, subscribed, image).then(res => {
-                this.setState({ modalMessage: res.message.no, modalOpen: true });
-                if (res.success) {
-                    toast.success(res.message.no, {
-                        position: toast.POSITION.TOP_RIGHT
-                    });
-                    Consumer._currentValue.history.push({ pathname: '/tickets' });
-                } else {
-                    toast.error(res.message.no, {
-                        position: toast.POSITION.TOP_RIGHT
-                    });
-                }
-                console.log(res);
-            });
+          toast.error(res.message.no, {
+            position: toast.POSITION.TOP_RIGHT
+          });
         }
-    };
+        console.log(res);
+      });
+    }
+  };
 
   render() {
     return (
@@ -66,7 +65,12 @@ export class UserReportTicketPage extends Component {
                 <MapWidget callback={this.callback} />
               </Grid.Column>
               <Grid.Column only="computer">
-                <TicketFormWidget borderless latlng={this.state.latlng} address={this.state.address} submit={this.submit.bind(this)} />
+                <TicketFormWidget
+                  borderless
+                  latlng={this.state.latlng}
+                  address={this.state.address}
+                  submit={this.submit.bind(this)}
+                />
               </Grid.Column>
             </Grid.Row>
 

@@ -47,6 +47,7 @@ export class UserSubscriptionPage extends Component {
         if (res.success) {
           this.setState({ news: this.state.news.filter(news => news.id !== newsId), modalOpen: false });
 
+
           toast.success(res.message.no, {
             position: toast.POSITION.TOP_RIGHT
           });
