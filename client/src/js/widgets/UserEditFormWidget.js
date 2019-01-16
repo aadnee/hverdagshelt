@@ -48,25 +48,31 @@ export class UserEditFormWidget extends Component {
     componentWillMount() {
         let prom = this.getFollowedMunicipals();
         console.log(prom);
-        Promise.all(prom).then(() => {
+        Promise.all([prom]).then(() => {
             this.getMunicipalOptions();
         });
     }
 
     getMunicipalOptions() {
-        //console.log(this.state.followedMunicipals);
-        municipalService.getMunicipals().then(res => {return res.data.map((mun) => {
-            const arObj = {key:mun.id, value:mun.name, text:mun.name};
-            if(!this.state.followedMunicipals.filter(f => f.id === arObj.id).length > 0)
-                return arObj;
-        })})
-            .then(opt => this.setState({municipalOptions: opt}));
-
+        municipalService.getMunicipals().then(res => {
+            return res.data.filter((mun) => !this.state.followedMunicipals.find((f) => f.key === mun.id)).map((mun) => { return {key: mun.id, value: mun.name, text: mun.name}; });
+        })
+            .then(opt => {
+                    console.log(opt);
+                    this.setState({municipalOptions: opt});
+                    setTimeout(() => console.log(this.state.municipalOptions), 10);
+                    return opt;
+                }
+            );
     }
 
-    getFollowedMunicipals(){
+    getFollowedMunicipals() {
         return userService.getMunicipals()
-            .then(res => {return res.data.map((mun) => {return {key: mun.id, value:mun.name, text: mun.name}})})
+            .then(res => {
+                return res.data.map((mun) => {
+                    return {key: mun.id, value: mun.name, text: mun.name}
+                })
+            })
             .then(opt => {
                     this.setState({followedMunicipals: opt});
                     return opt;
@@ -183,7 +189,7 @@ export class UserEditFormWidget extends Component {
                                                     icon={"edit"}
                                                     color={"blue"}
                                                     onClick={() => {
-                                                       this.handleEdit('editFirstname')
+                                                        this.handleEdit('editFirstname')
                                                     }}/>
                                             }>Endre fornavn
                                             </Popup>
