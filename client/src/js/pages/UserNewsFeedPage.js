@@ -65,7 +65,7 @@ export class UserNewsFeedPage extends Component {
     this.setState({ loading: true });
     setTimeout(() => {
       newsService
-        .getLocalNews(Cookies.get('municipalId'))
+        .getFilteredNews(Cookies.get('municipalId'), [1]) // Second param is category ids
         .then(res => {
           this.setState({ news: res.data, loading: false });
         })

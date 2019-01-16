@@ -43,7 +43,7 @@ export class RegisterWidget extends React.Component {
     console.log('submitting');
     userService
       .register(
-        this.state.firstname + this.state.lastname,
+        this.state.firstname + ' ' + this.state.lastname,
         this.state.email,
         this.state.phone,
         this.state.selectedOption
@@ -72,7 +72,7 @@ export class RegisterWidget extends React.Component {
             <Grid.Column mobile={16}>
               {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
               <Form size="large">
-                <Segment piled>
+                <Segment>
                   <Form.Field>
                     <label>Fornavn</label>
                     <Input

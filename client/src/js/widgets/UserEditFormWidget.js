@@ -53,18 +53,23 @@ export class UserEditFormWidget extends Component {
         });
     }
 
-    getMunicipalOptions() {
-        municipalService.getMunicipals().then(res => {
-            return res.data.filter((mun) => !this.state.followedMunicipals.find((f) => f.key === mun.id)).map((mun) => {return {key: mun.id, value: mun.name, text: mun.name};});
-        })
-            .then(opt => {
-                    console.log(opt);
-                    this.setState({municipalOptions: opt});
-                    setTimeout(() => console.log(this.state.municipalOptions), 10);
-                    return opt;
-                }
-            );
-    }
+  getMunicipalOptions() {
+    municipalService
+      .getMunicipals()
+      .then(res => {
+        return res.data
+          .filter(mun => !this.state.followedMunicipals.find(f => f.key === mun.id))
+          .map(mun => {
+            return { key: mun.id, value: mun.name, text: mun.name };
+          });
+      })
+      .then(opt => {
+        console.log(opt);
+        this.setState({ municipalOptions: opt });
+        setTimeout(() => console.log(this.state.municipalOptions), 10);
+        return opt;
+      });
+  }
 
     getFollowedMunicipals() {
         return userService.getMunicipals()

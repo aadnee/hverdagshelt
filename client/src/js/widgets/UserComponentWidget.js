@@ -95,23 +95,16 @@ export class UserComponentListWidget extends React.Component {
     //USERSERICE -> request cookie
     return (await this.props.usertype)
       ? userService.register(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
-          console.log(res);
-          this.setState({
-            popupMessage: res.message.no,
-            popupSuccess: res.success,
-            showRegisterModal: true
-          });
-          res.success ? this.state.users.push(newUser) : null;
+          let newArrayUsers = this.state.users;
+          newArrayUsers.push(newUser);
+          res.success ? this.setState({ users: newArrayUsers }) : null;
           return res.success;
         })
       : companyService.addCompany(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
           console.log(res);
-          this.setState({
-            popupMessage: res.message.no,
-            popupSuccess: res.success,
-            showRegisterModal: true
-          });
-          res.success ? this.state.users.push(newUser) : null;
+          let newArrayUsers = this.state.users;
+          newArrayUsers.push(newUser);
+          res.success ? this.setState({ users: newArrayUsers }) : null;
           return res.success;
         });
   };
@@ -143,7 +136,11 @@ export class UserComponentListWidget extends React.Component {
                 );
               })}
         </List>
-        <AdminRegisterWidget handleRegister={this.handleRegister} user />
+        {this.props.usertype ? (
+          <AdminRegisterWidget handleRegister={this.handleRegister} user />
+        ) : (
+          <AdminRegisterWidget handleRegister={this.handleRegister} />
+        )}
         <Modal size={'tiny'} open={this.state.showRegisterModal}>
           <Modal.Header>Registreringsstatus: {this.state.popupSuccess ? 'Suksess' : 'Error'}</Modal.Header>
           <Modal.Content>
