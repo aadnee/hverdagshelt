@@ -3,10 +3,11 @@ import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import L from 'leaflet';
 import * as ELG from 'esri-leaflet-geocoder';
-import 'esri-leaflet';
+import * as esri from 'esri-leaflet';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Button, Icon, Modal } from 'semantic-ui-react';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
+import { Alert } from '../../widgets';
 
 //import {} from './';
 
@@ -14,13 +15,17 @@ export class MapWidget extends Component {
   constructor() {
     super();
     this.state = {
-      lat: 63.43,
-      lng: 10.38,
+      lat: 63.430478482010294,
+      lng: 10.395047769353868,
       zoom: 13,
       placedMarker: false,
       markerPos: [null, null],
       map: null,
       marker: null,
+      userPosMarker: null,
+      userPos: [null, null],
+      foundPos: false,
+      userInfo: null,
       area: [],
       counter: 0,
       poly: null,
@@ -31,28 +36,65 @@ export class MapWidget extends Component {
     };
     this.mapRef = React.createRef();
     this.markerRef = React.createRef();
+    this.userMarkerPosRef = React.createRef();
+    this.greenIcon = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
   }
 
-  componentDidMount() {
-    this.setState({ map: this.mapRef.current.leafletElement, reverseSearch: new ELG.ReverseGeocode() });
-    /*const searchControl = new ELG.Geosearch().addTo(this.state.map);
-    const results = new L.LayerGroup().addTo(map);
+  componentWillMount() {}
 
-    searchControl.on('results', function (data) {
-      results.clearLayers();
-      for (let i = data.results.length - 1; i >= 0; i--) {
-        results.addLayer(L.marker(data.results[i].latlng));
+  componentDidMount() {
+    let reverseSearch = new ELG.ReverseGeocode();
+    let map = this.mapRef.current.leafletElement;
+    let self = this;
+
+    map
+      .locate({ setView: true, maxZoom: 15 })
+      .on('locationfound', function(e) {
+        console.log(e);
+        reverseSearch.latlng(e.latlng).run(function(error, result) {
+          self.setState({
+            userInfo: 'Din posisjon: ' + result.address.Address + ', ' + result.address.Subregion,
+            userPos: [e.latitude, e.longitude],
+            foundPos: true
+          });
+        });
+      })
+      .on('locationerror', function(e) {
+        console.log(e);
+        self.setState({ foundPos: false });
+        Alert(e.message);
+      });
+
+    let arcgisOnline = new ELG.ArcgisOnlineProvider({ countries: ['NO'] });
+    const searchControl = new ELG.Geosearch({
+      providers: [arcgisOnline],
+      allowMultipleResults: false,
+      useMapBounds: false,
+      placeholder: 'Søk etter steder eller addresser'
+    }).addTo(map);
+    searchControl.on('results', function(data) {
+      console.log(data.results.length);
+      if (data.results.length < 1) {
+        Alert('Ingen posisjon funnet');
+      } else {
+        self.handleClick(data.results[0]);
       }
-    });*/
-    //const reverseSearch = new ELG.ReverseGeocode();
-    //if(this.state.placedMarker)this.setState({marker: this.markerRef.current.leafletElement});
+    });
+    this.setState({ map: map, reverseSearch: reverseSearch });
   }
 
   render() {
     let pos = [this.state.lat, this.state.lng];
     return (
       <div>
-        {!this.props.employee ? (
+        {!this.props.employee || this.props.admin ? (
           <>
             <Button.Group>
               <Button toggle active={!this.state.areaToggle} onClick={() => this.areaToggler()}>
@@ -65,12 +107,17 @@ export class MapWidget extends Component {
             </Button.Group>
             {this.state.areaToggle ? (
               <>
-                <Button disabled={!this.state.area.length > 0} icon onClick={() => this.undo()}>
-                  <Icon name="undo" />
-                </Button>
-                <Button disabled={!this.state.area.length > 0} onClick={() => this.clear()}>
-                  Fjern valgt område
-                </Button>
+                <Button icon="undo" disabled={!this.state.area.length > 0} onClick={() => this.undoArea()} />
+                <Button icon="trash alternate" disabled={!this.state.area.length > 0} onClick={() => this.clear()} />
+              </>
+            ) : null}
+            {!this.state.areaToggle ? (
+              <>
+                <Button
+                  icon="trash alternate"
+                  disabled={!this.state.placedMarker}
+                  onClick={() => this.removeMarker()}
+                />
               </>
             ) : null}
           </>
@@ -92,6 +139,17 @@ export class MapWidget extends Component {
             <Marker ref={this.markerRef} position={this.state.markerPos}>
               <Popup open>
                 <b>{this.state.info}</b>
+                <br />
+                <Modal trigger={<Button>Meld hendelse her</Button>}>
+                  <TicketFormWidget />
+                </Modal>
+              </Popup>
+            </Marker>
+          ) : null}
+          {this.state.foundPos ? (
+            <Marker ref={this.userMarkerPosRef} position={this.state.userPos} icon={this.greenIcon}>
+              <Popup open>
+                <b>{this.state.userInfo}</b>
                 <br />
                 <Modal trigger={<Button>Meld hendelse her</Button>}>
                   <TicketFormWidget />
@@ -128,15 +186,23 @@ export class MapWidget extends Component {
   clear() {
     this.state.map.removeLayer(this.state.poly);
     this.state.map.removeLayer(this.state.marker);
+    this.state.map.flyTo([this.state.lat, this.state.lng], 14);
     this.setState({ placedMarker: false, area: [] });
   }
 
-  undo() {
+  removeMarker() {
+    this.state.map.removeLayer(this.state.marker);
+    this.state.map.flyTo([this.state.lat, this.state.lng], 14);
+    this.setState({ marker: null, placedMarker: false });
+  }
+
+  undoArea() {
     this.state.area.pop();
     //this.state.map.setView(this.state.area[this.state.area.length - 1]);
     if (this.state.poly) this.state.map.removeLayer(this.state.poly);
     if (this.state.area.length > 0) {
       this.state.marker.setLatLng(this.state.area[this.state.area.length - 1]);
+      this.state.map.flyTo(this.state.area[this.state.area.length - 1]);
       this.state.poly = L.polygon(this.state.area).addTo(this.state.map);
     }
     if (this.state.area.length === 0) {
@@ -149,14 +215,15 @@ export class MapWidget extends Component {
     let self = this;
     console.log(e.latlng);
 
-    if (this.state.placedMarker) this.setState({ marker: this.markerRef.current.leafletElement });
+    //if (this.state.placedMarker) this.setState({ marker: this.markerRef.current.leafletElement });
     if (this.state.areaToggle) {
       this.state.area.push(e.latlng);
+      this.state.map.flyTo(e.latlng);
       if (this.state.poly) this.state.map.removeLayer(this.state.poly);
       this.state.poly = L.polygon(this.state.area).addTo(this.state.map);
     } else {
       this.state.reverseSearch.latlng(e.latlng).run(function(error, result) {
-        self.setState({ reverseSearchRes: result, info: result.address.Match_addr + ', ' + result.address.Subregion });
+        self.setState({ reverseSearchRes: result, info: result.address.Address + ', ' + result.address.Subregion });
         self.state.marker.openPopup();
       });
       this.state.map.flyTo(e.latlng, 18);

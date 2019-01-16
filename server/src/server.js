@@ -21,9 +21,14 @@ const public_path = path.join(__dirname, '/../../client/public');
 let app = express();
 
 let storage = multer.diskStorage({
-  destination: './uploads/',
+  destination: '../client/public/uploads/',
   filename: function(req, file, cb) {
-    cb(null, file.originalname);
+    let fileParts = file.originalname.split('.');
+    let ext = fileParts.pop();
+    let name = Math.random()
+      .toString(36)
+      .substr(2, 5);
+    cb(null, name + '-' + Date.now() + '.' + ext);
   }
 });
 let upload = multer({ storage: storage });
@@ -190,7 +195,12 @@ app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
   });
 });
 
-app.post('/api/tickets', upload.single('image'), ensureLogin, function(req, res) {
+app.post('/api/tickets', ensureLogin, upload.single('image'), function(req, res) {
+  let image = null;
+  if (req.file) {
+    let file = req.file;
+    image = file.filename;
+  }
   getUserId(req, function(userId) {
     ticketManager.addTicket(
       req.body.title,
@@ -201,16 +211,20 @@ app.post('/api/tickets', upload.single('image'), ensureLogin, function(req, res)
       req.body.municipalId,
       req.body.subscribed,
       userId,
+      image,
       function(result) {
-        let file = req.file;
-        //console.log(file);
         res.json(result);
       }
     );
   });
 });
 
-app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
+app.put('/api/tickets/:ticketId', ensureLogin, upload.single('image'), function(req, res) {
+  let image = null;
+  if (req.file) {
+    let file = req.file;
+    image = file.filename;
+  }
   getUserId(req, function(userId) {
     ticketManager.editTicket(
       req.body.title,
@@ -222,6 +236,7 @@ app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
       req.body.subscribed,
       userId,
       req.params.ticketId,
+      image,
       function(result) {
         res.json(result);
       }
@@ -244,7 +259,6 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
     req.body.lon,
     req.body.categoryId,
     req.body.municipalId,
-
     function(result) {
       res.json(result);
     }
@@ -283,7 +297,7 @@ app.post('/api/categories', ensureEmployee, (req, res) => {
   });
 });
 
-app.get('/api/municipals', ensureLogin, function(req, res) {
+app.get('/api/municipals', function(req, res) {
   municipalManager.getMunicipals(function(result) {
     res.json(result);
   });
