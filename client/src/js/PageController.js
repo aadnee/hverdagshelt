@@ -95,9 +95,9 @@ export class PageController extends Component {
                   <AppRouter />
                   <Divider hidden />
                   <Divider hidden />
-                  <FooterWidget />
                 </Sidebar.Pusher>
               </Sidebar.Pushable>
+              <FooterWidget />
             </>
           </HashRouter>
         </Provider>

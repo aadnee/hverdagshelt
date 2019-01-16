@@ -83,6 +83,7 @@ export class TicketFormWidget extends Component {
       });
       this.setState({ categoryOptions: cats });
     });
+    this.props.edit ? this.setState({}) : null;
   }
 
   render() {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { Button, Header, Icon, Menu, Segment, Sidebar, Grid, Divider, Container } from 'semantic-ui-react';
+import { Button, Header, Icon, Menu, Segment, Sidebar, Grid, Divider, Container, Label } from 'semantic-ui-react';
 
 let menuColor = null;
 
@@ -94,12 +94,15 @@ class MunicipalOptions extends Component {
         </Header>
         <NavLink exact to="/employee/tickets" activeClassName="active" className="ui item">
           Behandle innsendte varsler
+          <Label circular size="tiny">
+            11
+          </Label>
         </NavLink>
         <NavLink exact to="/employee/news" activeClassName="active" className="ui item">
           Administrer nyheter
         </NavLink>
         <NavLink exact to="/employee/assignments" activeClassName="active" className="ui item">
-          Behandle unsendte oppdrag
+          Behandle avslåtte oppdrag
         </NavLink>
         <div className="ui item disabled" />
       </Menu>

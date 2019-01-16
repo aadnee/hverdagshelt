@@ -21,7 +21,7 @@ export class NewsCaseWidget extends Component {
     const clock = newscase.createdAt.split('T')[1].split('.')[0];
 
     return (
-      <Segment color="teal">
+      <Segment color="blue" fluid="true">
         <Container>
           <Segment vertical>
             <Grid divided inverted stackable>

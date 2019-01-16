@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Container } from 'semantic-ui-react';
+import { Grid, Header, Container, Modal } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
@@ -22,6 +22,10 @@ export class UserTicketsPage extends Component {
     });
   }
 
+  handleEdit = () => {
+    ticketService.UpdateTicket();
+  };
+
   render() {
     return (
       <div>
@@ -35,9 +39,9 @@ export class UserTicketsPage extends Component {
             ))}
           </Grid>
         </Container>
-        <modal open={this.state.showEditTicket}>
-          <TicketFormWidget edit />
-        </modal>
+        <Modal open={this.state.showEditTicket}>
+          <TicketFormWidget submitButton={'Lagre endringer'} />
+        </Modal>
       </div>
     );
   }

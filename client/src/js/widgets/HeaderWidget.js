@@ -25,7 +25,7 @@ export class HeaderWidget extends React.Component {
 export class MyPageHeaderWidget extends React.Component {
   render() {
     return (
-      <Dropdown simple item icon="user" text={'Hei, ' + Consumer._currentValue.user.firstName}>
+      <Dropdown item text={'Hei, ' + Consumer._currentValue.user.firstName}>
         <Dropdown.Menu>
           <Dropdown.Item>
             <NavLink activeClassName="active" style={{ color: 'black' }} to="/profile">
