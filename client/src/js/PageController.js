@@ -41,6 +41,8 @@ export class PageController extends Component {
       userService.getMe().then(res => {
         if (res.success) this.setState({ user: res.data, renderReady: true });
       });
+    } else {
+      this.setState({ renderReady: true });
     }
   }
 
