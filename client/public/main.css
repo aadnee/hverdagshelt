@@ -32,3 +32,17 @@ body {
   margin-left: 30px;
   font-size: 40px;
 }
+
+
+/* STYLING FOR PICTURE UPLOAD */
+
+
+
+input[type=file] {
+  display: none;
+}
+
+#upload {
+  display: none;
+
+}
