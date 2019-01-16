@@ -4,11 +4,13 @@ import { NavLink } from 'react-router-dom';
 import { Grid, Header, Container } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
+import { TicketFormWidget } from '../widgets/TicketFormWidget';
 
 export class UserTicketsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showEditTicket: false,
       tickets: []
     };
   }
@@ -22,16 +24,21 @@ export class UserTicketsPage extends Component {
 
   render() {
     return (
-      <Container>
-        <Header as="h2">Mine varslinger</Header>
-        <Grid stackable container columns={3}>
-          {this.state.tickets.map(ticket => (
-            <Grid.Column key={ticket.id}>
-              <TicketWidget ticket={ticket} />
-            </Grid.Column>
-          ))}
-        </Grid>
-      </Container>
+      <div>
+        <Container>
+          <Header as="h2">Mine varslinger</Header>
+          <Grid stackable container columns={3}>
+            {this.state.tickets.map(ticket => (
+              <Grid.Column key={ticket.id}>
+                <TicketWidget ticket={ticket} />
+              </Grid.Column>
+            ))}
+          </Grid>
+        </Container>
+        <modal open={this.state.showEditTicket}>
+          <TicketFormWidget edit />
+        </modal>
+      </div>
     );
   }
 }

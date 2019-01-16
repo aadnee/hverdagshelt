@@ -40,6 +40,23 @@ class TicketServices {
     });
   }
 
+  UpdateTicket(ticketId, title, description, lat, lon, categoryId, municipalId, subscribed, image) {
+    var formData = new FormData();
+    formData.append('image', image ? image[0] : null);
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('lat', lat);
+    formData.append('lon', lon);
+    formData.append('categoryId', categoryId);
+    formData.append('municipalId', municipalId);
+    formData.append('subscribed', subscribed);
+    return api.put('api/tickets/' + ticketId, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
+
   //edit, delete, add
 }
 

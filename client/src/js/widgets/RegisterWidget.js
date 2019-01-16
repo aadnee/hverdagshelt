@@ -60,9 +60,7 @@ export class RegisterWidget extends React.Component {
 
   handleComplete = () => {
     this.setState({ showRegisterModal: false });
-    this.state.popupSuccess
-      ? Consumer._currentValue.history.push({ pathname: '/login', email: this.state.email })
-      : null;
+    this.state.popupSuccess ? Consumer._currentValue.history.push({ pathname: '/login' }) : null;
   };
 
   render() {
