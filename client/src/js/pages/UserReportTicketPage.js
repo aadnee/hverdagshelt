@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Header, Container, Grid } from 'semantic-ui-react';
+import { Header, Container, Grid, Segment, Divider } from 'semantic-ui-react';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { MapWidget } from '../widgets/MapWidget';
 import { ticketService } from '../services/TicketServices';
@@ -13,50 +13,70 @@ export class UserReportTicketPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalOpen: false,
-      modalMessage: ''
+      latlng: [null, null],
+      address: null,
+        modalOpen: false,
+        modalMessage: ''
     };
-    this.submit = this.submit.bind(this);
+    this.callback = this.callback.bind(this);
+      this.submit = this.submit.bind(this);
+
   }
 
-  submit = (headline, description, lat, lon, catId, municipalId, subscribed, image) => {
-    console.log(this.state);
-    //lat, lon  is fetched from the map
-    if (!headline || !description || !lat || !lon || !catId || !municipalId) {
-      toast.error('Vennligst fyll ut alle felt', {
-        position: toast.POSITION.TOP_RIGHT
-      });
-      console.log('cs');
-    } else {
-      ticketService.addTicket(headline, description, lat, lon, catId, municipalId, subscribed, image).then(res => {
-        this.setState({ modalMessage: res.message.no, modalOpen: true });
-        if (res.success) {
-          toast.success(res.message.no, {
-            position: toast.POSITION.TOP_RIGHT
-          });
-          Consumer._currentValue.history.push({ pathname: '/tickets' });
+  callback(latlng, address) {
+    this.setState({ latlng: latlng, address: address });
+  }
+
+  callbackFake() {}
+
+    submit = (headline, description, lat, lon, catId, municipalId, subscribed, image) => {
+        console.log(this.state);
+        //lat, lon  is fetched from the map
+        if (!headline || !description || !lat || !lon || !catId || !municipalId) {
+            toast.error('Vennligst fyll ut alle felt', {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            console.log('cs');
         } else {
-          toast.error(res.message.no, {
-            position: toast.POSITION.TOP_RIGHT
-          });
+            ticketService.addTicket(headline, description, lat, lon, catId, municipalId, subscribed, image).then(res => {
+                this.setState({ modalMessage: res.message.no, modalOpen: true });
+                if (res.success) {
+                    toast.success(res.message.no, {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                    Consumer._currentValue.history.push({ pathname: '/tickets' });
+                } else {
+                    toast.error(res.message.no, {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                }
+                console.log(res);
+            });
         }
-        console.log(res);
-      });
-    }
-  };
+    };
 
   render() {
     return (
       <Container>
         <Header as="h2">Meld inn feil</Header>
-        <Grid divided columns={2}>
-          <Grid.Column>
-            <MapWidget />
-          </Grid.Column>
-          <Grid.Column>
-            <TicketFormWidget submit={this.submit.bind(this)} />
-          </Grid.Column>
-        </Grid>
+        <Segment basic color="blue">
+          <Grid divided>
+            <Grid.Row columns={2} only="computer">
+              <Grid.Column>
+                <MapWidget callback={this.callback} />
+              </Grid.Column>
+              <Grid.Column only="computer">
+                <TicketFormWidget borderless latlng={this.state.latlng} address={this.state.address} submit={this.submit.bind(this)} />
+              </Grid.Column>
+            </Grid.Row>
+
+            <Grid.Row columns={1} only="mobile tablet">
+              <Grid.Column colSpan={2}>
+                <MapWidget modal callback={this.callbackFake} />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Segment>
       </Container>
     );
   }

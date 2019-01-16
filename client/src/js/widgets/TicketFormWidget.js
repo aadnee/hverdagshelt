@@ -23,6 +23,8 @@ export class TicketFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      address: this.props.address ? this.props.address : '',
+      latlng: this.props.latlng ? this.props.latlng : [null, null],
       headline: '',
       details: '',
       category: '',
@@ -38,6 +40,14 @@ export class TicketFormWidget extends Component {
     };
   }
   close = () => this.setState({ modalOpen: false });
+
+  componentDidUpdate(prevProps){
+    if(prevProps != this.props){
+      console.log(this.props);
+      this.setState({address: this.props.address, latlng: this.props.latlng});
+    }
+  }
+
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
@@ -71,8 +81,16 @@ export class TicketFormWidget extends Component {
         <Grid verticalAlign="middle">
           <Grid.Column>
             <Form size="large">
-              <Segment stacked>
+              <Segment stacked={!this.props.borderless} basic={this.props.borderless}>
                 <Form.Field>
+                  <label>Addresse:</label>
+                  <Input
+                  fluid
+                  icon='map'
+                  iconPosition='left'
+                  placeholder='Velg posisjon på kartet'
+                  defaultValue={this.state.address}
+                  readOnly/>
                   <label>Hva vil du melde inn?</label>
                   <Input
                     fluid
@@ -165,6 +183,7 @@ export class TicketFormWidget extends Component {
                         onRemove={(event, data) => {
                           document.getElementById('upload').value = null;
                           this.setState({ image: null });
+                          console.log(this.state);
                         }}
                         as={'a'}
                         content={this.state.image[0].name}

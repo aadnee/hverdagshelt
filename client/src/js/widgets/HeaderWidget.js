@@ -25,11 +25,11 @@ export class HeaderWidget extends React.Component {
 export class MyPageHeaderWidget extends React.Component {
   render() {
     return (
-      <Dropdown simple item icon="user">
+      <Dropdown item text={'Hei, ' + Consumer._currentValue.user.firstName}>
         <Dropdown.Menu>
           <Dropdown.Item>
             <NavLink activeClassName="active" style={{ color: 'black' }} to="/profile">
-              Din Side
+              Min side
             </NavLink>
           </Dropdown.Item>
           <Dropdown.Item>
@@ -46,7 +46,7 @@ export class MyPageHeaderWidget extends React.Component {
 export class LoginRegisterHeaderWidget extends React.Component {
   render() {
     return (
-      <Dropdown item icon="user">
+      <Dropdown item icon="user" text={'Ikke logget inn'}>
         <Dropdown.Menu>
           <Dropdown.Item>
             <NavLink activeClassName="active" style={{ color: 'black' }} to="/login">

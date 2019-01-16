@@ -21,7 +21,7 @@ export class NewsCaseWidget extends Component {
     const clock = newscase.createdAt.split('T')[1].split('.')[0];
 
     return (
-      <Segment color="teal">
+      <Segment color="blue" fluid="true">
         <Container>
           <Segment vertical>
             <Grid divided inverted stackable>
@@ -47,8 +47,6 @@ export class NewsCaseWidget extends Component {
                     <Image
                       fluid
                       src={newscase.imageURL}
-                      //as='a'
-                      //href='http://localhost:3000/#/widget'
                       target="_blank"
                     />
                   </Grid.Column>

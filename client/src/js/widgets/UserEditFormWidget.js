@@ -194,7 +194,7 @@ export class UserEditFormWidget extends Component {
               </Divider>
               <Divider hidden />
               <Form.Field>
-                <Grid columns={'equal'}>
+                <Grid stackable columns={'equal'}>
                   <Grid.Column>
                     <Form.Input
                       fluid
@@ -255,9 +255,10 @@ export class UserEditFormWidget extends Component {
                 </Grid>
               </Form.Field>
               <Form.Field>
-                <Grid columns={'equal'}>
+                <Grid stackable columns={'equal'}>
                   <Grid.Column>
                     <Form.Input
+                      fluid
                       label="Telefonnummer"
                       iconPosition="left"
                       placeholder="Telefonnummer"
@@ -287,6 +288,7 @@ export class UserEditFormWidget extends Component {
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
+                      fluid
                       label="E-mail"
                       iconPosition="left"
                       placeholder="E-mail"

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { Button, Header, Icon, Menu, Segment, Sidebar, Grid, Divider, Container } from 'semantic-ui-react';
+import { Button, Header, Icon, Menu, Segment, Sidebar, Grid, Divider, Container, Label } from 'semantic-ui-react';
 
 let menuColor = null;
 
@@ -70,13 +70,13 @@ class AdminOptions extends Component {
         <Header as="h3" inverted>
           Administrator:
         </Header>
-        <NavLink to="/admin/users" activeClassName="active" className="ui item">
+        <NavLink exact to="/admin/users" activeClassName="active" className="ui item">
           Administrer brukere
         </NavLink>
-        <NavLink to="/admin/company" activeClassName="active" className="ui item">
+        <NavLink exact to="/admin/company" activeClassName="active" className="ui item">
           Administrer bedrifter
         </NavLink>
-        <NavLink to="/admin/categories" activeClassName="active" className="ui item">
+        <NavLink exact to="/admin/categories" activeClassName="active" className="ui item">
           Administrer kategorier
         </NavLink>
         <div className="ui item disabled" />
@@ -92,14 +92,17 @@ class MunicipalOptions extends Component {
         <Header as="h3" inverted>
           Ansatt:
         </Header>
-        <NavLink to="/employee/tickets" activeClassName="active" className="ui item">
+        <NavLink exact to="/employee/tickets" activeClassName="active" className="ui item">
           Behandle innsendte varsler
+          <Label circular size="tiny">
+            11
+          </Label>
         </NavLink>
-        <NavLink to="/employee/news" activeClassName="active" className="ui item">
+        <NavLink exact to="/employee/news" activeClassName="active" className="ui item">
           Administrer nyheter
         </NavLink>
-        <NavLink to="/employee/assignments" activeClassName="active" className="ui item">
-          Behandle unsendte oppdrag
+        <NavLink exact to="/employee/assignments" activeClassName="active" className="ui item">
+          Behandle avslåtte oppdrag
         </NavLink>
         <div className="ui item disabled" />
       </Menu>
@@ -114,7 +117,7 @@ class CompanyOptions extends Component {
         <Header as="h3" inverted>
           Bedrift:
         </Header>
-        <NavLink to="/assignments" activeClassName="active" className="ui item">
+        <NavLink exact to="/assignments" activeClassName="active" className="ui item">
           Mine oppdrag
         </NavLink>
         <div className="ui item disabled" />
@@ -130,19 +133,22 @@ class PrivateOptions extends Component {
         <Divider hidden />
         <Divider hidden />
         <Divider hidden />
-        <NavLink to="/profile" activeClassName="active" className="ui item">
+        <NavLink exact to="/" activeClassName="active" className="ui item">
+          Hjem
+        </NavLink>
+        <NavLink exact to="/profile" activeClassName="active" className="ui item">
           Min profil
         </NavLink>
-        <NavLink to="/report" activeClassName="active" className="ui item">
+        <NavLink exact to="/report" activeClassName="active" className="ui item">
           Meld inn varsel
         </NavLink>
-        <NavLink to="/feed" activeClassName="active" className="ui item">
+        <NavLink exact to="/feed" activeClassName="active" className="ui item">
           Nyhetsstrøm
         </NavLink>
-        <NavLink to="/tickets" activeClassName="active" className="ui item">
+        <NavLink exact to="/tickets" activeClassName="active" className="ui item">
           Mine varslinger
         </NavLink>
-        <NavLink to="/subscriptions" activeClassName="active" className="ui item">
+        <NavLink exact to="/subscriptions" activeClassName="active" className="ui item">
           Nyheter jeg følger
         </NavLink>
         <div className="ui item disabled" />
