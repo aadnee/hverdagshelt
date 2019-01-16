@@ -3,7 +3,7 @@ import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { userService } from '../services/UserServices';
 import { UserEditFormWidget } from './../widgets/UserEditFormWidget';
-import { Container, Grid, Header } from 'semantic-ui-react';
+import { Container, Grid, Header, Divider } from 'semantic-ui-react';
 
 export class UserPage extends Component {
   constructor(props) {
@@ -22,19 +22,19 @@ export class UserPage extends Component {
 
   render() {
     if (this.state.user) {
-      console.log('noenting');
       return (
         <Container>
-          <Header as="h2">Din profil</Header>
+          <Divider hidden />
+          <Divider hidden />
           <Grid columns={2} centered>
             <Grid.Column width={11}>
+              <Header as="h1">Min side</Header>
               <UserEditFormWidget user={this.state.user} />
             </Grid.Column>
           </Grid>
         </Container>
       );
     } else {
-      console.log('ingenting');
       return null;
     }
   }

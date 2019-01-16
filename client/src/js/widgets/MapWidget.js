@@ -7,7 +7,6 @@ import * as esri from 'esri-leaflet';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Button, Icon, Modal } from 'semantic-ui-react';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
-import { Alert } from '../../widgets';
 
 //import {} from './';
 
@@ -69,7 +68,7 @@ export class MapWidget extends Component {
       .on('locationerror', function(e) {
         console.log(e);
         self.setState({ foundPos: false });
-        Alert(e.message);
+        console.log('TOAST HERE');
       });
 
     let arcgisOnline = new ELG.ArcgisOnlineProvider({ countries: ['NO'] });
@@ -82,7 +81,7 @@ export class MapWidget extends Component {
     searchControl.on('results', function(data) {
       console.log(data.results.length);
       if (data.results.length < 1) {
-        Alert('Ingen posisjon funnet');
+        console.log('TOAST HERE');
       } else {
         self.handleClick(data.results[0]);
       }

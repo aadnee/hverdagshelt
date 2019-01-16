@@ -36,7 +36,7 @@ export class TicketFormWidget extends Component {
       selectedCategory: false,
       modalMessage: '',
       modalOpen: false,
-      image: null,
+      image: null
     };
   }
   close = () => this.setState({ modalOpen: false });
@@ -97,7 +97,7 @@ export class TicketFormWidget extends Component {
         <Grid verticalAlign="middle">
           <Grid.Column>
             <Form size="large">
-              <Segment stacked>
+              <Segment stacked={!this.props.borderless} basic={this.props.borderless}>
                 <Form.Field>
                   <label>Hva vil du melde inn?</label>
                   <Input
@@ -159,7 +159,7 @@ export class TicketFormWidget extends Component {
 
                 <Form.Field>
                   <Label basic as={'label'}>
-                    <Label as={'label'} basic htmlFor={'upload'} >
+                    <Label as={'label'} basic htmlFor={'upload'}>
                       <Button
                         icon={'upload'}
                         label={{
@@ -175,7 +175,6 @@ export class TicketFormWidget extends Component {
                         type="file"
                         multiple
                         className={'ui button'}
-
                         //For multiple files(?) attr: multiple
 
                         onChange={(event, data) => {
@@ -190,8 +189,8 @@ export class TicketFormWidget extends Component {
                         removeIcon={<Icon name={'delete'} />}
                         size={'large'}
                         onRemove={(event, data) => {
-                          document.getElementById('upload').value=null;
-                          this.setState({ image: null});
+                          document.getElementById('upload').value = null;
+                          this.setState({ image: null });
                           console.log(this.state);
                         }}
                         as={'a'}

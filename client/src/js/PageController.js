@@ -3,13 +3,14 @@ import * as React from 'react';
 import { Component, createContext } from 'react';
 import Cookies from 'js-cookie';
 import { HashRouter } from 'react-router-dom';
-import { Sidebar, Container, Segment, Dimmer, Loader, Image } from 'semantic-ui-react';
+import { Sidebar, Container, Segment, Dimmer, Loader, Image, Divider } from 'semantic-ui-react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { AppRouter } from './AppRouter';
 import { SidebarWidget } from './widgets/SidebarWidget';
 import { HeaderWidget } from './widgets/HeaderWidget';
+import { FooterWidget } from './widgets/FooterWidget';
 
 import { Provider, Consumer } from './context';
 
@@ -92,6 +93,9 @@ export class PageController extends Component {
                 <Sidebar.Pusher dimmed={this.state.visible}>
                   <HeaderWidget toggle={this.toggleSideBar} />
                   <AppRouter />
+                  <Divider hidden />
+                  <Divider hidden />
+                  <FooterWidget />
                 </Sidebar.Pusher>
               </Sidebar.Pushable>
             </>
