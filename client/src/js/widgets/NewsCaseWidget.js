@@ -47,8 +47,6 @@ export class NewsCaseWidget extends Component {
                     <Image
                       fluid
                       src={newscase.imageURL}
-                      //as='a'
-                      //href='http://localhost:3000/#/widget'
                       target="_blank"
                     />
                   </Grid.Column>

@@ -88,7 +88,7 @@ export class EditUserWidget extends Component {
               <Grid.Column mobile={16}>
                 {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
                 <Form size="large">
-                  <Segment piled>
+                  <Segment>
                     {this.props.userEdit ? (
                       <div>
                         <Form.Field>

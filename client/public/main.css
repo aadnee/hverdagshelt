@@ -1,8 +1,8 @@
 /* Custom CSS here */
 .leaflet-container {
-  height: 75vh;
-  width: 100%;
-  margin: 2% 0;
+    height: 90vh;
+    width: 100%;
+    margin: 0;
 }
 
 html,

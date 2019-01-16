@@ -26,7 +26,8 @@ let sequelize = new Sequelize(
       $lte: Op.lte,
       $like: Op.like,
       $not: Op.ne
-    }
+    },
+    timezone: '+01:00'
   }
 );
 

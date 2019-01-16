@@ -9,6 +9,13 @@ import { TicketFormWidget } from './../widgets/TicketFormWidget';
 import { NewsFeedWidget } from './../widgets/NewsFeedWidget';
 
 export class HomePage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  callback() {}
+
   render() {
     return (
       <Container>
@@ -28,7 +35,7 @@ export class HomePage extends Component {
 
             <Grid.Row columns={1} only="mobile tablet">
               <Grid.Column colSpan={2}>
-                <MapWidget employee modal />
+                <MapWidget modal callback={this.callback} />
               </Grid.Column>
             </Grid.Row>
           </Grid>
