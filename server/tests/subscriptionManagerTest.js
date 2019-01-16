@@ -61,9 +61,15 @@ describe('Finding users subscriptions', () => {
   });
 });
 
-describe('Adding subscriptions', () => {
-  it('correct data', done => {
-    subscriptionManager.addSubscription(1, 3, function(subscription) {
+describe('Adding and removing subscriptions', () => {
+  it('Checking length before adding', done => {
+    subscriptionManager.getSubscriptions(2, function(subscriptions) {
+      expect(subscriptions.data).toHaveLength(0);
+      done();
+    });
+  });
+  it('Adding', done => {
+    subscriptionManager.addSubscription(3, 2, function(subscription) {
       expect({
         success: subscription.success
       }).toEqual({
@@ -72,13 +78,25 @@ describe('Adding subscriptions', () => {
       done();
     });
   });
-  it('correct data', done => {
-    subscriptionManager.deleteSubscription(1, 3, function(subscription) {
+  it('Checking length after adding', done => {
+    subscriptionManager.getSubscriptions(2, function(subscriptions) {
+      expect(subscriptions.data).toHaveLength(1);
+      done();
+    });
+  });
+  it('Deleteing subscription', done => {
+    subscriptionManager.deleteSubscription(3, 2, function(subscription) {
       expect({
         success: subscription.success
       }).toEqual({
         success: true
       });
+      done();
+    });
+  });
+  it('Checking length after deleteing', done => {
+    subscriptionManager.getSubscriptions(2, function(subscriptions) {
+      expect(subscriptions.data).toHaveLength(0);
       done();
     });
   });

@@ -26,6 +26,7 @@ export class PublishNewsFormWidget extends Component {
     this.state = {
       title: this.props.title,
       description: this.props.description,
+      receivedCat:  this.props.category,
       category: this.props.category,
       categoryOptions: [],
       subcategory: '',
@@ -43,25 +44,39 @@ export class PublishNewsFormWidget extends Component {
 
   getSubCategories(category) {
     //Get subcategories based on the chosen category
-    console.log(category);
+    let subcats = [];
+    let bool = false;
     categoryService.getSubCategories(category).then(res => {
-      let subcats = [];
       res.data.map(subCat => {
+
+        if(this.state.receivedCat === subCat.id){
+          this.setState({category: subCat.parentId, subcategory: this.state.receivedCat});
+          bool = true;
+        }
+
         subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
       });
-      this.setState({ subCategoryOptions: subcats });
-      console.log(this.state.subCategoryOptions);
+      if(bool) {
+        this.setState({subCategoryOptions: subcats});
+      }
     });
+    return subcats;
   }
 
   componentWillMount() {
     categoryService.getCategories().then(res => {
-      let cats = [];
+      let allCats = [];
+      let mainCats = [];
+      console.log(this.state.category);
+
       res.data.map(cat => {
-        cats.push({ key: cat.id, value: cat.id, text: cat.name });
+        let subCats = this.getSubCategories(cat.id);
+
+        mainCats.push({ key: cat.id, value: cat.id, text: cat.name });
+        allCats.push({cat: { key: cat.id, value: cat.id, text: cat.name }, subCats: subCats});
       });
-      this.setState({ categoryOptions: cats });
-      console.log(this.state.categoryOptions);
+      this.setState({ categoryOptions: mainCats});
+      console.log(allCats);
     });
   }
 
@@ -103,7 +118,7 @@ export class PublishNewsFormWidget extends Component {
                         fluid
                         search
                         selection
-                        defaultValue={this.state.category}
+                        value={this.state.category}
                         options={this.state.categoryOptions}
                         placeholder="Kategori"
                         onChange={(event, data) => {
@@ -151,7 +166,7 @@ export class PublishNewsFormWidget extends Component {
                     /*municipalId*/ 1
                   )}
                 >
-                  Publiser
+                  {this.props.submitButton}
                 </Button>
               </Segment>
             </Form>

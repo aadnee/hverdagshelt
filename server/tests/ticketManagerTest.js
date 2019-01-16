@@ -11,7 +11,7 @@ beforeAll(async () => {
 describe('Adding ticket', () => {
   let id;
   it('correct data', done => {
-    ticketManager.addTicket('TicketTest', 'Dette er en test som skal funke', 1.11, 2.22, 1, 1, true, 1, function(
+    ticketManager.addTicket('TicketTest', 'Dette er en test som skal funke', 1.11, 2.22, 1, 1, true, 1, null, function(
       ticket
     ) {
       id = ticket.id;
@@ -43,34 +43,44 @@ describe('Adding ticket', () => {
   });
 
   it('correct data', done => {
-    ticketManager.editTicket('TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, true, 1, id, function(
-      ticket
-    ) {
-      Tickets.findOne({ where: { id: id } }).then(tickets => {
-        expect({
-          title: tickets.title,
-          description: tickets.description,
-          status: tickets.status,
-          lat: tickets.lat,
-          lon: tickets.lon,
-          categoryId: tickets.categoryId,
-          municipalId: tickets.municipalId,
-          subscribed: tickets.subscribed,
-          userId: tickets.userId
-        }).toEqual({
-          title: 'TicketTest',
-          description: 'Nå skal det ha skjedd en endring',
-          status: 1,
-          lat: 1.11,
-          lon: 2.22,
-          categoryId: 1,
-          municipalId: 1,
-          subscribed: true,
-          userId: 1
+    ticketManager.editTicket(
+      'TicketTest',
+      'Nå skal det ha skjedd en endring',
+      1.11,
+      2.22,
+      1,
+      1,
+      true,
+      1,
+      id,
+      null,
+      function(ticket) {
+        Tickets.findOne({ where: { id: id } }).then(tickets => {
+          expect({
+            title: tickets.title,
+            description: tickets.description,
+            status: tickets.status,
+            lat: tickets.lat,
+            lon: tickets.lon,
+            categoryId: tickets.categoryId,
+            municipalId: tickets.municipalId,
+            subscribed: tickets.subscribed,
+            userId: tickets.userId
+          }).toEqual({
+            title: 'TicketTest',
+            description: 'Nå skal det ha skjedd en endring',
+            status: 1,
+            lat: 1.11,
+            lon: 2.22,
+            categoryId: 1,
+            municipalId: 1,
+            subscribed: true,
+            userId: 1
+          });
+          done();
         });
-        done();
-      });
-    });
+      }
+    );
   });
 });
 
