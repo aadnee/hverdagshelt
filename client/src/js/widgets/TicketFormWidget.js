@@ -11,7 +11,7 @@ import {
   Header,
   Icon,
   Input,
-  Modal,
+  Label,
   Segment,
   TextArea
 } from 'semantic-ui-react';
@@ -36,7 +36,7 @@ export class TicketFormWidget extends Component {
       selectedCategory: false,
       modalMessage: '',
       modalOpen: false,
-      image: null
+      image: null,
     };
   }
   close = () => this.setState({ modalOpen: false });
@@ -156,20 +156,51 @@ export class TicketFormWidget extends Component {
                     </Grid.Column>
                   </Grid>
                 </Form.Field>
-                <Segment placeholder>
-                  <Header icon>
-                    <Icon name="image file outline" />
-                    Bildemodul her.
-                    <input
-                      type="file"
-                      onChange={(event, data) => {
-                        this.handleInput('image', event.target.files);
-                      }}
-                      className="inputfile"
-                    />
-                  </Header>
-                  <Button primary>Legg til bilde</Button>
-                </Segment>
+
+                <Form.Field>
+                  <Label basic as={'label'}>
+                    <Label as={'label'} basic htmlFor={'upload'} >
+                      <Button
+                        icon={'upload'}
+                        label={{
+                          basic: true,
+                          content: 'Last opp bilde'
+                        }}
+                        labelPosition={'right'}
+                      />
+
+                      <input
+                        hidden
+                        id={'upload'}
+                        type="file"
+                        multiple
+                        className={'ui button'}
+
+                        //For multiple files(?) attr: multiple
+
+                        onChange={(event, data) => {
+                          console.log(event.target.files[0].name);
+
+                          this.handleInput('image', event.target.files);
+                        }}
+                      />
+                    </Label>
+                    {this.state.image != null ? (
+                      <Label
+                        removeIcon={<Icon name={'delete'} />}
+                        size={'large'}
+                        onRemove={(event, data) => {
+                          document.getElementById('upload').value=null;
+                          this.setState({ image: null});
+                          console.log(this.state);
+                        }}
+                        as={'a'}
+                        content={this.state.image[0].name}
+                      />
+                    ) : null}
+                  </Label>
+                </Form.Field>
+
                 <Form.Field>
                   <Checkbox
                     label={<label>Jeg ønsker å abonnere på saken</label>}

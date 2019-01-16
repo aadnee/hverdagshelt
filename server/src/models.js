@@ -56,7 +56,8 @@ export let Tickets = sequelize.define('tickets', {
   status: { type: Sequelize.INTEGER, allowNull: false },
   lat: { type: Sequelize.FLOAT, allowNull: false },
   lon: { type: Sequelize.FLOAT, allowNull: false },
-  subscribed: { type: Sequelize.BOOLEAN, allowNull: true }
+  subscribed: { type: Sequelize.BOOLEAN, allowNull: true },
+  image: { type: Sequelize.STRING, allowNull: true }
 });
 
 export let News = sequelize.define('news', {
@@ -174,7 +175,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       lon: 1,
       categoryId: 2,
       userId: 1,
-      municipalId: 1
+      municipalId: 1,
+      image: null
     });
     await Tickets.create({
       title: 'Vei problem',
@@ -184,7 +186,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       lon: 1,
       categoryId: 2,
       userId: 1,
-      municipalId: 1
+      municipalId: 1,
+      image: null
     });
     await Tickets.create({
       title: 'Vei problem',
@@ -194,7 +197,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       lon: 1,
       categoryId: 2,
       userId: 1,
-      municipalId: 1
+      municipalId: 1,
+      image: null
     });
     await News.create({
       title: 'Problem ved vei i TRD sentrum.',
