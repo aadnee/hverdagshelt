@@ -7,6 +7,7 @@ import fs from 'fs';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
+import cors from 'cors';
 import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
@@ -36,6 +37,7 @@ let upload = multer({ storage: storage });
 app.use(express.static(public_path));
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 app.get('/api/news/municipal/:municipalId', function(req, res) {
   newsManager.getLocalNews(req.params.municipalId, function(result) {
