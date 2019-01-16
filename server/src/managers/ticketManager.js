@@ -2,7 +2,7 @@ import { Tickets } from '../models';
 import newsManager from './newsManager';
 
 module.exports = {
-  addTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, userId, callback) {
+  addTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, userId, image, callback) {
     Tickets.create({
       title: title,
       description: description,
@@ -12,7 +12,8 @@ module.exports = {
       categoryId: categoryId,
       userId: userId,
       subscribed: subscribed,
-      municipalId: municipalId
+      municipalId: municipalId,
+      image: image
     }).then(
       res =>
         callback({
@@ -24,7 +25,19 @@ module.exports = {
     );
   },
 
-  editTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, userId, ticketId, callback) {
+  editTicket: function(
+    title,
+    description,
+    lat,
+    lon,
+    categoryId,
+    municipalId,
+    subscribed,
+    userId,
+    ticketId,
+    image,
+    callback
+  ) {
     Tickets.update(
       {
         title: title,
@@ -33,7 +46,8 @@ module.exports = {
         lon: lon,
         categoryId: categoryId,
         municipalId: municipalId,
-        subscribed: subscribed
+        subscribed: subscribed,
+        image: image
       },
       { where: { id: ticketId, userId: userId } }
     ).then(
