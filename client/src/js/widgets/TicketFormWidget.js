@@ -11,15 +11,14 @@ import {
   Header,
   Icon,
   Input,
-  Image,
-  Message,
+  Modal,
   Segment,
   TextArea
 } from 'semantic-ui-react';
 
 import { ticketService } from '../services/TicketServices';
 import { categoryService } from '../services/CategoryServices';
-
+import { MessageWidget } from './MessageWidget';
 import Cookies from 'js-cookie';
 
 export class TicketFormWidget extends Component {
@@ -34,30 +33,35 @@ export class TicketFormWidget extends Component {
       subCategoryOptions: [],
       position: [null, null],
       subscription: 'false',
-      selectedCategory: false
+      selectedCategory: false,
+      modalMessage: '',
+      modalOpen: false,
+      image: null
     };
   }
+  close = () => this.setState({ modalOpen: false });
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
-    console.log('changing state');
   };
 
   submit = () => {
     console.log(this.state);
     //lat, lon and municipalId is fetched from the map
-    //municipalId could also be fetched from Cookie
     ticketService
       .addTicket(
         this.state.headline,
         this.state.details,
         1,
         1,
-        this.state.category,
+        this.state.subcategory ? this.state.subcategory : this.state.category,
         Cookies.get('municipalId'),
-        this.state.subscription === 'true'
+        this.state.subscription === 'true',
+        this.state.image
       )
-      .then(res => console.log(res));
+      .then(res => {
+        this.setState({ modalMessage: res.message.no, modalOpen: true });
+      });
   };
 
   getSubCategories(category) {
@@ -84,6 +88,12 @@ export class TicketFormWidget extends Component {
   render() {
     return (
       <Container>
+        <MessageWidget
+          callback={this.close}
+          modalOpen={this.state.modalOpen}
+          modalMessage={this.state.modalMessage}
+          size={'tiny'}
+        />
         <Grid verticalAlign="middle">
           <Grid.Column>
             <Form size="large">
@@ -150,6 +160,13 @@ export class TicketFormWidget extends Component {
                   <Header icon>
                     <Icon name="image file outline" />
                     Bildemodul her.
+                    <input
+                      type="file"
+                      onChange={(event, data) => {
+                        this.handleInput('image', event.target.files);
+                      }}
+                      className="inputfile"
+                    />
                   </Header>
                   <Button primary>Legg til bilde</Button>
                 </Segment>

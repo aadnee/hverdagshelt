@@ -4,6 +4,9 @@ import http from 'http';
 import https from 'https';
 import reload from 'reload';
 import fs from 'fs';
+import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
+import multer from 'multer';
 import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
@@ -12,18 +15,26 @@ import subscriptionManager from './managers/subscriptionManager';
 import municipalManager from './managers/municipalManager';
 import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
-import cookieParser from 'cookie-parser';
-import jwt from 'jsonwebtoken';
 
 const public_path = path.join(__dirname, '/../../client/public');
 
 let app = express();
 
+let storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: function(req, file, cb) {
+    let fileParts = file.originalname.split('.');
+    let ext = fileParts.pop();
+    let name = fileParts.join();
+    cb(null, name + '-' + Date.now() + '.' + ext);
+  }
+});
+let upload = multer({ storage: storage });
+
 app.use(express.static(public_path));
 app.use(express.json());
 app.use(cookieParser());
 
-// municipalId
 app.get('/api/news/municipal/:municipalId', function(req, res) {
   newsManager.getLocalNews(req.params.municipalId, function(result) {
     res.json(result);
@@ -58,7 +69,6 @@ app.post('/api/news', ensureEmployee, function(req, res) {
   );
 });
 
-// email, password
 app.post('/api/login', function(req, res) {
   userManager.login(req.body.email, req.body.password, function(result) {
     res.cookie('token', result.token);
@@ -68,7 +78,6 @@ app.post('/api/login', function(req, res) {
   });
 });
 
-// firstName, lastName, email, phone, municipalId
 app.post('/api/register', function(req, res) {
   userManager.register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 1, function(result) {
     res.json(result);
@@ -118,14 +127,12 @@ app.get('/api/users', ensureAdmin, (req, res) => {
   });
 });
 
-// id
 app.get('/api/users/:id', ensureAdmin, (req, res) => {
   userManager.getUser(req.params.id, function(result) {
     res.json(result);
   });
 });
 
-// id
 app.delete('/api/users/:id', ensureAdmin, (req, res) => {
   userManager.deleteUser(req.params.id, function(result) {
     res.json(result);
@@ -180,14 +187,13 @@ app.put('/api/companies/:id', ensureEmployee, function(req, res) {
   });
 });
 
-// municipalId
 app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
   companyManager.getLocalCompanies(req.params.municipalId, function(result) {
     res.json(result);
   });
 });
 
-app.post('/api/tickets', ensureLogin, function(req, res) {
+app.post('/api/tickets', upload.single('image'), ensureLogin, function(req, res) {
   getUserId(req, function(userId) {
     ticketManager.addTicket(
       req.body.title,
@@ -199,6 +205,8 @@ app.post('/api/tickets', ensureLogin, function(req, res) {
       req.body.subscribed,
       userId,
       function(result) {
+        let file = req.file;
+        //console.log(file);
         res.json(result);
       }
     );
@@ -247,14 +255,13 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
 });
 
 app.get('/api/mytickets', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    ticketManager.getMyTickets(id, function(result) {
+  getUserId(req, function(userId) {
+    ticketManager.getMyTickets(userId, function(result) {
       res.json(result);
     });
   });
 });
 
-//Get all tickets within a specific municipal.
 app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
   ticketManager.getLocalTickets(req.params.municipalId, function(result) {
     res.json(result);
@@ -279,7 +286,7 @@ app.post('/api/categories', ensureEmployee, (req, res) => {
   });
 });
 
-app.get('/api/municipals', ensureLogin, function(req, res) {
+app.get('/api/municipals', function(req, res) {
   municipalManager.getMunicipals(function(result) {
     res.json(result);
   });
@@ -292,24 +299,30 @@ app.post('/api/municipals', ensureAdmin, (req, res) => {
 });
 
 app.get('/api/subscriptions', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    subscriptionManager.getSubscriptions(id, function(result) {
+  getUserId(req, function(userId) {
+    subscriptionManager.getSubscriptions(userId, function(result) {
       res.json(result);
     });
   });
 });
 
 app.post('/api/subscriptions', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    subscriptionManager.addSubscription(req.body.newsId, id, function(result) {
+  getUserId(req, function(userId) {
+    subscriptionManager.addSubscription(req.body.newsId, userId, function(result) {
       res.json(result);
     });
   });
 });
 
-app.delete('/api/subscriptions', ensureLogin, function(req, res) {
-  getUserId(req, function(id) {
-    subscriptionManager.deleteSubscription(req.body.newsId, id, function(result) {
+app.post('/api/subscriptions', ensureAdmin, function(req, res) {
+  subscriptionManager.addSubscription(req.body.newsId, req.body.userId, function(result) {
+    res.json(result);
+  });
+});
+
+app.delete('/api/subscriptions/:newsId', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    subscriptionManager.deleteSubscription(req.params.newsId, userId, function(result) {
       res.json(result);
     });
   });

@@ -2,7 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import Cookies from 'js-cookie';
 import { NavLink } from 'react-router-dom';
-import { Container, Grid, Segment, Header, Icon, Divider, Dropdown, Message } from 'semantic-ui-react';
+import { Container, Grid, Segment, Header, Icon, Divider, Dropdown, Message, Button } from 'semantic-ui-react';
 
 import { NewsCaseWidget } from './../widgets/NewsCaseWidget';
 
@@ -132,6 +132,15 @@ export class UserNewsFeedPage extends Component {
                 multiple
                 selection
               />
+              <Divider hidden />
+              <Button
+                primary
+                onClick={() => {
+                  this.getNews();
+                }}
+              >
+                Oppdater
+              </Button>
             </Segment>
           </Grid.Column>
 

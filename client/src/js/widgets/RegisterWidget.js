@@ -1,8 +1,9 @@
-import { Button, Container, Image, Input, Message, Segment, Grid, Form, Dropdown } from 'semantic-ui-react';
+import { Button, Container, Image, Input, Message, Segment, Grid, Form, Dropdown, Modal } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
-
+import { municipalService } from '../services/MunicipalServices';
 import { NavLink } from 'react-router-dom';
 import React from 'react';
+import { Consumer } from '../context';
 
 export class RegisterWidget extends React.Component {
   constructor(props) {
@@ -13,18 +14,24 @@ export class RegisterWidget extends React.Component {
       email: '',
       phone: '',
       selectedOption: '',
-      options: []
+      options: [],
+      showModal: false,
+      showRegisterModal: false,
+      popupMessage: '',
+      popupSuccess: ''
     };
+  }
 
-    this.stateOptions = [
-      { key: '1', value: '1', text: 'Risør' },
-      { key: '2', value: '2', text: 'Lindesnes' },
-      { key: '3', value: '3', text: 'Tvedestrand' },
-      { key: '4', value: '4', text: 'Test 1' },
-      { key: '5', value: '5', text: 'Test 2' },
-      { key: '6', value: '6', text: 'Test 3' },
-      { key: '7', value: '7', text: 'Test 4' }
-    ];
+  componentWillMount() {
+    municipalService.getMunicipals().then(res => {
+      let options = [];
+      res.data.map(munic => {
+        options.push({ key: munic.id, value: munic.id, text: munic.name });
+      });
+      this.setState({
+        options: options
+      });
+    });
   }
 
   handleInput = (key, value) => {
@@ -36,131 +43,132 @@ export class RegisterWidget extends React.Component {
     console.log('submitting');
     userService
       .register(
-        this.state.firstname,
-        this.state.lastname,
+        this.state.firstname + this.state.lastname,
         this.state.email,
         this.state.phone,
         this.state.selectedOption
       )
-      .then(res => console.log(res));
+      .then(res => {
+        this.setState({
+          popupMessage: res.message.no,
+          popupSuccess: res.success,
+          showRegisterModal: true
+        });
+        console.log(res);
+      });
   };
-  /*
-  componentWillMount() {
-    let stateOptions = [
-      { key: '1', value: 'risor', text: 'Risør' },
-      { key: '2', value: 'lindesnes', text: 'Lindesnes' },
-      { key: '3', value: 'tved', text: 'Tvedestrand' },
-      { key: '4', value: 'kom1', text: 'Test 1' },
-      { key: '5', value: 'kom2', text: 'Test 2' },
-      { key: '6', value: 'kom3', text: 'Test 3' },
-      { key: '7', value: 'kom4', text: 'Test 4' }
-    ];
-    this.setState({ options: stateOptions });
-  }*/
+
+  handleComplete = () => {
+    this.setState({ showRegisterModal: false });
+    this.state.popupSuccess
+      ? Consumer._currentValue.history.push({ pathname: '/login', email: this.state.email })
+      : null;
+  };
 
   render() {
     return (
-      <Container>
-        <h1>Registrer deg</h1>
-        <Grid centered divided="vertically">
-          <Grid.Column mobile={16}>
-            {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
-            <Form size="large">
-              <Segment piled>
-                <Form.Field>
-                  <label>Fornavn</label>
-                  <Input
-                    fluid
-                    icon="user"
-                    iconPosition="left"
-                    placeholder="Ola"
-                    type="text"
-                    value={this.state.firstname}
-                    onChange={(event, data) => {
-                      this.handleInput('firstname', data.value);
-                    }}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Etternavn</label>
-                  <Input
-                    fluid
-                    icon="user"
-                    iconPosition="left"
-                    placeholder="Nordmann"
-                    type="text"
-                    value={this.state.lastname}
-                    onChange={(event, data) => {
-                      this.handleInput('lastname', data.value);
-                    }}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>E-postadresse</label>
-                  <Input
-                    fluid
-                    icon="envelope"
-                    iconPosition="left"
-                    placeholder="E-postadresse"
-                    value={this.state.email}
-                    onChange={(event, data) => {
-                      this.handleInput('email', data.value);
-                    }}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Telefonnummer</label>
-                  <Input
-                    fluid
-                    icon="phone"
-                    iconPosition="left"
-                    placeholder={'Ditt telefonnumer'}
-                    type={'number'}
-                    value={this.state.phone}
-                    onChange={(event, data) => {
-                      this.handleInput('phone', data.value);
-                    }}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Kommune</label>
+      <div>
+        <Container>
+          <h1>Registrer deg</h1>
+          <Grid centered divided="vertically">
+            <Grid.Column mobile={16}>
+              {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
+              <Form size="large">
+                <Segment piled>
+                  <Form.Field>
+                    <label>Fornavn</label>
+                    <Input
+                      fluid
+                      icon="user"
+                      iconPosition="left"
+                      placeholder="Ola"
+                      type="text"
+                      value={this.state.firstname}
+                      onChange={(event, data) => {
+                        this.handleInput('firstname', data.value);
+                      }}
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Etternavn</label>
+                    <Input
+                      fluid
+                      icon="user"
+                      iconPosition="left"
+                      placeholder="Nordmann"
+                      type="text"
+                      value={this.state.lastname}
+                      onChange={(event, data) => {
+                        this.handleInput('lastname', data.value);
+                      }}
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <label>E-postadresse</label>
+                    <Input
+                      fluid
+                      icon="envelope"
+                      iconPosition="left"
+                      placeholder="E-postadresse"
+                      value={this.state.email}
+                      onChange={(event, data) => {
+                        this.handleInput('email', data.value);
+                      }}
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Telefonnummer</label>
+                    <Input
+                      fluid
+                      icon="phone"
+                      iconPosition="left"
+                      placeholder={'Ditt telefonnumer'}
+                      type={'number'}
+                      value={this.state.phone}
+                      onChange={(event, data) => {
+                        this.handleInput('phone', data.value);
+                      }}
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Kommune</label>
 
-                  <Dropdown
+                    <Dropdown
+                      fluid
+                      selection
+                      search
+                      placeholder="Velg kommune"
+                      options={this.state.options}
+                      onChange={(event, data) => {
+                        this.handleInput('selectedOption', data.value);
+                      }}
+                    />
+                  </Form.Field>
+                  <Button
+                    color="blue"
                     fluid
-                    selection
-                    search
-                    placeholder="Velg kommune"
-                    options={this.stateOptions}
-                    onChange={(event, data) => {
-                      this.handleInput('selectedOption', data.value);
+                    size="large"
+                    onClick={() => {
+                      this.handleSubmit();
                     }}
-                  />
-                </Form.Field>
-                <Button
-                  color="blue"
-                  fluid
-                  size="large"
-                  onClick={() => {
-                    this.handleSubmit();
-                  }}
-                >
-                  Registrer deg
-                </Button>
-                <Button
-                  color="grey"
-                  fluid
-                  size="large"
-                  onClick={() => {
-                    this.handleSubmit();
-                  }}
-                >
-                  Avbryt
-                </Button>
-              </Segment>
-            </Form>
-          </Grid.Column>
-        </Grid>
-      </Container>
+                  >
+                    Registrer deg
+                  </Button>
+                </Segment>
+              </Form>
+            </Grid.Column>
+          </Grid>
+        </Container>
+        <Modal size={'tiny'} open={this.state.showRegisterModal}>
+          <Modal.Header>Registreringsstatus: {this.state.popupSuccess ? 'Suksess' : 'Error'}</Modal.Header>
+          <Modal.Content>
+            <p>{this.state.popupMessage}</p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button icon="check" content="Ok" onClick={this.handleComplete} />
+          </Modal.Actions>
+        </Modal>
+      </div>
     );
   }
 }

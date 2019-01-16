@@ -17,7 +17,6 @@ export class NewsCaseWidget extends Component {
   render() {
     let { newscase } = this.props;
     newscase.imageURL = null;
-    console.log(newscase);
     const date = newscase.createdAt.split('T')[0].split('-');
     const clock = newscase.createdAt.split('T')[1].split('.')[0];
 

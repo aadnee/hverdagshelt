@@ -1,8 +1,9 @@
 import React from 'react';
 import { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import { Container, Grid, Header, Image, Segment, Form, Message, Button, Input } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
+import { Consumer } from '../context';
 
 //import {} from './';
 
@@ -26,69 +27,67 @@ export class LoginWidget extends Component {
     this.setState({ [key]: value });
   };
 
-  handleSubmit = () => {
-    //USERSERICE -> request cookie
-    console.log('submitting');
-    console.log(this.state);
-    userService.login(this.state.email, this.state.password).then(res => console.log(res));
-  };
-
   render() {
     return (
-      <Container>
-        <Grid centered>
-          <Grid.Column mobile={16}>
-            {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
-            <Form size="large">
-              <Segment piled>
-                <Form.Field>
-                  <label>E-postadresse</label>
-                  <Input
-                    fluid
-                    icon="user"
-                    iconPosition="left"
-                    placeholder="E-postadresse"
-                    value={this.state.email}
-                    onChange={(event, data) => {
-                      this.handleInput('email', data.value);
-                    }}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Passord</label>
-                  <Input
-                    fluid
-                    icon="lock"
-                    iconPosition="left"
-                    placeholder="Passord"
-                    type="password"
-                    value={this.state.password}
-                    onChange={(event, data) => {
-                      this.handleInput('password', data.value);
-                    }}
-                  />
-                </Form.Field>
+      <Consumer>
+        {({ login }) => (
+          <Container>
+            <Grid centered>
+              <Grid.Column mobile={16}>
+                {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
+                <Form size="large">
+                  <Segment piled>
+                    <Form.Field>
+                      <label>E-postadresse</label>
+                      <Input
+                        fluid
+                        icon="user"
+                        iconPosition="left"
+                        placeholder="E-postadresse"
+                        value={this.state.email}
+                        onChange={(event, data) => {
+                          this.handleInput('email', data.value);
+                        }}
+                      />
+                    </Form.Field>
+                    <Form.Field>
+                      <label>Passord</label>
+                      <Input
+                        fluid
+                        icon="lock"
+                        iconPosition="left"
+                        placeholder="Passord"
+                        type="password"
+                        value={this.state.password}
+                        onChange={(event, data) => {
+                          this.handleInput('password', data.value);
+                        }}
+                      />
+                    </Form.Field>
 
-                <Button
-                  color="twitter"
-                  fluid
-                  size="large"
-                  onClick={() => {
-                    this.handleSubmit();
-                  }}
-                >
-                  Logg inn
-                </Button>
-              </Segment>
-            </Form>
-            {this.props.register ? (
-              <Message>
-                Har du ikke bruker? <NavLink to="/register">Registrer deg</NavLink>
-              </Message>
-            ) : null}
-          </Grid.Column>
-        </Grid>
-      </Container>
+                    <Button
+                      color="twitter"
+                      fluid
+                      size="large"
+                      onClick={() => {
+                        console.log('click');
+                        login(this.state.email, this.state.password);
+                      }}
+                    >
+                      Logg inn
+                    </Button>
+                  </Segment>
+                </Form>
+                {this.props.register ? (
+                  <Message>
+                    Har du ikke bruker? <NavLink to="/register">Registrer deg</NavLink>
+                  </Message>
+                ) : null}
+              </Grid.Column>
+            </Grid>
+          </Container>
+        )}
+      </Consumer>
     );
   }
 }

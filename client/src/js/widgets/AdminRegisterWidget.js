@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form, Icon } from 'semantic-ui-react';
-import { userService } from '../services/UserServices';
-import { companyService } from '../services/CompanyServices';
 import { municipalService } from '../services/MunicipalServices';
 
 export class AdminRegisterWidget extends React.Component {
@@ -55,7 +53,18 @@ export class AdminRegisterWidget extends React.Component {
       phone: this.state.phone,
       municipalId: this.state.selectedOption
     };
-    console.log(this.props.handleRegister(newUser));
+    this.props.handleRegister(newUser).then(res => {
+      if (res) {
+        this.setState({
+          firstname: '',
+          lastname: '',
+          email: '',
+          phone: '',
+          selectedOption: ''
+        });
+        this.modalChange();
+      }
+    });
   };
 
   render() {
