@@ -33,6 +33,10 @@ export class EditUserWidget extends Component {
         options: options
       });
     });
+    this.resetState();
+  }
+
+  resetState = () =>
     this.setState({
       name: this.props.user.name,
       email: this.props.user.email,
@@ -40,19 +44,15 @@ export class EditUserWidget extends Component {
       municipalId: this.props.user.municipalId,
       rank: this.props.user.rank
     });
-  }
 
   close = () => this.setState({ open: false });
-
-  close = () => {
-    this.setState({ showModal: false });
-  };
 
   closeModals = () => {
     this.setState({
       showModal: false,
       showRegisterModal: false
     });
+    this.resetState();
   };
   handle = () => {
     let editedUser = {
@@ -64,8 +64,10 @@ export class EditUserWidget extends Component {
       rank: this.state.rank
     };
     console.log(editedUser);
-    this.props.handleEdit(editedUser);
-    this.closeModals();
+    this.props.handleEdit(editedUser).then(res => {
+      console.log(res);
+      res ? this.closeModals() : null;
+    });
   };
   handleInput = (key, value) => {
     this.setState({ [key]: value });
@@ -187,7 +189,7 @@ export class EditUserWidget extends Component {
                       fluid
                       size="large"
                       onClick={() => {
-                        this.close();
+                        this.closeModals();
                       }}
                     >
                       Avbryt

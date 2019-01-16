@@ -18,13 +18,13 @@ class UserService {
     return api.get('/api/users');
   }
 
-  getUser(id) {
-    return api.get('/api/users/' + id);
+  getUser(userId) {
+    return api.get('/api/users/' + userId);
   }
 
-  editUser(id, name, email, phone, municipalId, rank) {
-    console.log(id, name, email, phone, municipalId, rank);
-    return api.put('/api/users/' + id, {
+  editUser(userId, name, email, phone, municipalId, rank) {
+    console.log(userId, name, email, phone, municipalId, rank);
+    return api.put('/api/users/' + userId, {
       name: name,
       email: email,
       phone: phone,
@@ -33,34 +33,47 @@ class UserService {
     });
   }
 
-  deleteUser(id) {
-    return api.delete('/api/users/' + id);
+  deleteUser(userId) {
+    return api.delete('/api/users/' + userId);
   }
 
   async getMe() {
-      let name;
-      let me = await api.get('/api/me')
-          .then((res) => {
-            name = res.data.name.split(" ");
-            if(name.length > 1) {
-              res.data.lastName = name.pop();
-              res.data.firstName = name.join(" ");
-            }
-            return res;
-          });
-      return me;
+    let name;
+    let me = await api.get('/api/me').then(res => {
+      name = res.data.name.split(' ');
+      if (name.length > 1) {
+        res.data.lastName = name.pop();
+        res.data.firstName = name.join(' ');
+      }
+      return res;
+    });
+    return me;
   }
 
   editMe(firstName, lastName, email, phone, municipalId, oldPassword, newPassword) {
     console.log(name + ' ' + email);
     return api.put('/api/me', {
-      name: String(firstName + " " + lastName),
+      name: String(firstName + ' ' + lastName),
       email: email,
       phone: phone,
       municipalId: municipalId,
       oldPassword: oldPassword,
       newPassword: newPassword
     });
+  }
+
+  getMunicipals() {
+    return api.get('/api/mymunicipals');
+  }
+
+  addMunicipal(municipalId) {
+    return api.post('/api/mymunicipals', {
+      municipalId: municipalId
+    });
+  }
+
+  deleteMunicipal(municipalId) {
+    return api.delete('/api/mymunicipals/' + municipalId);
   }
 }
 export let userService = new UserService();
