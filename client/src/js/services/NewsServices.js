@@ -23,8 +23,11 @@ class NewsService {
     });
   }
 
-  getLocalNews(municipalId) {
-    return api.get('/api/news/municipal/' + municipalId);
+  getFilteredNews(municipalIds, categoryIds) {
+    return api.post('/api/news/filter', {
+      municipalIds: municipalIds,
+      categoryIds: categoryIds
+    });
   }
 }
 

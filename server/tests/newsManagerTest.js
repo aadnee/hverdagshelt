@@ -59,12 +59,13 @@ describe('Adding article', () => {
 
 describe('Get news by municipal', () => {
   it('correct data', done => {
-    newsManager.getLocalNews(1, function(news) {
+    newsManager.getFilteredNews([1], [2], function(news) {
       expect({
         success: news.success
       }).toEqual({
         success: true
       });
+      expect(news.data).toHaveLength(1);
       done();
     });
   });
