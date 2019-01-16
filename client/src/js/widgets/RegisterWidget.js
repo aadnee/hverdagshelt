@@ -3,9 +3,7 @@ import { userService } from '../services/UserServices';
 import { municipalService } from '../services/MunicipalServices';
 import { NavLink } from 'react-router-dom';
 import React from 'react';
-import createHistory from 'history/createBrowserHistory';
-
-const history = createHistory();
+import { Consumer } from '../context';
 
 export class RegisterWidget extends React.Component {
   constructor(props) {
@@ -62,7 +60,9 @@ export class RegisterWidget extends React.Component {
 
   handleComplete = () => {
     this.setState({ showRegisterModal: false });
-    this.state.popupSuccess ? history.replace('/#/login') : null;
+    this.state.popupSuccess
+      ? Consumer._currentValue.history.push({ pathname: '/login', email: this.state.email })
+      : null;
   };
 
   render() {
