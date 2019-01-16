@@ -27,15 +27,15 @@ export class HeaderWidget extends React.Component {
 export class MyPageHeaderWidget extends React.Component {
   render() {
     return (
-      <Dropdown item icon="user" text={'Hei, ' + Consumer._currentValue.user.name + ' '}>
+      <Dropdown item icon="user" text={'Hei, ' + Consumer._currentValue.user.name}>
         <Dropdown.Menu>
           <Dropdown.Item>
-            <NavLink style={{ color: 'black' }} to="/profile">
+            <NavLink activeClassName="active" style={{ color: 'black' }} to="/profile">
               Din Side
             </NavLink>
           </Dropdown.Item>
           <Dropdown.Item>
-            <NavLink style={{ color: 'black' }} to="/logout">
+            <NavLink activeClassName="active" style={{ color: 'black' }} to="/logout">
               Logg av
             </NavLink>
           </Dropdown.Item>
@@ -51,12 +51,12 @@ export class LoginRegisterHeaderWidget extends React.Component {
       <Dropdown item icon="user">
         <Dropdown.Menu>
           <Dropdown.Item>
-            <NavLink style={{ color: 'black' }} to="/login">
+            <NavLink activeClassName="active" style={{ color: 'black' }} to="/login">
               Logg inn
             </NavLink>
           </Dropdown.Item>
           <Dropdown.Item>
-            <NavLink style={{ color: 'black' }} to="/register">
+            <NavLink activeClassName="active" style={{ color: 'black' }} to="/register">
               Registrer deg
             </NavLink>
           </Dropdown.Item>

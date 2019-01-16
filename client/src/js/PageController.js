@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Component, createContext } from 'react';
 import Cookies from 'js-cookie';
 import { HashRouter } from 'react-router-dom';
-import { Sidebar, Container, Segment } from 'semantic-ui-react';
+import { Sidebar, Container, Segment, Dimmer, Loader, Image } from 'semantic-ui-react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,7 +23,8 @@ export class PageController extends Component {
       user: null,
       login: this.login,
       logout: this.logout,
-      visible: false
+      visible: false,
+      renderReady: false
     };
 
     this.toggleSideBar = this.toggleSideBar.bind(this);
@@ -37,9 +38,8 @@ export class PageController extends Component {
 
   componentWillMount() {
     if (Cookies.get('token') && this.state.user == null) {
-      console.log('henter bruker');
       userService.getMe().then(res => {
-        if (res.success) this.setState({ user: res.data });
+        if (res.success) this.setState({ user: res.data, renderReady: true });
       });
     }
   }
@@ -63,31 +63,39 @@ export class PageController extends Component {
   };
 
   render() {
-    return (
-      <Provider value={this.state}>
-        <HashRouter>
-          <>
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnVisibilityChange
-              draggable
-              pauseOnHover
-            />
-            <Sidebar.Pushable style={{ height: '100vh' }}>
-              <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
-              <Sidebar.Pusher dimmed={this.state.visible}>
-                <HeaderWidget toggle={this.toggleSideBar} />
-                <AppRouter />
-              </Sidebar.Pusher>
-            </Sidebar.Pushable>
-          </>
-        </HashRouter>
-      </Provider>
-    );
+    if (!this.state.renderReady) {
+      return (
+        <Dimmer active>
+          <Loader indeterminate>Laster siden</Loader>
+        </Dimmer>
+      );
+    } else {
+      return (
+        <Provider value={this.state}>
+          <HashRouter>
+            <>
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnVisibilityChange
+                draggable
+                pauseOnHover
+              />
+              <Sidebar.Pushable style={{ height: '100vh' }}>
+                <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
+                <Sidebar.Pusher dimmed={this.state.visible}>
+                  <HeaderWidget toggle={this.toggleSideBar} />
+                  <AppRouter />
+                </Sidebar.Pusher>
+              </Sidebar.Pushable>
+            </>
+          </HashRouter>
+        </Provider>
+      );
+    }
   }
 }
