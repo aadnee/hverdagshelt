@@ -39,9 +39,6 @@ export class UserTicketsPage extends Component {
             ))}
           </Grid>
         </Container>
-        <modal open={this.state.showEditTicket}>
-          <TicketFormWidget submitButton={'Lagre endringer'} />
-        </modal>
       </div>
     );
   }

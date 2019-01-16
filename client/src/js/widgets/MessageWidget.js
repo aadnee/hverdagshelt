@@ -28,7 +28,7 @@ export class MessageWidget extends React.Component {
   customFunc() {
     this.props.customFunc ? this.props.customFunc() : null;
     this.close();
-    this.props.callback? this.props.callback() : null;
+    this.props.callback ? this.props.callback() : null;
   }
 
   show = () => () => this.setState({ open: true });

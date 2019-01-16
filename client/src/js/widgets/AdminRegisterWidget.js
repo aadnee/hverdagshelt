@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form, Icon } from 'semantic-ui-react';
 import { municipalService } from '../services/MunicipalServices';
+import { toast } from 'react-toastify';
 
 export class AdminRegisterWidget extends React.Component {
   constructor(props) {
@@ -47,24 +48,35 @@ export class AdminRegisterWidget extends React.Component {
   };
 
   handle = () => {
-    let newUser = {
-      name: this.state.firstname + this.state.lastname,
-      email: this.state.email,
-      phone: this.state.phone,
-      municipalId: this.state.selectedOption
-    };
-    this.props.handleRegister(newUser).then(res => {
-      if (res) {
-        this.setState({
-          firstname: '',
-          lastname: '',
-          email: '',
-          phone: '',
-          selectedOption: ''
-        });
-        this.modalChange();
-      }
-    });
+    if (
+      this.state.firstname &&
+      this.state.lastname &&
+      this.state.email &&
+      this.state.phone &&
+      this.state.selectedOption
+    ) {
+      let newUser = {
+        name: this.state.firstname + ' ' + this.state.lastname,
+        email: this.state.email,
+        phone: this.state.phone,
+        municipalId: this.state.selectedOption
+      };
+      this.props.handleRegister(newUser).then(res => {
+        if (res) {
+          toast.success('Vellykket registrering', { position: toast.POSITION.TOP_RIGHT });
+          this.setState({
+            firstname: '',
+            lastname: '',
+            email: '',
+            phone: '',
+            selectedOption: ''
+          });
+          this.modalChange();
+        }
+      });
+    } else {
+      toast.error('Fyll inn de tome feltene');
+    }
   };
 
   render() {
@@ -85,7 +97,7 @@ export class AdminRegisterWidget extends React.Component {
                 <Grid.Column mobile={16}>
                   {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
                   <Form size="large">
-                    <Segment piled>
+                    <Segment>
                       {this.props.user ? (
                         <div>
                           <Form.Field>

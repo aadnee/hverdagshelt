@@ -26,7 +26,7 @@ export class PublishNewsFormWidget extends Component {
     this.state = {
       title: this.props.title,
       description: this.props.description,
-      receivedCat:  this.props.category,
+      receivedCat: this.props.category,
       category: this.props.category,
       categoryOptions: [],
       subcategory: '',
@@ -48,16 +48,15 @@ export class PublishNewsFormWidget extends Component {
     let bool = false;
     categoryService.getSubCategories(category).then(res => {
       res.data.map(subCat => {
-
-        if(this.state.receivedCat === subCat.id){
-          this.setState({category: subCat.parentId, subcategory: this.state.receivedCat});
+        if (this.state.receivedCat === subCat.id) {
+          this.setState({ category: subCat.parentId, subcategory: this.state.receivedCat });
           bool = true;
         }
 
         subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
       });
-      if(bool) {
-        this.setState({subCategoryOptions: subcats});
+      if (bool) {
+        this.setState({ subCategoryOptions: subcats });
       }
     });
     return subcats;
@@ -73,9 +72,9 @@ export class PublishNewsFormWidget extends Component {
         let subCats = this.getSubCategories(cat.id);
 
         mainCats.push({ key: cat.id, value: cat.id, text: cat.name });
-        allCats.push({cat: { key: cat.id, value: cat.id, text: cat.name }, subCats: subCats});
+        allCats.push({ cat: { key: cat.id, value: cat.id, text: cat.name }, subCats: subCats });
       });
-      this.setState({ categoryOptions: mainCats});
+      this.setState({ categoryOptions: mainCats });
       console.log(allCats);
     });
   }

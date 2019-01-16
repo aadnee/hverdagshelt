@@ -36,7 +36,6 @@ export class EmployeeManageTicketsPage extends React.Component {
   render() {
     return (
       <Container>
-
         <Header as="h2">Varslinger fra brukerne</Header>
         <Grid stackable container columns={3}>
           {!this.state.hasTickets ? (
