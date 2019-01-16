@@ -286,7 +286,7 @@ app.post('/api/categories', ensureEmployee, (req, res) => {
   });
 });
 
-app.get('/api/municipals', ensureLogin, function(req, res) {
+app.get('/api/municipals', function(req, res) {
   municipalManager.getMunicipals(function(result) {
     res.json(result);
   });
