@@ -38,19 +38,18 @@ class UserService {
   }
 
   async getMe() {
-      let name;
-      let me = await api.get('/api/me')
-          .then((res) => {
-            name = res.data.name.split(" ");
-            if(name.length > 1) {
-              res.data.lastName = name.pop();
-              res.data.firstName = name.join(" ");
-            }else{
-              res.data.firstName = name;
-            }
-            return res;
-          });
-      return me;
+    let name;
+    let me = await api.get('/api/me').then(res => {
+      name = res.data.name.split(' ');
+      if (name.length > 1) {
+        res.data.lastName = name.pop();
+        res.data.firstName = name.join(' ');
+      } else {
+        res.data.firstName = name;
+      }
+      return res;
+    });
+    return me;
   }
 
   editMe(firstName, lastName, email, phone, municipalId, oldPassword, newPassword) {
@@ -70,14 +69,14 @@ class UserService {
   }
 
   addMunicipal(municipalId) {
-      console.log("add" + municipalId);
-      return api.post('/api/mymunicipals', {
+    console.log('add' + municipalId);
+    return api.post('/api/mymunicipals', {
       municipalId: municipalId
     });
   }
 
   deleteMunicipal(municipalId) {
-    console.log("delete" + municipalId);
+    console.log('delete' + municipalId);
     return api.delete('/api/mymunicipals/' + municipalId);
   }
 }

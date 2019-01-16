@@ -22,6 +22,10 @@ export class UserTicketsPage extends Component {
     });
   }
 
+  handleEdit = () => {
+    ticketService.UpdateTicket();
+  };
+
   render() {
     return (
       <div>
@@ -36,7 +40,7 @@ export class UserTicketsPage extends Component {
           </Grid>
         </Container>
         <modal open={this.state.showEditTicket}>
-          <TicketFormWidget edit />
+          <TicketFormWidget submitButton={'Lagre endringer'} />
         </modal>
       </div>
     );
