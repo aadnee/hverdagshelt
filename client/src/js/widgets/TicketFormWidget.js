@@ -25,6 +25,8 @@ export class TicketFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      address: this.props.address ? this.props.address : '',
+      latlng: this.props.latlng ? this.props.latlng : [null, null],
       headline: '',
       details: '',
       category: '',
@@ -41,6 +43,14 @@ export class TicketFormWidget extends Component {
   }
   close = () => this.setState({ modalOpen: false });
 
+  componentDidUpdate(prevProps){
+    if(prevProps != this.props){
+      console.log(this.props);
+      this.setState({address: this.props.address, latlng: this.props.latlng});
+    }
+  }
+
+
   handleInput = (key, value) => {
     this.setState({ [key]: value });
   };
@@ -52,8 +62,9 @@ export class TicketFormWidget extends Component {
       .addTicket(
         this.state.headline,
         this.state.details,
-        1,
-        1,
+        this.state.latlng.lat,
+        this.state.latlng.lng,
+        this.state.address,
         this.state.subcategory ? this.state.subcategory : this.state.category,
         Cookies.get('municipalId'),
         this.state.subscription === 'true',
@@ -100,6 +111,14 @@ export class TicketFormWidget extends Component {
             <Form size="large">
               <Segment stacked>
                 <Form.Field>
+                  <label>Addresse:</label>
+                  <Input
+                  fluid
+                  icon='map'
+                  iconPosition='left'
+                  placeholder='Velg posisjon på kartet'
+                  defaultValue={this.state.address}
+                  readOnly/>
                   <label>Hva vil du melde inn?</label>
                   <Input
                     fluid

@@ -1,13 +1,14 @@
 import api from './api';
 
 class TicketServices {
-  addTicket(title, description, lat, lon, categoryId, municipalId, subscribed, image) {
+  addTicket(title, description, lat, lon, address, categoryId, municipalId, subscribed, image) {
     let formData = new FormData();
     formData.append('image', image ? image[0] : null);
     formData.append('title', title);
     formData.append('description', description);
     formData.append('lat', lat);
     formData.append('lon', lon);
+    formData.append('address', address);
     formData.append('categoryId', categoryId);
     formData.append('municipalId', municipalId);
     formData.append('subscribed', subscribed);
@@ -29,24 +30,26 @@ class TicketServices {
   rejectTicket(id) {
     return api.put('/api/tickets/' + id + '/reject');
   }
-  acceptTicket(id, title, description, lat, lon, categoryId, municipalId) {
+  acceptTicket(id, title, description, lat, lon, address, categoryId, municipalId) {
     return api.put('/api/tickets/' + id + '/accept', {
       title: title,
       description: description,
       lat: lat,
       lon: lon,
+      address: address,
       categoryId: categoryId,
       municipalId: municipalId
     });
   }
 
-  UpdateTicket(ticketId, title, description, lat, lon, categoryId, municipalId, subscribed, image) {
+  UpdateTicket(ticketId, title, description, lat, lon, address, categoryId, municipalId, subscribed, image) {
     let formData = new FormData();
     formData.append('image', image ? image[0] : null);
     formData.append('title', title);
     formData.append('description', description);
     formData.append('lat', lat);
     formData.append('lon', lon);
+    formData.append('address', address);
     formData.append('categoryId', categoryId);
     formData.append('municipalId', municipalId);
     formData.append('subscribed', subscribed);
