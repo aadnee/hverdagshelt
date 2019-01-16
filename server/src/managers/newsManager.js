@@ -56,8 +56,8 @@ module.exports = {
     );
   },
 
-  getLocalNews: function(municipalId, callback) {
-    News.findAll({ where: { municipalId: municipalId } }).then(
+  getFilteredNews: function(municipalIds, categoryIds, callback) {
+    News.findAll({ where: { municipalId: municipalIds, categoryId: categoryIds } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: err })
     );

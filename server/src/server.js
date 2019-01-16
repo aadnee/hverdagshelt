@@ -39,8 +39,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
-app.get('/api/news/municipal/:municipalId', function(req, res) {
-  newsManager.getLocalNews(req.params.municipalId, function(result) {
+app.post('/api/news/filter', function(req, res) {
+  newsManager.getFilteredNews(req.body.municipalIds, req.body.categoryIds, function(result) {
     res.json(result);
   });
 });
