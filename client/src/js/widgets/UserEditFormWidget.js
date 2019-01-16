@@ -55,7 +55,7 @@ export class UserEditFormWidget extends Component {
 
     getMunicipalOptions() {
         municipalService.getMunicipals().then(res => {
-            return res.data.filter((mun) => !this.state.followedMunicipals.find((f) => f.key === mun.id)).map((mun) => { return {key: mun.id, value: mun.name, text: mun.name}; });
+            return res.data.filter((mun) => !this.state.followedMunicipals.find((f) => f.key === mun.id)).map((mun) => {return {key: mun.id, value: mun.name, text: mun.name};});
         })
             .then(opt => {
                     console.log(opt);
@@ -170,7 +170,7 @@ export class UserEditFormWidget extends Component {
                             <Divider horizontal><Icon name='user'/></Divider>
                             <Divider hidden/>
                             <Form.Field>
-                                <Grid columns={'equal'}>
+                                <Grid stackable columns={'equal'}>
                                     <Grid.Column>
                                         <Form.Input
                                             fluid
@@ -223,9 +223,10 @@ export class UserEditFormWidget extends Component {
                                 </Grid>
                             </Form.Field>
                             <Form.Field>
-                                <Grid columns={'equal'}>
+                                <Grid stackable columns={'equal'}>
                                     <Grid.Column>
                                         <Form.Input
+                                            fluid
                                             label='Telefonnummer'
                                             iconPosition='left'
                                             placeholder='Telefonnummer'
@@ -246,11 +247,11 @@ export class UserEditFormWidget extends Component {
                                                         toggle/>
                                             }>Endre telefonnummer
                                             </Popup>
-
                                         </Form.Input>
                                     </Grid.Column>
                                     <Grid.Column>
                                         <Form.Input
+                                            fluid
                                             label='E-mail'
                                             iconPosition='left'
                                             placeholder='E-mail'
