@@ -16,9 +16,7 @@ import {
   TextArea
 } from 'semantic-ui-react';
 
-import { ticketService } from '../services/TicketServices';
 import { categoryService } from '../services/CategoryServices';
-import { MessageWidget } from './MessageWidget';
 import Cookies from 'js-cookie';
 
 export class TicketFormWidget extends Component {
@@ -43,36 +41,15 @@ export class TicketFormWidget extends Component {
   }
   close = () => this.setState({ modalOpen: false });
 
-  componentDidUpdate(prevProps){
-    if(prevProps != this.props){
+  componentDidUpdate(prevProps) {
+    if (prevProps != this.props) {
       console.log(this.props);
-      this.setState({address: this.props.address, latlng: this.props.latlng});
+      this.setState({ address: this.props.address, latlng: this.props.latlng });
     }
   }
 
-
   handleInput = (key, value) => {
     this.setState({ [key]: value });
-  };
-
-  submit = () => {
-    console.log(this.state);
-    //lat, lon and municipalId is fetched from the map
-    ticketService
-      .addTicket(
-        this.state.headline,
-        this.state.details,
-        this.state.latlng.lat,
-        this.state.latlng.lng,
-        this.state.address,
-        this.state.subcategory ? this.state.subcategory : this.state.category,
-        Cookies.get('municipalId'),
-        this.state.subscription === 'true',
-        this.state.image
-      )
-      .then(res => {
-        this.setState({ modalMessage: res.message.no, modalOpen: true });
-      });
   };
 
   getSubCategories(category) {
@@ -100,25 +77,20 @@ export class TicketFormWidget extends Component {
   render() {
     return (
       <Container>
-        <MessageWidget
-          callback={this.close}
-          modalOpen={this.state.modalOpen}
-          modalMessage={this.state.modalMessage}
-          size={'tiny'}
-        />
         <Grid verticalAlign="middle">
           <Grid.Column>
             <Form size="large">
-              <Segment stacked>
+              <Segment stacked={!this.props.borderless} basic={this.props.borderless}>
                 <Form.Field>
                   <label>Addresse:</label>
                   <Input
-                  fluid
-                  icon='map'
-                  iconPosition='left'
-                  placeholder='Velg posisjon på kartet'
-                  defaultValue={this.state.address}
-                  readOnly/>
+                    fluid
+                    icon="map"
+                    iconPosition="left"
+                    placeholder="Velg posisjon på kartet"
+                    defaultValue={this.state.address}
+                    readOnly
+                  />
                   <label>Hva vil du melde inn?</label>
                   <Input
                     fluid
@@ -238,9 +210,19 @@ export class TicketFormWidget extends Component {
                   color="blue"
                   fluid
                   size="large"
-                  onClick={() => {
-                    this.submit();
-                  }}
+                  onClick={this.props.submit.bind(
+                    this,
+                    this.state.headline,
+                    this.state.details,
+                    this.state.latlng.lat,
+                    this.state.latlng.lng,
+                    this.state.address,
+
+                    this.state.subcategory ? this.state.subcategory : this.state.category,
+                    Cookies.get('municipalId'),
+                    this.state.subscription === 'true',
+                    this.state.image
+                  )}
                 >
                   Send inn
                 </Button>

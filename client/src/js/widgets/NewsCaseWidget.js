@@ -21,7 +21,7 @@ export class NewsCaseWidget extends Component {
     const clock = newscase.createdAt.split('T')[1].split('.')[0];
 
     return (
-      <Segment color="teal">
+      <Segment color="blue" fluid="true">
         <Container>
           <Segment vertical>
             <Grid divided inverted stackable>
@@ -44,11 +44,7 @@ export class NewsCaseWidget extends Component {
                 </Grid.Column>
                 {newscase.imageURL ? (
                   <Grid.Column width={4} align="right" only="tablet computer">
-                    <Image
-                      fluid
-                      src={newscase.imageURL}
-                      target="_blank"
-                    />
+                    <Image fluid src={newscase.imageURL} target="_blank" />
                   </Grid.Column>
                 ) : null}
               </Grid>
@@ -63,7 +59,7 @@ export class NewsCaseWidget extends Component {
             </List.Item>
           </List>
 
-          <Button onClick={this.props.unsubscribe}>Avslutt abonnement</Button>
+          <Button onClick={this.props.show}>Avslutt abonnement</Button>
         </Container>
       </Segment>
     );

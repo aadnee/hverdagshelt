@@ -20,8 +20,7 @@ export class MessageWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
-      modalMessage: ''
+      open: false
     };
   }
 
@@ -35,18 +34,21 @@ export class MessageWidget extends React.Component {
   close = () => this.setState({ open: false });
 
   componentWillReceiveProps(props) {
-    this.setState({ open: props.modalOpen, modalMessage: props.modalMessage });
+    this.setState({ open: props.open });
   }
 
   render() {
     return (
       <Modal size={this.props.size} open={this.state.open} onClose={this.close}>
-        <Modal.Header>Varselinnsendingsstatus</Modal.Header>
+        <Modal.Header>{this.props.title}</Modal.Header>
         <Modal.Content>
-          <p>{this.state.modalMessage}</p>
+          <p>{this.props.message}</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button icon="checkmark" labelPosition="right" content="OK" onClick={() => this.customFunc()} />
+          <Button negative onClick={this.close}>
+            Nei
+          </Button>
+          <Button positive icon="checkmark" labelPosition="right" content="Ja" onClick={() => this.customFunc()} />
         </Modal.Actions>
       </Modal>
     );
