@@ -10,7 +10,7 @@ export class HeaderWidget extends React.Component {
     let loggedIn = Consumer._currentValue.user ? true : false;
     return (
       <Menu inverted color="blue" secondary>
-        <Menu.Item onClick={() => this.props.toggle(true)} icon="list layout" />
+        {loggedIn ? <Menu.Item onClick={() => this.props.toggle(true)} icon="list layout" /> : null}
         <Menu.Item>
           <NavLink to="/">
             <Image src="img/compact-vector-logo-lav-hvit.png" size="medium" />

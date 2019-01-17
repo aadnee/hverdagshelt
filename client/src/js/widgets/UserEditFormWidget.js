@@ -185,9 +185,8 @@ export class UserEditFormWidget extends Component {
       <Container>
         <Grid.Column>
           <Form size="large">
-            <Segment stacked color="blue">
-              <Header as="h1">Din profil</Header>
-              <Divider hidden />
+            <Segment stacked color="blue" basic>
+              <p>Litt informasjon om brukeren</p>
               <Divider hidden />
               <Divider horizontal>
                 <Icon name="user" />
