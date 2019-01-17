@@ -295,6 +295,12 @@ app.get('/api/categories/:parentId', ensureLogin, function(req, res) {
   });
 });
 
+app.delete('/api/categories/:id', ensureAdmin, function(req, res) {
+  categoryManager.deleteCategory(req.params.id, function(result) {
+    res.json(result);
+  });
+});
+
 app.post('/api/categories', ensureEmployee, (req, res) => {
   categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
     res.json(result);
