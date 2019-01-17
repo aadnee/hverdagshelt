@@ -23,11 +23,12 @@ class NewsService {
     });
   }
 
-  getFilteredNews(municipalIds, categoryIds, page) {
+  getFilteredNews(municipalIds, categoryIds, page, limit) {
     return api.post('/api/news/filter', {
       municipalIds: municipalIds,
       categoryIds: categoryIds,
-      page: page
+      page: page,
+      limit: limit
     });
   }
 }

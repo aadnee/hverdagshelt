@@ -47,7 +47,7 @@ export let Municipals = sequelize.define('municipals', {
 
 export let Categories = sequelize.define('categories', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: Sequelize.STRING, unique: true, allowNull: false }
+  name: { type: Sequelize.STRING, allowNull: false }
 });
 
 export let Tickets = sequelize.define('tickets', {
@@ -204,7 +204,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await News.create({
       title: 'Problem ved vei i TRD sentrum.',
       description: 'Brøytestikker skal bli satt opp.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 2,
@@ -213,7 +213,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await News.create({
       title: 'Enda en nyhet!',
       description: 'Brøytestikker skal bli satt opp.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 1,
@@ -222,7 +222,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await News.create({
       title: 'En nyhet',
       description: 'Nyhet beskrivelse.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 1,

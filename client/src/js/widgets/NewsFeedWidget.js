@@ -22,7 +22,9 @@ export class NewsFeedWidget extends Component {
       categories: [],
       selectedCategories: [],
       news: [],
-      page: 2
+      page: 2,
+      limit: 3,
+      empty: false
     };
   }
 
@@ -72,7 +74,7 @@ export class NewsFeedWidget extends Component {
     this.setState({ loading: true });
     setTimeout(() => {
       newsService
-        .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, 1)
+        .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, 1, this.state.limit)
         .then(res => {
           this.setState({ news: res.data, loading: false });
         })
@@ -85,7 +87,7 @@ export class NewsFeedWidget extends Component {
 
   loadMoreNews() {
     newsService
-      .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, this.state.page)
+      .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, this.state.page, this.state.limit)
       .then(res => {
         if (res.data.length == 0) {
           toast.warning('Ingen flere nyheter å laste', {
@@ -96,6 +98,7 @@ export class NewsFeedWidget extends Component {
             pauseOnHover: true,
             draggable: true
           });
+          this.setState({ empty: true });
         } else {
           this.setState({ news: this.state.news.concat(res.data), page: this.state.page + 1 });
         }
@@ -207,7 +210,7 @@ export class NewsFeedWidget extends Component {
         </Grid.Column>
         <Grid.Column width={11}>
           {this.displayNews()}
-          {
+          {!this.state.empty ? (
             <Button
               primary
               onClick={() => {
@@ -216,7 +219,7 @@ export class NewsFeedWidget extends Component {
             >
               Last inn flere
             </Button>
-          }
+          ) : null}
         </Grid.Column>
       </Grid>
     );

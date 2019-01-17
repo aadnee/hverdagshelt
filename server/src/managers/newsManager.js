@@ -7,7 +7,7 @@ module.exports = {
       title: title,
       description: description,
       categoryId: categoryId,
-      status: 1,
+      status: 2,
       lat: lat,
       lon: lon,
       municipalId: municipalId
@@ -56,11 +56,11 @@ module.exports = {
     );
   },
 
-  getFilteredNews: function(municipalIds, categoryIds, page, callback) {
+  getFilteredNews: function(municipalIds, categoryIds, page, limit, callback) {
     News.findAll({
-      where: { municipalId: municipalIds, categoryId: categoryIds },
-      offset: (page - 1) * 2,
-      limit: 2,
+      where: { municipalId: municipalIds, categoryId: categoryIds, status: 2 },
+      offset: page == 0 ? null : (page - 1) * limit,
+      limit: limit == 0 ? null : limit,
       order: [['id', 'DESC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }

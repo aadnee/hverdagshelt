@@ -40,7 +40,9 @@ app.use(cookieParser());
 app.use(cors());
 
 app.post('/api/news/filter', function(req, res) {
-  newsManager.getFilteredNews(req.body.municipalIds, req.body.categoryIds, req.body.page, function(result) {
+  newsManager.getFilteredNews(req.body.municipalIds, req.body.categoryIds, req.body.page, req.body.limit, function(
+    result
+  ) {
     res.json(result);
   });
 });
