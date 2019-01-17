@@ -97,6 +97,19 @@ describe('Setting status', () => {
       done();
     });
   });
+
+  it('Wrong data', done => {
+    ticketManager.setStatus('String', 4, function(ticket) {
+      expect({
+        success: ticket.success
+        //  message: ticket.message.en
+      }).toEqual({
+        success: false
+        //  message: err
+      });
+      done();
+    });
+  });
 });
 
 describe('Get news by userId', () => {
@@ -114,36 +127,50 @@ describe('Get news by userId', () => {
       });
     });
   });
-});
 
-describe('Get local tickets', () => {
-  it('correct data', done => {
-    ticketManager.getLocalTickets(1, function(tickets) {
-      Tickets.findAll({ where: { municipalId: 1, status: 1 } }).then(res => {
-        expect({
-          success: tickets.success,
-          data: res
-        }).toEqual({
-          success: true,
-          data: res
-        });
-        done();
+  /*
+  it('Wrong data', done => {
+    ticketManager.getMyTickets(, function(ticket) {
+      expect({
+        success: ticket.success
+      }).toEqual({
+        success: false
       });
+      done();
     });
   });
 });
+*/
 
-describe('Make a ticket to an article', () => {
-  it('correct data', done => {
-    ticketManager.makeNews(4, 'TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, function(result) {
-      expect({
-        success: result.success,
-        message: result.message.en
-      }).toEqual({
-        success: true,
-        message: 'Article added.'
+  describe('Get local tickets', () => {
+    it('correct data', done => {
+      ticketManager.getLocalTickets(1, function(tickets) {
+        Tickets.findAll({ where: { municipalId: 1, status: 1 } }).then(res => {
+          expect({
+            success: tickets.success,
+            data: res
+          }).toEqual({
+            success: true,
+            data: res
+          });
+          done();
+        });
       });
-      done();
+    });
+  });
+
+  describe('Make a ticket to an article', () => {
+    it('correct data', done => {
+      ticketManager.makeNews(4, 'TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, function(result) {
+        expect({
+          success: result.success,
+          message: result.message.en
+        }).toEqual({
+          success: true,
+          message: 'Article added.'
+        });
+        done();
+      });
     });
   });
 });
