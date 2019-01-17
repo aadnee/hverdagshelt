@@ -7,24 +7,37 @@ import {ticketService} from '../services/TicketServices';
 import {TicketFormWidget} from '../widgets/TicketFormWidget';
 
 export class UserTicketsPage extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showEditTicket: false,
-            tickets: []
-        };
-    }
+  constructor(props) {
+    super(props);
 
-    componentWillMount() {
-        ticketService.getTickets().then(res => {
-            console.log(res);
-            this.setState({tickets: res.data});
-        });
-    }
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
 
-    handleEdit = () => {
-        ticketService.UpdateTicket();
+    this.state = {
+      showEditTicket: false,
+      editTicket: null,
+      tickets: []
     };
+  }
+
+  close = () => {
+    this.setState({ showEditTicket: false });
+  };
+
+  show = ticketEdit => {
+    this.setState({ showEditTicket: true, editTicket: ticketEdit });
+  };
+
+  componentWillMount() {
+    ticketService.getTickets().then(res => {
+      console.log(res);
+      this.setState({ tickets: res.data });
+    });
+  }
+
+  handleEdit = newTicket => {
+    ticketService.UpdateTicket();
+  };
 
     render() {
         return (

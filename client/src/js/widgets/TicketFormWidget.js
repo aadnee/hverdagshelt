@@ -71,7 +71,17 @@ export class TicketFormWidget extends Component {
       });
       this.setState({ categoryOptions: cats });
     });
-    this.props.edit ? this.setState({}) : null;
+    console.log(this.props.ticket);
+    this.props.ticket
+      ? this.setState({
+          address: this.props.ticket.address,
+          latlng: this.props.ticket.latlng,
+          headline: this.props.ticket.headline,
+          details: this.props.ticket.details,
+          category: this.props.ticket.category,
+          subcategory: this.props.ticket.subcategory
+        })
+      : null;
   }
 
   render() {
@@ -205,7 +215,6 @@ export class TicketFormWidget extends Component {
                     }}
                   />
                 </Form.Field>
-
                 <Button
                   color="blue"
                   fluid

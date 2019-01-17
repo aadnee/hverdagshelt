@@ -107,7 +107,7 @@ export class EmployeeManageTicketsPage extends React.Component {
         position: toast.POSITION.TOP_RIGHT
       });
     } else {
-      ticketService.acceptTicket(id, title, description, lat, lon, categoryId, municipalId).then(res => {
+      ticketService.acceptTicket(id, title, description, lat, lon, '', categoryId, municipalId).then(res => {
         if (res.success) {
           let ticket = this.state.tickets.find(t => t.id === id);
 
