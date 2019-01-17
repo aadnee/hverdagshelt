@@ -113,7 +113,7 @@ export class TicketWidget extends Component {
         ) : this.props.ticket.status === PENDING ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
-              <Button inverted primary>
+              <Button inverted primary onClick={this.props.show}>
                 Endre
               </Button>
               <Button inverted secondary>

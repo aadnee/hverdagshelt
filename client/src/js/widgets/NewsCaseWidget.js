@@ -44,11 +44,7 @@ export class NewsCaseWidget extends Component {
                 </Grid.Column>
                 {newscase.imageURL ? (
                   <Grid.Column width={4} align="right" only="tablet computer">
-                    <Image
-                      fluid
-                      src={newscase.imageURL}
-                      target="_blank"
-                    />
+                    <Image fluid src={newscase.imageURL} target="_blank" />
                   </Grid.Column>
                 ) : null}
               </Grid>

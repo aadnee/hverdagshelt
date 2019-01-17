@@ -9,11 +9,24 @@ import { TicketFormWidget } from '../widgets/TicketFormWidget';
 export class UserTicketsPage extends Component {
   constructor(props) {
     super(props);
+
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+
     this.state = {
       showEditTicket: false,
+      editTicket: null,
       tickets: []
     };
   }
+
+  close = () => {
+    this.setState({ showEditTicket: false });
+  };
+
+  show = ticketEdit => {
+    this.setState({ showEditTicket: true, editTicket: ticketEdit });
+  };
 
   componentWillMount() {
     ticketService.getTickets().then(res => {
@@ -22,7 +35,7 @@ export class UserTicketsPage extends Component {
     });
   }
 
-  handleEdit = () => {
+  handleEdit = newTicket => {
     ticketService.UpdateTicket();
   };
 
@@ -34,13 +47,13 @@ export class UserTicketsPage extends Component {
           <Grid stackable container columns={3}>
             {this.state.tickets.map(ticket => (
               <Grid.Column key={ticket.id}>
-                <TicketWidget ticket={ticket} />
+                <TicketWidget show={this.show.bind(this, ticket)} ticket={ticket} />
               </Grid.Column>
             ))}
           </Grid>
         </Container>
         <Modal open={this.state.showEditTicket}>
-          <TicketFormWidget submitButton={'Lagre endringer'} />
+          <TicketFormWidget ticket={this.state.editTicket} submitButton={'Lagre endringer'} />
         </Modal>
       </div>
     );
