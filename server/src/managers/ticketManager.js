@@ -1,5 +1,6 @@
-import { Tickets } from '../models';
+import { Tickets, Users } from '../models';
 import newsManager from './newsManager';
+import mailManager from './mailManager';
 
 module.exports = {
   addTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, userId, image, callback) {
@@ -62,11 +63,27 @@ module.exports = {
 
   setStatus: function(status, ticketId, newsId, callback) {
     Tickets.update({ status: status, newsId: newsId }, { where: { id: ticketId } }).then(
-      res =>
-        callback({
-          success: true,
-          message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
-        }),
+      res => {
+        Users.findOne({
+          attributes: ['email', 'notifications'],
+          include: [{ attributes: ['subscribed'], model: Tickets, required: true, where: { id: ticketId } }]
+        }).then(
+          res => {
+            res.notifications && res.tickets.subscribed
+              ? mailManager.send(
+                  'Ditt varsel er behandlet',
+                  '<h3>Ditt varsel er oppdatert.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
+                  res.email
+                )
+              : null;
+            callback({
+              success: true,
+              message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
+            });
+          },
+          err => callback({ success: false, message: err })
+        );
+      },
       err => callback({ success: false, message: err })
     );
   },

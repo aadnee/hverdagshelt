@@ -178,7 +178,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      image: null,
+      subscribed: true
     });
     await Tickets.create({
       title: 'Vei problem',
@@ -189,7 +190,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      image: null,
+      subscribed: true
     });
     await Tickets.create({
       title: 'Vei problem',
@@ -200,7 +202,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      image: null,
+      subscribed: true
     });
     await News.create({
       title: 'Problem ved vei i TRD sentrum.',
