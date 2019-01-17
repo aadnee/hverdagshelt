@@ -97,7 +97,7 @@ module.exports = {
 
   getUsers: function(callback) {
     Users.findAll({
-      attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId'],
+      attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId', 'notifications'],
       where: { rank: { $not: 2 } }
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
@@ -105,7 +105,7 @@ module.exports = {
   getUser: function(id, callback) {
     Users.findOne({
       where: { id: id, rank: { $not: 2 } },
-      attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId']
+      attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId', 'notifications']
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
@@ -118,13 +118,14 @@ module.exports = {
     );
   },
 
-  editUser: function(name, email, phone, municipalId, userId, rank, callback) {
+  editUser: function(name, email, phone, municipalId, userId, notifications, rank, callback) {
     Users.update(
       {
         name: name,
         email: email,
         phone: phone,
         municipalId: municipalId,
+        notifications: notifications,
         rank: rank
       },
       { where: { id: userId, rank: { $not: 2 } } }

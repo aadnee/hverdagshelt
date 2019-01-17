@@ -30,11 +30,36 @@ describe('Finding all companies', () => {
       done();
     });
   });
+
+  it('correct data', done => {
+    companyManager.getCompany(4, function(company) {
+      expect({
+        success: company.success,
+        data: {
+          email: company.data.email,
+          id: company.data.id,
+          municipalId: company.data.municipalId,
+          name: company.data.name,
+          phone: company.data.phone
+        }
+      }).toEqual({
+        success: true,
+        data: {
+          email: 'company@company.com',
+          id: 4,
+          municipalId: 1,
+          name: 'SmartPark',
+          phone: 12345678
+        }
+      });
+      done();
+    });
+  });
 });
 
 describe('Edit and delete company', () => {
   it('correct data', done => {
-    companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, 4, function(result) {
+    companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, 4, true, function(result) {
       expect({
         success: result.success,
         message: result.message.en

@@ -219,19 +219,20 @@ export class TicketFormWidget extends Component {
                   color="blue"
                   fluid
                   size="large"
-                  onClick={this.props.submit.bind(
-                    this,
-                    this.state.headline,
-                    this.state.details,
-                    this.state.latlng.lat,
-                    this.state.latlng.lng,
-                    this.state.address,
+                  onClick={() =>
+                    this.props.submit(
+                      this.state.headline,
+                      this.state.details,
+                      this.state.latlng.lat,
+                      this.state.latlng.lng,
+                      this.state.address,
 
-                    this.state.subcategory ? this.state.subcategory : this.state.category,
-                    Cookies.get('municipalId'),
-                    this.state.subscription === 'true',
-                    this.state.image
-                  )}
+                      this.state.subcategory ? this.state.subcategory : this.state.category,
+                      Cookies.get('municipalId'),
+                      this.state.subscription === 'true',
+                      this.state.image
+                    )
+                  }
                 >
                   Send inn
                 </Button>

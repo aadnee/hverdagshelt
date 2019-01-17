@@ -27,16 +27,8 @@ export class MyPageHeaderWidget extends React.Component {
     return (
       <Dropdown item text={'Hei, ' + Consumer._currentValue.user.firstName}>
         <Dropdown.Menu>
-          <Dropdown.Item>
-            <NavLink activeClassName="active" style={{ color: 'black' }} to="/profile">
-              Min side
-            </NavLink>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <NavLink activeClassName="active" style={{ color: 'black' }} to="/logout">
-              Logg av
-            </NavLink>
-          </Dropdown.Item>
+          <Dropdown.Item onClick={() => Consumer._currentValue.history.push('/profile')}>Min side</Dropdown.Item>
+          <Dropdown.Item onClick={() => Consumer._currentValue.history.push('/logout')}>Logg av</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     );
@@ -48,16 +40,8 @@ export class LoginRegisterHeaderWidget extends React.Component {
     return (
       <Dropdown item icon="user" text={'Ikke logget inn'}>
         <Dropdown.Menu>
-          <Dropdown.Item>
-            <NavLink activeClassName="active" style={{ color: 'black' }} to="/login">
-              Logg inn
-            </NavLink>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <NavLink activeClassName="active" style={{ color: 'black' }} to="/register">
-              Registrer deg
-            </NavLink>
-          </Dropdown.Item>
+          <Dropdown.Item onClick={() => Consumer._currentValue.history.push('/login')}>Logg inn</Dropdown.Item>
+          <Dropdown.Item onClick={() => Consumer._currentValue.history.push('/register')}>Registrer deg</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     );

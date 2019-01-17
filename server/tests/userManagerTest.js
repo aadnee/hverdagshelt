@@ -84,7 +84,7 @@ describe('Finding all users', () => {
 
 describe('Edit and delete user', () => {
   it('correct data', done => {
-    userManager.editUser('Nytt Navn', 'user1@user1.com', 321, 1, 1, 2, function(result) {
+    userManager.editUser('Nytt Navn', 'user1@user1.com', 321, 1, 1, true, 2, function(result) {
       expect({
         success: result.success,
         message: result.message.en
