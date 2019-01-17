@@ -59,7 +59,7 @@ export class MapWidget extends Component {
           console.log(e);
           reverseSearch.latlng(e.latlng).run(function (error, result) {
             self.setState({
-              userInfo: "Din posisjon: " + result.address.Address + ", " + result.address.Subregion,
+              userInfo: result.address.Address + ", " + result.address.Subregion,
               userPos: [e.latitude, e.longitude],
               foundPos: true
             });
@@ -67,9 +67,7 @@ export class MapWidget extends Component {
           });
         })
         .on('locationerror', function (e) {
-          console.log(e);
           self.setState({foundPos: false});
-          toast.error(e.message);
         });
 
     let arcgisOnline = new ELG.ArcgisOnlineProvider({ countries: ['NO'] });
@@ -77,18 +75,18 @@ export class MapWidget extends Component {
       providers: [arcgisOnline],
       allowMultipleResults: false,
       useMapBounds: false,
-      placeholder: 'Søk etter steder eller addresser',
+      placeholder: 'Søk etter steder eller adresser',
     }).addTo(map);
     searchControl.on('results', function (data) {
       console.log(data.results.length);
       if (data.results.length < 1) {
-        toast.warn('Ingen lokasjon funnet, har du tillatt posisjonsdeling?');
+        toast.warn('Ingen lokasjon funnet');
       }
       else {
         self.handleClick(data.results[0]);
       }
     });
-    console.log(this.userMarkerPosRef.current);
+    //console.log(this.userMarkerPosRef.current);
     //if(this.state.foundPos)this.userMarkerPosRef.current.leafletElement.openPopup();
     this.setState({map: map, reverseSearch: reverseSearch});
     /*setTimeout(() => {
@@ -157,7 +155,7 @@ export class MapWidget extends Component {
             {this.state.foundPos ? (
                 <Marker ref={this.userMarkerPosRef} position={this.state.userPos} icon={this.greenIcon}>
                   <Popup open={true}>
-                    <b>{this.state.userInfo}</b>
+                    <b>Din posisjon: {this.state.userInfo}</b>
                     <br/>
                     {this.props.modal ? (
                         <Modal trigger={<Button>Meld hendelse her</Button>}>
