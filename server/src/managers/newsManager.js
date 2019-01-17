@@ -56,10 +56,12 @@ module.exports = {
     );
   },
 
-  getFilteredNews: function(municipalIds, categoryIds, callback) {
-    News.findAll({ where: { municipalId: municipalIds, categoryId: categoryIds } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+  getFilteredNews: function(municipalIds, categoryIds, page, callback) {
+    News.findAll({
+      where: { municipalId: municipalIds, categoryId: categoryIds },
+      offset: (page - 1) * 2,
+      limit: 2,
+      order: [['id', 'DESC']]
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }
 };

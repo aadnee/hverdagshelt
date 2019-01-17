@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Modal, Button, Message } from 'semantic-ui-react';
+import { Grid, Header, Modal, Button, Message, Container } from 'semantic-ui-react';
 
 import { NewsCaseWidget } from '../widgets/NewsCaseWidget';
 import { subscriptionService } from '../services/SubscriptionServices';
@@ -61,10 +61,8 @@ export class UserSubscriptionPage extends Component {
 
   render() {
     return (
-      <div>
-        <Header size={'huge'} textAlign={'center'}>
-          Nyheter jeg abonnerer på
-        </Header>
+      <Container>
+        <Header as="h1">Nyheter jeg abonnerer på</Header>
         <Grid container centered>
           {this.state.news.length < 1 ? (
             <Grid.Row centered>
@@ -88,7 +86,7 @@ export class UserSubscriptionPage extends Component {
           message="Er du sikker på at du vil uavabonneren't på denne nyheten?"
           customFunc={this.unsubscribe.bind(this, this.state.modalParam)}
         />
-      </div>
+      </Container>
     );
   }
 }

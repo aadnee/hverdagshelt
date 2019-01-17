@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Segment, Header, Icon, Dropdown, Button, Grid, Divider, Message } from 'semantic-ui-react';
+import { toast } from 'react-toastify';
 
 import { municipalService } from './../services/MunicipalServices';
 import { categoryService } from './../services/CategoryServices';
@@ -20,7 +21,8 @@ export class NewsFeedWidget extends Component {
       selectedMunicipals: [],
       categories: [],
       selectedCategories: [],
-      news: []
+      news: [],
+      page: 2
     };
   }
 
@@ -70,7 +72,7 @@ export class NewsFeedWidget extends Component {
     this.setState({ loading: true });
     setTimeout(() => {
       newsService
-        .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories)
+        .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, 1)
         .then(res => {
           this.setState({ news: res.data, loading: false });
         })
@@ -79,6 +81,28 @@ export class NewsFeedWidget extends Component {
           this.setState({ loading: false });
         });
     }, 10);
+  }
+
+  loadMoreNews() {
+    newsService
+      .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, this.state.page)
+      .then(res => {
+        if (res.data.length == 0) {
+          toast.warning('Ingen flere nyheter å laste', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true
+          });
+        } else {
+          this.setState({ news: this.state.news.concat(res.data), page: this.state.page + 1 });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 
   selectMunicipal(value) {
@@ -181,7 +205,19 @@ export class NewsFeedWidget extends Component {
             </Button>
           </Segment>
         </Grid.Column>
-        <Grid.Column width={11}>{this.displayNews()}</Grid.Column>
+        <Grid.Column width={11}>
+          {this.displayNews()}
+          {
+            <Button
+              primary
+              onClick={() => {
+                this.loadMoreNews();
+              }}
+            >
+              Last inn flere
+            </Button>
+          }
+        </Grid.Column>
       </Grid>
     );
   }

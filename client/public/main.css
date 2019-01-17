@@ -1,9 +1,9 @@
 /* Custom CSS here */
 .leaflet-container {
-    height: 90vh;
-    width: 100%;
-    margin: 0;
-    z-index: 0;
+  height: 90vh;
+  width: 100%;
+  margin: 0;
+  z-index: 0;
 }
 
 html,
@@ -34,16 +34,12 @@ body {
   font-size: 40px;
 }
 
-
 /* STYLING FOR PICTURE UPLOAD */
 
-
-
-input[type=file] {
+input[type='file'] {
   display: none;
 }
 
 #upload {
   display: none;
-
 }
