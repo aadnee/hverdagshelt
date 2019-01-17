@@ -88,16 +88,16 @@ export class PageController extends Component {
                 draggable
                 pauseOnHover
               />
+              <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
               <Sidebar.Pushable style={{ height: '100vh' }}>
-                <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
-                <Sidebar.Pusher dimmed={this.state.visible}>
+                <Sidebar.Pusher dimmed={this.state.visible} style={{ paddingBottom: '300px' }}>
                   <HeaderWidget toggle={this.toggleSideBar} />
                   <AppRouter />
                   <Divider hidden />
                   <Divider hidden />
+                  <FooterWidget />
                 </Sidebar.Pusher>
               </Sidebar.Pushable>
-              <FooterWidget />
             </>
           </HashRouter>
         </Provider>

@@ -23,7 +23,7 @@ export class HomePage extends Component {
           <Grid>
             <Grid.Row columns={2} only="computer">
               <Grid.Column width={10}>
-                <MapWidget employee />
+                <MapWidget />
               </Grid.Column>
               <Grid.Column width={6} only="computer">
                 <Header as="h5">Nyhetsstrøm</Header>

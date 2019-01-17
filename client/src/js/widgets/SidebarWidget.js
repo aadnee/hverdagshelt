@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Consumer } from './../context';
+import { USER, COMPANY, EMPLOYEE, ADMIN } from './../commons';
 
 import { Button, Header, Icon, Menu, Segment, Sidebar, Grid, Divider, Container, Label } from 'semantic-ui-react';
 
@@ -32,10 +34,11 @@ export class SidebarWidget extends Component {
   }
 
   render() {
+    const rank = Consumer._currentValue.user ? Consumer._currentValue.user.rank : -1;
     return (
       <Sidebar
         as={Segment}
-        animation="overlay"
+        animation="push"
         inverted
         onHide={() => this.handleSidebar()}
         vertical
@@ -50,12 +53,23 @@ export class SidebarWidget extends Component {
               Meny
             </Header>
             <PrivateOptions />
-            <Divider />
-            <AdminOptions />
-            <Divider />
-            <MunicipalOptions />
-            <Divider />
-            <CompanyOptions />
+            {rank == ADMIN ? (
+              <>
+                <Divider /> <AdminOptions />
+              </>
+            ) : null}
+            {rank >= EMPLOYEE ? (
+              <>
+                <Divider />
+                <MunicipalOptions />
+              </>
+            ) : null}
+            {rank == COMPANY ? (
+              <>
+                <Divider />
+                <CompanyOptions />
+              </>
+            ) : null}
           </Menu>
         </Segment>
       </Sidebar>
