@@ -5,6 +5,7 @@ import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal } from 'se
 import { PENDING, DONE, REJECTED, STATUS } from '../commons';
 
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
+import { MessageWidget } from './MessageWidget';
 
 export class TicketWidget extends Component {
   constructor(props) {
@@ -14,16 +15,11 @@ export class TicketWidget extends Component {
     };
   }
 
-  show = size => () => this.setState({ size, open: true });
-  close = () => this.setState({ open: false });
-
   componentDidMount() {
     console.log(this.props.ticket);
   }
 
   render() {
-    const { open, size } = this.state;
-
     return (
       <Card centered>
         <Image>
@@ -83,22 +79,9 @@ export class TicketWidget extends Component {
                   </Modal.Content>
                 </Modal>
 
-                <Button inverted secondary onClick={this.show('mini')}>
+                <Button inverted secondary onClick={this.props.show}>
                   Avslå
                 </Button>
-
-                <Modal size={size} open={open} onClose={this.close}>
-                  <Modal.Header>Slett innsendt varsel</Modal.Header>
-                  <Modal.Content>
-                    <p>Er du sikker på at du vil slette denne varselen</p>
-                  </Modal.Content>
-                  <Modal.Actions>
-                    <Button negative onClick={this.close}>
-                      Nei
-                    </Button>
-                    <Button positive icon="checkmark" labelPosition="right" content="Ja" onClick={this.props.reject} />
-                  </Modal.Actions>
-                </Modal>
               </Button.Group>
             </Card.Content>
           ) : null
@@ -113,7 +96,7 @@ export class TicketWidget extends Component {
         ) : this.props.ticket.status === PENDING ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
-              <Button inverted primary>
+              <Button inverted primary onClick={this.props.show}>
                 Endre
               </Button>
               <Button inverted secondary>
