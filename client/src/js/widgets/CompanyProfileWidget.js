@@ -24,6 +24,7 @@ export class MyWidget extends Component {
     render() {
         return(
           <Segment basic color="blue">
+
           </Segment>
         );
     }
