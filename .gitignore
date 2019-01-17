@@ -7,3 +7,4 @@ npm
 server/.env
 client/src/js/AppRouter.js
 client/public/uploads
+server/coverage
