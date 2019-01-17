@@ -7,7 +7,7 @@ import { Segment, Container, Grid, List, Header, Image } from 'semantic-ui-react
 export class FooterWidget extends Component {
   render() {
     return (
-      <Segment basic inverted fluid="true" color="black">
+      <Segment basic inverted fluid="true" color="black" style={{ position: 'absolute', bottom: 0, width: '100%' }}>
         <Container>
           <Grid divided inverted stackable>
             <Grid.Row>
@@ -20,7 +20,7 @@ export class FooterWidget extends Component {
                   target="_blank"
                 />
               </Grid.Column>
-              <Grid.Column width={3}>
+              <Grid.Column width={6}>
                 <Header inverted as="h4" content="Kontakt" />
                 <List link inverted>
                   <List.Item as="a">Scrumgruppe 8</List.Item>
