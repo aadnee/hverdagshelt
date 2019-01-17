@@ -62,21 +62,21 @@ export class UserReportTicketPage extends Component {
           <Grid divided>
             <Grid.Row columns={2} only="computer">
               <Grid.Column>
-                <MapWidget callback={this.callback} />
+                <MapWidget callback={this.callback} submit={this.submit} />
               </Grid.Column>
               <Grid.Column only="computer">
                 <TicketFormWidget
                   borderless
                   latlng={this.state.latlng}
                   address={this.state.address}
-                  submit={this.submit.bind(this)}
+                  submit={this.submit}
                 />
               </Grid.Column>
             </Grid.Row>
 
             <Grid.Row columns={1} only="mobile tablet">
               <Grid.Column colSpan={2}>
-                <MapWidget modal callback={this.callbackFake} />
+                <MapWidget modal submit={this.submit} callback={this.callbackFake} />
               </Grid.Column>
             </Grid.Row>
           </Grid>

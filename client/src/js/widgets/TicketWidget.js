@@ -71,7 +71,7 @@ export class TicketWidget extends Component {
                         title={this.props.ticket.title}
                         description={this.props.ticket.description}
                         category={this.props.ticket.categoryId}
-                        submit={this.props.accept}
+                        accept={this.props.accept}
                         image
                         submitButton={'Publiser'}
                       />

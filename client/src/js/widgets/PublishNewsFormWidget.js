@@ -17,6 +17,7 @@ import {
   TextArea
 } from 'semantic-ui-react';
 import { categoryService } from '../services/CategoryServices';
+import Cookies from 'js-cookie';
 
 //import {} from './';
 
@@ -65,7 +66,7 @@ export class PublishNewsFormWidget extends Component {
 
   componentWillMount() {
     categoryService.getCategories().then(res => {
-      let allCats = [];
+      //et allCats = [];
       let mainCats = [];
       console.log(this.state.category);
 
@@ -73,10 +74,10 @@ export class PublishNewsFormWidget extends Component {
         let subCats = this.getSubCategories(cat.id);
 
         mainCats.push({ key: cat.id, value: cat.id, text: cat.name });
-        allCats.push({ cat: { key: cat.id, value: cat.id, text: cat.name }, subCats: subCats });
+        //allCats.push({ cat: { key: cat.id, value: cat.id, text: cat.name }, subCats: subCats });
       });
       this.setState({ categoryOptions: mainCats });
-      console.log(allCats);
+      //console.log(allCats);
     });
   }
 
@@ -157,15 +158,16 @@ export class PublishNewsFormWidget extends Component {
                   color="blue"
                   fluid
                   size="large"
-                  onClick={this.props.submit.bind(
-                    this,
-                    this.state.title,
-                    this.state.description,
-                    this.state.position[0],
-                    this.state.position[1],
-                    this.state.category,
-                    /*municipalId*/ 1
-                  )}
+                  onClick={() =>
+                    this.props.accept(
+                      this.state.title,
+                      this.state.description,
+                      this.state.position[0],
+                      this.state.position[1],
+                      this.state.category,
+                      Cookies.get('municipalId')
+                    )
+                  }
                 >
                   {this.props.submitButton}
                 </Button>

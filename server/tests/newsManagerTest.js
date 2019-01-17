@@ -25,7 +25,7 @@ describe('Adding article', () => {
         }).toEqual({
           title: 'TestArticle',
           description: 'Dette er en test som skal funke',
-          status: 1,
+          status: 2,
           categoryId: 1,
           lat: 1.123,
           lon: 2.234,
@@ -36,7 +36,7 @@ describe('Adding article', () => {
     });
   });
   it('correct data', done => {
-    newsManager.updateNews(id, 'TestArticle', 'Nå skal det ha skjedd en endring', 1, 1, 1, function(article) {
+    newsManager.updateNews(id, 'TestArticle', 'Nå skal det ha skjedd en endring', 3, 1, 1, function(article) {
       News.findOne({ where: { id: id } }).then(news => {
         expect({
           title: news.title,
@@ -47,7 +47,7 @@ describe('Adding article', () => {
         }).toEqual({
           title: 'TestArticle',
           description: 'Nå skal det ha skjedd en endring',
-          status: 1,
+          status: 3,
           categoryId: 1,
           companyId: 1
         });
@@ -59,7 +59,7 @@ describe('Adding article', () => {
 
 describe('Get news by municipal', () => {
   it('correct data', done => {
-    newsManager.getFilteredNews([1], [2], function(news) {
+    newsManager.getFilteredNews([1], [2], 1, 1, function(news) {
       expect({
         success: news.success
       }).toEqual({
