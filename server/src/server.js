@@ -249,7 +249,7 @@ app.put('/api/tickets/:ticketId', ensureLogin, upload.single('image'), function(
 });
 
 app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
-  ticketManager.setStatus(4, req.params.ticketId, function(result) {
+  ticketManager.setStatus(4, req.params.ticketId, null, function(result) {
     res.json(result);
   });
 });

@@ -37,7 +37,8 @@ export let Users = sequelize.define('users', {
   email: { type: Sequelize.STRING, unique: true, allowNull: false },
   phone: { type: Sequelize.INTEGER, unique: true, allowNull: false },
   password: { type: Sequelize.STRING, allowNull: false },
-  rank: { type: Sequelize.INTEGER, allowNull: false }
+  rank: { type: Sequelize.INTEGER, allowNull: false },
+  notifications: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
 });
 
 export let Municipals = sequelize.define('municipals', {

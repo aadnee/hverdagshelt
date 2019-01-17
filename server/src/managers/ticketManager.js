@@ -60,8 +60,8 @@ module.exports = {
     );
   },
 
-  setStatus: function(status, ticketId, callback) {
-    Tickets.update({ status: status }, { where: { id: ticketId } }).then(
+  setStatus: function(status, ticketId, newsId, callback) {
+    Tickets.update({ status: status, newsId: newsId }, { where: { id: ticketId } }).then(
       res =>
         callback({
           success: true,
@@ -88,19 +88,11 @@ module.exports = {
   },
 
   makeNews: function(ticketId, title, description, lat, lon, categoryId, municipalId, callback) {
-    this.setStatus(3, ticketId, function(result) {
+    let ticketManager = this;
+    newsManager.addArticle(title, description, categoryId, lat, lon, municipalId, function(result) {
       if (result.success) {
-        newsManager.addArticle(title, description, categoryId, lat, lon, municipalId, function(result) {
-          if (result.success) {
-            Tickets.update(
-              {
-                newsId: result.id
-              },
-              { where: { id: ticketId } }
-            ).then(res => callback(result), err => callback({ success: false, message: err }));
-          } else {
-            callback(result);
-          }
+        ticketManager.setStatus(3, ticketId, result.id, function(res) {
+          callback(result);
         });
       } else {
         callback(result);

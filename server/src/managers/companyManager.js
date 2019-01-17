@@ -3,15 +3,15 @@ import userManager from './userManager';
 
 module.exports = {
   getCompanies: function(callback) {
-    Users.findAll({ attributes: ['id', 'name', 'email', 'phone', 'municipalId'], where: { rank: 2 } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    Users.findAll({
+      attributes: ['id', 'name', 'email', 'phone', 'municipalId', 'notifications'],
+      where: { rank: 2 }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   getLocalCompanies: function(municipalId, callback) {
     Users.findAll({
-      attributes: ['id', 'name', 'email', 'phone', 'municipalId'],
+      attributes: ['id', 'name', 'email', 'phone', 'municipalId', 'notifications'],
       where: { municipalId: municipalId, rank: 2 }
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
@@ -23,7 +23,7 @@ module.exports = {
   getCompany: function(id, callback) {
     Users.findOne({
       where: { id: id, rank: 2 },
-      attributes: ['id', 'name', 'email', 'phone', 'municipalId']
+      attributes: ['id', 'name', 'email', 'phone', 'municipalId', 'notifications']
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
@@ -36,13 +36,14 @@ module.exports = {
     );
   },
 
-  editCompany: function(name, email, phone, municipalId, userId, callback) {
+  editCompany: function(name, email, phone, municipalId, notifications, userId, callback) {
     Users.update(
       {
         name: name,
         email: email,
         phone: phone,
-        municipalId: municipalId
+        municipalId: municipalId,
+        notifications: notifications
       },
       { where: { id: userId, rank: 2 } }
     ).then(

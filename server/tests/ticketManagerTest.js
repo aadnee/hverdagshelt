@@ -86,7 +86,7 @@ describe('Adding ticket', () => {
 
 describe('Setting status', () => {
   it('correct data', done => {
-    ticketManager.setStatus(1, 4, function(ticket) {
+    ticketManager.setStatus(1, 4, 1, function(ticket) {
       expect({
         success: ticket.success,
         message: ticket.message.en
@@ -99,7 +99,7 @@ describe('Setting status', () => {
   });
 
   it('Wrong data', done => {
-    ticketManager.setStatus('String', 4, function(ticket) {
+    ticketManager.setStatus('String', 4, 1, function(ticket) {
       expect({
         success: ticket.success
         //  message: ticket.message.en
