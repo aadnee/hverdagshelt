@@ -12,8 +12,8 @@ import { toast } from 'react-toastify';
 //import {} from './';
 
 export class MapWidget extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       lat: 63.430478482010294,
       lng: 10.395047769353868,
