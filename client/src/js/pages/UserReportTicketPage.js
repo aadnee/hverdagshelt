@@ -4,6 +4,10 @@ import { NavLink } from 'react-router-dom';
 import { Header, Container, Grid, Segment, Divider } from 'semantic-ui-react';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { MapWidget } from '../widgets/MapWidget';
+import { ticketService } from '../services/TicketServices';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
+import { Consumer } from '../context';
 
 export class UserReportTicketPage extends Component {
   constructor(props) {
@@ -13,6 +17,7 @@ export class UserReportTicketPage extends Component {
       address: null
     };
     this.callback = this.callback.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   callback(latlng, address) {
@@ -20,6 +25,34 @@ export class UserReportTicketPage extends Component {
   }
 
   callbackFake() {}
+
+  submit = (headline, description, lat, lon, address, catId, municipalId, subscribed, image) => {
+    console.log(this.state);
+    //lat, lon  is fetched from the map
+
+    if (!headline || !description || !lat || !lon || !catId || !municipalId) {
+      toast.error('Vennligst fyll ut alle felt', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    } else {
+      ticketService
+        .addTicket(headline, description, lat, lon, address, catId, municipalId, subscribed, image)
+        .then(res => {
+          console.log(res);
+          if (res.success) {
+            toast.success(res.message.no, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+            Consumer._currentValue.history.push({ pathname: '/tickets' });
+          } else {
+            toast.error(res.message.no, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+          }
+          console.log(res);
+        });
+    }
+  };
 
   render() {
     return (
@@ -32,7 +65,12 @@ export class UserReportTicketPage extends Component {
                 <MapWidget callback={this.callback} />
               </Grid.Column>
               <Grid.Column only="computer">
-                <TicketFormWidget borderless latlng={this.state.latlng} address={this.state.address} />
+                <TicketFormWidget
+                  borderless
+                  latlng={this.state.latlng}
+                  address={this.state.address}
+                  submit={this.submit.bind(this)}
+                />
               </Grid.Column>
             </Grid.Row>
 

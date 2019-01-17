@@ -1,22 +1,26 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Modal, Button } from 'semantic-ui-react';
+import { Grid, Header, Modal, Button, Message } from 'semantic-ui-react';
 
 import { NewsCaseWidget } from '../widgets/NewsCaseWidget';
 import { subscriptionService } from '../services/SubscriptionServices';
+
+import { MessageWidget } from '../widgets/MessageWidget';
+import { toast } from 'react-toastify';
 
 export class UserSubscriptionPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       news: [],
-      open: false,
-      modalMessage: ''
+      modalOpen: false,
+      modalParam: ''
     };
     this.unsubscribe = this.unsubscribe.bind(this);
+    this.show = this.show.bind(this);
   }
-  show = () => this.setState({ open: true });
+  show = id => this.setState({ modalOpen: true, modalParam: id });
   close = () => this.setState({ open: false });
 
   componentWillMount() {
@@ -33,41 +37,57 @@ export class UserSubscriptionPage extends Component {
   unsubscribe(newsId) {
     console.log(newsId);
 
-    subscriptionService.deleteSubscription(newsId).then(res => {
-      console.log(res);
+    if (!newsId) {
+      toast.error('Noe gikk galt, prøv igjen', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    } else {
+      subscriptionService.deleteSubscription(newsId).then(res => {
+        console.log(res);
+        if (res.success) {
+          this.setState({ news: this.state.news.filter(news => news.id !== newsId), modalOpen: false });
 
-      this.show();
-
-      this.setState({ news: this.state.news.filter(news => news.id !== newsId), modalMessage: res.message.no });
-    });
+          toast.success(res.message.no, {
+            position: toast.POSITION.TOP_RIGHT
+          });
+        } else {
+          toast.error(res.message.no, {
+            position: toast.POSITION.TOP_RIGHT
+          });
+        }
+      });
+    }
   }
 
   render() {
-    const { open } = this.state;
-
     return (
       <div>
         <Header size={'huge'} textAlign={'center'}>
           Nyheter jeg abonnerer på
         </Header>
         <Grid container centered>
+          {this.state.news.length < 1 ? (
+            <Grid.Row centered>
+              <Message size={'massive'}>
+                <p>Du abonnerer ikke på noen nyheter</p>
+              </Message>
+            </Grid.Row>
+          ) : null}
           {this.state.news.map(news => {
             return (
               <Grid.Row key={news.id}>
-                <NewsCaseWidget unsubscribe={this.unsubscribe.bind(this, news.id)} newscase={news} />
+                <NewsCaseWidget show={this.show.bind(this, news.id)} newscase={news} />
               </Grid.Row>
             );
           })}
         </Grid>
-        <Modal size={'tiny'} open={open} onClose={this.close}>
-          <Modal.Header>Status</Modal.Header>
-          <Modal.Content>
-            <p>{this.state.modalMessage}</p>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button icon="checkmark" labelPosition="right" content="OK" onClick={this.close} />
-          </Modal.Actions>
-        </Modal>
+        <MessageWidget
+          title={'Avmeld nyhet'}
+          size={'tiny'}
+          open={this.state.modalOpen}
+          message="Er du sikker på at du vil uavabonneren't på denne nyheten?"
+          customFunc={this.unsubscribe.bind(this, this.state.modalParam)}
+        />
       </div>
     );
   }

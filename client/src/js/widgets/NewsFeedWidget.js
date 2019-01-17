@@ -7,6 +7,9 @@ import { Segment, Header, Icon, Dropdown, Button, Grid, Divider, Message } from 
 import { municipalService } from './../services/MunicipalServices';
 import { categoryService } from './../services/CategoryServices';
 import { newsService } from './../services/NewsServices';
+import { userService } from './../services/UserServices';
+
+import { NewsCaseWidget } from './NewsCaseWidget';
 
 export class NewsFeedWidget extends Component {
   constructor(props) {
@@ -25,16 +28,20 @@ export class NewsFeedWidget extends Component {
     this.setState({ loading: true });
     let munRes = municipalService
       .getMunicipals()
-      .then(res => {
-        const munID = Cookies.get('municipalId');
-        let muns = res.data.map(r => {
-          return { key: r.id, value: r.name, text: r.name };
-        });
-        let userMun = muns.find(mun => {
-          return mun.key == munID;
-        });
-        this.setState({ municipals: muns, selectedMunicipals: [userMun.text] });
-        return muns;
+      .then(municipals => {
+        userService
+          .getMunicipals()
+          .then(myMunicipals => {
+            let allMunicipals = municipals.data.map(m => {
+              return { key: m.id, value: m.id, text: m.name };
+            });
+            let allMyMunicipals = myMunicipals.data.map(m => {
+              return m.id;
+            });
+            this.setState({ municipals: allMunicipals, selectedMunicipals: allMyMunicipals });
+            return allMunicipals;
+          })
+          .catch(res => console.error(res));
       })
       .catch(res => console.error(res));
 
@@ -42,9 +49,9 @@ export class NewsFeedWidget extends Component {
       .getCategories()
       .then(res => {
         let cats = res.data.map(r => {
-          return { key: r.id, value: r.name, text: r.name };
+          return { key: r.id, value: r.id, text: r.name };
         });
-        this.setState({ categories: cats });
+        this.setState({ categories: cats, selectedCategories: cats.map(c => c.value) });
         return cats;
       })
       .catch(res => console.error(res));
@@ -63,7 +70,7 @@ export class NewsFeedWidget extends Component {
     this.setState({ loading: true });
     setTimeout(() => {
       newsService
-        .getLocalNews(Cookies.get('municipalId'))
+        .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories)
         .then(res => {
           this.setState({ news: res.data, loading: false });
         })
@@ -95,10 +102,12 @@ export class NewsFeedWidget extends Component {
           </Message.Content>
         </Message>
       );
-    } else if (this.state.news > 0) {
+    } else if (this.state.news.length > 0) {
       return (
         <>
-          this.state.news.map(nc => <NewsCaseWidget key={nc.id} newscase={nc} />
+          {this.state.news.map(nc => (
+            <NewsCaseWidget key={nc.id} newscase={nc} />
+          ))}
         </>
       );
     } else {

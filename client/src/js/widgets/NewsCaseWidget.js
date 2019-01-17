@@ -59,7 +59,7 @@ export class NewsCaseWidget extends Component {
             </List.Item>
           </List>
 
-          <Button onClick={this.props.unsubscribe}>Avslutt abonnement</Button>
+          <Button onClick={this.props.show}>Avslutt abonnement</Button>
         </Container>
       </Segment>
     );
