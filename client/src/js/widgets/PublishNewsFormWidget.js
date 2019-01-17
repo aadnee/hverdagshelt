@@ -31,6 +31,7 @@ export class PublishNewsFormWidget extends Component {
       categoryOptions: [],
       subcategory: '',
       subCategoryOptions: [],
+      categoryChanged: false,
       position: [1, 1],
       subscription: false,
       image: this.props.image
@@ -55,7 +56,7 @@ export class PublishNewsFormWidget extends Component {
 
         subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
       });
-      if (bool) {
+      if (bool || this.state.categoryChanged) {
         this.setState({ subCategoryOptions: subcats });
       }
     });
@@ -122,6 +123,7 @@ export class PublishNewsFormWidget extends Component {
                         placeholder="Kategori"
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
+                          this.setState({ categoryChanged: true });
                           this.getSubCategories(data.value);
                         }}
                       />
