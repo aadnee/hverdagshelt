@@ -301,7 +301,13 @@ app.delete('/api/categories/:id', ensureAdmin, function(req, res) {
   });
 });
 
-app.post('/api/categories', ensureEmployee, (req, res) => {
+app.put('/api/categories/:id', ensureAdmin, function(req, res) {
+  categoryManager.editCategory(req.params.id, req.body.name, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/categories', ensureAdmin, (req, res) => {
   categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
     res.json(result);
   });
