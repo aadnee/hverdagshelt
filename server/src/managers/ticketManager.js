@@ -1,5 +1,6 @@
-import { Tickets } from '../models';
+import { Tickets, Users } from '../models';
 import newsManager from './newsManager';
+import mailManager from './mailManager';
 
 module.exports = {
   addTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, userId, image, callback) {
@@ -60,13 +61,29 @@ module.exports = {
     );
   },
 
-  setStatus: function(status, ticketId, callback) {
-    Tickets.update({ status: status }, { where: { id: ticketId } }).then(
-      res =>
-        callback({
-          success: true,
-          message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
-        }),
+  setStatus: function(status, ticketId, newsId, callback) {
+    Tickets.update({ status: status, newsId: newsId }, { where: { id: ticketId } }).then(
+      res => {
+        Users.findOne({
+          attributes: ['email', 'notifications'],
+          include: [{ attributes: ['subscribed'], model: Tickets, required: true, where: { id: ticketId } }]
+        }).then(
+          res => {
+            res.notifications && res.tickets.subscribed
+              ? mailManager.send(
+                  'Ditt varsel er behandlet',
+                  '<h3>Ditt varsel er oppdatert.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
+                  res.email
+                )
+              : null;
+            callback({
+              success: true,
+              message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
+            });
+          },
+          err => callback({ success: false, message: err })
+        );
+      },
       err => callback({ success: false, message: err })
     );
   },
@@ -88,19 +105,11 @@ module.exports = {
   },
 
   makeNews: function(ticketId, title, description, lat, lon, categoryId, municipalId, callback) {
-    this.setStatus(3, ticketId, function(result) {
+    let ticketManager = this;
+    newsManager.addArticle(title, description, categoryId, lat, lon, municipalId, function(result) {
       if (result.success) {
-        newsManager.addArticle(title, description, categoryId, lat, lon, municipalId, function(result) {
-          if (result.success) {
-            Tickets.update(
-              {
-                newsId: result.id
-              },
-              { where: { id: ticketId } }
-            ).then(res => callback(result), err => callback({ success: false, message: err }));
-          } else {
-            callback(result);
-          }
+        ticketManager.setStatus(3, ticketId, result.id, function(res) {
+          callback(result);
         });
       } else {
         callback(result);

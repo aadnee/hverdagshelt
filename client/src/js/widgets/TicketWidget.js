@@ -69,7 +69,7 @@ export class TicketWidget extends Component {
                         title={this.props.ticket.title}
                         description={this.props.ticket.description}
                         category={this.props.ticket.categoryId}
-                        submit={this.props.accept}
+                        accept={this.props.accept}
                         image
                         submitButton={'Publiser'}
                       />
@@ -97,7 +97,7 @@ export class TicketWidget extends Component {
               <Button inverted primary onClick={this.props.show}>
                 Endre
               </Button>
-              <Button inverted secondary>
+              <Button inverted secondary onClick={this.props.showMessage}>
                 Trekk tilbake
               </Button>
             </Button.Group>

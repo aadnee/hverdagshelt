@@ -40,7 +40,9 @@ app.use(cookieParser());
 app.use(cors());
 
 app.post('/api/news/filter', function(req, res) {
-  newsManager.getFilteredNews(req.body.municipalIds, req.body.categoryIds, function(result) {
+  newsManager.getFilteredNews(req.body.municipalIds, req.body.categoryIds, req.body.page, req.body.limit, function(
+    result
+  ) {
     res.json(result);
   });
 });
@@ -247,7 +249,7 @@ app.put('/api/tickets/:ticketId', ensureLogin, upload.single('image'), function(
 });
 
 app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
-  ticketManager.setStatus(4, req.params.ticketId, function(result) {
+  ticketManager.setStatus(4, req.params.ticketId, null, function(result) {
     res.json(result);
   });
 });
@@ -289,6 +291,12 @@ app.get('/api/categories', ensureLogin, function(req, res) {
 
 app.get('/api/categories/:parentId', ensureLogin, function(req, res) {
   categoryManager.getSubCategories(req.params.parentId, function(result) {
+    res.json(result);
+  });
+});
+
+app.delete('/api/categories/:id', ensureAdmin, function(req, res) {
+  categoryManager.deleteCategory(req.params.id, function(result) {
     res.json(result);
   });
 });

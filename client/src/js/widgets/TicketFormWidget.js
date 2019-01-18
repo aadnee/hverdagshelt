@@ -93,8 +93,7 @@ export class TicketFormWidget extends Component {
           details: this.props.ticket.description
         })
       : null;
-    console.log(this.props.ticket);
-  };
+  }
 
   render() {
     return (
@@ -258,27 +257,28 @@ export class TicketFormWidget extends Component {
                     </Button>
                   </div>
                 ) : (
-                  <Button
-                    color="blue"
-                    fluid
-                    size="large"
-                    onClick={this.props.submit.bind(
-                      this,
-                      this.state.headline,
-                      this.state.details,
-                      this.state.latlng.lat,
-                      this.state.latlng.lng,
-                      this.state.address,
+                    <Button
+                        color="blue"
+                        fluid
+                        size="large"
+                        onClick={() =>
+                            this.props.submit(
+                                this.state.headline,
+                                this.state.details,
+                                this.state.latlng.lat,
+                                this.state.latlng.lng,
+                                this.state.address,
 
-                      this.state.subcategory ? this.state.subcategory : this.state.category,
-                      Cookies.get('municipalId'),
-                      this.state.subscription === 'true',
-                      this.state.image
-                    )}
-                  >
-                    Send inn
-                  </Button>
-                )}
+                                this.state.subcategory ? this.state.subcategory : this.state.category,
+                                Cookies.get('municipalId'),
+                                this.state.subscription === 'true',
+                                this.state.image
+                            )
+                        }
+                    >
+                        Send inn
+                    </Button>)
+                }
               </Segment>
             </Form>
           </Grid.Column>

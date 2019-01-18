@@ -69,6 +69,7 @@ export class EmployeeManageTicketsPage extends React.Component {
           open={this.state.modalOpen}
           message="Er du sikker på at du vil avslå innsendingen?"
           customFunc={this.reject.bind(this, this.state.modalParam)}
+          callback={this.close}
         />
       </Container>
     );

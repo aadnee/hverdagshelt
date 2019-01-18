@@ -37,7 +37,8 @@ export let Users = sequelize.define('users', {
   email: { type: Sequelize.STRING, unique: true, allowNull: false },
   phone: { type: Sequelize.INTEGER, unique: true, allowNull: false },
   password: { type: Sequelize.STRING, allowNull: false },
-  rank: { type: Sequelize.INTEGER, allowNull: false }
+  rank: { type: Sequelize.INTEGER, allowNull: false },
+  notifications: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
 });
 
 export let Municipals = sequelize.define('municipals', {
@@ -47,7 +48,7 @@ export let Municipals = sequelize.define('municipals', {
 
 export let Categories = sequelize.define('categories', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: Sequelize.STRING, unique: true, allowNull: false }
+  name: { type: Sequelize.STRING, allowNull: false }
 });
 
 export let Tickets = sequelize.define('tickets', {
@@ -177,7 +178,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      image: null,
+      subscribed: true
     });
     await Tickets.create({
       title: 'Vei problem',
@@ -188,7 +190,8 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      image: null,
+      subscribed: true
     });
     await Tickets.create({
       title: 'Vei problem',
@@ -199,12 +202,13 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      image: null,
+      subscribed: true
     });
     await News.create({
       title: 'Problem ved vei i TRD sentrum.',
       description: 'Brøytestikker skal bli satt opp.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 2,
@@ -213,7 +217,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await News.create({
       title: 'Enda en nyhet!',
       description: 'Brøytestikker skal bli satt opp.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 1,
@@ -222,7 +226,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await News.create({
       title: 'En nyhet',
       description: 'Nyhet beskrivelse.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 1,

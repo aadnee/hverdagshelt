@@ -12,8 +12,8 @@ import { toast } from 'react-toastify';
 //import {} from './';
 
 export class MapWidget extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       lat: 63.430478482010294,
       lng: 10.395047769353868,
@@ -148,7 +148,11 @@ export class MapWidget extends Component {
                 <br />
                 {this.props.modal ? (
                   <Modal trigger={<Button>Meld hendelse her</Button>}>
-                    <TicketFormWidget latlng={this.state.markerPos} address={this.state.info} />
+                    <TicketFormWidget
+                      submit={this.props.submit}
+                      latlng={this.state.markerPos}
+                      address={this.state.info}
+                    />
                   </Modal>
                 ) : null}
               </Popup>
@@ -161,7 +165,11 @@ export class MapWidget extends Component {
                 <br />
                 {this.props.modal ? (
                   <Modal trigger={<Button>Meld hendelse her</Button>}>
-                    <TicketFormWidget latlng={this.state.userPos} address={this.state.userInfo} />
+                    <TicketFormWidget
+                      submit={this.props.submit}
+                      latlng={this.state.userPos}
+                      address={this.state.userInfo}
+                    />
                   </Modal>
                 ) : null}
               </Popup>
