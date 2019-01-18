@@ -120,13 +120,13 @@ export class UserTicketsPage extends Component {
             </Grid>
           </Segment>
         </Container>
-          <ModalTicketWidget
-              showModalTicket={this.state.showEditTicket}
-              editTicket={this.editTicket}
-              close={this.close}
-              ticket={this.state.editTicket}
-              submitButton={'Lagre endringer'}
-          />
+        <ModalTicketWidget
+          showModalTicket={this.state.showEditTicket}
+          editTicket={this.editTicket}
+          close={this.close}
+          ticket={this.state.editTicket}
+          submitButton={'Lagre endringer'}
+        />
         <Modal open={this.state.showEditTicket}>
           <TicketFormWidget submitButton={'Lagre endringer'} />
         </Modal>
