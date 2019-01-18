@@ -254,6 +254,14 @@ app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
   });
 });
 
+app.put('/api/tickets/:ticketId/withdraw', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    ticketManager.withdraw(userId, req.params.ticketId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
 app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
   ticketManager.makeNews(
     req.params.ticketId,

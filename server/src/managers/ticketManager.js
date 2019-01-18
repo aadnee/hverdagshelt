@@ -120,5 +120,22 @@ module.exports = {
         callback(result);
       }
     });
+  },
+
+  withdraw: function(userId, ticketId, callback) {
+    Tickets.update({ status: 5 }, { where: { id: ticketId, userId: userId } }).then(
+      res => {
+        if (res != 0) {
+          callback({ success: true, message: { en: 'Ticket removed.', no: 'Varsel fjernet.' } });
+        } else {
+          callback({
+            success: false,
+            message: { en: 'Access denied.', no: 'Ingen tilgang.' }
+          });
+        }
+      },
+
+      err => callback({ success: false, message: err })
+    );
   }
 };
