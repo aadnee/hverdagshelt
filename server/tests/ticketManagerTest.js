@@ -188,4 +188,17 @@ describe('Withdraw ticket', () => {
       done();
     });
   });
+
+  it('Wrong data', done => {
+    ticketManager.withdraw(0, 4, function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: false,
+        message: 'Access denied.'
+      });
+      done();
+    });
+  });
 });
