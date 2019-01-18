@@ -1,9 +1,9 @@
-import { Tickets, Users } from '../models';
+import { Tickets, Users, Uploads } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
 
 module.exports = {
-  addTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, userId, image, callback) {
+  addTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, images, userId, callback) {
     Tickets.create({
       title: title,
       description: description,
@@ -13,32 +13,27 @@ module.exports = {
       categoryId: categoryId,
       userId: userId,
       subscribed: subscribed,
-      municipalId: municipalId,
-      image: image
+      municipalId: municipalId
     }).then(
-      res =>
+      res => {
+        let ticketId = res.id;
+        images.map(img =>
+          Uploads.create({
+            filename: img.filename,
+            ticketId: ticketId
+          }).then(res => null, err => callback({ success: false, message: err }))
+        );
         callback({
           success: true,
           message: { en: 'Ticket sent.', no: 'Varselen ble sent.' },
           id: res.id
-        }),
+        });
+      },
       err => callback({ success: false, message: err })
     );
   },
 
-  editTicket: function(
-    title,
-    description,
-    lat,
-    lon,
-    categoryId,
-    municipalId,
-    subscribed,
-    userId,
-    ticketId,
-    image,
-    callback
-  ) {
+  editTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, userId, ticketId, callback) {
     Tickets.update(
       {
         title: title,
@@ -47,8 +42,7 @@ module.exports = {
         lon: lon,
         categoryId: categoryId,
         municipalId: municipalId,
-        subscribed: subscribed,
-        image: image
+        subscribed: subscribed
       },
       { where: { id: ticketId, userId: userId } }
     ).then(
@@ -95,7 +89,7 @@ module.exports = {
 
   //get all tickets submitted by a specific user
   getMyTickets: function(userId, callback) {
-    Tickets.findAll({ where: { userId: userId } }).then(
+    Tickets.findAll({ include: [{ model: Uploads }], where: { userId: userId } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: err })
     );
@@ -103,16 +97,24 @@ module.exports = {
 
   //get all tickets in a specific municipal
   getLocalTickets: function(municipalId, callback) {
-    Tickets.findAll({ where: { municipalId: municipalId, status: 1 } }).then(
+    Tickets.findAll({ include: [{ model: Uploads }], where: { municipalId: municipalId, status: 1 } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: err })
     );
   },
 
-  makeNews: function(ticketId, title, description, lat, lon, categoryId, municipalId, callback) {
+  makeNews: function(ticketId, title, description, lat, lon, categoryId, municipalId, imageIds, callback) {
     let ticketManager = this;
     newsManager.addArticle(title, description, categoryId, lat, lon, municipalId, function(result) {
       if (result.success) {
+        imageIds.map(imageId => {
+          Uploads.update(
+            {
+              newsId: result.id
+            },
+            { where: { id: imageId } }
+          ).then(res => null, err => callback({ success: false, message: err }));
+        });
         ticketManager.setStatus(3, ticketId, result.id, function(res) {
           callback(result);
         });
