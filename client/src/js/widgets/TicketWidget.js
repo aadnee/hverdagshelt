@@ -15,9 +15,7 @@ export class TicketWidget extends Component {
     };
   }
 
-  componentDidMount() {
-    console.log(this.props.ticket);
-  }
+  componentDidMount() {}
 
   render() {
     return (

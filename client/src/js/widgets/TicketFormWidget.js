@@ -12,6 +12,7 @@ import {
   Icon,
   Input,
   Label,
+  Modal,
   Segment,
   TextArea
 } from 'semantic-ui-react';
@@ -27,8 +28,9 @@ export class TicketFormWidget extends Component {
       latlng: this.props.latlng ? this.props.latlng : [null, null],
       headline: '',
       details: '',
-      category: '',
+      category: this.props.ticket ? this.props.ticket.categoryId : '',
       categoryOptions: [],
+      receivedCategory: this.props.ticket ? this.props.ticket.categoryId : '',
       subcategory: '',
       subCategoryOptions: [],
       position: [null, null],
@@ -53,36 +55,46 @@ export class TicketFormWidget extends Component {
   };
 
   getSubCategories(category) {
+    let bool = false;
     //Get subcategories based on the chosen category
     categoryService.getSubCategories(category).then(res => {
       let subcats = [];
       res.data.map(subCat => {
+        if (this.state.receivedCategory === subCat.id) {
+          this.setState({ category: subCat.parentId, subcategory: this.state.receivedCategory });
+          bool = true;
+        }
         subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
       });
-      this.setState({ subCategoryOptions: subcats });
+      if (bool || this.state.selectedCategory) {
+        this.setState({ subCategoryOptions: subcats });
+      }
     });
   }
 
   componentWillMount() {
     categoryService.getCategories().then(res => {
       let cats = [];
+
       res.data.map(cat => {
         cats.push({ key: cat.id, value: cat.id, text: cat.name });
+        this.getSubCategories(cat.id);
       });
       this.setState({ categoryOptions: cats });
     });
-    console.log(this.props.ticket);
+    this.restetValues();
+  }
+
+  restetValues = () => {
     this.props.ticket
       ? this.setState({
           address: this.props.ticket.address,
-          latlng: this.props.ticket.latlng,
-          headline: this.props.ticket.headline,
-          details: this.props.ticket.details,
-          category: this.props.ticket.category,
-          subcategory: this.props.ticket.subcategory
+          headline: this.props.ticket.title,
+          details: this.props.ticket.description
         })
       : null;
-  }
+    console.log(this.props.ticket);
+  };
 
   render() {
     return (
@@ -132,6 +144,7 @@ export class TicketFormWidget extends Component {
                         fluid
                         search
                         selection
+                        value={this.state.category}
                         options={this.state.categoryOptions}
                         placeholder="Kategori"
                         onChange={(event, data) => {
@@ -144,7 +157,7 @@ export class TicketFormWidget extends Component {
                     <Grid.Column>
                       <label>Underkategori</label>
                       <Dropdown
-                        disabled={!this.state.selectedCategory}
+                        disabled={!this.state.category}
                         fluid
                         search
                         selection
@@ -215,31 +228,81 @@ export class TicketFormWidget extends Component {
                     }}
                   />
                 </Form.Field>
-                <Button
-                  color="blue"
-                  fluid
-                  size="large"
-                  onClick={this.props.submit.bind(
-                    this,
-                    this.state.headline,
-                    this.state.details,
-                    this.state.latlng.lat,
-                    this.state.latlng.lng,
-                    this.state.address,
+                {this.props.ticket ? (
+                  <div>
+                    <Button
+                      color="blue"
+                      fluid
+                      size="large"
+                      onClick={() =>
+                        this.props.editTicket(
+                          this.props.ticket.id,
+                          this.state.headline,
+                          this.state.details,
+                          this.props.ticket.lat,
+                          this.props.ticket.lon,
+                          this.state.address,
 
-                    this.state.subcategory ? this.state.subcategory : this.state.category,
-                    Cookies.get('municipalId'),
-                    this.state.subscription === 'true',
-                    this.state.image
-                  )}
-                >
-                  Send inn
-                </Button>
+                          this.state.subcategory ? this.state.subcategory : this.state.category,
+                          this.props.ticket.municipalId,
+                          this.state.subscription === 'true',
+                          this.state.image,
+                          this.props.ticket.status
+                        )
+                      }
+                    >
+                      Rediger
+                    </Button>
+                    <Button color="blue" fluid size="large" onClick={this.props.close}>
+                      Avbryt
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    color="blue"
+                    fluid
+                    size="large"
+                    onClick={this.props.submit.bind(
+                      this,
+                      this.state.headline,
+                      this.state.details,
+                      this.state.latlng.lat,
+                      this.state.latlng.lng,
+                      this.state.address,
+
+                      this.state.subcategory ? this.state.subcategory : this.state.category,
+                      Cookies.get('municipalId'),
+                      this.state.subscription === 'true',
+                      this.state.image
+                    )}
+                  >
+                    Send inn
+                  </Button>
+                )}
               </Segment>
             </Form>
           </Grid.Column>
         </Grid>
       </Container>
+    );
+  }
+}
+
+export class ModalTicketWidget extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <Modal open={this.props.showModalTicket}>
+        <TicketFormWidget
+          editTicket={this.props.editTicket}
+          close={this.props.close}
+          ticket={this.props.ticket}
+          submitButton={'Lagre endringer'}
+        />
+      </Modal>
     );
   }
 }
