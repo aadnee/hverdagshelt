@@ -4,54 +4,79 @@ import { NavLink } from 'react-router-dom';
 import { Grid, Header, Container, Modal, Segment } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
+import { ModalTicketWidget } from '../widgets/TicketFormWidget';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
-import { toast } from 'react-toastify';
 
 export class UserTicketsPage extends Component {
   constructor(props) {
     super(props);
-
+    this.editTicket = this.editTicket.bind(this);
     this.show = this.show.bind(this);
     this.close = this.close.bind(this);
 
     this.state = {
       showEditTicket: false,
-      editTicket: null,
+      ticket: null,
       tickets: [],
       messageOpen: false,
       selectedTicket: ''
     };
   }
 
-  //Show/close functions for edit modal
-  close = () => {
-    this.setState({ showEditTicket: false });
+  editTicket = (id, title, description, lat, lng, address, category, municipalId, subscription, image, status) => {
+    if ((!title, !description, !category)) {
+      toast.error('Vennligst fyll inn alle felt', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    }
+    ticketService
+      .UpdateTicket(id, title, description, lat, lng, address, category, municipalId, subscription, image)
+      .then(res => {
+        if (res.success) {
+          this.setState({ showEditTicket: false });
+          toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
+          let oldTicket = -1;
+          this.state.tickets.find((t, i) => {
+            id === t.id ? (oldTicket = i) : null;
+          });
+          this.state.tickets[oldTicket] = {
+            id: id,
+            title: title,
+            description: description,
+            lat: lat,
+            lon: lng,
+            address: address,
+            category: category,
+            municipalId: municipalId,
+            subscription: subscription,
+            image: image,
+            status: status
+          };
+          console.log(id, title, description, lat, lng, address, category, municipalId, subscription, image, status);
+          this.close();
+          this.forceUpdate();
+        } else {
+          toast.error(res.message.no, { position: toast.POSITION.TOP_RIGHT });
+        }
+      });
   };
 
-  show = ticketEdit => {
-    this.setState({ showEditTicket: true, editTicket: ticketEdit });
+  close = state => {
+    this.setState({ [state]: false });
   };
 
-  //show/close for deletemessage
-  closeMessage = () => {
-    this.setState({ messageOpen: false });
-  };
-
-  showMessage = id => {
-    this.setState({ messageOpen: true, selectedTicket: id });
+  show = (state, ticket, id) => {
+    this.setState({ [state]: true, ticket: ticket, selectedTicket: id });
   };
 
   componentWillMount() {
     ticketService.getTickets().then(res => {
-      console.log(res);
       this.setState({ tickets: res.data });
     });
   }
-
-  handleEdit = newTicket => {
-    ticketService.UpdateTicket();
-  };
 
   deleteTicket(id) {
     console.log(id);
@@ -83,22 +108,27 @@ export class UserTicketsPage extends Component {
             <Grid stackable container columns={3}>
               {this.state.tickets.map(ticket => (
                 <Grid.Column key={ticket.id}>
-                  <TicketWidget ticket={ticket} showMessage={this.showMessage.bind(this, ticket.id)} />
+                  <TicketWidget ticket={ticket} show={this.show} />
                 </Grid.Column>
               ))}
             </Grid>
           </Segment>
         </Container>
-        <Modal open={this.state.showEditTicket}>
-          <TicketFormWidget submitButton={'Lagre endringer'} />
-        </Modal>
+        <ModalTicketWidget
+          open={this.state.showEditTicket}
+          editTicket={this.editTicket}
+          close={this.close.bind(this, 'showEditTicket')}
+          ticket={this.state.ticket}
+          submitButton={'Lagre endringer'}
+        />
+
         <MessageWidget
           size={'tiny'}
           open={this.state.messageOpen}
           title={'Trekk tilbake varslingen'}
           message={'Er du sikker på at du vil trekke tilbake varslingen'}
           customFunc={this.deleteTicket.bind(this, this.state.selectedTicket)}
-          callback={this.closeMessage}
+          callback={this.close.bind(this, 'messageOpen')}
         />
       </div>
     );
