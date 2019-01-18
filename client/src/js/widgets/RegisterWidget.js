@@ -79,7 +79,7 @@ export class RegisterWidget extends React.Component {
                       fluid
                       icon="user"
                       iconPosition="left"
-                      placeholder="Ola"
+                      placeholder="Ola/Kari"
                       type="text"
                       value={this.state.firstname}
                       onChange={(event, data) => {
