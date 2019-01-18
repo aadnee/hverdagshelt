@@ -60,6 +60,9 @@ class TicketServices {
     });
   }
 
+  //soft delete
+  deleteTicket(id) {}
+
   //edit, delete, add
 }
 

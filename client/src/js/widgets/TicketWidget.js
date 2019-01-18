@@ -99,7 +99,7 @@ export class TicketWidget extends Component {
               <Button inverted primary onClick={this.props.show}>
                 Endre
               </Button>
-              <Button inverted secondary>
+              <Button inverted secondary onClick={this.props.showMessage}>
                 Trekk tilbake
               </Button>
             </Button.Group>

@@ -5,6 +5,8 @@ import { Grid, Header, Container, Modal, Segment } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
+import { MessageWidget } from '../widgets/MessageWidget';
+import { toast } from 'react-toastify';
 
 export class UserTicketsPage extends Component {
   constructor(props) {
@@ -16,16 +18,28 @@ export class UserTicketsPage extends Component {
     this.state = {
       showEditTicket: false,
       editTicket: null,
-      tickets: []
+      tickets: [],
+      messageOpen: false,
+      selectedTicket: ''
     };
   }
 
+  //Show/close functions for edit modal
   close = () => {
     this.setState({ showEditTicket: false });
   };
 
   show = ticketEdit => {
     this.setState({ showEditTicket: true, editTicket: ticketEdit });
+  };
+
+  //show/close for deletemessage
+  closeMessage = () => {
+    this.setState({ messageOpen: false });
+  };
+
+  showMessage = id => {
+    this.setState({ messageOpen: true, selectedTicket: id });
   };
 
   componentWillMount() {
@@ -39,6 +53,27 @@ export class UserTicketsPage extends Component {
     ticketService.UpdateTicket();
   };
 
+  deleteTicket(id) {
+    console.log(id);
+    if (!id) {
+      toast.error('Noe gikk galt, prøv igjen', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    }
+
+    ticketService.deleteTicket(id).then(res => {
+      if (res.success) {
+        toast.success(res.message.no, {
+          position: toast.POSITION.TOP_RIGHT
+        });
+      } else {
+        toast.error(res.message.no, {
+          position: toast.POSITION.TOP_RIGHT
+        });
+      }
+    });
+  }
+
   render() {
     return (
       <div>
@@ -48,7 +83,7 @@ export class UserTicketsPage extends Component {
             <Grid stackable container columns={3}>
               {this.state.tickets.map(ticket => (
                 <Grid.Column key={ticket.id}>
-                  <TicketWidget ticket={ticket} />
+                  <TicketWidget ticket={ticket} showMessage={this.showMessage.bind(this, ticket.id)} />
                 </Grid.Column>
               ))}
             </Grid>
@@ -57,6 +92,14 @@ export class UserTicketsPage extends Component {
         <Modal open={this.state.showEditTicket}>
           <TicketFormWidget submitButton={'Lagre endringer'} />
         </Modal>
+        <MessageWidget
+          size={'tiny'}
+          open={this.state.messageOpen}
+          title={'Trekk tilbake varslingen'}
+          message={'Er du sikker på at du vil trekke tilbake varslingen'}
+          customFunc={this.deleteTicket.bind(this, this.state.selectedTicket)}
+          callback={this.closeMessage}
+        />
       </div>
     );
   }
