@@ -56,7 +56,32 @@ module.exports = {
     });
   },
 
-  editCategory: function(id, callback) {},
+  editCategory: function(categoryId, categoryName, callback) {
+    Categories.findOne({ where: { id: categoryId } }).then(category => {
+      if (!category) {
+        callback({
+          success: false,
+          message: { en: 'Category not found.', no: 'Fant ikke kategorien.' }
+        });
+      } else {
+        Categories.update(
+          {
+            name: categoryName
+          },
+          {
+            where: { id: categoryId }
+          }
+        ).then(
+          res =>
+            callback({
+              success: true,
+              message: { en: 'Category updated successfully', no: 'Kategorien ble oppdatert.' }
+            }),
+          err => callback({ success: false, message: err })
+        );
+      }
+    });
+  },
 
   getSubCategories: function(parentId, callback) {
     Categories.findAll({ where: { parentId: parentId } }).then(

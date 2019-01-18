@@ -243,6 +243,14 @@ app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
   });
 });
 
+app.put('/api/tickets/:ticketId/withdraw', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    ticketManager.withdraw(userId, req.params.ticketId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
 app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
   ticketManager.makeNews(
     req.params.ticketId,
@@ -291,7 +299,13 @@ app.delete('/api/categories/:id', ensureAdmin, function(req, res) {
   });
 });
 
-app.post('/api/categories', ensureEmployee, (req, res) => {
+app.put('/api/categories/:id', ensureAdmin, function(req, res) {
+  categoryManager.editCategory(req.params.id, req.body.name, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/categories', ensureAdmin, (req, res) => {
   categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
     res.json(result);
   });
