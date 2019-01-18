@@ -7,6 +7,12 @@ import { PENDING, DONE, REJECTED, STATUS } from '../commons';
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 import { MessageWidget } from './MessageWidget';
 
+const options = [
+  { key: 'reject', icon: 'delete', text: 'Avslå', value: 'reject' },
+  { key: 'publish', icon: 'delete', text: 'Remove Post', value: 'delete' },
+  { key: 'hide', icon: 'hide', text: 'Hide Post', value: 'hide' }
+];
+
 export class TicketWidget extends Component {
   constructor(props) {
     super(props);
@@ -94,10 +100,10 @@ export class TicketWidget extends Component {
         ) : this.props.ticket.status === PENDING ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
-              <Button inverted primary onClick={this.props.show}>
+              <Button inverted primary onClick={() => this.props.show('showEditTicket', this.props.ticket, null)}>
                 Endre
               </Button>
-              <Button inverted secondary onClick={this.props.showMessage}>
+              <Button inverted secondary onClick={() => this.props.show('messageOpen', null, this.props.ticket.id)}>
                 Trekk tilbake
               </Button>
             </Button.Group>

@@ -83,10 +83,11 @@ export class TicketFormWidget extends Component {
       });
       this.setState({ categoryOptions: cats });
     });
-    this.restetValues();
+    this.resetValues();
   }
 
-  restetValues = () => {
+  resetValues = () => {
+    console.log(this.props.ticket);
     this.props.ticket
       ? this.setState({
           address: this.props.ticket.address,
@@ -253,7 +254,7 @@ export class TicketFormWidget extends Component {
                     >
                       Rediger
                     </Button>
-                    <Button color="blue" fluid size="large" onClick={this.props.close}>
+                    <Button color="grey" fluid size="large" onClick={this.props.close}>
                       Avbryt
                     </Button>
                   </div>
@@ -294,9 +295,13 @@ export class ModalTicketWidget extends Component {
     super(props);
   }
 
+  componentWillUnmount() {
+    console.log(this.props.ticket);
+  }
+
   render() {
     return (
-      <Modal open={this.props.showModalTicket}>
+      <Modal open={this.props.open}>
         <TicketFormWidget
           editTicket={this.props.editTicket}
           close={this.props.close}

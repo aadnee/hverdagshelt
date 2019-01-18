@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
+
 export class UserTicketsPage extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +19,7 @@ export class UserTicketsPage extends Component {
 
     this.state = {
       showEditTicket: false,
-      editTicket: null,
+      ticket: null,
       tickets: [],
       messageOpen: false,
       selectedTicket: ''
@@ -26,10 +27,16 @@ export class UserTicketsPage extends Component {
   }
 
   editTicket = (id, title, description, lat, lng, address, category, municipalId, subscription, image, status) => {
+    if ((!title, !description, !category)) {
+      toast.error('Vennligst fyll inn alle felt', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    }
     ticketService
       .UpdateTicket(id, title, description, lat, lng, address, category, municipalId, subscription, image)
       .then(res => {
         if (res.success) {
+          this.setState({ showEditTicket: false });
           toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
           let oldTicket = -1;
           this.state.tickets.find((t, i) => {
@@ -57,21 +64,12 @@ export class UserTicketsPage extends Component {
       });
   };
 
-  close = () => {
-    this.setState({ showEditTicket: false });
+  close = state => {
+    this.setState({ [state]: false });
   };
 
-  show = ticketEdit => {
-    this.setState({ showEditTicket: true, editTicket: ticketEdit });
-  };
-
-  //show/close for deletemessage
-  closeMessage = () => {
-    this.setState({ messageOpen: false });
-  };
-
-  showMessage = id => {
-    this.setState({ messageOpen: true, selectedTicket: id });
+  show = (state, ticket, id) => {
+    this.setState({ [state]: true, ticket: ticket, selectedTicket: id });
   };
 
   componentWillMount() {
@@ -79,10 +77,6 @@ export class UserTicketsPage extends Component {
       this.setState({ tickets: res.data });
     });
   }
-
-  handleEdit = newTicket => {
-    ticketService.UpdateTicket();
-  };
 
   deleteTicket(id) {
     console.log(id);
@@ -114,29 +108,27 @@ export class UserTicketsPage extends Component {
             <Grid stackable container columns={3}>
               {this.state.tickets.map(ticket => (
                 <Grid.Column key={ticket.id}>
-                  <TicketWidget ticket={ticket} showMessage={this.showMessage.bind(this, ticket.id)} />
+                  <TicketWidget ticket={ticket} show={this.show} />
                 </Grid.Column>
               ))}
             </Grid>
           </Segment>
         </Container>
         <ModalTicketWidget
-          showModalTicket={this.state.showEditTicket}
+          open={this.state.showEditTicket}
           editTicket={this.editTicket}
-          close={this.close}
-          ticket={this.state.editTicket}
+          close={this.close.bind(this, 'showEditTicket')}
+          ticket={this.state.ticket}
           submitButton={'Lagre endringer'}
         />
-        <Modal open={this.state.showEditTicket}>
-          <TicketFormWidget submitButton={'Lagre endringer'} />
-        </Modal>
+
         <MessageWidget
           size={'tiny'}
           open={this.state.messageOpen}
           title={'Trekk tilbake varslingen'}
           message={'Er du sikker på at du vil trekke tilbake varslingen'}
           customFunc={this.deleteTicket.bind(this, this.state.selectedTicket)}
-          callback={this.closeMessage}
+          callback={this.close.bind(this, 'messageOpen')}
         />
       </div>
     );
