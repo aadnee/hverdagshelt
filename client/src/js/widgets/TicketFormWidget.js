@@ -174,49 +174,6 @@ export class TicketFormWidget extends Component {
                 </Form.Field>
 
                 <Form.Field>
-                  <Label basic as={'label'}>
-                    <Label as={'label'} basic htmlFor={'upload'}>
-                      <Button
-                        icon={'upload'}
-                        label={{
-                          basic: true,
-                          content: 'Last opp bilde'
-                        }}
-                        labelPosition={'right'}
-                      />
-
-                      <input
-                        hidden
-                        id={'upload'}
-                        type="file"
-                        multiple
-                        className={'ui button'}
-                        //For multiple files(?) attr: multiple
-
-                        onChange={(event, data) => {
-                          console.log(event.target.files[0].name);
-
-                          this.handleInput('image', event.target.files);
-                        }}
-                      />
-                    </Label>
-                    {this.state.image != null ? (
-                      <Label
-                        removeIcon={<Icon name={'delete'} />}
-                        size={'large'}
-                        onRemove={(event, data) => {
-                          document.getElementById('upload').value = null;
-                          this.setState({ image: null });
-                          console.log(this.state);
-                        }}
-                        as={'a'}
-                        content={this.state.image[0].name}
-                      />
-                    ) : null}
-                  </Label>
-                </Form.Field>
-
-                <Form.Field>
                   <Checkbox
                     label={<label>Jeg ønsker å abonnere på saken</label>}
                     value={this.state.subscription}
