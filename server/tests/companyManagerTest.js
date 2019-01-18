@@ -59,7 +59,7 @@ describe('Finding all companies', () => {
 
 describe('Edit and delete company', () => {
   it('correct data', done => {
-    companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, 4, function(result) {
+    companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, 4, true, function(result) {
       expect({
         success: result.success,
         message: result.message.en

@@ -1,9 +1,11 @@
 import api from './api';
 
 class TicketServices {
-  addTicket(title, description, lat, lon, address, categoryId, municipalId, subscribed, image) {
+  addTicket(title, description, lat, lon, address, categoryId, municipalId, subscribed, images) {
     let formData = new FormData();
-    formData.append('image', image ? image[0] : null);
+    for (let i = 0; i < images.length; i++) {
+      formData.append('images', images[i]);
+    }
     formData.append('title', title);
     formData.append('description', description);
     formData.append('lat', lat);
@@ -30,7 +32,8 @@ class TicketServices {
   rejectTicket(id) {
     return api.put('/api/tickets/' + id + '/reject');
   }
-  acceptTicket(id, title, description, lat, lon, address, categoryId, municipalId) {
+
+  acceptTicket(id, title, description, lat, lon, address, categoryId, municipalId, images) {
     return api.put('/api/tickets/' + id + '/accept', {
       title: title,
       description: description,
@@ -38,13 +41,13 @@ class TicketServices {
       lon: lon,
       address: address,
       categoryId: categoryId,
-      municipalId: municipalId
+      municipalId: municipalId,
+      images: images
     });
   }
 
-  UpdateTicket(ticketId, title, description, lat, lon, address, categoryId, municipalId, subscribed, image) {
+  updateTicket(ticketId, title, description, lat, lon, address, categoryId, municipalId, subscribed) {
     let formData = new FormData();
-    formData.append('image', image ? image[0] : null);
     formData.append('title', title);
     formData.append('description', description);
     formData.append('lat', lat);
@@ -59,6 +62,9 @@ class TicketServices {
       }
     });
   }
+
+  //soft delete
+  deleteTicket(id) {}
 
   //edit, delete, add
 }

@@ -86,13 +86,26 @@ describe('Adding ticket', () => {
 
 describe('Setting status', () => {
   it('correct data', done => {
-    ticketManager.setStatus(1, 4, function(ticket) {
+    ticketManager.setStatus(1, 4, 1, function(ticket) {
       expect({
         success: ticket.success,
         message: ticket.message.en
       }).toEqual({
         success: true,
         message: 'Status updated.'
+      });
+      done();
+    });
+  });
+
+  it('Wrong data', done => {
+    ticketManager.setStatus('String', 4, 1, function(ticket) {
+      expect({
+        success: ticket.success
+        //  message: ticket.message.en
+      }).toEqual({
+        success: false
+        //  message: err
       });
       done();
     });
@@ -114,18 +127,47 @@ describe('Get news by userId', () => {
       });
     });
   });
-});
 
-describe('Get local tickets', () => {
-  it('correct data', done => {
-    ticketManager.getLocalTickets(1, function(tickets) {
-      Tickets.findAll({ where: { municipalId: 1, status: 1 } }).then(res => {
+  /*
+  it('Wrong data', done => {
+    ticketManager.getMyTickets(, function(ticket) {
+      expect({
+        success: ticket.success
+      }).toEqual({
+        success: false
+      });
+      done();
+    });
+  });
+});
+*/
+
+  describe('Get local tickets', () => {
+    it('correct data', done => {
+      ticketManager.getLocalTickets(1, function(tickets) {
+        Tickets.findAll({ where: { municipalId: 1, status: 1 } }).then(res => {
+          expect({
+            success: tickets.success,
+            data: res
+          }).toEqual({
+            success: true,
+            data: res
+          });
+          done();
+        });
+      });
+    });
+  });
+
+  describe('Make a ticket to an article', () => {
+    it('correct data', done => {
+      ticketManager.makeNews(4, 'TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, function(result) {
         expect({
-          success: tickets.success,
-          data: res
+          success: result.success,
+          message: result.message.en
         }).toEqual({
           success: true,
-          data: res
+          message: 'Article added.'
         });
         done();
       });
@@ -133,15 +175,28 @@ describe('Get local tickets', () => {
   });
 });
 
-describe('Make a ticket to an article', () => {
+describe('Withdraw ticket', () => {
   it('correct data', done => {
-    ticketManager.makeNews(4, 'TicketTest', 'Nå skal det ha skjedd en endring', 1.11, 2.22, 1, 1, function(result) {
+    ticketManager.withdraw(1, 4, function(result) {
       expect({
         success: result.success,
         message: result.message.en
       }).toEqual({
         success: true,
-        message: 'Article added.'
+        message: 'Ticket removed.'
+      });
+      done();
+    });
+  });
+
+  it('Wrong data', done => {
+    ticketManager.withdraw(0, 4, function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: false,
+        message: 'Access denied.'
       });
       done();
     });

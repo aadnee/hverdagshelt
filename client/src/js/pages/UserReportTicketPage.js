@@ -76,7 +76,7 @@ export class UserReportTicketPage extends Component {
 
             <Grid.Row columns={1} only="mobile tablet">
               <Grid.Column colSpan={2}>
-                <MapWidget modal callback={this.callbackFake} />
+                <MapWidget modal submit={this.submit} callback={this.callbackFake} />
               </Grid.Column>
             </Grid.Row>
           </Grid>

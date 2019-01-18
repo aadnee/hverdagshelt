@@ -9,25 +9,76 @@ module.exports = {
   },
 
   addCategory: function(name, parentId, callback) {
-    Categories.findOne({ where: { name: name, parentId: parentId } }).then(cat => {
-      if (cat == null) {
-        Categories.create({
-          name: name,
-          parentId: parentId
-        }).then(
-          result =>
+    if (parentId == null) {
+      createCategory(name, parentId, result => callback(result));
+    } else {
+      Categories.findOne({ where: { id: parentId } }).then(cat => {
+        if (cat != null && cat.parentId != null) {
+          callback({
+            success: false,
+            message: {
+              en: 'Cannot add a sub category to another sub category.',
+              no: 'Kan ikke legge til en underkategori til en annen underkategori.'
+            }
+          });
+        } else if (cat == null) {
+          callback({
+            success: false,
+            message: { en: 'Parent category does not exist.', no: 'Hovedkategorien finnes ikke.' }
+          });
+        } else {
+          createCategory(name, parentId, result => callback(result));
+        }
+      });
+    }
+  },
+
+  deleteCategory: function(categoryId, callback) {
+    Categories.findOne({ where: { parentId: categoryId } }).then(cat => {
+      if (cat != null) {
+        callback({
+          success: false,
+          message: {
+            en: 'Cannot delete a category with subcategories.',
+            no: 'Kan ikke slette en kategori med underkategorier.'
+          }
+        });
+      } else {
+        Categories.destroy({ where: { id: categoryId } }).then(
+          res =>
             callback({
               success: true,
-              message: { en: 'Category added.', no: 'Kategorien ble lagt til.' },
-              id: result.id
+              message: { en: 'Category deleted.', no: 'Kategori slettet.' }
             }),
           err => callback({ success: false, message: err })
         );
-      } else {
+      }
+    });
+  },
+
+  editCategory: function(categoryId, categoryName, callback) {
+    Categories.findOne({ where: { id: categoryId } }).then(category => {
+      if (!category) {
         callback({
           success: false,
-          message: { en: 'Category already exists.', no: 'Kategorien eksisterer allerede.' }
+          message: { en: 'Category not found.', no: 'Fant ikke kategorien.' }
         });
+      } else {
+        Categories.update(
+          {
+            name: categoryName
+          },
+          {
+            where: { id: categoryId }
+          }
+        ).then(
+          res =>
+            callback({
+              success: true,
+              message: { en: 'Category updated successfully', no: 'Kategorien ble oppdatert.' }
+            }),
+          err => callback({ success: false, message: err })
+        );
       }
     });
   },
@@ -39,3 +90,18 @@ module.exports = {
     );
   }
 };
+
+function createCategory(name, parentId, callback) {
+  Categories.create({
+    name: name,
+    parentId: parentId
+  }).then(
+    res =>
+      callback({
+        success: true,
+        message: { en: 'Category added.', no: 'Kategorien ble lagt til.' },
+        id: res.id
+      }),
+    err => callback({ success: false, message: err })
+  );
+}

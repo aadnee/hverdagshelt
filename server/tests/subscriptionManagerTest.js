@@ -31,7 +31,7 @@ describe('Finding users subscriptions', () => {
         {
           title: 'Problem ved vei i TRD sentrum.',
           description: 'Brøytestikker skal bli satt opp.',
-          status: 1,
+          status: 2,
           lat: 1,
           lon: 1,
           categoryId: 2,
@@ -40,7 +40,7 @@ describe('Finding users subscriptions', () => {
         {
           title: 'Enda en nyhet!',
           description: 'Brøytestikker skal bli satt opp.',
-          status: 1,
+          status: 2,
           lat: 1,
           lon: 1,
           categoryId: 1,
@@ -49,7 +49,7 @@ describe('Finding users subscriptions', () => {
         {
           title: 'En nyhet',
           description: 'Nyhet beskrivelse.',
-          status: 1,
+          status: 2,
           lat: 1,
           lon: 1,
           categoryId: 1,

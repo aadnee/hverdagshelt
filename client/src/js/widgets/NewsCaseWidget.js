@@ -2,6 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import { Divider, Segment, Container, Grid, List, Header, Image, Form, Input, Button } from 'semantic-ui-react';
 import { Consumer } from './../context';
+import { ShowInMapWidget } from './ShowInMapWidget';
 
 //import {} from './';
 
@@ -13,6 +14,14 @@ import { Consumer } from './../context';
 export class NewsCaseWidget extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      renderMap: false
+    };
+    this.close = this.close.bind(this);
+  }
+
+  close() {
+    this.setState({ renderMap: false });
   }
 
   render() {
@@ -50,7 +59,15 @@ export class NewsCaseWidget extends Component {
           </Segment>
           <List link>
             <List.Item as="a">
-              <List.Content floated={'left'}>Hendelses-adresse: {newscase.address}</List.Content>
+              <List.Content floated={'left'}>
+                Hendelses-adresse: {newscase.address}
+                <ShowInMapWidget
+                  callback={this.close}
+                  renderMap={this.state.renderMap}
+                  button={<Button onClick={() => this.setState({ renderMap: true })}>Vis i kart</Button>}
+                  latlng={[newscase.lat, newscase.lon]}
+                />
+              </List.Content>
             </List.Item>
             <List.Item as="a">
               <List.Content floated={'left'}>Oppdrag utføres av: {newscase.company}</List.Content>

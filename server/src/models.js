@@ -37,7 +37,8 @@ export let Users = sequelize.define('users', {
   email: { type: Sequelize.STRING, unique: true, allowNull: false },
   phone: { type: Sequelize.INTEGER, unique: true, allowNull: false },
   password: { type: Sequelize.STRING, allowNull: false },
-  rank: { type: Sequelize.INTEGER, allowNull: false }
+  rank: { type: Sequelize.INTEGER, allowNull: false },
+  notifications: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
 });
 
 export let Municipals = sequelize.define('municipals', {
@@ -47,7 +48,7 @@ export let Municipals = sequelize.define('municipals', {
 
 export let Categories = sequelize.define('categories', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: Sequelize.STRING, unique: true, allowNull: false }
+  name: { type: Sequelize.STRING, allowNull: false }
 });
 
 export let Tickets = sequelize.define('tickets', {
@@ -57,8 +58,12 @@ export let Tickets = sequelize.define('tickets', {
   status: { type: Sequelize.INTEGER, allowNull: false },
   lat: { type: Sequelize.FLOAT, allowNull: false },
   lon: { type: Sequelize.FLOAT, allowNull: false },
-  subscribed: { type: Sequelize.BOOLEAN, allowNull: true },
-  image: { type: Sequelize.STRING, allowNull: true }
+  subscribed: { type: Sequelize.BOOLEAN, allowNull: true }
+});
+
+export let Uploads = sequelize.define('uploads', {
+  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+  filename: { type: Sequelize.STRING, allowNull: false }
 });
 
 export let News = sequelize.define('news', {
@@ -86,6 +91,8 @@ Categories.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Categories.hasMany(News, { foreignKey: { allowNull: false } });
 Users.hasMany(News, { foreignKey: { name: 'companyId' } });
 News.hasMany(Tickets);
+Tickets.hasMany(Uploads);
+News.hasMany(Uploads);
 Municipals.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Municipals.hasMany(News, { foreignKey: { allowNull: false } });
 
@@ -177,7 +184,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      subscribed: true
     });
     await Tickets.create({
       title: 'Vei problem',
@@ -188,7 +195,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      subscribed: true
     });
     await Tickets.create({
       title: 'Vei problem',
@@ -199,12 +206,12 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       categoryId: 2,
       userId: 1,
       municipalId: 1,
-      image: null
+      subscribed: true
     });
     await News.create({
       title: 'Problem ved vei i TRD sentrum.',
       description: 'Brøytestikker skal bli satt opp.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 2,
@@ -213,7 +220,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await News.create({
       title: 'Enda en nyhet!',
       description: 'Brøytestikker skal bli satt opp.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 1,
@@ -222,7 +229,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await News.create({
       title: 'En nyhet',
       description: 'Nyhet beskrivelse.',
-      status: 1,
+      status: 2,
       lat: 1,
       lon: 1,
       categoryId: 1,
@@ -247,6 +254,18 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
     await UserMunicipals.create({
       userId: 1,
       municipalId: 2
+    });
+    await Uploads.create({
+      filename: '123.png',
+      ticketId: 1
+    });
+    await Uploads.create({
+      filename: '123.png',
+      ticketId: 1
+    });
+    await Uploads.create({
+      filename: '123.png',
+      ticketId: 2
     });
     return true;
   }

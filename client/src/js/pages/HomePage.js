@@ -38,7 +38,7 @@ export class HomePage extends Component {
           <Grid className="mapGrid">
             <Grid.Row columns={2} only="computer" className="mapRow">
               <Grid.Column width={10} className="mapRow">
-                <MapWidget />
+                <MapWidget modal />
               </Grid.Column>
               <Grid.Column width={6} only="computer" className="frontPageFeed">
                 <Tab menu={{ text: true, secondary: true, pointing: true, color: 'blue' }} panes={panes} />

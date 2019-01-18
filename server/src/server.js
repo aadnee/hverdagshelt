@@ -40,7 +40,9 @@ app.use(cookieParser());
 app.use(cors());
 
 app.post('/api/news/filter', function(req, res) {
-  newsManager.getFilteredNews(req.body.municipalIds, req.body.categoryIds, function(result) {
+  newsManager.getFilteredNews(req.body.municipalIds, req.body.categoryIds, req.body.page, req.body.limit, function(
+    result
+  ) {
     res.json(result);
   });
 });
@@ -197,12 +199,7 @@ app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
   });
 });
 
-app.post('/api/tickets', ensureLogin, upload.single('image'), function(req, res) {
-  let image = null;
-  if (req.file) {
-    let file = req.file;
-    image = file.filename;
-  }
+app.post('/api/tickets', ensureLogin, upload.array('images', 12), function(req, res) {
   getUserId(req, function(userId) {
     ticketManager.addTicket(
       req.body.title,
@@ -212,8 +209,8 @@ app.post('/api/tickets', ensureLogin, upload.single('image'), function(req, res)
       req.body.categoryId,
       req.body.municipalId,
       req.body.subscribed,
+      req.files,
       userId,
-      image,
       function(result) {
         res.json(result);
       }
@@ -221,12 +218,7 @@ app.post('/api/tickets', ensureLogin, upload.single('image'), function(req, res)
   });
 });
 
-app.put('/api/tickets/:ticketId', ensureLogin, upload.single('image'), function(req, res) {
-  let image = null;
-  if (req.file) {
-    let file = req.file;
-    image = file.filename;
-  }
+app.put('/api/tickets/:ticketId', ensureLogin, function(req, res) {
   getUserId(req, function(userId) {
     ticketManager.editTicket(
       req.body.title,
@@ -238,7 +230,6 @@ app.put('/api/tickets/:ticketId', ensureLogin, upload.single('image'), function(
       req.body.subscribed,
       userId,
       req.params.ticketId,
-      image,
       function(result) {
         res.json(result);
       }
@@ -247,8 +238,16 @@ app.put('/api/tickets/:ticketId', ensureLogin, upload.single('image'), function(
 });
 
 app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
-  ticketManager.setStatus(4, req.params.ticketId, function(result) {
+  ticketManager.setStatus(4, req.params.ticketId, null, function(result) {
     res.json(result);
+  });
+});
+
+app.put('/api/tickets/:ticketId/withdraw', ensureLogin, function(req, res) {
+  getUserId(req, function(userId) {
+    ticketManager.withdraw(userId, req.params.ticketId, function(result) {
+      res.json(result);
+    });
   });
 });
 
@@ -261,6 +260,7 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
     req.body.lon,
     req.body.categoryId,
     req.body.municipalId,
+    req.body.imageIds ? req.body.imageIds : [],
     function(result) {
       res.json(result);
     }
@@ -293,7 +293,19 @@ app.get('/api/categories/:parentId', ensureLogin, function(req, res) {
   });
 });
 
-app.post('/api/categories', ensureEmployee, (req, res) => {
+app.delete('/api/categories/:id', ensureAdmin, function(req, res) {
+  categoryManager.deleteCategory(req.params.id, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/categories/:id', ensureAdmin, function(req, res) {
+  categoryManager.editCategory(req.params.id, req.body.name, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/categories', ensureAdmin, (req, res) => {
   categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
     res.json(result);
   });

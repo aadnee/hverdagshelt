@@ -1,22 +1,62 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal } from 'semantic-ui-react';
+import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal, Dropdown } from 'semantic-ui-react';
 import { PENDING, DONE, REJECTED, STATUS } from '../commons';
 
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
-import { MessageWidget } from './MessageWidget';
+import { newsService } from '../services/NewsServices';
+import { categoryService } from '../services/CategoryServices';
+import Cookies from 'js-cookie';
+
+/*
+const options = [
+  { key: 'reject', icon: 'delete', text: 'Avslå', value: 'reject' },
+  { key: 'publish', icon: 'newspaper', text: 'Publiser som nyhet', value: 'publish' },
+  { key: 'company', icon: 'warehouse', text: 'Knytt til bedrift', value: 'company' },
+  { key: 'user', icon: 'user', text: 'Knytt til bruker', value: 'user' }
+];*/
 
 export class TicketWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      selectedNews: '',
+      dropdownOpen: false,
+      newsOptions: []
     };
   }
 
-  componentDidMount() {
-    console.log(this.props.ticket);
+  close = () => this.setState({ open: false });
+
+  handleInput(state, value) {
+    this.setState({ [state]: value });
+  }
+
+  componentWillMount() {
+    let catIds = [];
+    let dropdownOptions = [];
+    categoryService
+      .getCategories()
+      .then(res => {
+        res.data.map(c => {
+          catIds.push(c.id);
+        });
+      })
+      .then(() => {
+        console.log(catIds);
+        newsService.getFilteredNews(Cookies.get('municipalId'), catIds, 0, 0).then(res => {
+          res.data.map(news => {
+            dropdownOptions.push({ key: news.id, value: news.id, text: news.title });
+          });
+          this.setState({ newsOptions: dropdownOptions });
+          console.log(dropdownOptions);
+        });
+      });
+  }
+  bindUserToNews() {
+    console.log('knytt');
   }
 
   render() {
@@ -56,33 +96,70 @@ export class TicketWidget extends Component {
         {this.props.employee ? (
           this.props.ticket.status === PENDING ? (
             <Card.Content extra>
-              <Button.Group fluid size="small">
-                <Modal
-                  trigger={
-                    <Button inverted primary>
-                      Godkjenn
-                    </Button>
-                  }
-                >
-                  <Modal.Header>Registrer varselen som nyhet</Modal.Header>
-                  <Modal.Content>
-                    <Modal.Description>
-                      <PublishNewsFormWidget
-                        title={this.props.ticket.title}
-                        description={this.props.ticket.description}
-                        category={this.props.ticket.categoryId}
-                        submit={this.props.accept}
-                        image
-                        submitButton={'Publiser'}
-                      />
-                    </Modal.Description>
-                  </Modal.Content>
-                </Modal>
+              <Dropdown
+                text={'Behandle'}
+                open={this.state.dropdownOpen}
+                onClick={() => {
+                  this.handleInput('dropdownOpen', true);
+                }}
+              >
+                <Dropdown.Menu>
+                  {/*REGISRER SOM NYHET*/}
+                  <Modal trigger={<Dropdown.Item icon={'newspaper'} text={'Publiser som nyhet'} />}>
+                    <Modal.Header>Registrer varselen som nyhet</Modal.Header>
+                    <Modal.Content>
+                      <Modal.Description>
+                        <PublishNewsFormWidget
+                          title={this.props.ticket.title}
+                          description={this.props.ticket.description}
+                          category={this.props.ticket.categoryId}
+                          accept={this.props.accept}
+                          image
+                          submitButton={'Publiser'}
+                        />
+                      </Modal.Description>
+                    </Modal.Content>
+                  </Modal>
 
-                <Button inverted secondary onClick={this.props.show}>
-                  Avslå
-                </Button>
-              </Button.Group>
+                  <Dropdown.Item icon={'delete'} text={'Avslå'} onClick={this.props.show} />
+                  <Dropdown.Item
+                    icon={'warehouse'}
+                    text={'Send til bedrift'}
+                    onClick={(data, event) => {
+                      console.log(event.target);
+                      console.log(data);
+                    }}
+                  />
+                  <Modal
+                    open={this.state.open}
+                    onOpen={() => this.setState({ open: true })}
+                    onClose={() => this.setState({ open: false })}
+                    trigger={<Dropdown.Item icon={'user'} text={'Knytt bruker til Nyhet'} />}
+                    size={'tiny'}
+                    closeIcon
+                  >
+                    <Modal.Header>Knytt brukeren til nyhet</Modal.Header>
+                    <Modal.Content>
+                      <Dropdown
+                        fluid
+                        search
+                        placeholder={'Velg nyhet'}
+                        options={this.state.newsOptions}
+                        value={this.state.selectedNews}
+                        onChange={(target, data) => {
+                          this.handleInput('selectedNews', data.value);
+                        }}
+                      />
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button color={'green'} onClick={this.bindUserToNews}>
+                        Lagre
+                      </Button>
+                      <Button onClick={this.close}>Avbryt</Button>
+                    </Modal.Actions>
+                  </Modal>
+                </Dropdown.Menu>
+              </Dropdown>
             </Card.Content>
           ) : null
         ) : this.props.ticket.status === DONE ? (
@@ -96,10 +173,10 @@ export class TicketWidget extends Component {
         ) : this.props.ticket.status === PENDING ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
-              <Button inverted primary onClick={this.props.show}>
+              <Button inverted primary onClick={() => this.props.show('showEditTicket', this.props.ticket, null)}>
                 Endre
               </Button>
-              <Button inverted secondary>
+              <Button inverted secondary onClick={() => this.props.show('messageOpen', null, this.props.ticket.id)}>
                 Trekk tilbake
               </Button>
             </Button.Group>
