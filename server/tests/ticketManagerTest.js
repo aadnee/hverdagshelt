@@ -174,3 +174,18 @@ describe('Get news by userId', () => {
     });
   });
 });
+
+describe('Withdraw ticket', () => {
+  it('correct data', done => {
+    ticketManager.withdraw(1, 4, function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: true,
+        message: 'Ticket removed.'
+      });
+      done();
+    });
+  });
+});
