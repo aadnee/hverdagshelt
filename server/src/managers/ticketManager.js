@@ -66,13 +66,18 @@ module.exports = {
       res => {
         Users.findOne({
           attributes: ['email', 'notifications'],
-          include: [{ attributes: ['subscribed'], model: Tickets, required: true, where: { id: ticketId } }]
+          include: [{ attributes: ['subscribed', 'title'], model: Tickets, required: true, where: { id: ticketId } }]
         }).then(
           res => {
-            res.notifications && res.tickets.subscribed
+            let textStatus = status == 4 ? 'underkjent' : 'godkjent';
+            res.notifications && res.tickets[0].subscribed
               ? mailManager.send(
-                  'Ditt varsel er behandlet',
-                  '<h3>Ditt varsel er oppdatert.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
+                  'Ditt varsel er oppdatert',
+                  '<h3>Ditt varsel "' +
+                    res.tickets[0].title +
+                    '" ble ' +
+                    textStatus +
+                    '.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
                   res.email
                 )
               : null;
