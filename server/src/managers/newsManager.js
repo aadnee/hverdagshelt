@@ -1,9 +1,8 @@
-import { News, Users } from '../models.js';
-import jwt from 'jsonwebtoken';
+import { News, Users, Uploads } from '../models.js';
 import mailManager from './mailManager';
 
 module.exports = {
-  addArticle: function(title, description, categoryId, lat, lon, municipalId, callback) {
+  addArticle: function(title, description, categoryId, lat, lon, address, municipalId, callback) {
     News.create({
       title: title,
       description: description,
@@ -11,6 +10,7 @@ module.exports = {
       status: 2,
       lat: lat,
       lon: lon,
+      address: address,
       municipalId: municipalId
     }).then(
       result =>
@@ -92,6 +92,7 @@ module.exports = {
 
   getFilteredNews: function(municipalIds, categoryIds, page, limit, callback) {
     News.findAll({
+      include: [{ model: Uploads }],
       where: { municipalId: municipalIds, categoryId: categoryIds, status: 2 },
       offset: page == 0 ? null : (page - 1) * limit,
       limit: limit == 0 ? null : limit,

@@ -1,15 +1,29 @@
 import { Tickets, Users, Uploads } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
+import subscriptionManager from './subscriptionManager';
 
 module.exports = {
-  addTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, images, userId, callback) {
+  addTicket: function(
+    title,
+    description,
+    lat,
+    lon,
+    address,
+    categoryId,
+    municipalId,
+    subscribed,
+    images,
+    userId,
+    callback
+  ) {
     Tickets.create({
       title: title,
       description: description,
       status: 1,
       lat: lat,
       lon: lon,
+      address: address,
       categoryId: categoryId,
       userId: userId,
       subscribed: subscribed,
@@ -33,13 +47,26 @@ module.exports = {
     );
   },
 
-  editTicket: function(title, description, lat, lon, categoryId, municipalId, subscribed, userId, ticketId, callback) {
+  editTicket: function(
+    title,
+    description,
+    lat,
+    lon,
+    address,
+    categoryId,
+    municipalId,
+    subscribed,
+    userId,
+    ticketId,
+    callback
+  ) {
     Tickets.update(
       {
         title: title,
         description: description,
         lat: lat,
         lon: lon,
+        address: address,
         categoryId: categoryId,
         municipalId: municipalId,
         subscribed: subscribed
@@ -64,21 +91,35 @@ module.exports = {
         }).then(
           res => {
             let textStatus = status == 4 ? 'underkjent' : 'godkjent';
-            res.notifications && res.tickets[0].subscribed
-              ? mailManager.send(
-                  'Ditt varsel er oppdatert',
-                  '<h3>Ditt varsel "' +
-                    res.tickets[0].title +
-                    '" ble ' +
-                    textStatus +
-                    '.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
-                  res.email
-                )
-              : null;
-            callback({
-              success: true,
-              message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
-            });
+            if (res != null && res.tickets[0].subscribed) {
+              res.notifications
+                ? mailManager.send(
+                    'Ditt varsel er oppdatert',
+                    '<h3>Ditt varsel "' +
+                      res.tickets[0].title +
+                      '" ble ' +
+                      textStatus +
+                      '.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
+                    res.email
+                  )
+                : null;
+              status == 3
+                ? subscriptionManager.addSubscription(newsId, res.id, function() {
+                    callback({
+                      success: true,
+                      message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
+                    });
+                  })
+                : callback({
+                    success: true,
+                    message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
+                  });
+            } else {
+              callback({
+                success: true,
+                message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
+              });
+            }
           },
           err => callback({ success: false, message: err })
         );
@@ -103,9 +144,9 @@ module.exports = {
     );
   },
 
-  makeNews: function(ticketId, title, description, lat, lon, categoryId, municipalId, imageIds, callback) {
+  makeNews: function(ticketId, title, description, lat, lon, address, categoryId, municipalId, imageIds, callback) {
     let ticketManager = this;
-    newsManager.addArticle(title, description, categoryId, lat, lon, municipalId, function(result) {
+    newsManager.addArticle(title, description, categoryId, lat, lon, address, municipalId, function(result) {
       if (result.success) {
         imageIds.map(imageId => {
           Uploads.update(
@@ -128,7 +169,7 @@ module.exports = {
     Tickets.update({ status: 5 }, { where: { id: ticketId, userId: userId } }).then(
       res => {
         if (res != 0) {
-          callback({ success: true, message: { en: 'Ticket removed.', no: 'Varsel fjernet.' } });
+          callback({ success: true, message: { en: 'Ticket removed.', no: 'Varsel ble trukket tilbake.' } });
         } else {
           callback({
             success: false,

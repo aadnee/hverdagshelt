@@ -6,18 +6,26 @@ class CategoryServices {
   }
 
   getSubCategories(id) {
-    return api.get('api/categories/' + id);
+    return api.get('/api/categories/' + id);
   }
 
   //maybe add a municipalId as param
   addCategory(name, parentId) {
-    return api.post('api/categories', {
+    return api.post('/api/categories', {
       name: name,
       parentId: parentId
     });
   }
 
-  deleteCategory() {}
+  editCategory(categoryId, name) {
+    return api.put('/api/categories/' + categoryId, {
+      name: name
+    });
+  }
+
+  deleteCategory(categoryId) {
+    return api.delete('/api/categories/' + categoryId);
+  }
 }
 
 export let categoryService = new CategoryServices();

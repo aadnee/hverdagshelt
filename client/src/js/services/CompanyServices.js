@@ -34,6 +34,22 @@ class CompanyServices {
   deleteCompany(id) {
     return api.delete('/api/companies/' + id);
   }
+
+  getTasks() {
+    return api.get('/api/tasks');
+  }
+
+  acceptTask(newsId) {
+    return api.put('/api/tasks/' + newsId + '/accept');
+  }
+
+  rejectTask(newsId) {
+    return api.put('/api/tasks/' + newsId + '/reject');
+  }
+
+  finishTask(newsId) {
+    return api.put('/api/tasks/' + newsId + '/finish');
+  }
 }
 
 export let companyService = new CompanyServices();
