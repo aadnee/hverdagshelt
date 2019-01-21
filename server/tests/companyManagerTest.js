@@ -84,3 +84,5 @@ describe('Edit and delete company', () => {
     });
   });
 });
+//Mangler getTasks
+//Mangler finnishTasks
