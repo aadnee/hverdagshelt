@@ -16,10 +16,12 @@ export class EmployeeManageTicketsPage extends React.Component {
       tickets: [],
       hasTickets: true,
       modalOpen: false,
-      modalParam: ''
+      modalParam: '',
+      bindNewsModalOpen: false
     };
     this.reject = this.reject.bind(this);
     this.accept = this.accept.bind(this);
+    this.bindUserToNews = this.bindUserToNews.bind(this);
     this.show = this.show.bind(this);
   }
 
@@ -59,6 +61,7 @@ export class EmployeeManageTicketsPage extends React.Component {
                 ticket={ticket}
                 accept={this.accept.bind(this, ticket.id)}
                 show={this.show.bind(this, ticket.id)}
+                link={this.bindUserToNews.bind(this, ticket.id)}
               />
             </Grid.Column>
           ))}
@@ -129,5 +132,26 @@ export class EmployeeManageTicketsPage extends React.Component {
         }
       });
     }
+  }
+
+  bindUserToNews(ticketId, newsId) {
+    console.log(ticketId);
+    console.log(newsId);
+    if (!ticketId || !newsId) {
+      toast.error('Noe gikk galt, prøv igjen', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    }
+    ticketService.linkTicket(ticketId, newsId).then(res => {
+      if (res.success) {
+        toast.success(res.message.no, {
+          position: toast.POSITION.TOP_RIGHT
+        });
+      } else {
+        toast.error(res.message.no, {
+          position: toast.POSITION.TOP_RIGHT
+        });
+      }
+    });
   }
 }

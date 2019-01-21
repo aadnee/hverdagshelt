@@ -4,7 +4,7 @@ import { Component, createContext } from 'react';
 import Cookies from 'js-cookie';
 import { HashRouter } from 'react-router-dom';
 import { Sidebar, Container, Segment, Dimmer, Loader, Image, Divider } from 'semantic-ui-react';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { AppRouter } from './AppRouter';
@@ -15,6 +15,7 @@ import { FooterWidget } from './widgets/FooterWidget';
 import { Provider, Consumer } from './context';
 
 import { userService } from './services/UserServices';
+import { ticketService } from './services/TicketServices';
 
 export class PageController extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ export class PageController extends Component {
       user: null,
       login: this.login,
       logout: this.logout,
+      ticketSubmit: this.ticketSubmit,
       convDbString: this.dbStringConverter,
       visible: false,
       renderReady: false
@@ -47,6 +49,10 @@ export class PageController extends Component {
       this.setState({ renderReady: true });
     }
   }
+
+  /*
+   *Functins to Context
+   */
 
   login = (email, password) => {
     userService.login(email, password).then(res => {
@@ -79,7 +85,36 @@ export class PageController extends Component {
     return [date, clock];
   };
 
+  ticketSubmit = (headline, description, lat, lon, address, catId, municipalId, subscribed, image) => {
+    //lat, lon  is fetched from the map
+
+    if (!headline || !description || !lat || !lon || !catId || !municipalId) {
+      toast.error('Vennligst fyll ut alle felt', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    } else {
+      ticketService
+        .addTicket(headline, description, lat, lon, address, catId, municipalId, subscribed, image)
+        .then(res => {
+          console.log(res);
+          if (res.success) {
+            toast.success(res.message.no, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+            Consumer._currentValue.history.push({ pathname: '/tickets' });
+          } else {
+            toast.error(res.message.no, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+          }
+        });
+    }
+  };
+
   render() {
+    const link = window.location.hash.split('#')[1];
+    const headerless = link == '/' || link == '/report';
+
     if (!this.state.renderReady) {
       return (
         <Dimmer active>
@@ -91,6 +126,19 @@ export class PageController extends Component {
         <Provider value={this.state}>
           <HashRouter>
             <>
+              <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
+              <Sidebar.Pushable style={{ minHeight: '100vh' }}>
+                <Sidebar.Pusher dimmed={this.state.visible} style={{ minHeight: '100vh' }}>
+                  <HeaderWidget toggle={this.toggleSideBar} />
+                  {!headerless ? (
+                    <>
+                      <Divider hidden />
+                      <Divider hidden />
+                    </>
+                  ) : null}
+                  <AppRouter />
+                </Sidebar.Pusher>
+              </Sidebar.Pushable>
               <ToastContainer
                 position="top-right"
                 autoClose={5000}
@@ -102,13 +150,6 @@ export class PageController extends Component {
                 draggable
                 pauseOnHover
               />
-              <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
-              <Sidebar.Pushable style={{ minHeight: '100%' }}>
-                <Sidebar.Pusher dimmed={this.state.visible} style={{ minHeight: '100%' }}>
-                  <HeaderWidget toggle={this.toggleSideBar} />
-                  <AppRouter />
-                </Sidebar.Pusher>
-              </Sidebar.Pushable>
               {/*<FooterWidget />*/}
             </>
           </HashRouter>

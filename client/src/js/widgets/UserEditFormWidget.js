@@ -359,36 +359,47 @@ export class UserEditFormWidget extends Component {
 
               <Form.Field>
                 <label>Endre passord?</label>
-                <Divider hidden />
                 <Form.Field>
                   <Input
                     fluid
+                    iconPosition="left"
+                    placeholder="Nåværende passord"
                     type="password"
-                    label={{ size: 'small', content: 'Nåværende passord:' }}
                     onChange={(event, data) => {
                       this.handleInput('oldPassword', data.value);
                     }}
-                  />
+                  >
+                    <Icon name="key" />
+                    <input />
+                  </Input>
                 </Form.Field>
                 <Form.Field>
                   <Input
                     fluid
+                    iconPosition="left"
+                    placeholder="Nytt passord"
                     type="password"
-                    label={{ size: 'small', content: 'Nytt passord:' }}
                     onChange={(event, data) => {
                       this.handleInput('newPassword', data.value);
                     }}
-                  />
+                  >
+                    <Icon name="key" />
+                    <input />
+                  </Input>
                 </Form.Field>
                 <Form.Field>
                   <Input
                     fluid
+                    iconPosition="left"
+                    placeholder="Gjenta nytt passord"
                     type="password"
-                    label={{ size: 'small', content: 'Gjenta nytt passord:' }}
                     onChange={(event, data) => {
                       this.handleInput('repeatedPassword', data.value);
                     }}
-                  />
+                  >
+                    <Icon name="key" />
+                    <input />
+                  </Input>
                 </Form.Field>
               </Form.Field>
               <Button

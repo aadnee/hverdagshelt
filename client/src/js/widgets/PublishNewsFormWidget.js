@@ -12,9 +12,10 @@ import {
   Icon,
   Input,
   Image,
-  Message,
+  Modal,
   Segment,
-  TextArea
+  TextArea,
+  Label
 } from 'semantic-ui-react';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
@@ -27,7 +28,8 @@ export class PublishNewsFormWidget extends Component {
     this.state = {
       title: this.props.title,
       description: this.props.description,
-      receivedCat: this.props.category,
+      receivedCategory: this.props.category,
+      allCats: [],
       category: this.props.category,
       categoryOptions: [],
       subcategory: '',
@@ -35,9 +37,9 @@ export class PublishNewsFormWidget extends Component {
       categoryChanged: false,
       position: [1, 1],
       subscription: false,
-      image: this.props.image
+      image: this.props.image,
+      imgModalOpen: false
     };
-    this.getSubCategories(this.props.category);
   }
 
   handleInput = (key, value) => {
@@ -45,39 +47,43 @@ export class PublishNewsFormWidget extends Component {
   };
 
   getSubCategories(category) {
-    //Get subcategories based on the chosen category
-    let subcats = [];
     let bool = false;
-    categoryService.getSubCategories(category).then(res => {
-      res.data.map(subCat => {
-        if (this.state.receivedCat === subCat.id) {
-          this.setState({ category: subCat.parentId, subcategory: this.state.receivedCat });
-          bool = true;
-        }
+    let subCats = [];
+    let subCatsOpt = [];
 
-        subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
-      });
-      if (bool || this.state.categoryChanged) {
-        this.setState({ subCategoryOptions: subcats });
+    this.state.allCats.map(cat => {
+      if (cat.id === category) {
+        subCats = cat.subs;
       }
     });
-    return subcats;
+
+    subCats.map(subCat => {
+      if (this.state.receivedCategory === subCat.id) {
+        this.setState({ category: subCat.parentId, subcategory: this.state.receivedCategory });
+        bool = true;
+      }
+      subCatsOpt.push({ key: subCat.id, value: subCat.id, text: subCat.name });
+    });
+
+    if (bool || this.state.categoryChanged) {
+      this.setState({ subCategoryOptions: subCatsOpt });
+    }
   }
 
   componentWillMount() {
+    this.state.image.map((img, i) => {
+      img.id = i;
+    });
+    console.log(this.state.image);
+
     categoryService.getCategories().then(res => {
-      //et allCats = [];
-      let mainCats = [];
-      console.log(this.state.category);
-
+      let cats = [];
+      this.setState({ allCats: res.data });
       res.data.map(cat => {
-        let subCats = this.getSubCategories(cat.id);
-
-        mainCats.push({ key: cat.id, value: cat.id, text: cat.name });
-        //allCats.push({ cat: { key: cat.id, value: cat.id, text: cat.name }, subCats: subCats });
+        cats.push({ key: cat.id, value: cat.id, text: cat.name });
+        this.getSubCategories(cat.id);
       });
-      this.setState({ categoryOptions: mainCats });
-      //console.log(allCats);
+      this.setState({ categoryOptions: cats });
     });
   }
 
@@ -124,8 +130,9 @@ export class PublishNewsFormWidget extends Component {
                         placeholder="Kategori"
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
-                          this.setState({ categoryChanged: true });
-                          this.getSubCategories(data.value);
+                          this.setState({ categoryChanged: true }, () => {
+                            this.getSubCategories(data.value);
+                          });
                         }}
                       />
                     </Grid.Column>
@@ -146,13 +153,54 @@ export class PublishNewsFormWidget extends Component {
                   </Grid>
                 </Form.Field>
                 {this.state.image ? (
-                  <Segment placeholder>
-                    <Header icon>
-                      <Icon name="image file outline" />
-                      Bildemodul her.
-                    </Header>
-                    <Button primary>Legg til bilde</Button>
-                  </Segment>
+                  <Form.Field>
+                    <Label basic as={'label'}>
+                      {this.state.image.map((image, i) => {
+                        return (
+                          <Modal
+                            basic
+                            dimmer={'inverted'}
+                            size={'large'}
+                            closeIcon
+                            key={i}
+                            trigger={
+                              <Label
+                                id={i}
+                                removeIcon={<Icon name={'delete'} />}
+                                size={'large'}
+                                onRemove={(event, data) => {
+                                  let newImages = [];
+                                  this.state.image.map((img, i) => {
+                                    if (i !== data.id) {
+                                      newImages.push(img);
+                                    }
+                                  });
+
+                                  this.setState({ image: newImages }, () => {
+                                    console.log(this.state.image);
+                                  });
+                                }}
+                                onClick={(event, data) => {
+                                  let img = this.state.image.filter(img => {
+                                    console.log(typeof img.id);
+                                    console.log(typeof event.target.id);
+                                    return img.id == event.target.id;
+                                  });
+                                  console.log(img);
+                                }}
+                                as={'a'}
+                                content={image.filename}
+                              />
+                            }
+                          >
+                            <Modal.Content image>
+                              <Image wrapped src={'http://localhost:3000/uploads/' + image.filename} />
+                            </Modal.Content>
+                          </Modal>
+                        );
+                      })}
+                    </Label>
+                  </Form.Field>
                 ) : null}
                 <Button
                   color="blue"

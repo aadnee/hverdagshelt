@@ -3,8 +3,8 @@ import { Categories } from '../models';
 module.exports = {
   getCategories: function(callback) {
     Categories.findAll({
-      include: [{ model: Categories, as: 'subs' }],
-      where: { parentId: null }
+      include: [{ model: Categories, as: 'subs', where: { active: true }, required: false }],
+      where: { active: true, parentId: null }
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
@@ -12,7 +12,7 @@ module.exports = {
     if (parentId == null) {
       createCategory(name, parentId, result => callback(result));
     } else {
-      Categories.findOne({ where: { id: parentId } }).then(cat => {
+      Categories.findOne({ where: { id: parentId, active: true } }).then(cat => {
         if (cat != null && cat.parentId != null) {
           callback({
             success: false,
@@ -34,26 +34,19 @@ module.exports = {
   },
 
   deleteCategory: function(categoryId, callback) {
-    Categories.findOne({ where: { parentId: categoryId } }).then(cat => {
-      if (cat != null) {
+    Categories.update(
+      {
+        active: false
+      },
+      { where: { id: categoryId } }
+    ).then(
+      res =>
         callback({
-          success: false,
-          message: {
-            en: 'Cannot delete a category with subcategories.',
-            no: 'Kan ikke slette en kategori med underkategorier.'
-          }
-        });
-      } else {
-        Categories.destroy({ where: { id: categoryId } }).then(
-          res =>
-            callback({
-              success: true,
-              message: { en: 'Category deleted.', no: 'Kategori slettet.' }
-            }),
-          err => callback({ success: false, message: err })
-        );
-      }
-    });
+          success: true,
+          message: { en: 'Category deleted.', no: 'Kategori slettet.' }
+        }),
+      err => callback({ success: false, message: err })
+    );
   },
 
   editCategory: function(categoryId, categoryName, callback) {

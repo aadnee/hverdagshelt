@@ -8,5 +8,6 @@ export const { Provider, Consumer } = createContext({
   history: history,
   login: () => {},
   logout: () => {},
-  convDbString: () => {}
+  convDbString: () => {},
+  ticketSubmit: () => {}
 });

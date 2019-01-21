@@ -8,6 +8,7 @@ import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 import { newsService } from '../services/NewsServices';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
+import { ticketService } from '../services/TicketServices';
 
 /*
 const options = [
@@ -45,7 +46,6 @@ export class TicketWidget extends Component {
         });
       })
       .then(() => {
-        console.log(catIds);
         newsService.getFilteredNews(Cookies.get('municipalId'), catIds, 0, 0).then(res => {
           res.data.map(news => {
             dropdownOptions.push({ key: news.id, value: news.id, text: news.title });
@@ -55,8 +55,11 @@ export class TicketWidget extends Component {
         });
       });
   }
-  bindUserToNews() {
-    console.log('knytt');
+
+  link() {
+    console.log('link');
+    this.setState({ open: false });
+    this.props.link(this.state.selectedNews);
   }
 
   render() {
@@ -96,13 +99,7 @@ export class TicketWidget extends Component {
         {this.props.employee ? (
           this.props.ticket.status === PENDING ? (
             <Card.Content extra>
-              <Dropdown
-                text={'Behandle'}
-                open={this.state.dropdownOpen}
-                onClick={() => {
-                  this.handleInput('dropdownOpen', true);
-                }}
-              >
+              <Dropdown text={'Behandle'} simple>
                 <Dropdown.Menu>
                   {/*REGISRER SOM NYHET*/}
                   <Modal trigger={<Dropdown.Item icon={'newspaper'} text={'Publiser som nyhet'} />}>
@@ -114,7 +111,7 @@ export class TicketWidget extends Component {
                           description={this.props.ticket.description}
                           category={this.props.ticket.categoryId}
                           accept={this.props.accept}
-                          image
+                          image={this.props.ticket.uploads}
                           submitButton={'Publiser'}
                         />
                       </Modal.Description>
@@ -122,19 +119,12 @@ export class TicketWidget extends Component {
                   </Modal>
 
                   <Dropdown.Item icon={'delete'} text={'Avslå'} onClick={this.props.show} />
-                  <Dropdown.Item
-                    icon={'warehouse'}
-                    text={'Send til bedrift'}
-                    onClick={(data, event) => {
-                      console.log(event.target);
-                      console.log(data);
-                    }}
-                  />
+
                   <Modal
                     open={this.state.open}
                     onOpen={() => this.setState({ open: true })}
                     onClose={() => this.setState({ open: false })}
-                    trigger={<Dropdown.Item icon={'user'} text={'Knytt bruker til Nyhet'} />}
+                    trigger={<Dropdown.Item icon={'linkify'} text={'Knytt bruker til nyhet'} />}
                     size={'tiny'}
                     closeIcon
                   >
@@ -143,7 +133,7 @@ export class TicketWidget extends Component {
                       <Dropdown
                         fluid
                         search
-                        placeholder={'Velg nyhet'}
+                        placeholder={'Søk etter Nyhet på tittel'}
                         options={this.state.newsOptions}
                         value={this.state.selectedNews}
                         onChange={(target, data) => {
@@ -152,7 +142,7 @@ export class TicketWidget extends Component {
                       />
                     </Modal.Content>
                     <Modal.Actions>
-                      <Button color={'green'} onClick={this.bindUserToNews}>
+                      <Button color={'green'} onClick={() => this.link()}>
                         Lagre
                       </Button>
                       <Button onClick={this.close}>Avbryt</Button>
