@@ -17,7 +17,7 @@ export class AdminCategoriesPage extends Component {
 
   selectedCat = selCat => {
     this.setState({ selectedCategory: selCat });
-    console.log('rtvr');
+    console.log('rt');
   };
 
   render() {
