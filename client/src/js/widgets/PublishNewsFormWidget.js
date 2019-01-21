@@ -12,9 +12,10 @@ import {
   Icon,
   Input,
   Image,
-  Message,
+  Modal,
   Segment,
-  TextArea
+  TextArea,
+  Label
 } from 'semantic-ui-react';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
@@ -36,7 +37,8 @@ export class PublishNewsFormWidget extends Component {
       categoryChanged: false,
       position: [1, 1],
       subscription: false,
-      image: this.props.image
+      image: this.props.image,
+      imgModalOpen: false
     };
   }
 
@@ -69,6 +71,11 @@ export class PublishNewsFormWidget extends Component {
   }
 
   componentWillMount() {
+    this.state.image.map((img, i) => {
+      img.id = i;
+    });
+    console.log(this.state.image);
+
     categoryService.getCategories().then(res => {
       let cats = [];
       this.setState({ allCats: res.data });
@@ -146,13 +153,54 @@ export class PublishNewsFormWidget extends Component {
                   </Grid>
                 </Form.Field>
                 {this.state.image ? (
-                  <Segment placeholder>
-                    <Header icon>
-                      <Icon name="image file outline" />
-                      Bildemodul her.
-                    </Header>
-                    <Button primary>Legg til bilde</Button>
-                  </Segment>
+                  <Form.Field>
+                    <Label basic as={'label'}>
+                      {this.state.image.map((image, i) => {
+                        return (
+                          <Modal
+                            basic
+                            dimmer={'inverted'}
+                            size={'large'}
+                            closeIcon
+                            key={i}
+                            trigger={
+                              <Label
+                                id={i}
+                                removeIcon={<Icon name={'delete'} />}
+                                size={'large'}
+                                onRemove={(event, data) => {
+                                  let newImages = [];
+                                  this.state.image.map((img, i) => {
+                                    if (i !== data.id) {
+                                      newImages.push(img);
+                                    }
+                                  });
+
+                                  this.setState({ image: newImages }, () => {
+                                    console.log(this.state.image);
+                                  });
+                                }}
+                                onClick={(event, data) => {
+                                  let img = this.state.image.filter(img => {
+                                    console.log(typeof img.id);
+                                    console.log(typeof event.target.id);
+                                    return img.id == event.target.id;
+                                  });
+                                  console.log(img);
+                                }}
+                                as={'a'}
+                                content={image.filename}
+                              />
+                            }
+                          >
+                            <Modal.Content image>
+                              <Image wrapped src={'http://localhost:3000/uploads/' + image.filename} />
+                            </Modal.Content>
+                          </Modal>
+                        );
+                      })}
+                    </Label>
+                  </Form.Field>
                 ) : null}
                 <Button
                   color="blue"

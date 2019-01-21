@@ -207,10 +207,8 @@ export class TicketFormWidget extends Component {
                           for (let i = 0; i < event.target.files.length; i++) {
                             images.push(event.target.files[i]);
                           }
-                          console.log(images);
                           this.setState({ image: images }, () => {
                             this.setState({ imageUploaded: true });
-                            console.log(this.state.image);
                           });
                         }}
                       />
@@ -235,7 +233,6 @@ export class TicketFormWidget extends Component {
                                   console.log(this.state.image);
                                 });
                               }}
-                              as={'a'}
                               content={image.name}
                             />
                           );
