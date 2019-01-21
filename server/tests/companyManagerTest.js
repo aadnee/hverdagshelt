@@ -19,7 +19,7 @@ describe('Finding all companies', () => {
       done();
     });
   });
-
+  //Test for finding companies based on municipalID
   it('correct data', done => {
     companyManager.getLocalCompanies(1, function(companies) {
       expect({
@@ -30,7 +30,7 @@ describe('Finding all companies', () => {
       done();
     });
   });
-
+  //Test for finding a company based on ID
   it('correct data', done => {
     companyManager.getCompany(4, function(company) {
       expect({
@@ -56,7 +56,7 @@ describe('Finding all companies', () => {
     });
   });
 });
-
+//Test for editing company with correct data
 describe('Edit and delete company', () => {
   it('correct data', done => {
     companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, 4, true, function(result) {
@@ -70,7 +70,7 @@ describe('Edit and delete company', () => {
       done();
     });
   });
-
+  //Test for deleting company with correct data
   it('correct data', done => {
     companyManager.deleteCompany(4, function(result) {
       expect({

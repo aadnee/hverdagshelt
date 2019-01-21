@@ -6,7 +6,7 @@ jest.setTimeout(30000);
 beforeAll(async () => {
   await sync;
 });
-
+//Test for finding municipals with correct data
 describe('MunicipalManager tests', () => {
   it('correct data', done => {
     municipalManager.getMunicipals(function(result) {
@@ -20,7 +20,7 @@ describe('MunicipalManager tests', () => {
       done();
     });
   });
-
+  //Test for adding municipals
   it('correct data', done => {
     municipalManager.addMunicipal('Trondheim', function(result) {
       expect({
