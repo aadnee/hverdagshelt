@@ -24,13 +24,11 @@ export class UserPage extends Component {
     if (this.state.user) {
       return (
         <Container>
-          <Divider hidden />
-          <Divider hidden />
-          <Grid centered>
-            <Grid.Column width={11}>
+          <Grid>
+            <Grid.Column computer={13} tablet={16}>
               <Header as="h1">Min side</Header>
               <UserEditFormWidget user={this.state.user} />
-              <Rail position="right" fluid className="hideOnPhone">
+              <Rail position="right" fluid="true" className="hideOnPhone">
                 <Divider hidden />
                 <Divider hidden />
                 <Divider hidden />

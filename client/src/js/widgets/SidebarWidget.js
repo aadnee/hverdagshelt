@@ -151,7 +151,7 @@ class PrivateOptions extends Component {
           Hjem
         </NavLink>
         <NavLink exact to="/profile" activeClassName="active" className="ui item">
-          Min profil
+          Min side
         </NavLink>
         <NavLink exact to="/report" activeClassName="active" className="ui item">
           Meld inn varsel
