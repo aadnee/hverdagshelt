@@ -60,7 +60,7 @@ describe('Adding category', () => {
     });
   });
 
-  it('Correct data', done => {
+  it('Wrong data', done => {
     categoryManager.deleteCategory(null, function(result) {
       expect({
         success: result.success,
@@ -74,15 +74,28 @@ describe('Adding category', () => {
   });
 });
 
-describe('get subCategories', () => {
-  it('correct data', done => {
-    categoryManager.getSubCategories(1, function(result) {
+describe('Edit categories', () => {
+  it('Correct data', done => {
+    categoryManager.editCategory(1, 'Endring skjedd', function(result) {
       expect({
         success: result.success,
-        name: result.data[0].name
+        message: result.message.en
       }).toEqual({
         success: true,
-        name: 'Setting av brøytestikker'
+        message: 'Category updated successfully'
+      });
+      done();
+    });
+  });
+
+  it('Wrong data', done => {
+    categoryManager.editCategory(0, 'Endring skjedd', function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: false,
+        message: 'Category not found.'
       });
       done();
     });
