@@ -8,6 +8,8 @@ import { MapWidget } from './../widgets/MapWidget';
 import { TicketFormWidget } from './../widgets/TicketFormWidget';
 import { NewsFeedWidget } from './../widgets/NewsFeedWidget';
 
+import { Consumer } from './../context';
+
 export class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -38,7 +40,7 @@ export class HomePage extends Component {
           <Grid className="mapGrid">
             <Grid.Row columns={2} only="computer" className="mapRow">
               <Grid.Column width={10} className="mapRow">
-                <MapWidget modal />
+                <MapWidget modal submit={Consumer._currentValue.ticketSubmit} />
               </Grid.Column>
               <Grid.Column width={6} only="computer" className="frontPageFeed">
                 <Tab menu={{ text: true, secondary: true, pointing: true, color: 'blue' }} panes={panes} />
@@ -48,7 +50,7 @@ export class HomePage extends Component {
 
             <Grid.Row columns={1} only="mobile tablet" className="mapRow">
               <Grid.Column colSpan={2} className="mapGrid">
-                <MapWidget modal callback={this.callback} />
+                <MapWidget modal callback={this.callback} submit={Consumer._currentValue.ticketSubmit} />
               </Grid.Column>
             </Grid.Row>
           </Grid>
