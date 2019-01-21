@@ -1,7 +1,6 @@
-import { sync } from '../src/models';
+import { syncDatabase } from '../src/models';
 
-async () => await sync;
-
-console.log('Database initialized.');
-
-process.exit();
+syncDatabase(function(res) {
+  console.log(res);
+  process.exit();
+});

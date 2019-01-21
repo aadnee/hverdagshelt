@@ -1,11 +1,6 @@
-import { sync } from '../src/models';
 import subscriptionManager from '../src/managers/subscriptionManager';
 
 jest.setTimeout(30000);
-
-beforeAll(async () => {
-  await sync;
-});
 
 describe('Finding users subscriptions', () => {
   it('correct data', done => {
@@ -16,17 +11,15 @@ describe('Finding users subscriptions', () => {
         success: true
       });
       expect(
-        subscriptions.data
-          .map(subs => subs.toJSON())
-          .map(subs => ({
-            title: subs.title,
-            description: subs.description,
-            status: subs.status,
-            lat: subs.lat,
-            lon: subs.lon,
-            categoryId: subs.categoryId,
-            municipalId: subs.municipalId
-          }))
+        subscriptions.data.map(subs => subs.toJSON()).map(subs => ({
+          title: subs.title,
+          description: subs.description,
+          status: subs.status,
+          lat: subs.lat,
+          lon: subs.lon,
+          categoryId: subs.categoryId,
+          municipalId: subs.municipalId
+        }))
       ).toEqual([
         {
           title: 'Problem ved vei i TRD sentrum.',

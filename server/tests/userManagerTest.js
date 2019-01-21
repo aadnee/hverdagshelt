@@ -1,11 +1,6 @@
-import { sync } from '../src/models';
 import userManager from '../src/managers/userManager';
 
 jest.setTimeout(30000);
-
-beforeAll(async () => {
-  await sync;
-});
 
 describe('Registering in use account', () => {
   it('correct data', done => {

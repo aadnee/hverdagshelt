@@ -1,11 +1,6 @@
-import { sync } from '../src/models';
 import categoryManager from '../src/managers/categoryManager';
 
 jest.setTimeout(30000);
-
-beforeAll(async () => {
-  await sync;
-});
 
 describe('Get categories', () => {
   it('correct data', done => {
