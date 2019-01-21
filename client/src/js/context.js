@@ -7,5 +7,6 @@ export const { Provider, Consumer } = createContext({
   user: null,
   history: history,
   login: () => {},
-  logout: () => {}
+  logout: () => {},
+  convDbString: () => {}
 });

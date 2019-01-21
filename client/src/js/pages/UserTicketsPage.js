@@ -33,7 +33,7 @@ export class UserTicketsPage extends Component {
       });
     }
     ticketService
-      .UpdateTicket(id, title, description, lat, lng, address, category, municipalId, subscription, image)
+      .updateTicket(id, title, description, lat, lng, address, category, municipalId, subscription, image)
       .then(res => {
         if (res.success) {
           this.setState({ showEditTicket: false });

@@ -58,6 +58,7 @@ export let Tickets = sequelize.define('tickets', {
   status: { type: Sequelize.INTEGER, allowNull: false },
   lat: { type: Sequelize.FLOAT, allowNull: false },
   lon: { type: Sequelize.FLOAT, allowNull: false },
+  address: { type: Sequelize.STRING },
   subscribed: { type: Sequelize.BOOLEAN, allowNull: true }
 });
 
@@ -73,7 +74,19 @@ export let News = sequelize.define('news', {
   status: { type: Sequelize.INTEGER, allowNull: false },
   lat: { type: Sequelize.FLOAT, allowNull: false },
   lon: { type: Sequelize.FLOAT, allowNull: false },
-  companyStatus: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 }
+  address: { type: Sequelize.STRING },
+  companyStatus: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 1 }
+});
+
+export let Events = sequelize.define('events', {
+  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+  title: { type: Sequelize.STRING, allowNull: false },
+  description: { type: Sequelize.TEXT, length: 'medium', allowNull: false },
+  lat: { type: Sequelize.FLOAT, allowNull: false },
+  lon: { type: Sequelize.FLOAT, allowNull: false },
+  address: { type: Sequelize.STRING, allowNull: false },
+  start: { type: Sequelize.DATE, allowNull: false },
+  end: { type: Sequelize.DATE, allowNull: false }
 });
 
 export let Subscriptions = sequelize.define('subscriptions');
@@ -95,6 +108,7 @@ Tickets.hasMany(Uploads);
 News.hasMany(Uploads);
 Municipals.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Municipals.hasMany(News, { foreignKey: { allowNull: false } });
+Municipals.hasMany(Events, { foreignKey: { allowNull: false } });
 
 let production = process.env.NODE_ENV === 'production';
 export let sync = sequelize.sync({ force: production ? false : true }).then(async () => {
@@ -214,6 +228,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       status: 2,
       lat: 1,
       lon: 1,
+      address: 'Test street',
       categoryId: 2,
       municipalId: 1
     });
@@ -223,6 +238,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       status: 2,
       lat: 1,
       lon: 1,
+      address: 'Test street',
       categoryId: 1,
       municipalId: 1
     });
@@ -232,6 +248,7 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       status: 2,
       lat: 1,
       lon: 1,
+      address: 'Test street',
       categoryId: 1,
       municipalId: 1
     });
