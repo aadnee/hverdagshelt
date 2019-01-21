@@ -2,10 +2,10 @@ import { Categories } from '../models';
 
 module.exports = {
   getCategories: function(callback) {
-    Categories.findAll({ where: { parentId: null } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    Categories.findAll({
+      include: [{ model: Categories, as: 'subs' }],
+      where: { parentId: null }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   addCategory: function(name, parentId, callback) {
@@ -81,13 +81,6 @@ module.exports = {
         );
       }
     });
-  },
-
-  getSubCategories: function(parentId, callback) {
-    Categories.findAll({ where: { parentId: parentId } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
   }
 };
 

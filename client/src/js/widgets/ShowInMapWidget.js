@@ -18,7 +18,11 @@ export class ShowInMapWidget extends Component {
 
   render() {
     return (
+<<<<<<< HEAD
       <Modal trigger={this.props.button} onClose={this.props.callback} closeIcon>
+=======
+      <Modal trigger={this.props.button} onClose={this.props.callback}>
+>>>>>>> 578f0142f32ab232e6ba57b63ca4699dbb209741
         {this.props.renderMap ? (
           <Map ref={this.mapRef} dragging={false} center={this.props.latlng} zoom={14}>
             <TileLayer

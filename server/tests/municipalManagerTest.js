@@ -1,11 +1,6 @@
-import { sync } from '../src/models';
 import municipalManager from '../src/managers/municipalManager';
 
 jest.setTimeout(30000);
-
-beforeAll(async () => {
-  await sync;
-});
 
 describe('MunicipalManager tests', () => {
   it('correct data', done => {
@@ -20,7 +15,7 @@ describe('MunicipalManager tests', () => {
       done();
     });
   });
-
+  //Test for adding municipals
   it('correct data', done => {
     municipalManager.addMunicipal('Trondheim', function(result) {
       expect({

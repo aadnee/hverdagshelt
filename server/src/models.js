@@ -99,7 +99,7 @@ Users.belongsToMany(Municipals, { through: UserMunicipals });
 
 Users.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Municipals.hasMany(Users, { foreignKey: { allowNull: false } });
-Categories.hasMany(Categories, { foreignKey: { name: 'parentId' } });
+Categories.hasMany(Categories, { foreignKey: { name: 'parentId' }, as: 'subs' });
 Categories.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Categories.hasMany(News, { foreignKey: { allowNull: false } });
 Users.hasMany(News, { foreignKey: { name: 'companyId' } });
@@ -110,180 +110,182 @@ Municipals.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Municipals.hasMany(News, { foreignKey: { allowNull: false } });
 Municipals.hasMany(Events, { foreignKey: { allowNull: false } });
 
-let production = process.env.NODE_ENV === 'production';
-export let sync = sequelize.sync({ force: production ? false : true }).then(async () => {
-  if (!production) {
-    await Municipals.create({
-      name: 'Lindesnes'
-    });
-    await Municipals.create({
-      name: 'Risør'
-    });
-    await Municipals.create({
-      name: 'Kristiansand'
-    });
-    await Municipals.create({
-      name: 'Kristiansund'
-    });
-    await Municipals.create({
-      name: 'Rana'
-    });
-    await Municipals.create({
-      name: 'Oslo'
-    });
-    await Municipals.create({
-      name: 'Gramstad'
-    });
-    await Municipals.create({
-      name: 'Vennesla'
-    });
-    await Municipals.create({
-      name: 'Bergen'
-    });
-    await Municipals.create({
-      name: 'Stranda'
-    });
-    await Categories.create({
-      name: 'Vei og trafikk'
-    });
-    await Categories.create({
-      name: 'Brøyting av snø'
-    });
-    await Categories.create({
-      name: 'Setting av brøytestikker',
-      parentId: 1
-    });
-    await Categories.create({
-      name: 'Setting av brøytestikker 2',
-      parentId: 1
-    });
-    await Users.create({
-      name: 'Ola',
-      email: 'user@user.com',
-      phone: 123,
-      password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
-      rank: 1,
-      municipalId: 1
-    });
-    await Users.create({
-      name: 'Ola',
-      email: 'employee@employee.com',
-      phone: 1234,
-      password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
-      rank: 3,
-      municipalId: 1
-    });
-    await Users.create({
-      name: 'Ola',
-      email: 'admin@admin.com',
-      phone: 12345,
-      password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
-      rank: 4,
-      municipalId: 1
-    });
-    await Users.create({
-      name: 'SmartPark',
-      email: 'company@company.com',
-      phone: 12345678,
-      password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
-      rank: 2,
-      municipalId: 1
-    });
-    await Tickets.create({
-      title: 'Vei problem',
-      description: 'Pls sett opp brøytestikker her.',
-      status: 4,
-      lat: 1,
-      lon: 1,
-      categoryId: 2,
-      userId: 1,
-      municipalId: 1,
-      subscribed: true
-    });
-    await Tickets.create({
-      title: 'Vei problem',
-      description: 'Pls sett opp brøytestikker her.',
-      status: 1,
-      lat: 1,
-      lon: 1,
-      categoryId: 2,
-      userId: 1,
-      municipalId: 1,
-      subscribed: true
-    });
-    await Tickets.create({
-      title: 'Vei problem',
-      description: 'Pls sett opp brøytestikker her.',
-      status: 3,
-      lat: 1,
-      lon: 1,
-      categoryId: 2,
-      userId: 1,
-      municipalId: 1,
-      subscribed: true
-    });
-    await News.create({
-      title: 'Problem ved vei i TRD sentrum.',
-      description: 'Brøytestikker skal bli satt opp.',
-      status: 2,
-      lat: 1,
-      lon: 1,
-      address: 'Test street',
-      categoryId: 2,
-      municipalId: 1
-    });
-    await News.create({
-      title: 'Enda en nyhet!',
-      description: 'Brøytestikker skal bli satt opp.',
-      status: 2,
-      lat: 1,
-      lon: 1,
-      address: 'Test street',
-      categoryId: 1,
-      municipalId: 1
-    });
-    await News.create({
-      title: 'En nyhet',
-      description: 'Nyhet beskrivelse.',
-      status: 2,
-      lat: 1,
-      lon: 1,
-      address: 'Test street',
-      categoryId: 1,
-      municipalId: 1
-    });
-    await Subscriptions.create({
-      newsId: 1,
-      userId: 1
-    });
-    await Subscriptions.create({
-      newsId: 2,
-      userId: 1
-    });
-    await Subscriptions.create({
-      newsId: 3,
-      userId: 1
-    });
-    await UserMunicipals.create({
-      userId: 1,
-      municipalId: 1
-    });
-    await UserMunicipals.create({
-      userId: 1,
-      municipalId: 2
-    });
-    await Uploads.create({
-      filename: '123.png',
-      ticketId: 1
-    });
-    await Uploads.create({
-      filename: '123.png',
-      ticketId: 1
-    });
-    await Uploads.create({
-      filename: '123.png',
-      ticketId: 2
-    });
-    return true;
-  }
-});
+export function syncDatabase(callback) {
+  let production = process.env.NODE_ENV === 'production';
+  sequelize.sync({ force: production ? false : true }).then(async () => {
+    if (!production) {
+      await Municipals.create({
+        name: 'Lindesnes'
+      });
+      await Municipals.create({
+        name: 'Risør'
+      });
+      await Municipals.create({
+        name: 'Kristiansand'
+      });
+      await Municipals.create({
+        name: 'Kristiansund'
+      });
+      await Municipals.create({
+        name: 'Rana'
+      });
+      await Municipals.create({
+        name: 'Oslo'
+      });
+      await Municipals.create({
+        name: 'Gramstad'
+      });
+      await Municipals.create({
+        name: 'Vennesla'
+      });
+      await Municipals.create({
+        name: 'Bergen'
+      });
+      await Municipals.create({
+        name: 'Stranda'
+      });
+      await Categories.create({
+        name: 'Vei og trafikk'
+      });
+      await Categories.create({
+        name: 'Brøyting av snø'
+      });
+      await Categories.create({
+        name: 'Setting av brøytestikker',
+        parentId: 1
+      });
+      await Categories.create({
+        name: 'Setting av brøytestikker 2',
+        parentId: 1
+      });
+      await Users.create({
+        name: 'Ola',
+        email: 'user@user.com',
+        phone: 123,
+        password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
+        rank: 1,
+        municipalId: 1
+      });
+      await Users.create({
+        name: 'Ola',
+        email: 'employee@employee.com',
+        phone: 1234,
+        password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
+        rank: 3,
+        municipalId: 1
+      });
+      await Users.create({
+        name: 'Ola',
+        email: 'admin@admin.com',
+        phone: 12345,
+        password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
+        rank: 4,
+        municipalId: 1
+      });
+      await Users.create({
+        name: 'SmartPark',
+        email: 'company@company.com',
+        phone: 12345678,
+        password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
+        rank: 2,
+        municipalId: 1
+      });
+      await Tickets.create({
+        title: 'Vei problem',
+        description: 'Pls sett opp brøytestikker her.',
+        status: 4,
+        lat: 1,
+        lon: 1,
+        categoryId: 2,
+        userId: 1,
+        municipalId: 1,
+        subscribed: true
+      });
+      await Tickets.create({
+        title: 'Vei problem',
+        description: 'Pls sett opp brøytestikker her.',
+        status: 1,
+        lat: 1,
+        lon: 1,
+        categoryId: 2,
+        userId: 1,
+        municipalId: 1,
+        subscribed: true
+      });
+      await Tickets.create({
+        title: 'Vei problem',
+        description: 'Pls sett opp brøytestikker her.',
+        status: 3,
+        lat: 1,
+        lon: 1,
+        categoryId: 2,
+        userId: 1,
+        municipalId: 1,
+        subscribed: true
+      });
+      await News.create({
+        title: 'Problem ved vei i TRD sentrum.',
+        description: 'Brøytestikker skal bli satt opp.',
+        status: 2,
+        lat: 1,
+        lon: 1,
+        address: 'Test street',
+        categoryId: 2,
+        municipalId: 1
+      });
+      await News.create({
+        title: 'Enda en nyhet!',
+        description: 'Brøytestikker skal bli satt opp.',
+        status: 2,
+        lat: 1,
+        lon: 1,
+        address: 'Test street',
+        categoryId: 1,
+        municipalId: 1
+      });
+      await News.create({
+        title: 'En nyhet',
+        description: 'Nyhet beskrivelse.',
+        status: 2,
+        lat: 1,
+        lon: 1,
+        address: 'Test street',
+        categoryId: 1,
+        municipalId: 1
+      });
+      await Subscriptions.create({
+        newsId: 1,
+        userId: 1
+      });
+      await Subscriptions.create({
+        newsId: 2,
+        userId: 1
+      });
+      await Subscriptions.create({
+        newsId: 3,
+        userId: 1
+      });
+      await UserMunicipals.create({
+        userId: 1,
+        municipalId: 1
+      });
+      await UserMunicipals.create({
+        userId: 1,
+        municipalId: 2
+      });
+      await Uploads.create({
+        filename: '123.png',
+        ticketId: 1
+      });
+      await Uploads.create({
+        filename: '123.png',
+        ticketId: 1
+      });
+      await Uploads.create({
+        filename: '123.png',
+        ticketId: 2
+      });
+      callback('Database synced.');
+    }
+  });
+}
