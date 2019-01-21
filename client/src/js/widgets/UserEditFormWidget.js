@@ -362,7 +362,6 @@ export class UserEditFormWidget extends Component {
                 <Form.Field>
                   <Input
                     fluid
-                    label="Nåværende passord"
                     iconPosition="left"
                     placeholder="Nåværende passord"
                     type="password"
@@ -377,7 +376,6 @@ export class UserEditFormWidget extends Component {
                 <Form.Field>
                   <Input
                     fluid
-                    label="Nytt passord"
                     iconPosition="left"
                     placeholder="Nytt passord"
                     type="password"
@@ -392,11 +390,9 @@ export class UserEditFormWidget extends Component {
                 <Form.Field>
                   <Input
                     fluid
-                    label="Gjenta nytt passord"
                     iconPosition="left"
                     placeholder="Gjenta nytt passord"
                     type="password"
-                    label={{ size: 'small', content: 'Gjenta nytt passord:' }}
                     onChange={(event, data) => {
                       this.handleInput('repeatedPassword', data.value);
                     }}

@@ -1,31 +1,36 @@
 import React from 'react';
 import { Component } from 'react';
-import { Grid, Segment, List, Icon } from 'semantic-ui-react';
+import { Grid, Segment, List, Icon, Button } from 'semantic-ui-react';
 import { categoryService } from '../services/CategoryServices';
 
 export class AdminCategoriesWidget extends Component {
   constructor(props) {
     super(props);
+
+    this.selectMainCat = this.selectMainCat.bind(this);
+    this.selectSubCat = this.selectSubCat.bind(this);
+
     this.state = {
-      mainCategories: [],
-      subCategories: []
+      mainCategory: '',
+      subCategory: '',
+      categories: []
     };
   }
 
-  getSubCategory(mainCatId) {
-    return categoryService.getSubCategories(mainCatId).then(subCats => {
-      return subCats;
-    });
-  }
+  selectSubCat = currentSubCat => {
+    this.setState({ subCategory: currentSubCat });
+    this.props.func(currentSubCat);
+  };
+
+  selectMainCat = currentCat => {
+    this.setState({ mainCategory: currentCat, subCategory: '' });
+    this.props.func(currentCat);
+  };
 
   componentWillMount() {
     categoryService.getCategories().then(res => {
-      this.state.mainCategories = res.data;
-      res.data.map(mainCat => {
-        this.getSubCategory(mainCat.id);
-      });
+      this.setState({ categories: res.data });
     });
-    console.log(this.state.subCategories, 'fewf');
   }
 
   render() {
@@ -34,62 +39,55 @@ export class AdminCategoriesWidget extends Component {
         <Grid columns="equal">
           <Grid.Column width={6}>
             <Segment>
-              <List divided relaxed>
-                {console.log(this.state.subCategories)}
-                <List.Item>
-                  <List.Icon name="github" size="large" verticalAlign="middle" />
-                  <List.Content>
-                    <List.Header as="a">Semantic-Org/Semantic-UI</List.Header>
-                    <List.Description as="a">Updated 10 mins ago</List.Description>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Icon name="github" size="large" verticalAlign="middle" />
-                  <List.Content>
-                    <List.Header as="a">Semantic-Org/Semantic-UI-Docs</List.Header>
-                    <List.Description as="a">Updated 22 mins ago</List.Description>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Icon name="github" size="large" verticalAlign="middle" />
-                  <List.Content>
-                    <List.Header as="a">Semantic-Org/Semantic-UI-Meteor</List.Header>
-                    <List.Description as="a">Updated 34 mins ago</List.Description>
-                  </List.Content>
-                </List.Item>
+              <List divided relaxed size="large">
+                {this.state.categories.map((mainCat, keyId) => (
+                  <ListItemCategoriesWidget
+                    func={this.selectMainCat.bind(this, mainCat)}
+                    category={mainCat}
+                    key={keyId}
+                  />
+                ))}
               </List>
             </Segment>
           </Grid.Column>
           <Grid.Column width={10}>
             <Segment>
-              <List divided relaxed>
-                {console.log(this.state.subCategories)}
-                <List.Item>
-                  <List.Icon name="github" size="large" verticalAlign="middle" />
-                  <List.Content>
-                    <List.Header as="a">Semantic-Org/Semantic-UI</List.Header>
-                    <List.Description as="a">Updated 10 mins ago</List.Description>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Icon name="github" size="large" verticalAlign="middle" />
-                  <List.Content>
-                    <List.Header as="a">Semantic-Org/Semantic-UI-Docs</List.Header>
-                    <List.Description as="a">Updated 22 mins ago</List.Description>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Icon name="github" size="large" verticalAlign="middle" />
-                  <List.Content>
-                    <List.Header as="a">Semantic-Org/Semantic-UI-Meteor</List.Header>
-                    <List.Description as="a">Updated 34 mins ago</List.Description>
-                  </List.Content>
-                </List.Item>
+              <List divided relaxed size="large">
+                {this.state.mainCategory
+                  ? this.state.mainCategory.subs.map((subCat, keyId) => (
+                      <ListItemCategoriesWidget
+                        func={this.selectSubCat.bind(this, subCat)}
+                        category={subCat}
+                        key={keyId}
+                      />
+                    ))
+                  : null}
               </List>
             </Segment>
           </Grid.Column>
         </Grid>
       </div>
+    );
+  }
+}
+
+export class ListItemCategoriesWidget extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      active: false
+    };
+  }
+
+  render() {
+    return (
+      <List.Item onClick={() => this.setState({ active: true })} active={true}>
+        <List.Content>
+          <Button inverted primary fluid onClick={this.props.func}>
+            {this.props.category.name}
+          </Button>
+        </List.Content>
+      </List.Item>
     );
   }
 }

@@ -106,7 +106,7 @@ export class UserTicketsPage extends Component {
     return (
       <div>
         <Container>
-          <Header as="h2">Mine varslinger</Header>
+          <Header as="h1">Mine varslinger</Header>
           <Segment basic color="blue">
             <Grid stackable container columns={3}>
               {this.state.tickets.map(ticket =>
