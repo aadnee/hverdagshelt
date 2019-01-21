@@ -1,11 +1,7 @@
-import { News, sync } from '../src/models';
+import { News } from '../src/models';
 import newsManager from '../src/managers/newsManager';
 
 jest.setTimeout(30000);
-
-beforeAll(async () => {
-  await sync;
-});
 
 // Testing adding a new article
 describe('Adding article', () => {
@@ -46,7 +42,7 @@ describe('Adding article', () => {
       }
     );
   });
-
+  //Test for updating an aritcle with correct data
   it('correct data', done => {
     newsManager.updateNews(id, 'TestArticle', 'Nå skal det ha skjedd en endring', 3, 1, 1, function(article) {
       News.findOne({ where: { id: id } }).then(news => {
@@ -67,7 +63,7 @@ describe('Adding article', () => {
       });
     });
   });
-
+  //Test for updating an article with wrong data
   it('Wrong data', done => {
     newsManager.updateNews(-14, 'TestArticle', 'Nå skal det ha skjedd en endring', 3, 1, 1, function(result) {
       expect({
@@ -81,7 +77,7 @@ describe('Adding article', () => {
     });
   });
 });
-
+//Test for finding filtered news
 describe('Get filtered News', () => {
   it('correct data', done => {
     newsManager.getFilteredNews([1], [2], 1, 1, function(news) {

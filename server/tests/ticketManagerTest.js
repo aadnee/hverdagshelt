@@ -1,17 +1,11 @@
-import { Tickets, Uploads, sync } from '../src/models';
+import { Tickets, Uploads } from '../src/models';
 import ticketManager from '../src/managers/ticketManager';
 
 jest.setTimeout(30000);
 
-beforeAll(async () => {
-  await sync;
-});
-
 // Testing adding a new article
-
 describe('Adding ticket', () => {
   it('correct data', done => {
-    //  let id;
     ticketManager.addTicket(
       'TicketTest',
       'Dette er en test som skal funke',
@@ -24,7 +18,6 @@ describe('Adding ticket', () => {
       [],
       1,
       function(ticket) {
-        //  id = ticket.id;
         expect({
           success: ticket.success,
           message: ticket.message.en
@@ -37,7 +30,7 @@ describe('Adding ticket', () => {
     );
   });
 });
-
+//Test for editing a ticket with correct data
 describe('Editing ticket', () => {
   it('correct data', done => {
     let id;
@@ -66,7 +59,7 @@ describe('Editing ticket', () => {
     );
   });
 });
-
+//Test for setting status on a ticket with correct data
 describe('Setting status', () => {
   it('correct data', done => {
     ticketManager.setStatus(1, 4, 1, function(ticket) {
@@ -80,7 +73,7 @@ describe('Setting status', () => {
       done();
     });
   });
-
+  //Test for setting status on a ticket with wrong data
   it('Wrong data', done => {
     ticketManager.setStatus('String', 4, 1, function(ticket) {
       expect({
@@ -94,8 +87,8 @@ describe('Setting status', () => {
     });
   });
 });
-
-describe('Get news by userId', () => {
+// Test for getting tickets based on userID
+describe('Get tickets by userId', () => {
   it('correct data', done => {
     ticketManager.getMyTickets(1, function(tickets) {
       Tickets.findAll({ where: { userId: 1 } }).then(res => {
@@ -111,7 +104,7 @@ describe('Get news by userId', () => {
     });
   });
 });
-
+//Test for getting tickets based on municipalID
 describe('Get local tickets', () => {
   it('correct data', done => {
     ticketManager.getLocalTickets(1, function(tickets) {
@@ -128,7 +121,7 @@ describe('Get local tickets', () => {
     });
   });
 });
-
+//Test for making a ticket into an article
 describe('Make a ticket to an article', () => {
   it('correct data', done => {
     ticketManager.makeNews(
@@ -154,7 +147,7 @@ describe('Make a ticket to an article', () => {
     );
   });
 });
-
+//Test for removing a ticket with correct data
 describe('Withdraw ticket', () => {
   it('correct data', done => {
     ticketManager.withdraw(1, 4, function(result) {
@@ -168,7 +161,7 @@ describe('Withdraw ticket', () => {
       done();
     });
   });
-
+  //Test for removing a ticket with wrong data
   it('Wrong data', done => {
     ticketManager.withdraw(0, 4, function(result) {
       expect({
