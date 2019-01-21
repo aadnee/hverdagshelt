@@ -85,6 +85,7 @@ export class TicketFormWidget extends Component {
   componentWillMount() {
     categoryService.getCategories().then(res => {
       let cats = [];
+      console.log(res.data);
       this.setState({ allCats: res.data });
       res.data.map(cat => {
         cats.push({ key: cat.id, value: cat.id, text: cat.name });
