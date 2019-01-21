@@ -7,8 +7,6 @@ import CompanyRoute from './CompanyRoute';
 import UserRoute from './UserRoute';
 import NonLoggedInRoute from './NonLoggedInRoute';
 
-import {Divider} from 'semantic-ui-react';
-
 import {
     HomePage,
     AdminUsersPage,
@@ -36,7 +34,7 @@ import {
 } from './pages/files';
 
 //Edit MyWidget inside curlybrackets and in the file link.
-import {MapWidget as Widget} from './widgets/MapWidget';
+import {AssignmentWidget as Widget} from './widgets/AssignmentWidget';
 
 export class AppRouter extends Component {
     render() {
@@ -67,16 +65,19 @@ export class AppRouter extends Component {
                     <UserRoute exact path="/tickets" component={UserTicketsPage}/>
                     <UserRoute exact path="/tickets/:ticketid/edit" component={UserTicketsPage}/>
                     <UserRoute exact path="/subscriptions" component={UserSubscriptionPage}/>
+
                     {/* Others */}
                     <NonLoggedInRoute exact path="/register" component={RegisterPage}/>
                     <NonLoggedInRoute exact path="/login" component={LoginPage}/>
                     <Route exact path="/logout" component={LogoutPage}/>
-                    <Route exact path="/404" component={PageNotFoundPage}/>
-                    <Route exact path="/403" component={AccessDeniedPage}/>
-                    <Route component={PageNotFoundPage}/>
 
                     {/* Develoopment */}
                     <Route exact path="/widget" component={Widget}/>
+
+                    {/* Error handling */}
+                    <Route exact path="/404" component={PageNotFoundPage}/>
+                    <Route exact path="/403" component={AccessDeniedPage}/>
+                    <Route component={PageNotFoundPage}/>
                 </Switch>
             </>
         );
