@@ -51,10 +51,25 @@ describe('Finding all companies', () => {
     });
   });
 });
-//Test for editing company with correct data
-describe('Edit and delete company', () => {
+//Tests for adding,editing and deleting a company with correct data
+describe('Add, edit and delete company', () => {
+  let id;
+  it('Correct data', done => {
+    companyManager.addCompany('TestFirma', 'compmany1@company1.com', 321, 1, function(result) {
+      id = result.id;
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: true,
+        message: 'Registration successful.'
+      });
+      done();
+    });
+  });
+  //Test for editing a company
   it('correct data', done => {
-    companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, 4, true, function(result) {
+    companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, id, true, function(result) {
       expect({
         success: result.success,
         message: result.message.en
@@ -67,7 +82,7 @@ describe('Edit and delete company', () => {
   });
   //Test for deleting company with correct data
   it('correct data', done => {
-    companyManager.deleteCompany(4, function(result) {
+    companyManager.deleteCompany(id, function(result) {
       expect({
         success: result.success,
         message: result.message.en
@@ -79,5 +94,34 @@ describe('Edit and delete company', () => {
     });
   });
 });
+
+//Tests about the tasks given the companies
+describe('Finding,accepting, rejecting and finnishing tasks', () => {
+  it('Get tasks, correct data', done => {
+    companyManager.getTasks(4, function(result) {
+      expect({
+        success: result.success
+      }).toEqual({
+        success: true
+      });
+      done();
+    });
+  });
+
+  it('Accept tasks, correct data', done => {
+    companyManager.acceptTask(4, 1, function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: true,
+        message: 'Task accepted.'
+      });
+      done();
+    });
+  });
+});
 //Mangler getTasks
+//Mangler acceptTasks
+//Mangler reject tasks
 //Mangler finnishTasks
