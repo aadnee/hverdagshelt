@@ -16,7 +16,7 @@ describe('Get categories', () => {
     });
   });
 });
-
+//Test for adding category with correct data
 describe('Adding category', () => {
   let id;
   it('correct data', done => {
@@ -30,7 +30,7 @@ describe('Adding category', () => {
       done();
     });
   });
-
+  //Test for adding category with wrong data
   it('Wrong data', done => {
     categoryManager.addCategory('Skog og utmark', 12, function(result) {
       expect({
@@ -41,7 +41,7 @@ describe('Adding category', () => {
       done();
     });
   });
-
+  // Testing for delete category with correct data
   it('Correct data', done => {
     categoryManager.deleteCategory(id, function(result) {
       expect({
@@ -54,7 +54,7 @@ describe('Adding category', () => {
       done();
     });
   });
-
+  // Testing for delete category with wrong data
   it('Wrong data', done => {
     categoryManager.deleteCategory(null, function(result) {
       expect({
@@ -68,7 +68,7 @@ describe('Adding category', () => {
     });
   });
 });
-
+//Test for edit categories with correct data
 describe('Edit categories', () => {
   it('Correct data', done => {
     categoryManager.editCategory(1, 'Endring skjedd', function(result) {
@@ -82,7 +82,7 @@ describe('Edit categories', () => {
       done();
     });
   });
-
+  //Test for edit categories with wrong data
   it('Wrong data', done => {
     categoryManager.editCategory(0, 'Endring skjedd', function(result) {
       expect({

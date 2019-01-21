@@ -16,7 +16,7 @@ describe('Registering in use account', () => {
     });
   });
 });
-
+// Test for login with correct data
 describe('Login with correct details', () => {
   it('correct data', done => {
     userManager.login('user@user.com', '123', function(result) {
@@ -35,7 +35,7 @@ describe('Login with correct details', () => {
     });
   });
 });
-
+// Test for finding all users with correct data
 describe('Finding all users', () => {
   it('correct data', done => {
     userManager.getUsers(function(users) {
@@ -48,7 +48,7 @@ describe('Finding all users', () => {
       done();
     });
   });
-
+  //Test for fin|ding a user based on userID
   it('correct data', done => {
     userManager.getUser(1, function(user) {
       expect({
@@ -76,7 +76,7 @@ describe('Finding all users', () => {
     });
   });
 });
-
+//Test for editing a user with correct data
 describe('Edit and delete user', () => {
   it('correct data', done => {
     userManager.editUser('Nytt Navn', 'user1@user1.com', 321, 1, 1, true, 2, function(result) {
@@ -90,7 +90,7 @@ describe('Edit and delete user', () => {
       done();
     });
   });
-
+  //Test for deleting a user with correct data
   it('correct data', done => {
     userManager.deleteUser(1, function(result) {
       expect({

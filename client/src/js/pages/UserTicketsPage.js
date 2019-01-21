@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
+import { SOFT_DELETED } from '../commons';
 
 export class UserTicketsPage extends Component {
   constructor(props) {
@@ -74,6 +75,7 @@ export class UserTicketsPage extends Component {
 
   componentWillMount() {
     ticketService.getTickets().then(res => {
+      console.log(res.data);
       this.setState({ tickets: res.data });
     });
   }
@@ -88,6 +90,7 @@ export class UserTicketsPage extends Component {
 
     ticketService.deleteTicket(id).then(res => {
       if (res.success) {
+        this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
         toast.success(res.message.no, {
           position: toast.POSITION.TOP_RIGHT
         });
@@ -106,11 +109,13 @@ export class UserTicketsPage extends Component {
           <Header as="h2">Mine varslinger</Header>
           <Segment basic color="blue">
             <Grid stackable container columns={3}>
-              {this.state.tickets.map(ticket => (
-                <Grid.Column key={ticket.id}>
-                  <TicketWidget ticket={ticket} show={this.show} />
-                </Grid.Column>
-              ))}
+              {this.state.tickets.map(ticket =>
+                ticket.status !== SOFT_DELETED ? (
+                  <Grid.Column key={ticket.id}>
+                    <TicketWidget ticket={ticket} show={this.show} />
+                  </Grid.Column>
+                ) : null
+              )}
             </Grid>
           </Segment>
         </Container>

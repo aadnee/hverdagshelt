@@ -15,7 +15,7 @@ describe('MunicipalManager tests', () => {
       done();
     });
   });
-
+  //Test for adding municipals
   it('correct data', done => {
     municipalManager.addMunicipal('Trondheim', function(result) {
       expect({
