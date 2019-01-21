@@ -104,7 +104,7 @@ module.exports = {
 
   getUser: function(id, callback) {
     Users.findOne({
-      where: { id: id, rank: { $not: 2 } },
+      where: { id: id },
       attributes: ['id', 'name', 'email', 'phone', 'rank', 'municipalId', 'notifications']
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
