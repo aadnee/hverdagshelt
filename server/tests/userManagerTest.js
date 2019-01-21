@@ -104,3 +104,22 @@ describe('Edit and delete user', () => {
     });
   });
 });
+//Test for finding municipals based on UserID. Using a nonexisting userID and checking that dataArray is empty.
+describe('Finding municipals', () => {
+  it('correct data', done => {
+    userManager.getMunicipals(-4, function(result) {
+      expect({
+        success: result.success,
+        data: result.data
+      }).toEqual({
+        success: true,
+        data: []
+      });
+      done();
+    });
+  });
+});
+//Mangler login med feil data
+//Mangler changePass
+//Mangler addMunicipal med feil og riktig data
+//Mangler deleteMunicipal
