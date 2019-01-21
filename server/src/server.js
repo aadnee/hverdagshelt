@@ -17,6 +17,9 @@ import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
 import eventManager from './managers/eventManager';
 
+import { syncDatabase } from './models';
+syncDatabase(res => console.log(res));
+
 const public_path = path.join(__dirname, '/../../client/public');
 
 let app = express();
@@ -520,4 +523,4 @@ const options = {
 };
 
 https.createServer(options, app).listen(3001);
-console.log('Server started');
+console.log('Server listening.');

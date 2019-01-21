@@ -15,7 +15,7 @@ export class UserNewsFeedPage extends Component {
         <Divider hidden />
         <Divider hidden />
         <Grid columns={2} centered>
-          <Grid.Column width={11}>
+          <Grid.Column width={16}>
             <Header as="h1">Nyhetsstrøm</Header>
             <NewsFeedWidget />
           </Grid.Column>

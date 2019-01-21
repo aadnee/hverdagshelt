@@ -2,6 +2,7 @@ export const PENDING = 1;
 export const INPROGRESS = 2;
 export const DONE = 3;
 export const REJECTED = 4;
+export const SOFT_DELETED = 5;
 
 export const STATUS = [
   { value: PENDING, norwegian: 'Påventende', english: 'Pending' },
