@@ -43,3 +43,12 @@ input[type='file'] {
 #upload {
   display: none;
 }
+
+/*STYLING FOR SHORTCUTS*/
+
+
+@media only screen and (max-width: 991px) {
+  .hideOnPhone {
+    visibility: hidden;
+  }
+}
