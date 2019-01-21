@@ -54,7 +54,7 @@ describe('Finding all companies', () => {
 //Tests for adding,editing and deleting a company with correct data
 describe('Add, edit and delete company', () => {
   let id;
-  it('Correct data', done => {
+  it('Wrong data', done => {
     companyManager.addCompany('TestFirma', 'compmany1@company1.com', 321, 1, function(result) {
       id = result.id;
       expect({
@@ -69,7 +69,7 @@ describe('Add, edit and delete company', () => {
   });
   //Test for editing a company
   it('correct data', done => {
-    companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 321, 1, id, true, function(result) {
+    companyManager.editCompany('Nytt Firma Navn', 'copmany1@company1.com', 3212, 1, 1, true, function(result) {
       expect({
         success: result.success,
         message: result.message.en
@@ -107,7 +107,7 @@ describe('Finding,accepting, rejecting and finnishing tasks', () => {
       done();
     });
   });
-
+  //Test for accepting a task with correct data
   it('Accept tasks, correct data', done => {
     companyManager.acceptTask(4, 1, function(result) {
       expect({
@@ -120,8 +120,30 @@ describe('Finding,accepting, rejecting and finnishing tasks', () => {
       done();
     });
   });
+  //Test for rejecting a task with correct data
+  it('Reject task, correct data', done => {
+    companyManager.rejectTask(4, 1, function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: true,
+        message: 'Task rejected.'
+      });
+      done();
+    });
+  });
+  //Test for setting a task to finished with correct data
+  it('Finnish task, correct data', done => {
+    companyManager.finishTask(4, 1, function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: true,
+        message: 'Task finished.'
+      });
+      done();
+    });
+  });
 });
-//Mangler getTasks
-//Mangler acceptTasks
-//Mangler reject tasks
-//Mangler finnishTasks
