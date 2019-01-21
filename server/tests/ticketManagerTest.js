@@ -21,7 +21,7 @@ describe('Adding ticket', () => {
       1,
       1,
       true,
-      [0],
+      [],
       1,
       function(ticket) {
         //  id = ticket.id;

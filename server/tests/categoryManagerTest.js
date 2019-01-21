@@ -101,18 +101,3 @@ describe('Edit categories', () => {
     });
   });
 });
-
-describe('get subCategories', () => {
-  it('correct data', done => {
-    categoryManager.getSubCategories(1, function(result) {
-      expect({
-        success: result.success,
-        name: result.data[0].name
-      }).toEqual({
-        success: true,
-        name: 'Setting av brøytestikker'
-      });
-      done();
-    });
-  });
-});
