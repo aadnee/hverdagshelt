@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Container, Grid, Header, Divider, Segment } from 'semantic-ui-react';
+import { Container, Grid, Header, Divider, Segment, Tab } from 'semantic-ui-react';
 
 import { SidebarWidget } from './../widgets/SidebarWidget';
 import { MapWidget } from './../widgets/MapWidget';
@@ -17,24 +17,37 @@ export class HomePage extends Component {
   callback() {}
 
   render() {
+    const panes = [
+      {
+        menuItem: 'Nyhetsstrøm',
+        render: () => (
+          <Tab.Pane className="frontPageFeedTab">
+            <NewsFeedWidget newsOnly />
+          </Tab.Pane>
+        )
+      },
+      {
+        menuItem: 'Arrangementer i Trondheim',
+        render: () => <Tab.Pane className="frontPageFeedTab">Eventstrøm</Tab.Pane>
+      }
+    ];
+
     return (
-      <Container>
-        <Segment basic>
-          <Grid>
-            <Grid.Row columns={2} only="computer">
-              <Grid.Column width={10}>
-                <MapWidget />
+      <Container className="homePageContainer">
+        <Segment basic className="mapGrid">
+          <Grid className="mapGrid">
+            <Grid.Row columns={2} only="computer" className="mapRow">
+              <Grid.Column width={10} className="mapRow">
+                <MapWidget modal />
               </Grid.Column>
-              <Grid.Column width={6} only="computer">
-                <Header as="h5">Nyhetsstrøm</Header>
-                <Segment basic>
-                  <NewsFeedWidget newsOnly />
-                </Segment>
+              <Grid.Column width={6} only="computer" className="frontPageFeed">
+                <Tab menu={{ text: true, secondary: true, pointing: true, color: 'blue' }} panes={panes} />
+                <Divider hidden />
               </Grid.Column>
             </Grid.Row>
 
-            <Grid.Row columns={1} only="mobile tablet">
-              <Grid.Column colSpan={2}>
+            <Grid.Row columns={1} only="mobile tablet" className="mapRow">
+              <Grid.Column colSpan={2} className="mapGrid">
                 <MapWidget modal callback={this.callback} />
               </Grid.Column>
             </Grid.Row>

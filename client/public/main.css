@@ -1,6 +1,6 @@
 /* Custom CSS here */
 .leaflet-container {
-  height: 90vh;
+  height: calc(100vh - 73px);
   width: 100%;
   margin: 0;
   z-index: 0;
@@ -9,6 +9,64 @@
 html,
 body {
   height: 100%;
+}
+
+#root {
+  min-height: 100%;
+}
+
+/* STYLE FOR UNIVERSAL DESIGN */
+.mainSegment {
+  padding-top: 0 !important;
+}
+
+.footerPusher {
+  padding-bottom: 300px;
+}
+
+@media only screen and (max-width: 1280px) {
+  .mapGrid {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  @media only screen and (max-width: 991px) {
+    .mapGrid {
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
+    }
+  }
+
+  .mapRow {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .homePageContainer {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .footerPusher {
+    padding-bottom: 465px !important;
+  }
+
+  .frontPageFeed {
+    height: calc(100vh - 73px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  .frontPageFeedTab {
+    border-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
 }
 
 /* STYLING FOR SIDEBAR */

@@ -1,4 +1,4 @@
-import { Subscriptions, News, Users, Municipals } from '../models';
+import { Subscriptions, News } from '../models';
 
 module.exports = {
   getSubscriptions: function(userId, callback) {
@@ -46,7 +46,7 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: { en: 'Subscription added.', no: 'Abonnement har blitt lagt til.' }
+          message: { en: 'Subscription added.', no: 'Abonnementet ble lagt til.' }
         }),
       err => callback({ success: false, message: err })
     );
@@ -62,7 +62,7 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: { en: 'Subscription deleted.', no: 'Abonnement har blitt fjernet.' }
+          message: { en: 'Subscription deleted.', no: 'Abonnementet ble fjernet.' }
         }),
       err => callback({ success: false, message: err })
     );

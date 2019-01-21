@@ -1,4 +1,4 @@
-import { Users } from '../models';
+import { Users, News, Uploads } from '../models';
 import userManager from './userManager';
 
 module.exports = {
@@ -48,6 +48,34 @@ module.exports = {
       { where: { id: userId, rank: 2 } }
     ).then(
       res => callback({ success: true, message: { en: 'Company updated.', no: 'Firmaet ble oppdatert.' } }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  getTasks: function(companyId, callback) {
+    News.findAll({ include: [{ model: Uploads }], where: { companyId: companyId } }).then(
+      res => callback({ success: true, res: res }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  acceptTask: function(companyId, newsId, callback) {
+    News.update({ companyStatus: 2 }, { where: { id: newsId, companyId: companyId } }).then(
+      res => callback({ success: true, message: { en: 'Task accapted.', no: 'Oppdraget ble godtatt.' } }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  rejectTask: function(companyId, newsId, callback) {
+    News.update({ companyStatus: 4, companyId: null }, { where: { id: newsId, companyId: companyId } }).then(
+      res => callback({ success: true, message: { en: 'Task rejected.', no: 'Oppdraget ble avslått.' } }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  finishTask: function(companyId, newsId, callback) {
+    News.update({ status: 3, companyStatus: 3 }, { where: { id: newsId, companyId: companyId } }).then(
+      res => callback({ success: true, message: { en: 'Task finished.', no: 'Oppdraget ble markert som ferdig.' } }),
       err => callback({ success: false, message: err })
     );
   }

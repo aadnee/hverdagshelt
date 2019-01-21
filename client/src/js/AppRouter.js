@@ -7,6 +7,8 @@ import CompanyRoute from './CompanyRoute';
 import UserRoute from './UserRoute';
 import NonLoggedInRoute from './NonLoggedInRoute';
 
+import { Divider } from 'semantic-ui-react';
+
 import {
   HomePage,
   AdminUsersPage,
