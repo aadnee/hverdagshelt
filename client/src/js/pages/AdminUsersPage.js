@@ -10,7 +10,7 @@ export class AdminUsersPage extends Component {
   render() {
     return (
       <Container>
-        <Header as="h2">Brukere</Header>
+        <Header as="h1">Brukere</Header>
         <Segment basic color="blue">
           <p>Litt informasjon om hvordan man endrer brukere</p>
           <Grid divided>
