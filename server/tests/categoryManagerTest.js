@@ -60,7 +60,7 @@ describe('Adding category', () => {
     });
   });
 
-  it('Correct data', done => {
+  it('Wrong data', done => {
     categoryManager.deleteCategory(null, function(result) {
       expect({
         success: result.success,
@@ -68,6 +68,34 @@ describe('Adding category', () => {
       }).toEqual({
         success: false,
         message: 'Cannot delete a category with subcategories.'
+      });
+      done();
+    });
+  });
+});
+
+describe('Edit categories', () => {
+  it('Correct data', done => {
+    categoryManager.editCategory(1, 'Endring skjedd', function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: true,
+        message: 'Category updated successfully'
+      });
+      done();
+    });
+  });
+
+  it('Wrong data', done => {
+    categoryManager.editCategory(0, 'Endring skjedd', function(result) {
+      expect({
+        success: result.success,
+        message: result.message.en
+      }).toEqual({
+        success: false,
+        message: 'Category not found.'
       });
       done();
     });
