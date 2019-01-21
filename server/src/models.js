@@ -48,7 +48,8 @@ export let Municipals = sequelize.define('municipals', {
 
 export let Categories = sequelize.define('categories', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: Sequelize.STRING, allowNull: false }
+  name: { type: Sequelize.STRING, allowNull: false },
+  active: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true }
 });
 
 export let Tickets = sequelize.define('tickets', {
@@ -144,18 +145,22 @@ export let sync = sequelize.sync({ force: production ? false : true }).then(asyn
       name: 'Stranda'
     });
     await Categories.create({
-      name: 'Vei og trafikk'
+      name: 'Vei og trafikk',
+      active: true
     });
     await Categories.create({
-      name: 'Brøyting av snø'
+      name: 'Brøyting av snø',
+      active: true
     });
     await Categories.create({
       name: 'Setting av brøytestikker',
-      parentId: 1
+      parentId: 1,
+      active: false
     });
     await Categories.create({
       name: 'Setting av brøytestikker 2',
-      parentId: 1
+      parentId: 1,
+      active: true
     });
     await Users.create({
       name: 'Ola',
