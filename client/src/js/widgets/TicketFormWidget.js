@@ -39,14 +39,15 @@ export class TicketFormWidget extends Component {
       selectedCategory: false,
       modalMessage: '',
       modalOpen: false,
-      image: null
+      image: [],
+      imageUploaded: false
     };
   }
   close = () => this.setState({ modalOpen: false });
 
   componentDidUpdate(prevProps) {
     if (prevProps != this.props) {
-      console.log(this.props);
+      //console.log(this.props);
       this.setState({ address: this.props.address, latlng: this.props.latlng });
     }
   }
@@ -87,7 +88,7 @@ export class TicketFormWidget extends Component {
   }
 
   resetValues = () => {
-    console.log(this.props.ticket);
+    //console.log(this.props.ticket);
     this.props.ticket
       ? this.setState({
           address: this.props.ticket.address,
@@ -191,28 +192,45 @@ export class TicketFormWidget extends Component {
                         type="file"
                         multiple
                         className={'ui button'}
-                        //For multiple files(?) attr: multiple
-
                         onChange={(event, data) => {
-                          console.log(event.target.files[0].name);
-
-                          this.handleInput('image', event.target.files);
+                          let images = [];
+                          for (let i = 0; i < event.target.files.length; i++) {
+                            images.push(event.target.files[i]);
+                          }
+                          console.log(images);
+                          this.setState({ image: images }, () => {
+                            this.setState({ imageUploaded: true });
+                            console.log(this.state.image);
+                          });
                         }}
                       />
                     </Label>
-                    {this.state.image != null ? (
-                      <Label
-                        removeIcon={<Icon name={'delete'} />}
-                        size={'large'}
-                        onRemove={(event, data) => {
-                          document.getElementById('upload').value = null;
-                          this.setState({ image: null });
-                          console.log(this.state);
-                        }}
-                        as={'a'}
-                        content={this.state.image[0].name}
-                      />
-                    ) : null}
+                    {this.state.imageUploaded
+                      ? this.state.image.map((image, i) => {
+                          return (
+                            <Label
+                              key={i}
+                              id={i}
+                              removeIcon={<Icon name={'delete'} />}
+                              size={'large'}
+                              onRemove={(event, data) => {
+                                let newImages = [];
+                                this.state.image.map((img, i) => {
+                                  if (i !== data.id) {
+                                    newImages.push(img);
+                                  }
+                                });
+
+                                this.setState({ image: newImages }, () => {
+                                  console.log(this.state.image);
+                                });
+                              }}
+                              as={'a'}
+                              content={image.name}
+                            />
+                          );
+                        })
+                      : null}
                   </Label>
                 </Form.Field>
 
@@ -263,7 +281,7 @@ export class TicketFormWidget extends Component {
                     color="blue"
                     fluid
                     size="large"
-                    onClick={() =>
+                    onClick={() => {
                       this.props.submit(
                         this.state.headline,
                         this.state.details,
@@ -275,8 +293,8 @@ export class TicketFormWidget extends Component {
                         Cookies.get('municipalId'),
                         this.state.subscription === 'true',
                         this.state.image
-                      )
-                    }
+                      );
+                    }}
                   >
                     Send inn
                   </Button>
