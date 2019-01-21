@@ -198,7 +198,7 @@ export class PublishNewsFormWidget extends Component {
                   </Form.Field>
                 ) : null}
                 <Form.Field />
-                /*
+                {/*
                 <Checkbox
                   checked={this.state.publish}
                   label={<label>Gjør nyhet synlig</label>}
@@ -207,7 +207,7 @@ export class PublishNewsFormWidget extends Component {
                     console.log(data.checked);
                   }}
                 />
-                */
+                */}
                 <Button
                   color="blue"
                   fluid
