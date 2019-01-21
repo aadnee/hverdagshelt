@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Modal, Button, Message, Container } from 'semantic-ui-react';
+import { Grid, Header, Modal, Button, Message, Container, Segment } from 'semantic-ui-react';
 
 import { NewsCaseWidget } from '../widgets/NewsCaseWidget';
 import { subscriptionService } from '../services/SubscriptionServices';
@@ -63,29 +63,31 @@ export class UserSubscriptionPage extends Component {
     return (
       <Container>
         <Header as="h1">Nyheter jeg abonnerer på</Header>
-        <Grid container centered>
-          {this.state.news.length < 1 ? (
-            <Grid.Row centered>
-              <Message size={'massive'}>
-                <p>Du abonnerer ikke på noen nyheter</p>
-              </Message>
-            </Grid.Row>
-          ) : null}
-          {this.state.news.map(news => {
-            return (
-              <Grid.Row key={news.id}>
-                <NewsCaseWidget show={this.show.bind(this, news.id)} newscase={news} />
+        <Segment color="blue" basic>
+          <Grid container centered>
+            {this.state.news.length < 1 ? (
+              <Grid.Row centered>
+                <Message size={'massive'}>
+                  <p>Du abonnerer ikke på noen nyheter</p>
+                </Message>
               </Grid.Row>
-            );
-          })}
-        </Grid>
-        <MessageWidget
-          title={'Avmeld nyhet'}
-          size={'tiny'}
-          open={this.state.modalOpen}
-          message="Er du sikker på at du vil uavabonneren't på denne nyheten?"
-          customFunc={this.unsubscribe.bind(this, this.state.modalParam)}
-        />
+            ) : null}
+            {this.state.news.map(news => {
+              return (
+                <Grid.Row key={news.id}>
+                  <NewsCaseWidget show={this.show.bind(this, news.id)} newscase={news} />
+                </Grid.Row>
+              );
+            })}
+          </Grid>
+          <MessageWidget
+            title={'Avmeld nyhet'}
+            size={'tiny'}
+            open={this.state.modalOpen}
+            message="Er du sikker på at du vil uavabonneren't på denne nyheten?"
+            customFunc={this.unsubscribe.bind(this, this.state.modalParam)}
+          />
+        </Segment>
       </Container>
     );
   }
