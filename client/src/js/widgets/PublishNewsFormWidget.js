@@ -19,6 +19,7 @@ import {
 } from 'semantic-ui-react';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
+import { Consumer } from '../context';
 
 //import {} from './';
 
@@ -38,7 +39,8 @@ export class PublishNewsFormWidget extends Component {
       position: [1, 1],
       subscription: false,
       image: this.props.image,
-      imgModalOpen: false
+      imgModalOpen: false,
+      publish: true
     };
   }
 
@@ -88,6 +90,7 @@ export class PublishNewsFormWidget extends Component {
   }
 
   render() {
+    const mun = Consumer._currentValue.user.municipalId;
     return (
       <Container>
         <Grid verticalAlign="middle">
@@ -152,7 +155,7 @@ export class PublishNewsFormWidget extends Component {
                     </Grid.Column>
                   </Grid>
                 </Form.Field>
-                {this.state.image ? (
+                {this.state.image.length > 0 ? (
                   <Form.Field>
                     <Label basic as={'label'}>
                       {this.state.image.map((image, i) => {
@@ -180,14 +183,6 @@ export class PublishNewsFormWidget extends Component {
                                     console.log(this.state.image);
                                   });
                                 }}
-                                onClick={(event, data) => {
-                                  let img = this.state.image.filter(img => {
-                                    console.log(typeof img.id);
-                                    console.log(typeof event.target.id);
-                                    return img.id == event.target.id;
-                                  });
-                                  console.log(img);
-                                }}
                                 as={'a'}
                                 content={image.filename}
                               />
@@ -202,6 +197,17 @@ export class PublishNewsFormWidget extends Component {
                     </Label>
                   </Form.Field>
                 ) : null}
+                <Form.Field />
+                /*
+                <Checkbox
+                  checked={this.state.publish}
+                  label={<label>Gjør nyhet synlig</label>}
+                  onChange={(event, data) => {
+                    this.handleInput('publish', data.checked);
+                    console.log(data.checked);
+                  }}
+                />
+                */
                 <Button
                   color="blue"
                   fluid
@@ -213,7 +219,7 @@ export class PublishNewsFormWidget extends Component {
                       this.state.position[0],
                       this.state.position[1],
                       this.state.category,
-                      Cookies.get('municipalId')
+                      mun
                     )
                   }
                 >
