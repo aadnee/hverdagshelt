@@ -1,12 +1,12 @@
 import React from 'react';
-import {Component} from 'react';
-import {NavLink} from 'react-router-dom';
+import { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import L from 'leaflet';
 import * as ELG from 'esri-leaflet-geocoder';
 import 'esri-leaflet';
-import {Map, Marker, Popup, TileLayer} from 'react-leaflet';
-import {Button, Icon, Modal} from 'semantic-ui-react';
-import {TicketFormWidget} from '../widgets/TicketFormWidget';
+import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Button, Icon, Modal } from 'semantic-ui-react';
+import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { toast } from 'react-toastify';
 import { Consumer } from '../context';
 
@@ -34,7 +34,7 @@ export class MapWidget extends Component {
       info: null,
       reverseSearch: null,
       reverseSearchRes: null,
-      loggedIn: (Consumer._currentValue.user ? true : false)
+      loggedIn: Consumer._currentValue.user ? true : false
     };
     this.mapRef = React.createRef();
     this.markerRef = React.createRef();
@@ -66,7 +66,7 @@ export class MapWidget extends Component {
             userPos: [e.latitude, e.longitude],
             foundPos: true
           });
-          if(self.props.callback){
+          if (self.props.callback) {
             self.props.callback(e.latlng, result.address.Address + ', ' + result.address.Subregion);
           }
         });
@@ -82,20 +82,19 @@ export class MapWidget extends Component {
       useMapBounds: false,
       collapseAfterResult: false,
       expanded: true,
-      placeholder: 'Søk etter steder eller adresser',
+      placeholder: 'Søk etter steder eller adresser'
     }).addTo(map);
     searchControl.on('results', function(data) {
       console.log(data.results.length);
       if (data.results.length < 1) {
         toast.warn('Ingen lokasjon funnet');
-      }
-      else {
+      } else {
         self.handleClick(data.results[0]);
       }
     });
     //console.log(this.userMarkerPosRef.current);
     //if(this.state.foundPos)this.userMarkerPosRef.current.leafletElement.openPopup();
-    this.setState({map: map, reverseSearch: reverseSearch});
+    this.setState({ map: map, reverseSearch: reverseSearch });
     /*setTimeout(() => {
         console.log(this.markerRef.current.leafletElement);
         this.userMarkerPosRef.current.leafletElement.openPopup();
@@ -154,8 +153,8 @@ export class MapWidget extends Component {
               <Popup open={true}>
                 <b>{this.state.info}</b>
                 <br />
-                {(this.props.modal && this.state.loggedIn) ? (
-                  <Modal trigger={<Button>Meld hendelse her</Button>}>
+                {this.props.modal && this.state.loggedIn ? (
+                  <Modal trigger={<Button>Meld hendelse her</Button>} closeIcon>
                     <TicketFormWidget
                       submit={this.props.submit}
                       latlng={this.state.markerPos}
@@ -171,8 +170,8 @@ export class MapWidget extends Component {
               <Popup open={true}>
                 <b>Din posisjon: {this.state.userInfo}</b>
                 <br />
-                {(this.props.modal && this.props.loggedIn) ? (
-                  <Modal trigger={<Button>Meld hendelse her</Button>}>
+                {this.props.modal && this.props.loggedIn ? (
+                  <Modal trigger={<Button>Meld hendelse her</Button>} closeIcon>
                     <TicketFormWidget
                       submit={this.props.submit}
                       latlng={this.state.userPos}
@@ -196,7 +195,7 @@ export class MapWidget extends Component {
     }
     if (this.state.placedMarker) {
       this.state.marker.closePopup();
-      this.setState({area: [this.state.markerPos], info: null});
+      this.setState({ area: [this.state.markerPos], info: null });
     }
     if (this.state.areaToggle && this.state.placedMarker) {
       this.state.reverseSearch.latlng(this.state.marker.getLatLng()).run(function(error, result) {
@@ -255,25 +254,25 @@ export class MapWidget extends Component {
       if (this.state.poly) this.state.map.removeLayer(this.state.poly);
       this.state.poly = L.polygon(this.state.area).addTo(this.state.map);
     } else {
-      this.state.reverseSearch.latlng(e.latlng).run(function (error, result) {
-        if(result.address.Address){
+      this.state.reverseSearch.latlng(e.latlng).run(function(error, result) {
+        if (result.address.Address) {
           info = result.address.Address + ', ' + result.address.Subregion;
-          self.setState({reverseSearchRes: result, info: info});
-        }else{
+          self.setState({ reverseSearchRes: result, info: info });
+        } else {
           info = result.address.Match_addr + ', ' + result.address.Subregion;
-          self.setState({reverseSearchRes: result, info: info});
+          self.setState({ reverseSearchRes: result, info: info });
         }
         self.state.marker.openPopup();
         console.log(info);
-        if(self.props.callback){
+        if (self.props.callback) {
           self.props.callback(e.latlng, info);
         }
       });
       this.state.map.flyTo(e.latlng, 18);
     }
-    this.setState({markerPos: e.latlng, placedMarker: true});
+    this.setState({ markerPos: e.latlng, placedMarker: true });
     setTimeout(() => {
-      this.setState({marker: this.markerRef.current.leafletElement});
+      this.setState({ marker: this.markerRef.current.leafletElement });
     }, 10);
   };
 }

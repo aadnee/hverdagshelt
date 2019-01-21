@@ -10,17 +10,22 @@ export class HeaderWidget extends React.Component {
     let loggedIn = Consumer._currentValue.user ? true : false;
     return (
       <Menu inverted color="blue" secondary style={{ marginBottom: 0 }}>
-        {loggedIn ? <Menu.Item onClick={() => this.props.toggle(true)} icon="list layout" /> : null}
+        {loggedIn ? (
+          <Menu.Item onClick={() => this.props.toggle(true)}>
+            <Icon name="list layout" />
+            Meny
+          </Menu.Item>
+        ) : null}
         <Menu.Item>
           <Grid>
             <Grid.Row only="computer tablet">
               <NavLink to="/">
-                <Image src="img/compact-vector-logo-lav-hvit.png" size="medium" />
+                <Image src="img/compact-vector-logo-lav-hvit.png" className="headerImg" size="medium" />
               </NavLink>
             </Grid.Row>
             <Grid.Row only="mobile">
               <NavLink to="/">
-                <Image src="img/logo-only-hvit.png" size="tiny" />
+                <Image src="img/logo-only-hvit.png" className="headerImg" size="tiny" />
               </NavLink>
             </Grid.Row>
           </Grid>
@@ -47,7 +52,7 @@ export class MyPageHeaderWidget extends React.Component {
 export class LoginRegisterHeaderWidget extends React.Component {
   render() {
     return (
-      <Dropdown item icon="user" text={'Ikke logget inn'}>
+      <Dropdown item icon="user" text={'Logg inn her'}>
         <Dropdown.Menu>
           <Dropdown.Item onClick={() => Consumer._currentValue.history.push('/login')}>Logg inn</Dropdown.Item>
           <Dropdown.Item onClick={() => Consumer._currentValue.history.push('/register')}>Registrer deg</Dropdown.Item>
