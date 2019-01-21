@@ -8,7 +8,6 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import cors from 'cors';
-import { Users } from './models.js';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
@@ -16,6 +15,10 @@ import subscriptionManager from './managers/subscriptionManager';
 import municipalManager from './managers/municipalManager';
 import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
+import eventManager from './managers/eventManager';
+
+import { syncDatabase } from './models';
+syncDatabase(res => console.log(res));
 
 const public_path = path.join(__dirname, '/../../client/public');
 
@@ -39,44 +42,75 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
-app.post('/api/news/filter', function(req, res) {
-  newsManager.getFilteredNews(req.body.municipalIds, req.body.categoryIds, req.body.page, req.body.limit, function(
+app.post('/api/events/filter', (req, res) => {
+  let b = req.body;
+  eventManager.getFilteredEvents(b.municipalIds, b.page, b.limit, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/events', ensureEmployee, (req, res) => {
+  let b = req.body;
+  eventManager.addEvent(b.title, b.description, b.lat, b.lon, b.address, b.start, b.end, b.municipalId, function(
     result
   ) {
     res.json(result);
   });
 });
 
-app.put('/api/news/:id', ensureEmployee, function(req, res) {
-  newsManager.updateNews(
-    req.params.id,
-    req.body.title,
-    req.body.description,
-    req.body.status,
-    req.body.categoryId,
-    req.body.companyId,
+app.put('/api/events/:eventId', ensureEmployee, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  eventManager.editEvent(
+    p.eventId,
+    b.title,
+    b.description,
+    b.lat,
+    b.lon,
+    b.address,
+    b.start,
+    b.end,
+    b.municipalId,
     function(result) {
       res.json(result);
     }
   );
 });
 
-app.post('/api/news', ensureEmployee, function(req, res) {
-  newsManager.addArticle(
-    req.body.title,
-    req.body.description,
-    req.body.categoryId,
-    req.body.lat,
-    req.body.lon,
-    req.body.municipalId,
-    function(result) {
-      res.json(result);
-    }
-  );
+app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
+  let p = req.params;
+  eventManager.deleteEvent(p.eventId, function(result) {
+    res.json(result);
+  });
 });
 
-app.post('/api/login', function(req, res) {
-  userManager.login(req.body.email, req.body.password, function(result) {
+app.post('/api/news/filter', (req, res) => {
+  let b = req.body;
+  newsManager.getFilteredNews(b.municipalIds, b.categoryIds, b.page, b.limit, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/news/:id', ensureEmployee, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  newsManager.updateNews(p.id, b.title, b.description, b.status, b.categoryId, b.companyId, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/news', ensureEmployee, (req, res) => {
+  let b = req.body;
+  newsManager.addArticle(b.title, by.description, b.categoryId, b.lat, b.lon, b.address, b.municipalId, function(
+    result
+  ) {
+    res.json(result);
+  });
+});
+
+app.post('/api/login', (req, res) => {
+  let b = req.body;
+  userManager.login(b.email, b.password, function(result) {
     res.cookie('token', result.token);
     res.cookie('rank', result.rank);
     res.cookie('municipalId', result.municipalId);
@@ -84,13 +118,14 @@ app.post('/api/login', function(req, res) {
   });
 });
 
-app.post('/api/register', function(req, res) {
-  userManager.register(req.body.name, req.body.email, req.body.phone, req.body.municipalId, 1, function(result) {
+app.post('/api/register', (req, res) => {
+  let b = req.body;
+  userManager.register(b.name, b.email, b.phone, b.municipalId, 1, function(result) {
     res.json(result);
   });
 });
 
-app.get('/api/me', ensureLogin, function(req, res) {
+app.get('/api/me', ensureLogin, (req, res) => {
   getUserId(req, function(userId) {
     userManager.getUser(userId, function(result) {
       res.json(result);
@@ -98,31 +133,21 @@ app.get('/api/me', ensureLogin, function(req, res) {
   });
 });
 
-app.put('/api/me', ensureLogin, function(req, res) {
+app.put('/api/me', ensureLogin, (req, res) => {
+  let b = req.body;
   getUserId(req, function(userId) {
     getUserRank(req, function(userRank) {
-      userManager.editUser(
-        req.body.name,
-        req.body.email,
-        req.body.phone,
-        req.body.municipalId,
-        userId,
-        userRank,
-        function(result) {
-          if (
-            req.body.oldPassword &&
-            req.body.newPassword &&
-            req.body.oldPassword != '' &&
-            req.body.newPassword != ''
-          ) {
-            userManager.changePass(userId, req.body.oldPassword, req.body.newPassword, function(result2) {
-              res.json(result2);
-            });
-          } else {
+      userManager.editUser(b.name, b.email, b.phone, b.municipalId, userId, b.notifications, userRank, function(
+        result
+      ) {
+        if (b.oldPassword && b.newPassword && b.oldPassword != '' && b.newPassword != '') {
+          userManager.changePass(userId, b.oldPassword, b.newPassword, function(result) {
             res.json(result);
-          }
+          });
+        } else {
+          res.json(result);
         }
-      );
+      });
     });
   });
 });
@@ -134,29 +159,60 @@ app.get('/api/users', ensureAdmin, (req, res) => {
 });
 
 app.get('/api/users/:id', ensureAdmin, (req, res) => {
-  userManager.getUser(req.params.id, function(result) {
+  let p = req.params;
+  userManager.getUser(p.id, function(result) {
     res.json(result);
   });
 });
 
 app.delete('/api/users/:id', ensureAdmin, (req, res) => {
-  userManager.deleteUser(req.params.id, function(result) {
+  let p = req.params;
+  userManager.deleteUser(p.id, function(result) {
     res.json(result);
   });
 });
 
-app.put('/api/users/:id', ensureAdmin, function(req, res) {
-  userManager.editUser(
-    req.body.name,
-    req.body.email,
-    req.body.phone,
-    req.body.municipalId,
-    req.params.id,
-    req.body.rank,
-    function(result) {
+app.put('/api/users/:id', ensureAdmin, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  userManager.editUser(b.name, b.email, b.phone, b.municipalId, p.id, b.rank, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/tasks', ensureLogin, (req, res) => {
+  getUserId(req, function(userId) {
+    companyManager.getTasks(userId, function(result) {
       res.json(result);
-    }
-  );
+    });
+  });
+});
+
+app.put('/api/tasks/:newsId/accept', ensureLogin, (req, res) => {
+  let p = req.params;
+  getUserId(req, function(userId) {
+    companyManager.acceptTask(userId, p.newsId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.put('/api/tasks/:newsId/reject', ensureLogin, (req, res) => {
+  let p = req.params;
+  getUserId(req, function(userId) {
+    companyManager.rejectTask(userId, p.newsId, function(result) {
+      res.json(result);
+    });
+  });
+});
+
+app.put('/api/tasks/:newsId/finish', ensureLogin, (req, res) => {
+  let p = req.params;
+  getUserId(req, function(userId) {
+    companyManager.finishTask(userId, p.newsId, function(result) {
+      res.json(result);
+    });
+  });
 });
 
 app.get('/api/companies', ensureEmployee, (req, res) => {
@@ -166,110 +222,128 @@ app.get('/api/companies', ensureEmployee, (req, res) => {
 });
 
 app.get('/api/companies/:companyId', ensureEmployee, (req, res) => {
-  companyManager.getCompany(req.params.companyId, function(result) {
+  let p = req.params;
+  companyManager.getCompany(p.companyId, function(result) {
     res.json(result);
   });
 });
 
 app.delete('/api/companies/:id', ensureEmployee, (req, res) => {
-  companyManager.deleteCompany(req.params.id, function(result) {
+  let p = req.params;
+  companyManager.deleteCompany(p.id, function(result) {
     res.json(result);
   });
 });
 
 app.post('/api/companies', ensureEmployee, (req, res) => {
-  companyManager.addCompany(req.body.name, req.body.email, req.body.phone, req.body.municipalId, function(result) {
+  let b = req.body;
+  companyManager.addCompany(b.name, b.email, b.phone, b.municipalId, function(result) {
     res.json(result);
   });
 });
 
-app.put('/api/companies/:id', ensureEmployee, function(req, res) {
+app.put('/api/companies/:id', ensureEmployee, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  companyManager.editCompany(b.name, b.email, b.phone, b.municipalId, p.id, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
+  let p = req.params;
+  companyManager.getLocalCompanies(p.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/tickets', ensureLogin, upload.array('images', 12), (req, res) => {
+  let b = req.body;
   getUserId(req, function(userId) {
-    companyManager.editCompany(req.body.name, req.body.email, req.body.phone, req.body.municipalId, userId, function(
-      result
-    ) {
+    ticketManager.addTicket(
+      b.title,
+      b.description,
+      b.lat,
+      b.lon,
+      b.address,
+      b.categoryId,
+      b.municipalId,
+      b.subscribed,
+      req.files,
+      userId,
+      function(result) {
+        res.json(result);
+      }
+    );
+  });
+});
+
+app.put('/api/tickets/:ticketId', ensureLogin, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  getUserId(req, function(userId) {
+    ticketManager.editTicket(
+      b.title,
+      b.description,
+      b.lat,
+      b.lon,
+      b.address,
+      b.categoryId,
+      b.municipalId,
+      b.subscribed,
+      userId,
+      p.ticketId,
+      function(result) {
+        res.json(result);
+      }
+    );
+  });
+});
+
+app.put('/api/tickets/:ticketId/reject', ensureEmployee, (req, res) => {
+  let p = req.params;
+  ticketManager.setStatus(4, p.ticketId, null, function(result) {
+    res.json(result);
+  });
+});
+
+app.delete('/api/tickets/:ticketId/withdraw', ensureLogin, (req, res) => {
+  let p = req.params;
+  getUserId(req, function(userId) {
+    ticketManager.withdraw(userId, p.ticketId, function(result) {
       res.json(result);
     });
   });
 });
 
-app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
-  companyManager.getLocalCompanies(req.params.municipalId, function(result) {
-    res.json(result);
-  });
-});
-
-app.post('/api/tickets', ensureLogin, upload.single('image'), function(req, res) {
-  let image = null;
-  if (req.file) {
-    let file = req.file;
-    image = file.filename;
-  }
-  getUserId(req, function(userId) {
-    ticketManager.addTicket(
-      req.body.title,
-      req.body.description,
-      req.body.lat,
-      req.body.lon,
-      req.body.categoryId,
-      req.body.municipalId,
-      req.body.subscribed,
-      userId,
-      image,
-      function(result) {
-        res.json(result);
-      }
-    );
-  });
-});
-
-app.put('/api/tickets/:ticketId', ensureLogin, upload.single('image'), function(req, res) {
-  let image = null;
-  if (req.file) {
-    let file = req.file;
-    image = file.filename;
-  }
-  getUserId(req, function(userId) {
-    ticketManager.editTicket(
-      req.body.title,
-      req.body.description,
-      req.body.lat,
-      req.body.lon,
-      req.body.categoryId,
-      req.body.municipalId,
-      req.body.subscribed,
-      userId,
-      req.params.ticketId,
-      image,
-      function(result) {
-        res.json(result);
-      }
-    );
-  });
-});
-
-app.put('/api/tickets/:ticketId/reject', ensureEmployee, function(req, res) {
-  ticketManager.setStatus(4, req.params.ticketId, null, function(result) {
-    res.json(result);
-  });
-});
-
-app.put('/api/tickets/:ticketId/accept', ensureEmployee, function(req, res) {
+app.put('/api/tickets/:ticketId/accept', ensureEmployee, (req, res) => {
+  let b = req.body;
+  let p = req.params;
   ticketManager.makeNews(
-    req.params.ticketId,
-    req.body.title,
-    req.body.description,
-    req.body.lat,
-    req.body.lon,
-    req.body.categoryId,
-    req.body.municipalId,
+    p.ticketId,
+    b.title,
+    b.description,
+    b.lat,
+    b.lon,
+    b.address,
+    b.categoryId,
+    b.municipalId,
+    b.imageIds ? b.imageIds : [],
     function(result) {
       res.json(result);
     }
   );
 });
 
-app.get('/api/mytickets', ensureLogin, function(req, res) {
+app.put('/api/tickets/:ticketId/link', ensureEmployee, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  ticketManager.setStatus(3, p.ticketId, b.newsId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/mytickets', ensureLogin, (req, res) => {
   getUserId(req, function(userId) {
     ticketManager.getMyTickets(userId, function(result) {
       res.json(result);
@@ -278,48 +352,61 @@ app.get('/api/mytickets', ensureLogin, function(req, res) {
 });
 
 app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
-  ticketManager.getLocalTickets(req.params.municipalId, function(result) {
+  let p = req.params;
+  ticketManager.getLocalTickets(p.municipalId, function(result) {
     res.json(result);
   });
 });
 
-app.get('/api/categories', ensureLogin, function(req, res) {
+app.get('/api/categories', ensureLogin, (req, res) => {
   categoryManager.getCategories(function(result) {
     res.json(result);
   });
 });
 
-app.get('/api/categories/:parentId', ensureLogin, function(req, res) {
-  categoryManager.getSubCategories(req.params.parentId, function(result) {
+app.get('/api/categories/:parentId', ensureLogin, (req, res) => {
+  let p = req.params;
+  categoryManager.getSubCategories(p.parentId, function(result) {
     res.json(result);
   });
 });
 
-app.delete('/api/categories/:id', ensureAdmin, function(req, res) {
-  categoryManager.deleteCategory(req.params.id, function(result) {
+app.delete('/api/categories/:id', ensureAdmin, (req, res) => {
+  let p = req.params;
+  categoryManager.deleteCategory(p.id, function(result) {
     res.json(result);
   });
 });
 
-app.post('/api/categories', ensureEmployee, (req, res) => {
-  categoryManager.addCategory(req.body.name, req.body.parentId, function(result) {
+app.put('/api/categories/:id', ensureAdmin, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  categoryManager.editCategory(p.id, b.name, function(result) {
     res.json(result);
   });
 });
 
-app.get('/api/municipals', function(req, res) {
+app.post('/api/categories', ensureAdmin, (req, res) => {
+  let b = req.body;
+  categoryManager.addCategory(b.name, b.parentId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/municipals', (req, res) => {
   municipalManager.getMunicipals(function(result) {
     res.json(result);
   });
 });
 
 app.post('/api/municipals', ensureAdmin, (req, res) => {
-  municipalManager.addMunicipal(req.body.name, function(result) {
+  let b = req.body;
+  municipalManager.addMunicipal(b.name, function(result) {
     res.json(result);
   });
 });
 
-app.get('/api/subscriptions', ensureLogin, function(req, res) {
+app.get('/api/subscriptions', ensureLogin, (req, res) => {
   getUserId(req, function(userId) {
     subscriptionManager.getSubscriptions(userId, function(result) {
       res.json(result);
@@ -327,23 +414,26 @@ app.get('/api/subscriptions', ensureLogin, function(req, res) {
   });
 });
 
-app.post('/api/subscriptions', ensureLogin, function(req, res) {
+app.post('/api/subscriptions', ensureLogin, (req, res) => {
+  let b = req.body;
   getUserId(req, function(userId) {
-    subscriptionManager.addSubscription(req.body.newsId, userId, function(result) {
+    subscriptionManager.addSubscription(b.newsId, userId, function(result) {
       res.json(result);
     });
   });
 });
 
-app.post('/api/subscriptions', ensureAdmin, function(req, res) {
-  subscriptionManager.addSubscription(req.body.newsId, req.body.userId, function(result) {
+app.post('/api/subscriptions', ensureAdmin, (req, res) => {
+  let b = req.body;
+  subscriptionManager.addSubscription(b.newsId, b.userId, function(result) {
     res.json(result);
   });
 });
 
-app.delete('/api/subscriptions/:newsId', ensureLogin, function(req, res) {
+app.delete('/api/subscriptions/:newsId', ensureLogin, (req, res) => {
+  let p = req.params;
   getUserId(req, function(userId) {
-    subscriptionManager.deleteSubscription(req.params.newsId, userId, function(result) {
+    subscriptionManager.deleteSubscription(p.newsId, userId, function(result) {
       res.json(result);
     });
   });
@@ -358,16 +448,18 @@ app.get('/api/mymunicipals', ensureLogin, (req, res) => {
 });
 
 app.post('/api/mymunicipals', ensureLogin, (req, res) => {
+  let b = req.body;
   getUserId(req, function(userId) {
-    userManager.addMunicipal(userId, req.body.municipalId, function(result) {
+    userManager.addMunicipal(userId, b.municipalId, function(result) {
       res.json(result);
     });
   });
 });
 
 app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
+  let p = req.params;
   getUserId(req, function(userId) {
-    userManager.deleteMunicipal(userId, req.params.municipalId, function(result) {
+    userManager.deleteMunicipal(userId, p.municipalId, function(result) {
       res.json(result);
     });
   });
@@ -431,4 +523,4 @@ const options = {
 };
 
 https.createServer(options, app).listen(3001);
-console.log('Server started');
+console.log('Server listening.');

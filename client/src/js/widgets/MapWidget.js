@@ -8,6 +8,7 @@ import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Button, Icon, Modal } from 'semantic-ui-react';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { toast } from 'react-toastify';
+import { Consumer } from '../context';
 
 //import {} from './';
 
@@ -32,7 +33,8 @@ export class MapWidget extends Component {
       areaToggle: false,
       info: null,
       reverseSearch: null,
-      reverseSearchRes: null
+      reverseSearchRes: null,
+      loggedIn: Consumer._currentValue.user ? true : false
     };
     this.mapRef = React.createRef();
     this.markerRef = React.createRef();
@@ -64,7 +66,9 @@ export class MapWidget extends Component {
             userPos: [e.latitude, e.longitude],
             foundPos: true
           });
-          self.props.callback(e.latlng, result.address.Address + ', ' + result.address.Subregion);
+          if (self.props.callback) {
+            self.props.callback(e.latlng, result.address.Address + ', ' + result.address.Subregion);
+          }
         });
       })
       .on('locationerror', function(e) {
@@ -76,6 +80,8 @@ export class MapWidget extends Component {
       providers: [arcgisOnline],
       allowMultipleResults: false,
       useMapBounds: false,
+      collapseAfterResult: false,
+      expanded: true,
       placeholder: 'Søk etter steder eller adresser'
     }).addTo(map);
     searchControl.on('results', function(data) {
@@ -98,6 +104,7 @@ export class MapWidget extends Component {
 
   render() {
     let pos = [this.state.lat, this.state.lng];
+    console.log(this.state.loggedIn);
     return (
       <div>
         {this.props.employee || this.props.admin ? (
@@ -146,7 +153,7 @@ export class MapWidget extends Component {
               <Popup open={true}>
                 <b>{this.state.info}</b>
                 <br />
-                {this.props.modal ? (
+                {this.props.modal && this.state.loggedIn ? (
                   <Modal trigger={<Button>Meld hendelse her</Button>}>
                     <TicketFormWidget
                       submit={this.props.submit}
@@ -163,7 +170,7 @@ export class MapWidget extends Component {
               <Popup open={true}>
                 <b>Din posisjon: {this.state.userInfo}</b>
                 <br />
-                {this.props.modal ? (
+                {this.props.modal && this.props.loggedIn ? (
                   <Modal trigger={<Button>Meld hendelse her</Button>}>
                     <TicketFormWidget
                       submit={this.props.submit}
@@ -257,7 +264,9 @@ export class MapWidget extends Component {
         }
         self.state.marker.openPopup();
         console.log(info);
-        self.props.callback(e.latlng, info);
+        if (self.props.callback) {
+          self.props.callback(e.latlng, info);
+        }
       });
       this.state.map.flyTo(e.latlng, 18);
     }

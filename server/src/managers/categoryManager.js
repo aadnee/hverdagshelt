@@ -2,10 +2,10 @@ import { Categories } from '../models';
 
 module.exports = {
   getCategories: function(callback) {
-    Categories.findAll({ where: { parentId: null } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    Categories.findAll({
+      include: [{ model: Categories, as: 'subs' }],
+      where: { parentId: null }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   addCategory: function(name, parentId, callback) {
@@ -56,13 +56,31 @@ module.exports = {
     });
   },
 
-  editCategory: function(id, callback) {},
-
-  getSubCategories: function(parentId, callback) {
-    Categories.findAll({ where: { parentId: parentId } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+  editCategory: function(categoryId, categoryName, callback) {
+    Categories.findOne({ where: { id: categoryId } }).then(category => {
+      if (!category) {
+        callback({
+          success: false,
+          message: { en: 'Category not found.', no: 'Fant ikke kategorien.' }
+        });
+      } else {
+        Categories.update(
+          {
+            name: categoryName
+          },
+          {
+            where: { id: categoryId }
+          }
+        ).then(
+          res =>
+            callback({
+              success: true,
+              message: { en: 'Category updated successfully', no: 'Kategorien ble oppdatert.' }
+            }),
+          err => callback({ success: false, message: err })
+        );
+      }
+    });
   }
 };
 

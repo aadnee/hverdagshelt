@@ -24,6 +24,7 @@ export class PageController extends Component {
       user: null,
       login: this.login,
       logout: this.logout,
+      convDbString: this.dbStringConverter,
       visible: false,
       renderReady: false
     };
@@ -65,6 +66,19 @@ export class PageController extends Component {
     this.setState({ user: null });
   };
 
+  dbStringConverter = dbString => {
+    const dateArr = dbString.split('T')[0].split('-');
+    const date = dateArr[2] + ' / ' + dateArr[1] + ' / ' + dateArr[0];
+
+    const clockArr = dbString
+      .split('T')[1]
+      .split('.')[0]
+      .split(':');
+
+    const clock = clockArr[0] + ':' + clockArr[1];
+    return [date, clock];
+  };
+
   render() {
     if (!this.state.renderReady) {
       return (
@@ -89,15 +103,13 @@ export class PageController extends Component {
                 pauseOnHover
               />
               <SidebarWidget visible={this.state.visible} response={this.toggleSideBar} />
-              <Sidebar.Pushable style={{ height: '100vh' }}>
-                <Sidebar.Pusher dimmed={this.state.visible} style={{ paddingBottom: '300px' }}>
+              <Sidebar.Pushable style={{ minHeight: '100%' }}>
+                <Sidebar.Pusher dimmed={this.state.visible} style={{ minHeight: '100%' }}>
                   <HeaderWidget toggle={this.toggleSideBar} />
                   <AppRouter />
-                  <Divider hidden />
-                  <Divider hidden />
-                  <FooterWidget />
                 </Sidebar.Pusher>
               </Sidebar.Pushable>
+              {/*<FooterWidget />*/}
             </>
           </HashRouter>
         </Provider>
