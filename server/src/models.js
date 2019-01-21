@@ -48,7 +48,8 @@ export let Municipals = sequelize.define('municipals', {
 
 export let Categories = sequelize.define('categories', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: Sequelize.STRING, allowNull: false }
+  name: { type: Sequelize.STRING, allowNull: false },
+  active: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true }
 });
 
 export let Tickets = sequelize.define('tickets', {

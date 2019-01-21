@@ -134,7 +134,7 @@ export class TicketWidget extends Component {
                     open={this.state.open}
                     onOpen={() => this.setState({ open: true })}
                     onClose={() => this.setState({ open: false })}
-                    trigger={<Dropdown.Item icon={'user'} text={'Knytt bruker til Nyhet'} />}
+                    trigger={<Dropdown.Item icon={'linkify'} text={'Knytt bruker til Nyhet'} />}
                     size={'tiny'}
                     closeIcon
                   >
@@ -143,7 +143,7 @@ export class TicketWidget extends Component {
                       <Dropdown
                         fluid
                         search
-                        placeholder={'Velg nyhet'}
+                        placeholder={'Søk etter Nyhet på tittel'}
                         options={this.state.newsOptions}
                         value={this.state.selectedNews}
                         onChange={(target, data) => {

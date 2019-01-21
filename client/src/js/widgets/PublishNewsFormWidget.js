@@ -27,7 +27,8 @@ export class PublishNewsFormWidget extends Component {
     this.state = {
       title: this.props.title,
       description: this.props.description,
-      receivedCat: this.props.category,
+      receivedCategory: this.props.category,
+      allCats: [],
       category: this.props.category,
       categoryOptions: [],
       subcategory: '',
@@ -37,7 +38,6 @@ export class PublishNewsFormWidget extends Component {
       subscription: false,
       image: this.props.image
     };
-    this.getSubCategories(this.props.category);
   }
 
   handleInput = (key, value) => {
@@ -45,39 +45,38 @@ export class PublishNewsFormWidget extends Component {
   };
 
   getSubCategories(category) {
-    //Get subcategories based on the chosen category
-    let subcats = [];
     let bool = false;
-    categoryService.getSubCategories(category).then(res => {
-      res.data.map(subCat => {
-        if (this.state.receivedCat === subCat.id) {
-          this.setState({ category: subCat.parentId, subcategory: this.state.receivedCat });
-          bool = true;
-        }
+    let subCats = [];
+    let subCatsOpt = [];
 
-        subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
-      });
-      if (bool || this.state.categoryChanged) {
-        this.setState({ subCategoryOptions: subcats });
+    this.state.allCats.map(cat => {
+      if (cat.id === category) {
+        subCats = cat.subs;
       }
     });
-    return subcats;
+
+    subCats.map(subCat => {
+      if (this.state.receivedCategory === subCat.id) {
+        this.setState({ category: subCat.parentId, subcategory: this.state.receivedCategory });
+        bool = true;
+      }
+      subCatsOpt.push({ key: subCat.id, value: subCat.id, text: subCat.name });
+    });
+
+    if (bool || this.state.categoryChanged) {
+      this.setState({ subCategoryOptions: subCatsOpt });
+    }
   }
 
   componentWillMount() {
     categoryService.getCategories().then(res => {
-      //et allCats = [];
-      let mainCats = [];
-      console.log(this.state.category);
-
+      let cats = [];
+      this.setState({ allCats: res.data });
       res.data.map(cat => {
-        let subCats = this.getSubCategories(cat.id);
-
-        mainCats.push({ key: cat.id, value: cat.id, text: cat.name });
-        //allCats.push({ cat: { key: cat.id, value: cat.id, text: cat.name }, subCats: subCats });
+        cats.push({ key: cat.id, value: cat.id, text: cat.name });
+        this.getSubCategories(cat.id);
       });
-      this.setState({ categoryOptions: mainCats });
-      //console.log(allCats);
+      this.setState({ categoryOptions: cats });
     });
   }
 
@@ -124,8 +123,9 @@ export class PublishNewsFormWidget extends Component {
                         placeholder="Kategori"
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
-                          this.setState({ categoryChanged: true });
-                          this.getSubCategories(data.value);
+                          this.setState({ categoryChanged: true }, () => {
+                            this.getSubCategories(data.value);
+                          });
                         }}
                       />
                     </Grid.Column>
