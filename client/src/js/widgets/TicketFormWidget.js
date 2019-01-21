@@ -30,6 +30,7 @@ export class TicketFormWidget extends Component {
       headline: '',
       details: '',
       category: this.props.ticket ? this.props.ticket.categoryId : '',
+      allCats: [],
       categoryOptions: [],
       receivedCategory: this.props.ticket ? this.props.ticket.categoryId : '',
       subcategory: '',
@@ -58,29 +59,36 @@ export class TicketFormWidget extends Component {
 
   getSubCategories(category) {
     let bool = false;
-    //Get subcategories based on the chosen category
-    categoryService.getSubCategories(category).then(res => {
-      let subcats = [];
-      res.data.map(subCat => {
-        if (this.state.receivedCategory === subCat.id) {
-          this.setState({ category: subCat.parentId, subcategory: this.state.receivedCategory });
-          bool = true;
-        }
-        subcats.push({ key: subCat.id, value: subCat.id, text: subCat.name });
-      });
-      if (bool || this.state.selectedCategory) {
-        this.setState({ subCategoryOptions: subcats });
+    let subCats = [];
+    let subCatsOpt = [];
+
+    console.log(category);
+    this.state.allCats.map(cat => {
+      if (cat.id === category) {
+        subCats = cat.subs;
       }
     });
+
+    subCats.map(subCat => {
+      if (this.state.receivedCategory === subCat.id) {
+        this.setState({ category: subCat.parentId, subcategory: this.state.receivedCategory });
+        bool = true;
+      }
+      subCatsOpt.push({ key: subCat.id, value: subCat.id, text: subCat.name });
+    });
+    console.log(this.state.selectedCategory);
+    if (bool || this.state.selectedCategory) {
+      this.setState({ subCategoryOptions: subCatsOpt });
+    }
   }
 
   componentWillMount() {
     categoryService.getCategories().then(res => {
       let cats = [];
-
+      this.setState({ allCats: res.data });
       res.data.map(cat => {
         cats.push({ key: cat.id, value: cat.id, text: cat.name });
-        this.getSubCategories(cat.id);
+        this.props.ticket ? this.getSubCategories(cat.id) : null;
       });
       this.setState({ categoryOptions: cats });
     });
@@ -151,8 +159,9 @@ export class TicketFormWidget extends Component {
                         placeholder="Kategori"
                         onChange={(event, data) => {
                           this.handleInput('category', data.value);
-                          this.setState({ selectedCategory: true });
-                          this.getSubCategories(data.value);
+                          this.setState({ selectedCategory: true }, () => {
+                            this.getSubCategories(data.value);
+                          });
                         }}
                       />
                     </Grid.Column>
