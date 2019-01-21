@@ -99,7 +99,7 @@ Users.belongsToMany(Municipals, { through: UserMunicipals });
 
 Users.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Municipals.hasMany(Users, { foreignKey: { allowNull: false } });
-Categories.hasMany(Categories, { foreignKey: { name: 'parentId' } });
+Categories.hasMany(Categories, { foreignKey: { name: 'parentId' }, as: 'subs' });
 Categories.hasMany(Tickets, { foreignKey: { allowNull: false } });
 Categories.hasMany(News, { foreignKey: { allowNull: false } });
 Users.hasMany(News, { foreignKey: { name: 'companyId' } });
