@@ -195,7 +195,7 @@ export class PublishNewsFormWidget extends Component {
                     </Label>
                   </Form.Field>
                 ) : null}
-                <Form.Field />
+
                 <Form.Field>
                   <Checkbox
                     checked={this.state.publish}

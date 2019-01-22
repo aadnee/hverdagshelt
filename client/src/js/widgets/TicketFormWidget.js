@@ -26,7 +26,7 @@ export class TicketFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      address: this.props.address ? this.props.address : '',
+      address: this.props.address ? this.props.address : this.props.ticket.address,
       latlng: this.props.latlng ? this.props.latlng : [null, null],
       headline: '',
       details: '',
@@ -41,7 +41,7 @@ export class TicketFormWidget extends Component {
       selectedCategory: false,
       modalMessage: '',
       modalOpen: false,
-      image: [],
+      image: this.props.ticket ? this.props.ticket.uploads : [],
       imageUploaded: false
     };
   }
@@ -63,7 +63,6 @@ export class TicketFormWidget extends Component {
     let subCats = [];
     let subCatsOpt = [];
 
-    console.log(category);
     this.state.allCats.map(cat => {
       if (cat.id === category) {
         subCats = cat.subs;
@@ -86,7 +85,6 @@ export class TicketFormWidget extends Component {
   componentWillMount() {
     categoryService.getCategories().then(res => {
       let cats = [];
-      console.log(res.data);
       this.setState({ allCats: res.data });
       res.data.map(cat => {
         cats.push({ key: cat.id, value: cat.id, text: cat.name });
@@ -94,18 +92,16 @@ export class TicketFormWidget extends Component {
       });
       this.setState({ categoryOptions: cats });
     });
-    this.resetValues();
+    this.props.ticket ? this.resetValues() : null;
   }
 
   resetValues = () => {
     //console.log(this.props.ticket);
-    this.props.ticket
-      ? this.setState({
-          address: this.props.ticket.address,
-          headline: this.props.ticket.title,
-          details: this.props.ticket.description
-        })
-      : null;
+    this.setState({
+      address: this.props.ticket.address,
+      headline: this.props.ticket.title,
+      details: this.props.ticket.description
+    });
   };
 
   render() {

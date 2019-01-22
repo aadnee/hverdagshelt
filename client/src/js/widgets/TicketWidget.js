@@ -9,7 +9,6 @@ import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 import { newsService } from '../services/NewsServices';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
-import { Consumer } from '../context';
 import { ticketService } from '../services/TicketServices';
 
 /*
