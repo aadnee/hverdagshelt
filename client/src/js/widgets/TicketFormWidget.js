@@ -26,7 +26,7 @@ export class TicketFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      address: this.props.address ? this.props.address : this.props.ticket.address,
+      address: this.props.address ? this.props.address : '',
       latlng: this.props.latlng ? this.props.latlng : [null, null],
       headline: '',
       details: '',
