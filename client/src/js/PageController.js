@@ -16,6 +16,7 @@ import { Provider, Consumer } from './context';
 
 import { userService } from './services/UserServices';
 import { ticketService } from './services/TicketServices';
+import { subscriptionService } from './services/SubscriptionServices';
 
 export class PageController extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ export class PageController extends Component {
       login: this.login,
       logout: this.logout,
       ticketSubmit: this.ticketSubmit,
+      unsubscribeNews: this.unsubscribeNews,
       convDbString: this.dbStringConverter,
       visible: false,
       renderReady: false
@@ -34,6 +36,7 @@ export class PageController extends Component {
     this.toggleSideBar = this.toggleSideBar.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this.unsubscribeNews = this.unsubscribeNews.bind(this);
   }
 
   toggleSideBar(action) {
@@ -111,6 +114,22 @@ export class PageController extends Component {
         });
     }
   };
+
+  unsubscribeNews(newsId) {
+    console.log(newsId);
+
+    if (!newsId) {
+      toast.error('Noe gikk galt, prøv igjen', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    } else {
+      return subscriptionService.deleteSubscription(newsId).then(res => {
+        console.log(res);
+        return res;
+      });
+    }
+    return null;
+  }
 
   render() {
     if (!this.state.renderReady) {
