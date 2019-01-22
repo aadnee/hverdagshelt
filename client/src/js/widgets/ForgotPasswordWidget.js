@@ -19,7 +19,9 @@ export class ForgotPasswordWidget extends Component {
 
     this.state = {
       email: this.props.email ? this.props.email : '',
-      password: ''
+      password: '',
+      sentMail: true,
+      loading: false
     };
   }
 
@@ -27,8 +29,20 @@ export class ForgotPasswordWidget extends Component {
     this.setState({ [key]: value });
   };
 
-  resetPassword =()=>{
-    userService.
+  sentResetPassword = () => {
+    this.setState({ loading: true });
+    userService.sendReset(this.state.email).then(res => {
+      if (res.success) {
+        this.setState({ sentMail: false });
+        console.log(res);
+      }
+    });
+  };
+
+  confirmResetPassword = () => {
+    userService.resetPassword(this.state.email, this.state.password).then(res => {
+      console.log(res);
+    });
   };
 
   render() {
@@ -39,54 +53,72 @@ export class ForgotPasswordWidget extends Component {
             <Grid centered>
               <Grid.Column mobile={16}>
                 {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
+
                 <Form size="large">
                   <Segment>
-                    <Form.Field>
-                      <label>E-postadresse</label>
-                      <Input
-                        fluid
-                        icon="user"
-                        iconPosition="left"
-                        placeholder="E-postadresse"
-                        value={this.state.email}
-                        onChange={(event, data) => {
-                          this.handleInput('email', data.value);
-                        }}
-                      />
-                    </Form.Field>
-                    <Form.Field>
-                      <label>Passord</label>
-                      <Input
-                        fluid
-                        icon="lock"
-                        iconPosition="left"
-                        placeholder="Passord"
-                        type="password"
-                        value={this.state.password}
-                        onChange={(event, data) => {
-                          this.handleInput('password', data.value);
-                        }}
-                      />
-                    </Form.Field>
-
-                    <Button
-                      color="twitter"
-                      fluid
-                      size="large"
-                      onClick={() => {
-                        console.log('click');
-                        login(this.state.email, this.state.password);
-                      }}
-                    >
-                      Logg inn
-                    </Button>
+                    {this.state.sentMail ? (
+                      <div>
+                        <Form.Field>
+                          <Header>Gjennoprett passord</Header>
+                          <label>E-postadresse</label>
+                          <Input
+                            fluid
+                            icon="user"
+                            iconPosition="left"
+                            placeholder="E-postadresse"
+                            value={this.state.email}
+                            onChange={(event, data) => {
+                              this.handleInput('email', data.value);
+                            }}
+                          />
+                        </Form.Field>
+                        <Button
+                          color="twitter"
+                          fluid
+                          size="large"
+                          loading={this.state.loading}
+                          onClick={() => {
+                            this.sentResetPassword();
+                          }}
+                        >
+                          Send email
+                        </Button>
+                      </div>
+                    ) : (
+                      <div>
+                        <Form.Field>
+                          <Header>Gjennoprett passord</Header>
+                          <label>Skriv inn koden som ble sent til din e-mail</label>
+                          <Input
+                            fluid
+                            icon="user"
+                            iconPosition="left"
+                            placeholder="Midlertidig kode"
+                            value={this.state.password}
+                            onChange={(event, data) => {
+                              this.handleInput('password', data.value);
+                            }}
+                          />
+                        </Form.Field>
+                        <Button
+                          color="twitter"
+                          fluid
+                          size="large"
+                          onClick={() => {
+                            this.confirmResetPassword();
+                          }}
+                        >
+                          Gjennoprett passord
+                        </Button>
+                      </div>
+                    )}
                   </Segment>
                 </Form>
-                {this.props.register ? (
-                  <Message>
-                    Har du ikke bruker? <NavLink to="/register">Registrer deg</NavLink>
-                  </Message>
-                ) : null}
+                {this.state.sentMail ? (
+                  <Message>Skriv inn din e-postadresse</Message>
+                ) : (
+                  <Message>Skriv inn koden du har fått på mail</Message>
+                )}
               </Grid.Column>
             </Grid>
           </Container>
