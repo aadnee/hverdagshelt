@@ -5,13 +5,6 @@ import {NavLink} from 'react-router-dom';
 import {Consumer} from './../context';
 import {ShowInMapWidget} from './ShowInMapWidget';
 
-//import {} from './';
-
-/*
- *
- *
- */
-
 export class NewsCaseWidget extends Component {
     constructor(props) {
         super(props);
@@ -42,9 +35,9 @@ export class NewsCaseWidget extends Component {
                             <Grid.Column width={12} textAlign="left">
                                 <p>{newscase.description}</p>
                             </Grid.Column>
-                            {newscase.imageURL ? (
+                            {newscase.uploads.length>0? (
                                 <Grid.Column width={4} align="right" only="tablet computer">
-                                    <Image fluid src={newscase.imageURL} target="_blank"/>
+                                    <Image fluid src={"/uploads/"+newscase.uploads[0].filename} target="_blank"/>
                                 </Grid.Column>
                             ) : null}
                         </Grid>
