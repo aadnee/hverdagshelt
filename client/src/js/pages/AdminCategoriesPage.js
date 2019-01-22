@@ -83,7 +83,7 @@ export class AdminCategoriesPage extends Component {
               if (this.state.selectedCategory.id === category.id) {
                 let mainCat = this.state.categories;
                 mainCat.splice(index, 1);
-                this.setState({ categories: mainCat });
+                this.setState({ categories: mainCat, mainCategory: '' });
               }
             });
           }
@@ -215,10 +215,11 @@ export class AdminCategoriesPage extends Component {
             <Button positive content="Rediger" onClick={this.open} />
             <Button negative content="Slett" onClick={this.deleteCategory} />
           </Button.Group>
-          <p>Litt informasjon om hvordan man endrer kategorier</p>
+          <p>Marker kategori og velg om du vil slette eller endre</p>
           <Grid divided>
             <Grid.Column>
               <AdminCategoriesWidget
+                mainCategory={this.state.mainCategory}
                 addCategory={this.addCategory}
                 categories={this.state.categories}
                 func={this.selectedCat}

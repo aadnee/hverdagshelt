@@ -11,6 +11,7 @@ export * from './EmployeeEditNewscasePage';
 export * from './EmployeeManageAssignmentsPage';
 export * from './EmployeeEditAssignmentPage';
 export * from './EntrepreneurAssignmentPage';
+export * from './ForgotPasswordPage';
 export * from './UserPage';
 export * from './UserReportTicketPage';
 export * from './UserNewsFeedPage';
