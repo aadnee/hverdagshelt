@@ -374,7 +374,7 @@ app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
   });
 });
 
-app.get('/api/categories', ensureLogin, (req, res) => {
+app.get('/api/categories', (req, res) => {
   categoryManager.getCategories(function(result) {
     res.json(result);
   });
