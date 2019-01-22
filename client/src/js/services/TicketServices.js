@@ -25,6 +25,10 @@ class TicketServices {
     return api.get('/api/mytickets');
   }
 
+  getTicketsPending() {
+    return api.get('/api/tickets/pending');
+  }
+
   getMunicipalTickets(ticketId) {
     return api.get('/api/tickets/municipal/' + ticketId);
   }
@@ -43,7 +47,7 @@ class TicketServices {
     return api.delete('/api/tickets/' + ticketId + '/withdraw');
   }
 
-  acceptTicket(ticketId, title, description, lat, lon, address, categoryId, municipalId, images) {
+  acceptTicket(ticketId, title, description, lat, lon, address, categoryId, publish, municipalId, images) {
     return api.put('/api/tickets/' + ticketId + '/accept', {
       title: title,
       description: description,
@@ -51,6 +55,7 @@ class TicketServices {
       lon: lon,
       address: address,
       categoryId: categoryId,
+      publish: publish,
       municipalId: municipalId,
       images: images
     });

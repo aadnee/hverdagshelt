@@ -10,12 +10,11 @@ module.exports = {
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
-  addEvent: function(title, description, lat, lon, address, start, end, municipalId, callback) {
+  addEvent: function(title, description, area, address, start, end, municipalId, callback) {
     Events.create({
       title: title,
       description: description,
-      lat: lat,
-      lon: lon,
+      area: area,
       address: address,
       start: start,
       end: end,
@@ -26,13 +25,12 @@ module.exports = {
     );
   },
 
-  editEvent: function(eventId, title, description, lat, lon, address, start, end, municipalId, callback) {
+  editEvent: function(eventId, title, description, area, address, start, end, municipalId, callback) {
     Events.update(
       {
         title: title,
         description: description,
-        lat: lat,
-        lon: lon,
+        area: area,
         address: address,
         start: start,
         end: end,

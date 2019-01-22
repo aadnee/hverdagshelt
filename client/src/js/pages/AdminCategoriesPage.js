@@ -207,7 +207,9 @@ export class AdminCategoriesPage extends Component {
   render() {
     return (
       <Container>
-        <Header as="h2">Administrer kategorier</Header>
+        <Divider hidden />
+        <Divider hidden />
+        <Header as="h1">Administrer kategorier</Header>
         <Segment basic color="blue">
           <Button.Group floated="right">
             <Button positive content="Rediger" onClick={this.open} />

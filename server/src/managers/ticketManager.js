@@ -1,4 +1,4 @@
-import { Tickets, Users, Uploads } from '../models';
+import { Tickets, Users, Uploads, Categories, sequelize } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
 import subscriptionManager from './subscriptionManager';
@@ -180,5 +180,70 @@ module.exports = {
 
       err => callback({ success: false, message: err })
     );
+  },
+
+  getPendingTicketCount: function(callback) {
+    Tickets.count({ where: { status: 1 } }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  //statistics
+  getYearly: function(year, municipalId, categoryId, callback) {
+    if (categoryId != null) {
+      Tickets.count({
+        where: {
+          createdAt: {
+            $gte: new Date(year + '-01-01'),
+            $lte: new Date(year + '-12-31')
+          },
+          municipalId: municipalId,
+          categoryId: categoryId
+        }
+      }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+    } else {
+      Tickets.count({
+        where: {
+          createdAt: {
+            $gte: new Date(year + '-01-01'),
+            $lte: new Date(year + '-12-31')
+          },
+          municipalId: municipalId
+        }
+      }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+    }
+  },
+
+  getMonthly: function(month, year, municipalId, callback) {
+    // Tickets.count({
+    //   where: {
+    //     createdAt: {
+    //       $gte: new Date(year + '-' + month + '-01'),
+    //       $lte: new Date(year + '-' + month + '-31')
+    //     },
+    //     municipalId: municipalId
+    //   }
+    // }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+
+    Categories.findAll({
+      attributes: ['name'],
+      include: [
+        {
+          required: false,
+          attributes: [[sequelize.fn('COUNT', 'Tickets.categoryId'), 'amount']],
+          model: Tickets,
+          where: {
+            createdAt: {
+              $gte: new Date(year + '-' + month + '-01'),
+              $lte: new Date(year + '-' + month + '-31')
+            },
+            municipalId: municipalId
+          }
+        }
+      ],
+      where: { parentId: null },
+      group: ['Tickets.categoryId']
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }
 };

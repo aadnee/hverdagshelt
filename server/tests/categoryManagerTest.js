@@ -54,19 +54,6 @@ describe('Adding category', () => {
       done();
     });
   });
-  // Testing for delete category with wrong data
-  it('Wrong data', done => {
-    categoryManager.deleteCategory(null, function(result) {
-      expect({
-        success: result.success,
-        message: result.message.en
-      }).toEqual({
-        success: false,
-        message: 'Cannot delete a category with subcategories.'
-      });
-      done();
-    });
-  });
 });
 //Test for edit categories with correct data
 describe('Edit categories', () => {

@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import cors from 'cors';
+import pdf from 'html-pdf';
+import ejs from 'ejs';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
@@ -16,13 +18,10 @@ import municipalManager from './managers/municipalManager';
 import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
 import eventManager from './managers/eventManager';
-
 import { syncDatabase } from './models';
 syncDatabase(res => console.log(res));
 
 const public_path = path.join(__dirname, '/../../client/public');
-
-let app = express();
 
 let storage = multer.diskStorage({
   destination: '../client/public/uploads/',
@@ -37,10 +36,38 @@ let storage = multer.diskStorage({
 });
 let upload = multer({ storage: storage });
 
+let app = express();
 app.use(express.static(public_path));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+
+app.get('/api/pdf', (req, res) => {
+  ejs.renderFile('./pdfs/file.ejs', { test1: 1, test2: 'fwewf' }, function(err, html) {
+    let config = {
+      format: 'A4',
+      orientation: 'portrait',
+      border: {
+        top: '10mm',
+        right: '10mm',
+        bottom: '10mm',
+        left: '10mm'
+      },
+      timeout: 30000,
+      renderDelay: 2000
+    };
+    let filepath = './pdfs/file.pdf';
+    pdf.create(html, config).toFile(filepath, function(err, file) {
+      res.json({ filename: file.filename });
+    });
+  });
+});
+
+app.get('/api/pdf/html', (req, res) => {
+  ejs.renderFile('./pdfs/file.ejs', { test1: 1, test2: 'fwewf' }, function(err, html) {
+    res.send(html);
+  });
+});
 
 app.post('/api/events/filter', (req, res) => {
   let b = req.body;
@@ -51,9 +78,7 @@ app.post('/api/events/filter', (req, res) => {
 
 app.post('/api/events', ensureEmployee, (req, res) => {
   let b = req.body;
-  eventManager.addEvent(b.title, b.description, b.lat, b.lon, b.address, b.start, b.end, b.municipalId, function(
-    result
-  ) {
+  eventManager.addEvent(b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, function(result) {
     res.json(result);
   });
 });
@@ -61,20 +86,11 @@ app.post('/api/events', ensureEmployee, (req, res) => {
 app.put('/api/events/:eventId', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  eventManager.editEvent(
-    p.eventId,
-    b.title,
-    b.description,
-    b.lat,
-    b.lon,
-    b.address,
-    b.start,
-    b.end,
-    b.municipalId,
-    function(result) {
-      res.json(result);
-    }
-  );
+  eventManager.editEvent(p.eventId, b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, function(
+    result
+  ) {
+    res.json(result);
+  });
 });
 
 app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
@@ -358,15 +374,20 @@ app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
   });
 });
 
-app.get('/api/categories', ensureLogin, (req, res) => {
+app.get('/api/categories', (req, res) => {
   categoryManager.getCategories(function(result) {
     res.json(result);
   });
 });
 
-app.get('/api/categories/:parentId', ensureLogin, (req, res) => {
-  let p = req.params;
-  categoryManager.getSubCategories(p.parentId, function(result) {
+app.get('/api/tickets/pending', ensureEmployee, (req, res) => {
+  ticketManager.getPendingTicketCount(function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/categories', ensureLogin, (req, res) => {
+  categoryManager.getCategories(function(result) {
     res.json(result);
   });
 });
@@ -464,6 +485,21 @@ app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
     });
   });
 });
+
+//statistics
+app.post('/api/statistics/tickets/year', ensureEmployee, (req, res) => {
+  ticketManager.getYearly(req.body.year, req.body.municipalId, req.body.categoryId, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/statistics/tickets/month', ensureEmployee, (req, res) => {
+  ticketManager.getMonthly(req.body.month, req.body.year, req.body.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
+//statistics
 
 function getUserId(req, callback) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {
