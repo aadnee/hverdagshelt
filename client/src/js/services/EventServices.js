@@ -9,29 +9,29 @@ class EventServices {
     });
   }
 
-  addEvent(title, description, lat, lon, address, start, end, municipalId) {
+  addEvent(title, description, area, address, start, end, municipalId, url) {
     return api.post('/api/events', {
       title: title,
       description: description,
-      lat: lat,
-      lon: lon,
+      area: area,
       address: address,
       start: start,
       end: end,
-      municipalId: municipalId
+      municipalId: municipalId,
+      url: url
     });
   }
 
-  editEvent(eventId, title, description, lat, lon, address, start, end, municipalId) {
+  editEvent(eventId, title, description, area, address, start, end, municipalId, url) {
     return api.put('/api/events/' + eventId, {
       title: title,
       description: description,
-      lat: lat,
-      lon: lon,
+      area: area,
       address: address,
       start: start,
       end: end,
-      municipalId: municipalId
+      municipalId: municipalId,
+      url: url
     });
   }
 

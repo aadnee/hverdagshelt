@@ -14,21 +14,25 @@ export class ShowInMapWidget extends Component {
     super(props);
     this.state = {};
     this.mapRef = React.createRef();
-  }
+  };
 
   render() {
     return (
-      <Modal trigger={this.props.button} onClose={this.props.callback} closeIcon>
-        {this.props.renderMap ? (
-          <Map ref={this.mapRef} dragging={false} center={this.props.latlng} zoom={14}>
+        <Modal trigger={this.props.button} onClose={this.props.callback} closeIcon >
+          {this.props.renderMap ? (
+          <Map
+              ref={this.mapRef}
+              dragging={false}
+              center={this.props.latlng}
+              zoom={14}
+          >
             <TileLayer
-              url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
-            <Marker position={this.props.latlng} />
-          </Map>
-        ) : null}
-      </Modal>
+            <Marker position={this.props.latlng}></Marker>
+          </Map>) : null}
+        </Modal>
     );
   }
 }
