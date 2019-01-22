@@ -19,7 +19,8 @@ export class ForgotPasswordWidget extends Component {
 
     this.state = {
       email: this.props.email ? this.props.email : '',
-      password: ''
+      password: '',
+      sentMail: true
     };
   }
 
@@ -27,8 +28,9 @@ export class ForgotPasswordWidget extends Component {
     this.setState({ [key]: value });
   };
 
-  resetPassword =()=>{
-    userService.
+  sentResetPassword = () => {
+    this.setState({ sentMail: true });
+    //userService.sendReset(this.state.email);
   };
 
   render() {
@@ -39,47 +41,36 @@ export class ForgotPasswordWidget extends Component {
             <Grid centered>
               <Grid.Column mobile={16}>
                 {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
+
                 <Form size="large">
                   <Segment>
-                    <Form.Field>
-                      <label>E-postadresse</label>
-                      <Input
-                        fluid
-                        icon="user"
-                        iconPosition="left"
-                        placeholder="E-postadresse"
-                        value={this.state.email}
-                        onChange={(event, data) => {
-                          this.handleInput('email', data.value);
-                        }}
-                      />
-                    </Form.Field>
-                    <Form.Field>
-                      <label>Passord</label>
-                      <Input
-                        fluid
-                        icon="lock"
-                        iconPosition="left"
-                        placeholder="Passord"
-                        type="password"
-                        value={this.state.password}
-                        onChange={(event, data) => {
-                          this.handleInput('password', data.value);
-                        }}
-                      />
-                    </Form.Field>
-
-                    <Button
-                      color="twitter"
-                      fluid
-                      size="large"
-                      onClick={() => {
-                        console.log('click');
-                        login(this.state.email, this.state.password);
-                      }}
-                    >
-                      Logg inn
-                    </Button>
+                    {this.state.sentMail ? (
+                      <div>
+                        <Form.Field>
+                          <label>E-postadresse</label>
+                          <Input
+                            fluid
+                            icon="user"
+                            iconPosition="left"
+                            placeholder="E-postadresse"
+                            value={this.state.email}
+                            onChange={(event, data) => {
+                              this.handleInput('email', data.value);
+                            }}
+                          />
+                        </Form.Field>
+                        <Button
+                          color="twitter"
+                          fluid
+                          size="large"
+                          onClick={() => {
+                            this.sentResetPassword();
+                          }}
+                        >
+                          Send mail
+                        </Button>
+                      </div>
+                    ) : null}
                   </Segment>
                 </Form>
                 {this.props.register ? (
