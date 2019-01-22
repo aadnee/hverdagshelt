@@ -1,4 +1,4 @@
-import { Tickets, Users, Uploads } from '../models';
+import { Tickets, Users, Uploads, Categories } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
 import subscriptionManager from './subscriptionManager';
@@ -138,10 +138,10 @@ module.exports = {
 
   //get all tickets in a specific municipal
   getLocalTickets: function(municipalId, callback) {
-    Tickets.findAll({ include: [{ model: Uploads }], where: { municipalId: municipalId, status: 1 } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    Tickets.findAll({
+      include: [{ model: Uploads, required: false }],
+      where: { municipalId: municipalId, status: 1 }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   makeNews: function(ticketId, title, description, lat, lon, address, categoryId, municipalId, imageIds, callback) {

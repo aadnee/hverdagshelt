@@ -47,7 +47,7 @@ module.exports = {
   },
 
   register: function(name, email, phone, municipalId, rank, callback) {
-    const password = generatePassword();
+    const password = generatePassword(12);
     bcrypt.genSalt(12, function(err, salt) {
       bcrypt.hash(password, salt, null, function(err, hash) {
         if (err) throw er;
@@ -78,7 +78,17 @@ module.exports = {
                       ',</h1><h2>Velkommen til Hverdagshelt!</h2><h3>Ditt passord er: <b>' +
                       password +
                       '</b></h3>',
-                    email
+                    email,
+                    function(result) {
+                      if (result) {
+                        callback({
+                          success: true,
+                          message: { en: 'Email with new password sent.', no: 'Nytt passord er sent på epost.' }
+                        });
+                      } else {
+                        callback({ success: false, message: { en: 'Email error.', no: 'Email error.' } });
+                      }
+                    }
                   );
                   callback({
                     success: true,
@@ -172,6 +182,89 @@ module.exports = {
     );
   },
 
+  sendReset: function(email, callback) {
+    Users.findOne({ where: { email: email } }).then(
+      res => {
+        if (res == null) {
+          callback({
+            success: false,
+            message: {
+              en: 'User does not exist.',
+              no: 'Brukeren eksisterer ikke.'
+            }
+          });
+        } else {
+          let key = generatePassword(20);
+          Users.update({ reset: key }, { where: { email: email } }).then(
+            res => {
+              mailManager.send(
+                'Hverdagshelt: Tilbakestilling av passord',
+                '<h3>Ignorer denne meldingen dersom du ikke har etterspurt tilbakestilling passord.</h3>' +
+                  '<p>Din tilbakestillings kode er følgende:</p>' +
+                  '<b>' +
+                  key +
+                  '</b>',
+                email,
+                function(result) {
+                  if (result) {
+                    callback({ success: true, message: { en: 'Email sent.', no: 'En epost har blitt sent.' } });
+                  } else {
+                    callback({ success: false, message: { en: 'Mail error.', no: 'Mail error.' } });
+                  }
+                }
+              );
+            },
+            err => callback({ success: false, message: err })
+          );
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  resetPassword: function(email, key, callback) {
+    Users.findOne({ where: { email: email, reset: key } }).then(
+      res => {
+        if (res == null) {
+          callback({ success: false, message: { en: 'Wrong email/key.', no: 'Feil epost eller kode.' } });
+        } else {
+          let password = generatePassword(12);
+          bcrypt.genSalt(12, function(err, salt) {
+            bcrypt.hash(password, salt, null, function(err, hash) {
+              Users.update(
+                {
+                  password: hash,
+                  reset: null
+                },
+                { where: { email: email } }
+              ).then(
+                res => {
+                  mailManager.send(
+                    'Hverdagshelt: Nytt passord',
+                    '<h3>Ditt nye passord er som følger:</h3>' + '<b>' + password + '</b>',
+                    email,
+                    function(result) {
+                      if (result) {
+                        callback({
+                          success: true,
+                          message: { en: 'Email with new password sent.', no: 'Nytt passord er sent på epost.' }
+                        });
+                      } else {
+                        callback({ success: false, message: { en: 'Mail error.', no: 'Mail error.' } });
+                      }
+                    }
+                  );
+                },
+                err => callback({ success: false, message: err })
+              );
+            });
+          });
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
+  },
+
   getMunicipals: function(userId, callback) {
     Users.findOne({
       attributes: [],
@@ -224,9 +317,9 @@ module.exports = {
   }
 };
 
-function generatePassword() {
+function generatePassword(length) {
   var pass = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (var i = 0; i < 12; i++) pass += possible.charAt(Math.floor(Math.random() * possible.length));
+  for (var i = 0; i < length; i++) pass += possible.charAt(Math.floor(Math.random() * possible.length));
   return pass;
 }
