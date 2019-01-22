@@ -141,6 +141,20 @@ app.post('/api/register', (req, res) => {
   });
 });
 
+app.post('/api/reset/send', (req, res) => {
+  let b = req.body;
+  userManager.sendReset(b.email, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/reset/confirm', (req, res) => {
+  let b = req.body;
+  userManager.resetPassword(b.email, b.key, function(result) {
+    res.json(result);
+  });
+});
+
 app.get('/api/me', ensureLogin, (req, res) => {
   getUserId(req, function(userId) {
     userManager.getUser(userId, function(result) {
@@ -374,15 +388,20 @@ app.get('/api/tickets/municipal/:municipalId', ensureEmployee, (req, res) => {
   });
 });
 
-app.get('/api/categories', ensureLogin, (req, res) => {
+app.get('/api/categories', (req, res) => {
   categoryManager.getCategories(function(result) {
     res.json(result);
   });
 });
 
-app.get('/api/categories/:parentId', ensureLogin, (req, res) => {
-  let p = req.params;
-  categoryManager.getSubCategories(p.parentId, function(result) {
+app.get('/api/tickets/pending', ensureEmployee, (req, res) => {
+  ticketManager.getPendingTicketCount(function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/categories', ensureLogin, (req, res) => {
+  categoryManager.getCategories(function(result) {
     res.json(result);
   });
 });
@@ -480,6 +499,21 @@ app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
     });
   });
 });
+
+//statistics
+app.post('/api/statistics/tickets/year', ensureEmployee, (req, res) => {
+  ticketManager.getYearly(req.body.year, req.body.municipalId, req.body.categoryId, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/statistics/tickets/month', ensureEmployee, (req, res) => {
+  ticketManager.getMonthly(req.body.month, req.body.year, req.body.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
+//statistics
 
 function getUserId(req, callback) {
   jwt.verify(req.cookies['token'], process.env.JWT, function(err, decoded) {

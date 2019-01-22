@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const Op = Sequelize.Op;
-let sequelize = new Sequelize(
+export let sequelize = new Sequelize(
   process.env.CI ? 'Group8' : process.env.MYSQL_DB,
   process.env.CI ? 'root' : process.env.MYSQL_USR,
   process.env.CI ? '' : process.env.MYSQL_PWD,
@@ -25,7 +25,8 @@ let sequelize = new Sequelize(
       $lt: Op.lt,
       $lte: Op.lte,
       $like: Op.like,
-      $not: Op.ne
+      $not: Op.ne,
+      $gte: Op.gte
     },
     timezone: '+01:00'
   }
@@ -37,6 +38,7 @@ export let Users = sequelize.define('users', {
   email: { type: Sequelize.STRING, unique: true, allowNull: false },
   phone: { type: Sequelize.INTEGER, unique: true, allowNull: false },
   password: { type: Sequelize.STRING, allowNull: false },
+  reset: { type: Sequelize.STRING, allowNull: true },
   rank: { type: Sequelize.INTEGER, allowNull: false },
   notifications: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
 });
@@ -98,17 +100,40 @@ Municipals.belongsToMany(Users, { through: UserMunicipals });
 Users.belongsToMany(Municipals, { through: UserMunicipals });
 
 Users.hasMany(Tickets, { foreignKey: { allowNull: false } });
+Tickets.belongsTo(Users, { foreignKey: { allowNull: false } });
+
 Municipals.hasMany(Users, { foreignKey: { allowNull: false } });
+Users.belongsTo(Municipals, { foreignKey: { allowNull: false } });
+
 Categories.hasMany(Categories, { foreignKey: { name: 'parentId' }, as: 'subs' });
+Categories.belongsTo(Categories, { foreignKey: { name: 'parentId' } });
+
 Categories.hasMany(Tickets, { foreignKey: { allowNull: false } });
+Tickets.belongsTo(Categories, { foreignKey: { allowNull: false } });
+
 Categories.hasMany(News, { foreignKey: { allowNull: false } });
+News.belongsTo(Categories, { foreignKey: { allowNull: false } });
+
 Users.hasMany(News, { foreignKey: { name: 'companyId' } });
+News.belongsTo(Users, { foreignKey: { name: 'companyId' } });
+
 News.hasMany(Tickets);
+Tickets.belongsTo(News);
+
 Tickets.hasMany(Uploads);
+Uploads.belongsTo(Tickets);
+
 News.hasMany(Uploads);
+Uploads.belongsTo(News);
+
 Municipals.hasMany(Tickets, { foreignKey: { allowNull: false } });
+Tickets.belongsTo(Municipals, { foreignKey: { allowNull: false } });
+
 Municipals.hasMany(News, { foreignKey: { allowNull: false } });
+News.belongsTo(Municipals, { foreignKey: { allowNull: false } });
+
 Municipals.hasMany(Events, { foreignKey: { allowNull: false } });
+Events.belongsTo(Municipals, { foreignKey: { allowNull: false } });
 
 export function syncDatabase(callback) {
   let production = process.env.NODE_ENV === 'production';
@@ -196,6 +221,7 @@ export function syncDatabase(callback) {
         status: 4,
         lat: 1,
         lon: 1,
+        address: 'Test street',
         categoryId: 2,
         userId: 1,
         municipalId: 1,
@@ -207,6 +233,7 @@ export function syncDatabase(callback) {
         status: 1,
         lat: 1,
         lon: 1,
+        address: 'Test street',
         categoryId: 2,
         userId: 1,
         municipalId: 1,
@@ -218,6 +245,7 @@ export function syncDatabase(callback) {
         status: 3,
         lat: 1,
         lon: 1,
+        address: 'Test street',
         categoryId: 2,
         userId: 1,
         municipalId: 1,

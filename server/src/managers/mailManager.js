@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 module.exports = {
-  send: function(title, message, reciever) {
+  send: function(title, message, reciever, callback) {
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -19,7 +19,9 @@ module.exports = {
 
     transporter.sendMail(mailOptions, function(error, info) {
       if (error) {
-        console.log(error);
+        callback(false);
+      } else {
+        callback(true);
       }
     });
   }

@@ -19,9 +19,9 @@ export class HomePage extends Component {
   callback() {}
 
   render() {
-    const panes = [
+    let panes = [
       {
-        menuItem: 'Nyhetsstrøm',
+        menuItem: 'Nyheter i Trondheim',
         render: () => (
           <Tab.Pane className="frontPageFeedTab">
             <NewsFeedWidget newsOnly />

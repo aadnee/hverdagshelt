@@ -5,7 +5,7 @@ import {NavLink} from 'react-router-dom';
 import {Consumer} from './../context';
 import {ShowInMapWidget} from './ShowInMapWidget';
 
-export class NewsCaseWidget extends Component {
+export class EventWidget extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,10 +19,17 @@ export class NewsCaseWidget extends Component {
     }
 
     render() {
-        const newscase = this.props.newscase;
+        const event = {
+            title: '',
+            description: '',
+            area: {},
+            address: '',
+            start: '',
+            end: '',
+        };
         const dateInfo = Consumer._currentValue.convDbString(newscase.createdAt);
         return (
-            <Segment color="blue" fluid="true">
+            <Segment color="pink" fluid="true">
                 <Container>
                     <Header as="h2">{newscase.title}</Header>
                     <p>{dateInfo}</p>
@@ -41,13 +48,13 @@ export class NewsCaseWidget extends Component {
                     </Segment>
                     <Segment basic>
                         <Grid stackable>
-                        Hendelses-adresse: {newscase.address},
-                        <ShowInMapWidget
-                            callback={this.close}
-                            renderMap={this.state.renderMap}
-                            button={<span className='showInMap' onClick={() => this.setState({renderMap: true})}>vis i kart</span>}
-                            latlng={[newscase.lat, newscase.lon]}
-                        />
+                            Hendelses-adresse: {newscase.address},
+                            <ShowInMapWidget
+                                callback={this.close}
+                                renderMap={this.state.renderMap}
+                                button={<span className='showInMap' onClick={() => this.setState({renderMap: true})}>vis i kart</span>}
+                                latlng={[newscase.lat, newscase.lon]}
+                            />
                         </Grid>
                     </Segment>
                     <Button onClick={this.props.show}>Avslutt abonnement</Button>
