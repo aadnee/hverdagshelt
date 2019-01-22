@@ -78,9 +78,7 @@ app.post('/api/events/filter', (req, res) => {
 
 app.post('/api/events', ensureEmployee, (req, res) => {
   let b = req.body;
-  eventManager.addEvent(b.title, b.description, b.lat, b.lon, b.address, b.start, b.end, b.municipalId, function(
-    result
-  ) {
+  eventManager.addEvent(b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, function(result) {
     res.json(result);
   });
 });
@@ -88,20 +86,11 @@ app.post('/api/events', ensureEmployee, (req, res) => {
 app.put('/api/events/:eventId', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  eventManager.editEvent(
-    p.eventId,
-    b.title,
-    b.description,
-    b.lat,
-    b.lon,
-    b.address,
-    b.start,
-    b.end,
-    b.municipalId,
-    function(result) {
-      res.json(result);
-    }
-  );
+  eventManager.editEvent(p.eventId, b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, function(
+    result
+  ) {
+    res.json(result);
+  });
 });
 
 app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
