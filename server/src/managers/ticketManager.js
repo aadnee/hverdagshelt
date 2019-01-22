@@ -190,57 +190,19 @@ module.exports = {
   },
 
   //statistics
-  getYearly: function(year, municipalId, categoryId, callback) {
-    if (categoryId != null) {
-      Tickets.count({
-        where: {
-          createdAt: {
-            $gte: new Date(year + '-01-01'),
-            $lte: new Date(year + '-12-31')
-          },
-          municipalId: municipalId,
-          categoryId: categoryId
-        }
-      }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
-    } else {
-      Tickets.count({
-        where: {
-          createdAt: {
-            $gte: new Date(year + '-01-01'),
-            $lte: new Date(year + '-12-31')
-          },
-          municipalId: municipalId
-        }
-      }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
-    }
-  },
-
-  getMonthly1: function(month, year, municipalId, callback) {
-    // Tickets.count({
-    //   where: {
-    //     createdAt: {
-    //       $gte: new Date(year + '-' + month + '-01'),
-    //       $lte: new Date(year + '-' + month + '-31')
-    //     },
-    //     municipalId: municipalId
-    //   }
-    // }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
-
+  getMonthly: function(month, year, municipalId, callback) {
     Categories.findAll({
       attributes: ['name'],
-      required: false,
       include: [
         {
+          attributes: ['name'],
           model: Categories,
+          required: false,
           as: 'subs',
-          attributes: [[sequelize.fn('COUNT', 'subs.categoryId'), 'amount']],
-          required: true,
-          group: 'subs.categoriId',
           include: [
             {
+              attributes: ['id'],
               model: Tickets,
-              as: 'parent',
-
               required: false,
               where: {
                 createdAt: {
@@ -253,52 +215,14 @@ module.exports = {
           ]
         }
       ],
-      where: { parentId: null },
-      group: ['Tickets.categoryId']
-    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
-  },
-
-  getMonthly: function(month, year, municipalId, callback) {
-    // Categories.findAll({
-    //   attributes: ['name'],
-    //   include: [
-    //     {
-    //       //attributes: [[sequelize.fn('COUNT', sequelize.col('subs->tickets.id')), 'amount']],
-    //       attributes: ['name'],
-    //       model: Categories,
-    //       required: false,
-    //       as: 'subs',
-    //       include: [
-    //         {
-    //           attributes: ['id'],
-    //           model: Tickets,
-    //           required: false
-    //         }
-    //       ]
-    //     }
-    //   ],
-    //   where: { parentId: null }
-    // }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
-
-    Categories.findAll({
-      attributes: ['name'],
-      include: [
-        {
-          //attributes: [[sequelize.fn('COUNT', sequelize.col('subs->tickets.id')), 'amount']],
-          attributes: ['name'],
-          model: Categories,
-          required: false,
-          as: 'subs',
-          include: [
-            {
-              attributes: ['id'],
-              model: Tickets,
-              required: false
-            }
-          ]
-        }
-      ],
       where: { parentId: null }
-    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+    }).then(res => {
+      let stats = [];
+      res.map((cat, i) => {
+        stats.push({ name: cat.name, subs: [] });
+        cat.subs.map((sub, j) => stats[i].subs.push({ name: sub.name, amount: sub.tickets.length }));
+      });
+      callback({ success: true, data: stats }), err => callback({ success: false, message: err });
+    });
   }
 };
