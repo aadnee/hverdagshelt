@@ -259,9 +259,46 @@ module.exports = {
   },
 
   getMonthly: function(month, year, municipalId, callback) {
-    Categories.findAll({}).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    // Categories.findAll({
+    //   attributes: ['name'],
+    //   include: [
+    //     {
+    //       //attributes: [[sequelize.fn('COUNT', sequelize.col('subs->tickets.id')), 'amount']],
+    //       attributes: ['name'],
+    //       model: Categories,
+    //       required: false,
+    //       as: 'subs',
+    //       include: [
+    //         {
+    //           attributes: ['id'],
+    //           model: Tickets,
+    //           required: false
+    //         }
+    //       ]
+    //     }
+    //   ],
+    //   where: { parentId: null }
+    // }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+
+    Categories.findAll({
+      attributes: ['name'],
+      include: [
+        {
+          //attributes: [[sequelize.fn('COUNT', sequelize.col('subs->tickets.id')), 'amount']],
+          attributes: ['name'],
+          model: Categories,
+          required: false,
+          as: 'subs',
+          include: [
+            {
+              attributes: ['id'],
+              model: Tickets,
+              required: false
+            }
+          ]
+        }
+      ],
+      where: { parentId: null }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }
 };
