@@ -183,6 +183,10 @@ export function syncDatabase(callback) {
         name: 'Setting av brøytestikker 2',
         parentId: 1
       });
+      await Categories.create({
+        name: 'Setting av underkat 2',
+        parentId: 2
+      });
       await Users.create({
         name: 'Ola',
         email: 'user@user.com',
