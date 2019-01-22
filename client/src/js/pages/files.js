@@ -10,6 +10,7 @@ export * from './EmployeeManageNewsPage';
 export * from './EmployeeEditNewscasePage';
 export * from './EmployeeManageAssignmentsPage';
 export * from './EmployeeEditAssignmentPage';
+export * from './EmployeeRegisterEventPage';
 export * from './EntrepreneurAssignmentPage';
 export * from './ForgotPasswordPage';
 export * from './UserPage';

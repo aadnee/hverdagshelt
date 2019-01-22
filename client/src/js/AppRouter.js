@@ -30,6 +30,7 @@ import {
   RegisterPage,
   LoginPage,
   LogoutPage,
+  EmployeeRegisterEventPage,
   PageNotFoundPage,
   AccessDeniedPage
 } from './pages/files';
@@ -40,31 +41,33 @@ import { EventWidget as Widget } from './widgets/EventWidget';
 export class AppRouter extends Component {
   render() {
     return (
-      <>
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          {/* Admin Routes */}
-          <AdminRoute exact path="/admin/users" component={AdminUsersPage} />
-          <AdminRoute exact path="/admin/company" component={AdminCompanyPage} />
-          <AdminRoute exact path="/admin/users/:userid/edit" component={AdminEditUserPage} />
-          <AdminRoute exact path="/admin/categories" component={AdminCategoriesPage} />
-          <AdminRoute exact path="/admin/categories/:categoryid/edit" component={AdminEditCategoryPage} />
-          {/* Employee */}
-          <EmployeeRoute exact path="/employee/tickets" component={EmployeeManageTicketsPage} />
-          <EmployeeRoute exact path="/employee/publish/:ticketid" component={EmployeePublishTicketPage} />
-          <EmployeeRoute exact path="/employee/news" component={EmployeeManageNewsPage} />
-          <EmployeeRoute exact path="/employee/news/:newscaseid/edit" component={EmployeeEditNewscasePage} />
-          <EmployeeRoute exact path="/employee/assignments" component={EmployeeManageAssignmentsPage} />
-          <EmployeeRoute exact path="/employee/assignments/:assignmentid/edit" component={EmployeeEditAssignmentPage} />
-          {/* Entrepreneur */}
-          <CompanyRoute exact path="/assignments" component={EntrepreneurAssignmentPage} />
-          {/* Normal User */}
-          <UserRoute exact path="/profile" component={UserPage} />
-          <UserRoute exact path="/report" component={UserReportTicketPage} />
-          <UserRoute exact path="/feed" component={UserNewsFeedPage} />
-          <UserRoute exact path="/tickets" component={UserTicketsPage} />
-          <UserRoute exact path="/tickets/:ticketid/edit" component={UserTicketsPage} />
-          <UserRoute exact path="/subscriptions" component={UserSubscriptionPage} />
+        <>
+          <Switch>
+            <Route exact path="/" component={HomePage}/>
+            {/* Admin Routes */}
+            <AdminRoute exact path="/admin/users" component={AdminUsersPage}/>
+            <AdminRoute exact path="/admin/company" component={AdminCompanyPage}/>
+            <AdminRoute exact path="/admin/users/:userid/edit" component={AdminEditUserPage}/>
+            <AdminRoute exact path="/admin/categories" component={AdminCategoriesPage}/>
+            <AdminRoute exact path="/admin/categories/:categoryid/edit" component={AdminEditCategoryPage}/>
+            {/* Employee */}
+            <EmployeeRoute exact path="/employee/tickets" component={EmployeeManageTicketsPage}/>
+            <EmployeeRoute exact path="/employee/publish/:ticketid" component={EmployeePublishTicketPage}/>
+            <EmployeeRoute exact path="/employee/news" component={EmployeeManageNewsPage}/>
+            <EmployeeRoute exact path="/employee/registerEvent" component={EmployeeRegisterEventPage}/>
+            <EmployeeRoute exact path="/employee/news/:newscaseid/edit" component={EmployeeEditNewscasePage}/>
+            <EmployeeRoute exact path="/employee/assignments" component={EmployeeManageAssignmentsPage}/>
+            <EmployeeRoute exact path="/employee/assignments/:assignmentid/edit"
+                           component={EmployeeEditAssignmentPage}/>
+            {/* Entrepreneur */}
+            <CompanyRoute exact path="/assignments" component={EntrepreneurAssignmentPage}/>
+            {/* Normal User */}
+            <UserRoute exact path="/profile" component={UserPage}/>
+            <UserRoute exact path="/report" component={UserReportTicketPage}/>
+            <UserRoute exact path="/feed" component={UserNewsFeedPage}/>
+            <UserRoute exact path="/tickets" component={UserTicketsPage}/>
+            <UserRoute exact path="/tickets/:ticketid/edit" component={UserTicketsPage}/>
+            <UserRoute exact path="/subscriptions" component={UserSubscriptionPage}/>
 
           {/* Others */}
           <NonLoggedInRoute exact path="/register" component={RegisterPage} />
