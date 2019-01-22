@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Modal, Button, Message, Container, Segment } from 'semantic-ui-react';
+import { Grid, Header, Modal, Button, Message, Container, Segment, Divider } from 'semantic-ui-react';
 
 import { NewsCaseWidget } from '../widgets/NewsCaseWidget';
 import { subscriptionService } from '../services/SubscriptionServices';
@@ -62,6 +62,8 @@ export class UserSubscriptionPage extends Component {
   render() {
     return (
       <Container>
+        <Divider hidden />
+        <Divider hidden />
         <Header as="h1">Nyheter jeg abonnerer på</Header>
         <Segment color="blue" basic>
           <Grid container centered>

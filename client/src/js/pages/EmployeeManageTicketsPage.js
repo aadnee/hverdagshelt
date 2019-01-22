@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Message, Container } from 'semantic-ui-react';
+import { Grid, Header, Message, Container, Segment, Divider } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
 import { ticketService } from '../services/TicketServices';
@@ -45,35 +45,39 @@ export class EmployeeManageTicketsPage extends React.Component {
   render() {
     return (
       <Container>
-        <Header as="h2">Varslinger fra brukerne</Header>
-        <Grid stackable container columns={3}>
-          {!this.state.hasTickets ? (
-            <Grid.Row centered>
-              <Message size={'massive'}>
-                <p>Du har ingen flere varsler å administrere</p>
-              </Message>
-            </Grid.Row>
-          ) : null}
-          {this.state.tickets.map(ticket => (
-            <Grid.Column key={ticket.id}>
-              <TicketWidget
-                employee
-                ticket={ticket}
-                accept={this.accept.bind(this, ticket.id)}
-                show={this.show.bind(this, ticket.id)}
-                link={this.bindUserToNews.bind(this, ticket.id)}
-              />
-            </Grid.Column>
-          ))}
-        </Grid>
-        <MessageWidget
-          title={'Avslå nyhet'}
-          size={'tiny'}
-          open={this.state.modalOpen}
-          message="Er du sikker på at du vil avslå innsendingen?"
-          customFunc={this.reject.bind(this, this.state.modalParam)}
-          callback={this.close}
-        />
+        <Divider hidden />
+        <Divider hidden />
+        <Header as="h1">Varslinger fra brukerne</Header>
+        <Segment color="blue" basic>
+          <Grid stackable container columns={3}>
+            {!this.state.hasTickets ? (
+              <Grid.Row centered>
+                <Message size={'massive'}>
+                  <p>Du har ingen flere varsler å administrere</p>
+                </Message>
+              </Grid.Row>
+            ) : null}
+            {this.state.tickets.map(ticket => (
+              <Grid.Column key={ticket.id}>
+                <TicketWidget
+                  employee
+                  ticket={ticket}
+                  accept={this.accept.bind(this, ticket.id)}
+                  show={this.show.bind(this, ticket.id)}
+                  link={this.bindUserToNews.bind(this, ticket.id)}
+                />
+              </Grid.Column>
+            ))}
+          </Grid>
+          <MessageWidget
+            title={'Avslå nyhet'}
+            size={'tiny'}
+            open={this.state.modalOpen}
+            message="Er du sikker på at du vil avslå innsendingen?"
+            customFunc={this.reject.bind(this, this.state.modalParam)}
+            callback={this.close}
+          />
+        </Segment>
       </Container>
     );
   }

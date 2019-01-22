@@ -2,6 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal, Dropdown } from 'semantic-ui-react';
+import { Consumer } from './../context';
 import { PENDING, DONE, REJECTED, STATUS } from '../commons';
 
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
@@ -98,7 +99,7 @@ export class TicketWidget extends Component {
               ) : null}
             </Header.Content>
           </Header>
-          <Card.Meta>{this.props.ticket.createdAt}</Card.Meta>
+          <Card.Meta>{Consumer._currentValue.convDbString(this.props.ticket.createdAt)}</Card.Meta>
           <Card.Description>{this.props.ticket.description}</Card.Description>
         </Card.Content>
         {this.props.employee ? (
@@ -126,11 +127,11 @@ export class TicketWidget extends Component {
                     open={this.state.open}
                     onOpen={() => this.setState({ open: true })}
                     onClose={() => this.setState({ open: false })}
-                    trigger={<Dropdown.Item icon={'linkify'} text={'Knytt bruker til nyhet'} />}
+                    trigger={<Dropdown.Item icon={'linkify'} text={'Knytt til samme nyhet'} />}
                     size={'tiny'}
                     closeIcon
                   >
-                    <Modal.Header>Knytt brukeren til nyhet</Modal.Header>
+                    <Modal.Header>Knytt til samme nyhet</Modal.Header>
                     <Modal.Content>
                       <Dropdown
                         fluid
