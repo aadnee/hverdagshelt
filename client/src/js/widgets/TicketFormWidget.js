@@ -28,16 +28,16 @@ export class TicketFormWidget extends Component {
     this.state = {
       address: this.props.address ? this.props.address : '',
       latlng: this.props.latlng ? this.props.latlng : [null, null],
-      headline: '',
-      details: '',
-      category: this.props.ticket ? this.props.ticket.categoryId : '',
+      title: this.props.ticket ? this.props.ticket.title : '',
+      description: this.props.ticket ? this.props.ticket.description : '',
+      category: '',
       allCats: [],
       categoryOptions: [],
       receivedCategory: this.props.ticket ? this.props.ticket.categoryId : '',
-      subcategory: '',
+      subCategory: '',
       subCategoryOptions: [],
       position: [null, null],
-      subscription: 'false',
+      subscribed: this.props.ticket ? this.props.ticket.subscribed : false,
       selectedCategory: false,
       modalMessage: '',
       modalOpen: false,
@@ -59,50 +59,62 @@ export class TicketFormWidget extends Component {
   };
 
   getSubCategories(category) {
-    let bool = false;
     let subCats = [];
     let subCatsOpt = [];
 
     this.state.allCats.map(cat => {
       if (cat.id === category) {
         subCats = cat.subs;
+        console.log(subCats);
       }
     });
-
     subCats.map(subCat => {
-      if (this.state.receivedCategory === subCat.id) {
-        this.setState({ category: subCat.parentId, subcategory: this.state.receivedCategory });
-        bool = true;
-      }
       subCatsOpt.push({ key: subCat.id, value: subCat.id, text: subCat.name });
     });
-    console.log(this.state.selectedCategory);
-    if (bool || this.state.selectedCategory) {
-      this.setState({ subCategoryOptions: subCatsOpt });
-    }
+    this.setState({ subCategoryOptions: subCatsOpt });
+    this.state.receivedCategory === -1 ? this.setState({ subCategory: subCats[0].id }) : null;
   }
 
   componentWillMount() {
-    categoryService.getCategories().then(res => {
-      let cats = [];
-      this.setState({ allCats: res.data });
-      res.data.map(cat => {
-        cats.push({ key: cat.id, value: cat.id, text: cat.name });
-        this.props.ticket ? this.getSubCategories(cat.id) : null;
-      });
-      this.setState({ categoryOptions: cats });
-    });
-    this.props.ticket ? this.resetValues() : null;
-  }
+    let parentId = -1;
+    let cats = [];
+    categoryService
+      .getCategories()
+      .then(res => {
+        this.setState({ allCats: res.data });
 
-  resetValues = () => {
-    //console.log(this.props.ticket);
-    this.setState({
-      address: this.props.ticket.address,
-      headline: this.props.ticket.title,
-      details: this.props.ticket.description
-    });
-  };
+        res.data.map(cat => {
+          cats.push({ key: cat.id, value: cat.id, text: cat.name });
+          if (this.props.ticket) {
+            cat.subs.map(subCat => {
+              if (subCat.id === this.state.receivedCategory) {
+                console.log(subCat.id);
+                parentId = subCat.parentId;
+                this.getSubCategories(parentId);
+              }
+            });
+          }
+        });
+      })
+      .then(() => {
+        console.log(cats);
+        !this.props.ticket ? this.setState({ categoryOptions: cats, receivedCategory: -1 }) : null;
+
+        this.props.ticket
+          ? this.setState(
+              {
+                address: this.props.ticket.address,
+                subCategory: this.state.receivedCategory,
+                category: parentId
+              },
+              () => {
+                this.setState({ categoryOptions: cats, receivedCategory: -1 });
+                console.log(this.state);
+              }
+            )
+          : null;
+      });
+  }
 
   render() {
     return (
@@ -129,9 +141,9 @@ export class TicketFormWidget extends Component {
                     icon="warning"
                     iconPosition="left"
                     placeholder={'Hva er problemet?'}
-                    value={this.state.headline}
+                    value={this.state.title}
                     onChange={(event, data) => {
-                      this.handleInput('headline', data.value);
+                      this.handleInput('title', data.value);
                     }}
                   />
                 </Form.Field>
@@ -140,9 +152,9 @@ export class TicketFormWidget extends Component {
                   <TextArea
                     autoHeight
                     placeholder={'Beskrivelse'}
-                    value={this.state.details}
+                    value={this.state.description}
                     onChange={(event, data) => {
-                      this.handleInput('details', data.value);
+                      this.handleInput('description', data.value);
                     }}
                   />
                 </Form.Field>
@@ -177,17 +189,18 @@ export class TicketFormWidget extends Component {
                           selection
                           options={this.state.subCategoryOptions}
                           placeholder={'Underkategori'}
-                          value={this.state.subcategory}
+                          value={this.state.subCategory}
                           onChange={(event, data) => {
-                            this.handleInput('subcategory', data.value);
+                            this.handleInput('subCategory', data.value);
                           }}
                         />
                       </Form.Field>
                     </Grid.Column>
                   </Grid>
                 </Form.Field>
-                {!this.props.ticket ? (
-                  <Form.Field>
+
+                <Form.Field>
+                  {!this.props.ticket ? (
                     <Label as={'label'} basic htmlFor={'upload'}>
                       <Button
                         icon={'upload'}
@@ -207,8 +220,8 @@ export class TicketFormWidget extends Component {
                         onChange={(event, data) => {
                           let images = this.state.image;
 
-                          //console.log(event.target.files);
                           for (let i = 0; i < event.target.files.length; i++) {
+                            event.target.files.name = event.target.files.filename;
                             images.push(event.target.files[i]);
                           }
 
@@ -218,38 +231,34 @@ export class TicketFormWidget extends Component {
                         }}
                       />
                     </Label>
-                    {this.state.imageUploaded
-                      ? this.state.image.map((image, i) => {
-                          return (
-                            <Label
-                              key={i}
-                              id={i}
-                              removeIcon={<Icon name={'delete'} />}
-                              size={'large'}
-                              onRemove={(event, data) => {
-                                let imgs = this.state.image;
-                                imgs.splice(data.id, 1);
-                                this.setState({ image: imgs });
-                                console.log(imgs);
-                              }}
-                              content={image.name}
-                            />
-                          );
-                        })
-                      : null}
-                  </Form.Field>
-                ) : null}
+                  ) : null}
+                  {this.state.image.length > 0
+                    ? this.state.image.map((image, i) => {
+                        return (
+                          <Label
+                            key={i}
+                            id={i}
+                            removeIcon={<Icon name={'delete'} />}
+                            size={'large'}
+                            onRemove={(event, data) => {
+                              let imgs = this.state.image;
+                              imgs.splice(data.id, 1);
+                              this.setState({ image: imgs });
+                              console.log(imgs);
+                            }}
+                            content={image.name || image.filename}
+                          />
+                        );
+                      })
+                    : null}
+                </Form.Field>
 
                 <Form.Field>
                   <Checkbox
                     label={<label>Jeg ønsker å abonnere på saken</label>}
-                    value={this.state.subscription}
+                    checked={this.state.subscribed}
                     onChange={(event, data) => {
-                      if (data.checked) {
-                        this.handleInput('subscription', 'true');
-                      } else {
-                        this.handleInput('subscription', 'false');
-                      }
+                      this.handleInput('subscribed', data.checked);
                     }}
                   />
                 </Form.Field>
@@ -259,24 +268,25 @@ export class TicketFormWidget extends Component {
                       color="blue"
                       fluid
                       size="large"
-                      onClick={() =>
+                      onClick={() => {
+                        console.log(this.state);
                         this.props.editTicket(
                           this.props.ticket.id,
-                          this.state.headline,
-                          this.state.details,
+                          this.state.title,
+                          this.state.description,
                           this.props.ticket.lat,
                           this.props.ticket.lon,
                           this.state.address,
 
-                          this.state.subcategory ? this.state.subcategory : this.state.category,
+                          this.state.subCategory,
                           this.props.ticket.municipalId,
-                          this.state.subscription === 'true',
+                          this.state.subscribed,
                           this.state.image,
                           this.props.ticket.status
-                        )
-                      }
+                        );
+                      }}
                     >
-                      Rediger
+                      Lagre endringer
                     </Button>
                     <Button color="grey" fluid size="large" onClick={this.props.close}>
                       Avbryt
@@ -289,15 +299,15 @@ export class TicketFormWidget extends Component {
                     size="large"
                     onClick={() => {
                       this.props.submit(
-                        this.state.headline,
-                        this.state.details,
+                        this.state.title,
+                        this.state.description,
                         this.state.latlng.lat,
                         this.state.latlng.lng,
                         this.state.address,
 
-                        this.state.subcategory ? this.state.subcategory : this.state.category,
+                        this.state.subCategory ? this.state.subCategory : this.state.category,
                         Cookies.get('municipalId'),
-                        this.state.subscription === 'true',
+                        this.state.subscribed,
                         this.state.image
                       );
                     }}
