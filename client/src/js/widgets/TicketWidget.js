@@ -8,6 +8,7 @@ import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 import { newsService } from '../services/NewsServices';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
+import { Consumer } from '../context';
 import { ticketService } from '../services/TicketServices';
 
 /*
@@ -38,6 +39,7 @@ export class TicketWidget extends Component {
   componentWillMount() {
     let catIds = [];
     let dropdownOptions = [];
+    console.log(this.props.ticket);
     categoryService
       .getCategories()
       .then(res => {
@@ -46,12 +48,15 @@ export class TicketWidget extends Component {
         });
       })
       .then(() => {
+        //change Cookies.get('municipalId) with Consumer._currentValue.user.municipalId
+        //didnt work for me
+
         newsService.getFilteredNews(Cookies.get('municipalId'), catIds, 0, 0).then(res => {
           res.data.map(news => {
             dropdownOptions.push({ key: news.id, value: news.id, text: news.title });
           });
           this.setState({ newsOptions: dropdownOptions });
-          console.log(dropdownOptions);
+          //console.log(dropdownOptions);
         });
       });
   }
@@ -107,11 +112,8 @@ export class TicketWidget extends Component {
                     <Modal.Content>
                       <Modal.Description>
                         <PublishNewsFormWidget
-                          title={this.props.ticket.title}
-                          description={this.props.ticket.description}
-                          category={this.props.ticket.categoryId}
+                          ticket={this.props.ticket}
                           accept={this.props.accept}
-                          image={this.props.ticket.uploads}
                           submitButton={'Publiser'}
                         />
                       </Modal.Description>

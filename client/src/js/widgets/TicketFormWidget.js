@@ -18,6 +18,7 @@ import {
 } from 'semantic-ui-react';
 
 import { categoryService } from '../services/CategoryServices';
+import { toast } from 'react-toastify';
 
 import Cookies from 'js-cookie';
 
@@ -185,60 +186,55 @@ export class TicketFormWidget extends Component {
                 </Form.Field>
                 {!this.props.ticket ? (
                   <Form.Field>
-                    <Label basic as={'label'}>
-                      <Label as={'label'} basic htmlFor={'upload'}>
-                        <Button
-                          icon={'upload'}
-                          label={{
-                            basic: true,
-                            content: 'Last opp bilde'
-                          }}
-                          labelPosition={'right'}
-                        />
+                    <Label as={'label'} basic htmlFor={'upload'}>
+                      <Button
+                        icon={'upload'}
+                        label={{
+                          basic: true,
+                          content: 'Last opp bilde'
+                        }}
+                        labelPosition={'right'}
+                      />
 
-                        <input
-                          hidden
-                          id={'upload'}
-                          type="file"
-                          multiple
-                          className={'ui button'}
-                          onChange={(event, data) => {
-                            let images = [];
-                            for (let i = 0; i < event.target.files.length; i++) {
-                              images.push(event.target.files[i]);
-                            }
-                            this.setState({ image: images }, () => {
-                              this.setState({ imageUploaded: true });
-                            });
-                          }}
-                        />
-                      </Label>
-                      {this.state.imageUploaded
-                        ? this.state.image.map((image, i) => {
-                            return (
-                              <Label
-                                key={i}
-                                id={i}
-                                removeIcon={<Icon name={'delete'} />}
-                                size={'large'}
-                                onRemove={(event, data) => {
-                                  let newImages = [];
-                                  this.state.image.map((img, i) => {
-                                    if (i !== data.id) {
-                                      newImages.push(img);
-                                    }
-                                  });
+                      <input
+                        hidden
+                        id={'upload'}
+                        type="file"
+                        multiple
+                        className={'ui button'}
+                        onChange={(event, data) => {
+                          let images = this.state.image;
 
-                                  this.setState({ image: newImages }, () => {
-                                    console.log(this.state.image);
-                                  });
-                                }}
-                                content={image.name}
-                              />
-                            );
-                          })
-                        : null}
+                          //console.log(event.target.files);
+                          for (let i = 0; i < event.target.files.length; i++) {
+                            images.push(event.target.files[i]);
+                          }
+
+                          this.setState({ image: images }, () => {
+                            this.setState({ imageUploaded: true });
+                          });
+                        }}
+                      />
                     </Label>
+                    {this.state.imageUploaded
+                      ? this.state.image.map((image, i) => {
+                          return (
+                            <Label
+                              key={i}
+                              id={i}
+                              removeIcon={<Icon name={'delete'} />}
+                              size={'large'}
+                              onRemove={(event, data) => {
+                                let imgs = this.state.image;
+                                imgs.splice(data.id, 1);
+                                this.setState({ image: imgs });
+                                console.log(imgs);
+                              }}
+                              content={image.name}
+                            />
+                          );
+                        })
+                      : null}
                   </Form.Field>
                 ) : null}
 

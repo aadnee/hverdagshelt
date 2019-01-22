@@ -18,27 +18,25 @@ import {
   Label
 } from 'semantic-ui-react';
 import { categoryService } from '../services/CategoryServices';
-import Cookies from 'js-cookie';
 import { Consumer } from '../context';
-
-//import {} from './';
 
 export class PublishNewsFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: this.props.title,
-      description: this.props.description,
-      receivedCategory: this.props.category,
+      title: this.props.ticket.title,
+      description: this.props.ticket.description,
+      receivedCategory: this.props.ticket.categoryId,
       allCats: [],
-      category: this.props.category,
+      category: this.props.ticket.categoryId,
       categoryOptions: [],
       subcategory: '',
       subCategoryOptions: [],
       categoryChanged: false,
       position: [1, 1],
+      address: this.props.ticket.address,
       subscription: false,
-      image: this.props.image,
+      image: this.props.ticket.uploads,
       imgModalOpen: false,
       publish: true
     };
@@ -198,16 +196,17 @@ export class PublishNewsFormWidget extends Component {
                   </Form.Field>
                 ) : null}
                 <Form.Field />
-                {/*
-                <Checkbox
-                  checked={this.state.publish}
-                  label={<label>Gjør nyhet synlig</label>}
-                  onChange={(event, data) => {
-                    this.handleInput('publish', data.checked);
-                    console.log(data.checked);
-                  }}
-                />
-                */}
+                <Form.Field>
+                  <Checkbox
+                    checked={this.state.publish}
+                    label={<label>Gjør nyhet synlig</label>}
+                    onChange={(event, data) => {
+                      this.handleInput('publish', data.checked);
+                      console.log(data.checked);
+                    }}
+                  />
+                </Form.Field>
+
                 <Button
                   color="blue"
                   fluid
@@ -218,8 +217,11 @@ export class PublishNewsFormWidget extends Component {
                       this.state.description,
                       this.state.position[0],
                       this.state.position[1],
+                      this.state.address,
                       this.state.category,
-                      mun
+                      this.state.publish,
+                      mun,
+                      this.state.image
                     )
                   }
                 >

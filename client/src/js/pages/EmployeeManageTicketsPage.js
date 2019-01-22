@@ -105,32 +105,35 @@ export class EmployeeManageTicketsPage extends React.Component {
     }
   }
 
-  accept(id, title, description, lat, lon, categoryId, municipalId) {
+  accept(id, title, description, lat, lon, address, categoryId, publish, municipalId, images) {
     if (!title || !description || !lat || !lon || !categoryId) {
       toast.error('Vennligst fyll ut alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });
     } else {
-      ticketService.acceptTicket(id, title, description, lat, lon, '', categoryId, municipalId).then(res => {
-        if (res.success) {
-          let ticket = this.state.tickets.find(t => t.id === id);
-
-          if (ticket.subscribed) {
-            subscriptionService.addSubscription(res.id, ticket.userId).then(res => {});
+      ticketService
+        .acceptTicket(id, title, description, lat, lon, address, categoryId, publish, municipalId, images)
+        .then(res => {
+          if (res.success) {
+            let ticket = this.state.tickets.find(t => t.id === id);
+            if (ticket.subscribed) {
+              subscriptionService.addSubscription(res.id, ticket.userId).then(res => {
+                console.log(res.message.no);
+              });
+            }
+            this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
+            if (this.state.tickets.length < 1) {
+              this.setState({ hasTickets: false });
+            }
+            toast.success(res.message.no, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+          } else {
+            toast.error(res.message.no, {
+              position: toast.POSITION.TOP_RIGHT
+            });
           }
-          this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
-          if (this.state.tickets.length < 1) {
-            this.setState({ hasTickets: false });
-          }
-          toast.success(res.message.no, {
-            position: toast.POSITION.TOP_RIGHT
-          });
-        } else {
-          toast.error(res.message.no, {
-            position: toast.POSITION.TOP_RIGHT
-          });
-        }
-      });
+        });
     }
   }
 
