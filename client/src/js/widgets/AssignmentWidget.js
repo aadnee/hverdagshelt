@@ -20,6 +20,8 @@ export class AssignmentWidget extends Component {
     }
 
     render() {
+
+        //dette må hentes fra databasen senere
         const newscase = {
             createdAt: "2019-06-06T14:00:00.000Z",
             title: "title",
