@@ -125,6 +125,8 @@ export class TicketFormWidget extends Component {
                     readOnly
                   />
                   <label>Hva vil du melde inn?</label>
+                </Form.Field>
+                <Form.Field>
                   <Input
                     fluid
                     icon="warning"
@@ -150,71 +152,72 @@ export class TicketFormWidget extends Component {
                 <Form.Field>
                   <Grid columns={'equal'}>
                     <Grid.Column>
-                      <label>Kategori</label>
-                      <Dropdown
-                        fluid
-                        search
-                        selection
-                        value={this.state.category}
-                        options={this.state.categoryOptions}
-                        placeholder="Kategori"
-                        onChange={(event, data) => {
-                          this.handleInput('category', data.value);
-                          this.setState({ selectedCategory: true }, () => {
-                            this.getSubCategories(data.value);
-                          });
-                        }}
-                      />
+                      <Form.Field>
+                        <label>Kategori</label>
+                        <Dropdown
+                          fluid
+                          search
+                          selection
+                          value={this.state.category}
+                          options={this.state.categoryOptions}
+                          placeholder="Kategori"
+                          onChange={(event, data) => {
+                            this.handleInput('category', data.value);
+                            this.setState({ selectedCategory: true }, () => {
+                              this.getSubCategories(data.value);
+                            });
+                          }}
+                        />
+                      </Form.Field>
                     </Grid.Column>
                     <Grid.Column>
-                      <label>Underkategori</label>
-                      <Dropdown
-                        disabled={!this.state.category}
-                        fluid
-                        search
-                        selection
-                        options={this.state.subCategoryOptions}
-                        placeholder={'Underkategori'}
-                        value={this.state.subcategory}
-                        onChange={(event, data) => {
-                          this.handleInput('subcategory', data.value);
-                        }}
-                      />
+                      <Form.Field>
+                        <label>Underkategori</label>
+                        <Dropdown
+                          disabled={!this.state.category}
+                          fluid
+                          search
+                          selection
+                          options={this.state.subCategoryOptions}
+                          placeholder={'Underkategori'}
+                          value={this.state.subcategory}
+                          onChange={(event, data) => {
+                            this.handleInput('subcategory', data.value);
+                          }}
+                        />
+                      </Form.Field>
                     </Grid.Column>
                   </Grid>
                 </Form.Field>
 
                 <Form.Field>
-                  <Label basic as={'label'}>
-                    <Label as={'label'} basic htmlFor={'upload'}>
-                      <Button
-                        icon={'upload'}
-                        label={{
-                          basic: true,
-                          content: 'Last opp bilde'
-                        }}
-                        labelPosition={'right'}
-                      />
-
-                      <input
-                        hidden
-                        id={'upload'}
-                        type="file"
-                        multiple
-                        className={'ui button'}
-                        onChange={(event, data) => {
-                          let images = [];
-                          for (let i = 0; i < event.target.files.length; i++) {
-                            images.push(event.target.files[i]);
-                          }
-                          console.log(images);
-                          this.setState({ image: images }, () => {
-                            this.setState({ imageUploaded: true });
-                            console.log(this.state.image);
-                          });
-                        }}
-                      />
-                    </Label>
+                  <Label as={'label'} basic htmlFor={'upload'}>
+                    <Button
+                      icon={'upload'}
+                      label={{
+                        basic: true,
+                        content: 'Last opp bilde'
+                      }}
+                      labelPosition={'right'}
+                    />
+                    <input
+                      hidden
+                      id={'upload'}
+                      type="file"
+                      multiple
+                      className={'ui button'}
+                      onChange={(event, data) => {
+                        let images = [];
+                        for (let i = 0; i < event.target.files.length; i++) {
+                          images.push(event.target.files[i]);
+                        }
+                        console.log(images);
+                        this.setState({ image: images }, () => {
+                          this.setState({ imageUploaded: true });
+                          console.log(this.state.image);
+                        });
+                      }}
+                    />
                     {this.state.imageUploaded
                       ? this.state.image.map((image, i) => {
                           return (

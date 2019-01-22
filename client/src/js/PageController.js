@@ -74,7 +74,7 @@ export class PageController extends Component {
 
   dbStringConverter = dbString => {
     const dateArr = dbString.split('T')[0].split('-');
-    const date = dateArr[2] + ' / ' + dateArr[1] + ' / ' + dateArr[0];
+    const date = dateArr[2] + '/' + dateArr[1] + '/' + dateArr[0];
 
     const clockArr = dbString
       .split('T')[1]
@@ -82,7 +82,7 @@ export class PageController extends Component {
       .split(':');
 
     const clock = clockArr[0] + ':' + clockArr[1];
-    return [date, clock];
+    return date + ' ' + clock;
   };
 
   ticketSubmit = (headline, description, lat, lon, address, catId, municipalId, subscribed, image) => {
