@@ -26,7 +26,9 @@ export class TicketWidget extends Component {
       open: false,
       selectedNews: '',
       dropdownOpen: false,
-      newsOptions: []
+      newsOptions: [],
+      ticket: this.props.ticket,
+      createdAt: this.props.ticket.createdAt
     };
   }
 
@@ -39,7 +41,6 @@ export class TicketWidget extends Component {
   componentWillMount() {
     let catIds = [];
     let dropdownOptions = [];
-    console.log(this.props.ticket);
     categoryService
       .getCategories()
       .then(res => {
@@ -72,17 +73,17 @@ export class TicketWidget extends Component {
       <Card centered>
         <Image>
           <Image src="img/thumbnaildiv.png" />
-          {this.props.ticket.status === PENDING && !this.props.employee ? (
+          {this.state.ticket.status === PENDING && !this.props.employee ? (
             <Label color="yellow" ribbon="right">
               {STATUS[PENDING - 1].norwegian}
             </Label>
           ) : null}
-          {this.props.ticket.status === DONE && !this.props.employee ? (
+          {this.state.ticket.status === DONE && !this.props.employee ? (
             <Label color="green" ribbon="right">
               {STATUS[DONE - 1].norwegian}
             </Label>
           ) : null}
-          {this.props.ticket.status === REJECTED && !this.props.employee ? (
+          {this.state.ticket.status === REJECTED && !this.props.employee ? (
             <Label color="red" ribbon="right">
               {STATUS[REJECTED - 1].norwegian}
             </Label>
@@ -91,18 +92,18 @@ export class TicketWidget extends Component {
         <Card.Content>
           <Header>
             <Header.Content>
-              {this.props.ticket.title}
-              <Header.Subheader>{this.props.ticket.category}</Header.Subheader>
-              {this.props.ticket.subCategory ? (
-                <Header.Subheader>{this.props.ticket.subCategory}</Header.Subheader>
+              {this.state.ticket.title}
+              <Header.Subheader>{this.state.ticket.category}</Header.Subheader>
+              {this.state.ticket.subCategory ? (
+                <Header.Subheader>{this.state.ticket.subCategory}</Header.Subheader>
               ) : null}
             </Header.Content>
           </Header>
-          <Card.Meta>{Consumer._currentValue.convDbString(this.props.ticket.createdAt)}</Card.Meta>
-          <Card.Description>{this.props.ticket.description}</Card.Description>
+          <Card.Meta>{Consumer._currentValue.convDbString(this.state.createdAt)}</Card.Meta>
+          <Card.Description>{this.state.ticket.description}</Card.Description>
         </Card.Content>
         {this.props.employee ? (
-          this.props.ticket.status === PENDING ? (
+          this.state.ticket.status === PENDING ? (
             <Card.Content extra>
               <Dropdown text={'Behandle'} simple>
                 <Dropdown.Menu>
@@ -154,7 +155,7 @@ export class TicketWidget extends Component {
               </Dropdown>
             </Card.Content>
           ) : null
-        ) : this.props.ticket.status === DONE ? (
+        ) : this.state.ticket.status === DONE ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
               <Button inverted primary>
@@ -162,13 +163,13 @@ export class TicketWidget extends Component {
               </Button>
             </Button.Group>
           </Card.Content>
-        ) : this.props.ticket.status === PENDING ? (
+        ) : this.state.ticket.status === PENDING ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
-              <Button inverted primary onClick={() => this.props.show('showEditTicket', this.props.ticket, null)}>
+              <Button inverted primary onClick={() => this.props.show('showEditTicket', this.state.ticket, null)}>
                 Endre
               </Button>
-              <Button inverted secondary onClick={() => this.props.show('messageOpen', null, this.props.ticket.id)}>
+              <Button inverted secondary onClick={() => this.props.show('messageOpen', null, this.state.ticket.id)}>
                 Trekk tilbake
               </Button>
             </Button.Group>

@@ -115,8 +115,10 @@ export class EmployeeManageTicketsPage extends React.Component {
         position: toast.POSITION.TOP_RIGHT
       });
     } else {
+      let imgIds = images.map(i => i.id);
+      console.log(imgIds);
       ticketService
-        .acceptTicket(id, title, description, lat, lon, address, categoryId, publish, municipalId, images)
+        .acceptTicket(id, title, description, lat, lon, address, categoryId, publish, municipalId, imgIds)
         .then(res => {
           if (res.success) {
             let ticket = this.state.tickets.find(t => t.id === id);
