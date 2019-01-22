@@ -130,10 +130,10 @@ module.exports = {
 
   //get all tickets submitted by a specific user
   getMyTickets: function(userId, callback) {
-    Tickets.findAll({ include: [{ model: Uploads }], where: { userId: userId } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    Tickets.findAll({
+      include: [{ model: Uploads }],
+      where: { userId: userId }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   //get all tickets in a specific municipal
@@ -215,7 +215,7 @@ module.exports = {
     }
   },
 
-  getMonthly: function(month, year, municipalId, callback) {
+  getMonthly1: function(month, year, municipalId, callback) {
     // Tickets.count({
     //   where: {
     //     createdAt: {
@@ -228,22 +228,40 @@ module.exports = {
 
     Categories.findAll({
       attributes: ['name'],
+      required: false,
       include: [
         {
-          required: false,
-          attributes: [[sequelize.fn('COUNT', 'Tickets.categoryId'), 'amount']],
-          model: Tickets,
-          where: {
-            createdAt: {
-              $gte: new Date(year + '-' + month + '-01'),
-              $lte: new Date(year + '-' + month + '-31')
-            },
-            municipalId: municipalId
-          }
+          model: Categories,
+          as: 'subs',
+          attributes: [[sequelize.fn('COUNT', 'subs.categoryId'), 'amount']],
+          required: true,
+          group: 'subs.categoriId',
+          include: [
+            {
+              model: Tickets,
+              as: 'parent',
+
+              required: false,
+              where: {
+                createdAt: {
+                  $gte: new Date(year + '-' + month + '-01'),
+                  $lte: new Date(year + '-' + month + '-31')
+                },
+                municipalId: municipalId
+              }
+            }
+          ]
         }
       ],
       where: { parentId: null },
       group: ['Tickets.categoryId']
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+  },
+
+  getMonthly: function(month, year, municipalId, callback) {
+    Categories.findAll({}).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: err })
+    );
   }
 };
