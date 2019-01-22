@@ -112,9 +112,6 @@ export class PageController extends Component {
   };
 
   render() {
-    const link = window.location.hash.split('#')[1];
-    const headerless = link == '/' || link == '/report';
-
     if (!this.state.renderReady) {
       return (
         <Dimmer active>
@@ -130,12 +127,6 @@ export class PageController extends Component {
               <Sidebar.Pushable style={{ minHeight: '100vh' }}>
                 <Sidebar.Pusher dimmed={this.state.visible} style={{ minHeight: '100vh' }}>
                   <HeaderWidget toggle={this.toggleSideBar} />
-                  {!headerless ? (
-                    <>
-                      <Divider hidden />
-                      <Divider hidden />
-                    </>
-                  ) : null}
                   <AppRouter />
                 </Sidebar.Pusher>
               </Sidebar.Pushable>

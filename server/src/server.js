@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import cors from 'cors';
+import pdf from 'html-pdf';
+import ejs from 'ejs';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
@@ -16,13 +18,10 @@ import municipalManager from './managers/municipalManager';
 import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
 import eventManager from './managers/eventManager';
-
 import { syncDatabase } from './models';
 syncDatabase(res => console.log(res));
 
 const public_path = path.join(__dirname, '/../../client/public');
-
-let app = express();
 
 let storage = multer.diskStorage({
   destination: '../client/public/uploads/',
@@ -37,10 +36,38 @@ let storage = multer.diskStorage({
 });
 let upload = multer({ storage: storage });
 
+let app = express();
 app.use(express.static(public_path));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+
+app.get('/api/pdf', (req, res) => {
+  ejs.renderFile('./pdfs/file.ejs', { test1: 1, test2: 'fwewf' }, function(err, html) {
+    let config = {
+      format: 'A4',
+      orientation: 'portrait',
+      border: {
+        top: '10mm',
+        right: '10mm',
+        bottom: '10mm',
+        left: '10mm'
+      },
+      timeout: 30000,
+      renderDelay: 2000
+    };
+    let filepath = './pdfs/file.pdf';
+    pdf.create(html, config).toFile(filepath, function(err, file) {
+      res.json({ filename: file.filename });
+    });
+  });
+});
+
+app.get('/api/pdf/html', (req, res) => {
+  ejs.renderFile('./pdfs/file.ejs', { test1: 1, test2: 'fwewf' }, function(err, html) {
+    res.send(html);
+  });
+});
 
 app.post('/api/events/filter', (req, res) => {
   let b = req.body;

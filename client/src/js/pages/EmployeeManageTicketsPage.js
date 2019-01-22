@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Message, Container, Segment } from 'semantic-ui-react';
+import { Grid, Header, Message, Container, Segment, Divider } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
 import { ticketService } from '../services/TicketServices';
@@ -45,6 +45,8 @@ export class EmployeeManageTicketsPage extends React.Component {
   render() {
     return (
       <Container>
+        <Divider hidden />
+        <Divider hidden />
         <Header as="h1">Varslinger fra brukerne</Header>
         <Segment color="blue" basic>
           <Grid stackable container columns={3}>
