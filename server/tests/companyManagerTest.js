@@ -54,8 +54,8 @@ describe('Finding all companies', () => {
 //Tests for adding,editing and deleting a company with correct data
 describe('Add, edit and delete company', () => {
   let id;
-  it('Wrong data', done => {
-    companyManager.addCompany('TestFirma', 'compmany1@company1.com', 321, 1, function(result) {
+  it('Correct data', done => {
+    companyManager.addCompany('TestFirma', 'compmany1@company1.com', 69696969, 1, function(result) {
       id = result.id;
       expect({
         success: result.success,
