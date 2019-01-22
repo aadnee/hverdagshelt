@@ -59,8 +59,6 @@ export class TicketFormWidget extends Component {
   };
 
   getSubCategories(category) {
-    let bool = false;
-
     let subCats = [];
     let subCatsOpt = [];
 
@@ -70,12 +68,11 @@ export class TicketFormWidget extends Component {
         console.log(subCats);
       }
     });
-
     subCats.map(subCat => {
       subCatsOpt.push({ key: subCat.id, value: subCat.id, text: subCat.name });
     });
-
     this.setState({ subCategoryOptions: subCatsOpt });
+    this.state.receivedCategory === -1 ? this.setState({ subCategory: subCats[0].id }) : null;
   }
 
   componentWillMount() {
@@ -88,13 +85,15 @@ export class TicketFormWidget extends Component {
 
         res.data.map(cat => {
           cats.push({ key: cat.id, value: cat.id, text: cat.name });
-          cat.subs.map(subCat => {
-            if (subCat.id === this.state.receivedCategory) {
-              console.log(subCat.id);
-              parentId = subCat.parentId;
-              this.getSubCategories(parentId);
-            }
-          });
+          if (this.props.ticket) {
+            cat.subs.map(subCat => {
+              if (subCat.id === this.state.receivedCategory) {
+                console.log(subCat.id);
+                parentId = subCat.parentId;
+                this.getSubCategories(parentId);
+              }
+            });
+          }
         });
       })
       .then(() => {
@@ -118,7 +117,6 @@ export class TicketFormWidget extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <Container>
         <Grid verticalAlign="middle">
@@ -222,7 +220,6 @@ export class TicketFormWidget extends Component {
                         onChange={(event, data) => {
                           let images = this.state.image;
 
-                          //console.log(event.target.files);
                           for (let i = 0; i < event.target.files.length; i++) {
                             event.target.files.name = event.target.files.filename;
                             images.push(event.target.files[i]);
