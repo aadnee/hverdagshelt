@@ -49,8 +49,6 @@ export class MapWidget extends Component {
     });
   }
 
-  componentWillMount() {}
-
   componentDidMount() {
     let reverseSearch = new ELG.ReverseGeocode();
     let map = this.mapRef.current.leafletElement;

@@ -25,6 +25,10 @@ class TicketServices {
     return api.get('/api/mytickets');
   }
 
+  getTicketsPending() {
+    return api.get('/api/tickets/pending');
+  }
+
   getMunicipalTickets(ticketId) {
     return api.get('/api/tickets/municipal/' + ticketId);
   }

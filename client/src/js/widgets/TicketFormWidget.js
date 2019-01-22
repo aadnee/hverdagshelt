@@ -319,10 +319,6 @@ export class ModalTicketWidget extends Component {
     super(props);
   }
 
-  componentWillUnmount() {
-    console.log(this.props.ticket);
-  }
-
   render() {
     return (
       <Modal open={this.props.open}>

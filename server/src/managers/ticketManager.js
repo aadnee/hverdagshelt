@@ -138,10 +138,10 @@ module.exports = {
 
   //get all tickets in a specific municipal
   getLocalTickets: function(municipalId, callback) {
-    Tickets.findAll({ include: [{ model: Uploads }], where: { municipalId: municipalId, status: 1 } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    Tickets.findAll({
+      include: [{ model: Uploads, required: false }],
+      where: { municipalId: municipalId, status: 1 }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   makeNews: function(ticketId, title, description, lat, lon, address, categoryId, municipalId, imageIds, callback) {
@@ -183,7 +183,7 @@ module.exports = {
   },
 
   getPendingTicketCount: function(callback) {
-    Tickets.count({ where: { status: 2 } }).then(
+    Tickets.count({ where: { status: 1 } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: err })
     );
