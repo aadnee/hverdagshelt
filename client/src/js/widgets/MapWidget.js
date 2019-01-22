@@ -154,7 +154,7 @@ export class MapWidget extends Component {
                 <b>{this.state.info}</b>
                 <br />
                 {this.props.modal && this.state.loggedIn ? (
-                  <Modal trigger={<Button>Meld hendelse her</Button>} closeIcon>
+                  <Modal basic trigger={<Button>Meld hendelse her</Button>} closeIcon>
                     <TicketFormWidget
                       submit={this.props.submit}
                       latlng={this.state.markerPos}
@@ -171,7 +171,7 @@ export class MapWidget extends Component {
                 <b>Din posisjon: {this.state.userInfo}</b>
                 <br />
                 {this.props.modal && this.props.loggedIn ? (
-                  <Modal trigger={<Button>Meld hendelse her</Button>} closeIcon>
+                  <Modal basic trigger={<Button>Meld hendelse her</Button>} closeIcon>
                     <TicketFormWidget
                       submit={this.props.submit}
                       latlng={this.state.userPos}

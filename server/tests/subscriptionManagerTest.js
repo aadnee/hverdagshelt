@@ -11,15 +11,17 @@ describe('Finding users subscriptions', () => {
         success: true
       });
       expect(
-        subscriptions.data.map(subs => subs.toJSON()).map(subs => ({
-          title: subs.title,
-          description: subs.description,
-          status: subs.status,
-          lat: subs.lat,
-          lon: subs.lon,
-          categoryId: subs.categoryId,
-          municipalId: subs.municipalId
-        }))
+        subscriptions.data
+          .map(subs => subs.toJSON())
+          .map(subs => ({
+            title: subs.title,
+            description: subs.description,
+            status: subs.status,
+            lat: subs.lat,
+            lon: subs.lon,
+            categoryId: subs.categoryId,
+            municipalId: subs.municipalId
+          }))
       ).toEqual([
         {
           title: 'Problem ved vei i TRD sentrum.',

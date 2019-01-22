@@ -84,8 +84,7 @@ export let Events = sequelize.define('events', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: Sequelize.STRING, allowNull: false },
   description: { type: Sequelize.TEXT, length: 'medium', allowNull: false },
-  lat: { type: Sequelize.FLOAT, allowNull: false },
-  lon: { type: Sequelize.FLOAT, allowNull: false },
+  area: { type: Sequelize.TEXT, allowNull: false },
   address: { type: Sequelize.STRING, allowNull: false },
   start: { type: Sequelize.DATE, allowNull: false },
   end: { type: Sequelize.DATE, allowNull: false }

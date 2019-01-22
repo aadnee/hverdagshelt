@@ -2,12 +2,14 @@ import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal, Dropdown } from 'semantic-ui-react';
+import { Consumer } from './../context';
 import { PENDING, DONE, REJECTED, STATUS } from '../commons';
 
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 import { newsService } from '../services/NewsServices';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
+import { ticketService } from '../services/TicketServices';
 
 /*
 const options = [
@@ -37,6 +39,7 @@ export class TicketWidget extends Component {
   componentWillMount() {
     let catIds = [];
     let dropdownOptions = [];
+    console.log(this.props.ticket);
     categoryService
       .getCategories()
       .then(res => {
@@ -45,18 +48,23 @@ export class TicketWidget extends Component {
         });
       })
       .then(() => {
-        console.log(catIds);
+        //change Cookies.get('municipalId) with Consumer._currentValue.user.municipalId
+        //didnt work for me
+
         newsService.getFilteredNews(Cookies.get('municipalId'), catIds, 0, 0).then(res => {
           res.data.map(news => {
             dropdownOptions.push({ key: news.id, value: news.id, text: news.title });
           });
           this.setState({ newsOptions: dropdownOptions });
-          console.log(dropdownOptions);
+          //console.log(dropdownOptions);
         });
       });
   }
-  bindUserToNews() {
-    console.log('knytt');
+
+  link() {
+    console.log('link');
+    this.setState({ open: false });
+    this.props.link(this.state.selectedNews);
   }
 
   render() {
@@ -90,19 +98,13 @@ export class TicketWidget extends Component {
               ) : null}
             </Header.Content>
           </Header>
-          <Card.Meta>{this.props.ticket.createdAt}</Card.Meta>
+          <Card.Meta>{Consumer._currentValue.convDbString(this.props.ticket.createdAt)}</Card.Meta>
           <Card.Description>{this.props.ticket.description}</Card.Description>
         </Card.Content>
         {this.props.employee ? (
           this.props.ticket.status === PENDING ? (
             <Card.Content extra>
-              <Dropdown
-                text={'Behandle'}
-                open={this.state.dropdownOpen}
-                onClick={() => {
-                  this.handleInput('dropdownOpen', true);
-                }}
-              >
+              <Dropdown text={'Behandle'} simple>
                 <Dropdown.Menu>
                   {/*REGISRER SOM NYHET*/}
                   <Modal trigger={<Dropdown.Item icon={'newspaper'} text={'Publiser som nyhet'} />}>
@@ -110,11 +112,8 @@ export class TicketWidget extends Component {
                     <Modal.Content>
                       <Modal.Description>
                         <PublishNewsFormWidget
-                          title={this.props.ticket.title}
-                          description={this.props.ticket.description}
-                          category={this.props.ticket.categoryId}
+                          ticket={this.props.ticket}
                           accept={this.props.accept}
-                          image
                           submitButton={'Publiser'}
                         />
                       </Modal.Description>
@@ -122,28 +121,21 @@ export class TicketWidget extends Component {
                   </Modal>
 
                   <Dropdown.Item icon={'delete'} text={'Avslå'} onClick={this.props.show} />
-                  <Dropdown.Item
-                    icon={'warehouse'}
-                    text={'Send til bedrift'}
-                    onClick={(data, event) => {
-                      console.log(event.target);
-                      console.log(data);
-                    }}
-                  />
+
                   <Modal
                     open={this.state.open}
                     onOpen={() => this.setState({ open: true })}
                     onClose={() => this.setState({ open: false })}
-                    trigger={<Dropdown.Item icon={'user'} text={'Knytt bruker til Nyhet'} />}
+                    trigger={<Dropdown.Item icon={'linkify'} text={'Knytt til samme nyhet'} />}
                     size={'tiny'}
                     closeIcon
                   >
-                    <Modal.Header>Knytt brukeren til nyhet</Modal.Header>
+                    <Modal.Header>Knytt til samme nyhet</Modal.Header>
                     <Modal.Content>
                       <Dropdown
                         fluid
                         search
-                        placeholder={'Velg nyhet'}
+                        placeholder={'Søk etter Nyhet på tittel'}
                         options={this.state.newsOptions}
                         value={this.state.selectedNews}
                         onChange={(target, data) => {
@@ -152,7 +144,7 @@ export class TicketWidget extends Component {
                       />
                     </Modal.Content>
                     <Modal.Actions>
-                      <Button color={'green'} onClick={this.bindUserToNews}>
+                      <Button color={'green'} onClick={() => this.link()}>
                         Lagre
                       </Button>
                       <Button onClick={this.close}>Avbryt</Button>

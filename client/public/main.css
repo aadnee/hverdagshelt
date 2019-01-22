@@ -113,9 +113,17 @@ input[type='file'] {
 
 /*STYLING FOR SHORTCUTS*/
 
-
 @media only screen and (max-width: 991px) {
   .hideOnPhone {
     visibility: hidden;
   }
+}
+
+.showInMap {
+  color: #2185d0;
+  text-decoration: underline;
+  float: right;
+}
+.showInMap:hover {
+  cursor: pointer;
 }

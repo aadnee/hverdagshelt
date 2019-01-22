@@ -135,6 +135,16 @@ export class NewsFeedWidget extends Component {
           {this.state.news.map(nc => (
             <NewsCaseWidget key={nc.id} newscase={nc} />
           ))}
+          {!this.state.empty ? (
+            <Button
+              primary
+              onClick={() => {
+                this.loadMoreNews();
+              }}
+            >
+              Last inn flere
+            </Button>
+          ) : null}
         </>
       );
     } else {
@@ -208,19 +218,7 @@ export class NewsFeedWidget extends Component {
             </Button>
           </Segment>
         </Grid.Column>
-        <Grid.Column width={11}>
-          {this.displayNews()}
-          {!this.state.empty ? (
-            <Button
-              primary
-              onClick={() => {
-                this.loadMoreNews();
-              }}
-            >
-              Last inn flere
-            </Button>
-          ) : null}
-        </Grid.Column>
+        <Grid.Column width={11}>{this.displayNews()}</Grid.Column>
       </Grid>
     );
   }

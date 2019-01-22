@@ -61,7 +61,7 @@ module.exports = {
 
   acceptTask: function(companyId, newsId, callback) {
     News.update({ companyStatus: 2 }, { where: { id: newsId, companyId: companyId } }).then(
-      res => callback({ success: true, message: { en: 'Task accapted.', no: 'Oppdraget ble godtatt.' } }),
+      res => callback({ success: true, message: { en: 'Task accepted.', no: 'Oppdraget ble godtatt.' } }),
       err => callback({ success: false, message: err })
     );
   },
