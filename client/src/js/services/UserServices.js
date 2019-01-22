@@ -42,7 +42,7 @@ class UserService {
   }
 
   resetPassword(email, passwordKey) {
-    return api.post('/api/reset/send', { email: email, key: passwordKey });
+    return api.post('/api/reset/confirm', { email: email, key: passwordKey });
   }
 
   async getMe() {
