@@ -52,7 +52,7 @@ class UserService {
     return me;
   }
 
-  editMe(firstName, lastName, email, phone, municipalId, oldPassword, newPassword) {
+  editMe(firstName, lastName, email, phone, municipalId, oldPassword, newPassword, notifications) {
     console.log(name + ' ' + email);
     return api.put('/api/me', {
       name: String(firstName + ' ' + lastName),
@@ -60,7 +60,8 @@ class UserService {
       phone: phone,
       municipalId: municipalId,
       oldPassword: oldPassword,
-      newPassword: newPassword
+      newPassword: newPassword,
+      notifications: notifications
     });
   }
 
