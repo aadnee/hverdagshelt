@@ -21,7 +21,7 @@ export class UserSubscriptionPage extends Component {
     this.show = this.show.bind(this);
   }
   show = id => this.setState({ modalOpen: true, modalParam: id });
-  close = () => this.setState({ open: false });
+  close = () => this.setState({ modalOpen: false });
 
   componentWillMount() {
     subscriptionService.getSubscriptions().then(sub => {
@@ -86,8 +86,9 @@ export class UserSubscriptionPage extends Component {
             title={'Avmeld nyhet'}
             size={'tiny'}
             open={this.state.modalOpen}
-            message="Er du sikker på at du vil uavabonneren't på denne nyheten?"
+            message="Er du sikker på at du vil avslutte abonnementet på denne nyheten?"
             customFunc={this.unsubscribe.bind(this, this.state.modalParam)}
+            callback={this.close}
           />
         </Segment>
       </Container>

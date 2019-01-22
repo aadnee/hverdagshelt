@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom';
 import { Consumer } from './../context';
 import { USER, COMPANY, EMPLOYEE, ADMIN } from './../commons';
 
+import { ticketService } from './../services/TicketServices';
+
 import { Button, Header, Icon, Menu, Segment, Sidebar, Grid, Divider, Container, Label } from 'semantic-ui-react';
 
 let menuColor = null;
@@ -17,15 +19,6 @@ export class SidebarWidget extends Component {
   handleSidebar() {
     this.props.response(false);
   }
-
-  //Variable that decides the type of user that is logged in.
-  //Use this to decide what type of options in the menu to render
-  //1 regular
-  //2 municipal
-  //3 admin
-  //4 Company
-  //5 All for development purposes
-  permission = 5;
 
   componentWillUpdate(prevProps) {
     if (this.props.visible != prevProps.visible) {
@@ -100,6 +93,31 @@ class AdminOptions extends Component {
 }
 
 class MunicipalOptions extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      pending: 0
+    };
+  }
+
+  componentWillMount() {
+    this.updateTicketCount();
+    setInterval(() => {
+      this.updateTicketCount();
+    }, 60000);
+  }
+
+  updateTicketCount() {
+    console.log('Menu get info');
+    ticketService.getTicketsPending().then(res => {
+      if (res.success && res.data != this.state.pending) {
+        console.log('Update');
+        this.setState({ pending: res.data });
+      }
+    });
+  }
+
   render() {
     return (
       <Menu borderless fluid inverted vertical size="large" color={menuColor}>
@@ -108,9 +126,11 @@ class MunicipalOptions extends Component {
         </Header>
         <NavLink exact to="/employee/tickets" activeClassName="active" className="ui item">
           Behandle innsendte varsler
-          <Label circular size="tiny">
-            11
-          </Label>
+          {this.state.pending > 0 ? (
+            <Label circular color="red" size="mini" horizontal>
+              {this.state.pending}
+            </Label>
+          ) : null}
         </NavLink>
         <NavLink exact to="/employee/news" activeClassName="active" className="ui item">
           Administrer nyheter
