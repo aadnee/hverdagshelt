@@ -122,7 +122,7 @@ input[type='file'] {
 .showInMap {
   color: #2185d0;
   text-decoration: underline;
-  float: right;
+  padding-left: 5px !important;
 }
 .showInMap:hover {
   cursor: pointer;
