@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Segment, Header, Icon, Dropdown, Button, Grid, Divider, Message } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
+import { Consumer } from './../context';
 
 import { municipalService } from './../services/MunicipalServices';
 import { categoryService } from './../services/CategoryServices';
@@ -30,44 +31,83 @@ export class NewsFeedWidget extends Component {
 
   componentWillMount() {
     this.setState({ loading: true });
-    let munRes = municipalService
-      .getMunicipals()
-      .then(municipals => {
-        userService
-          .getMunicipals()
-          .then(myMunicipals => {
-            let allMunicipals = municipals.data.map(m => {
-              return { key: m.id, value: m.id, text: m.name };
-            });
-            let allMyMunicipals = myMunicipals.data.map(m => {
-              return m.id;
-            });
-            this.setState({ municipals: allMunicipals, selectedMunicipals: allMyMunicipals });
-            return allMunicipals;
-          })
-          .catch(res => console.error(res));
-      })
-      .catch(res => console.error(res));
+    if (Consumer._currentValue.user) {
+      let munRes = municipalService
+        .getMunicipals()
+        .then(municipals => {
+          userService
+            .getMunicipals()
+            .then(myMunicipals => {
+              let allMunicipals = municipals.data.map(m => {
+                return { key: m.id, value: m.id, text: m.name };
+              });
+              let allMyMunicipals = myMunicipals.data.map(m => {
+                return m.id;
+              });
+              this.setState({ municipals: allMunicipals, selectedMunicipals: allMyMunicipals });
+              return allMunicipals;
+            })
+            .catch(res => console.error(res));
+        })
+        .catch(res => console.error(res));
 
-    let catRes = categoryService
-      .getCategories()
-      .then(res => {
-        let cats = res.data.map(r => {
-          return { key: r.id, value: r.id, text: r.name };
+      let catRes = categoryService
+        .getCategories()
+        .then(res => {
+          let cats = res.data.map(r => {
+            return { key: r.id, value: r.id, text: r.name };
+          });
+          this.setState({ categories: cats, selectedCategories: cats.map(c => c.value) });
+          return cats;
+        })
+        .catch(res => console.error(res));
+
+      Promise.all([munRes, catRes])
+        .then(() => {
+          this.getNews();
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ loading: false });
         });
-        this.setState({ categories: cats, selectedCategories: cats.map(c => c.value) });
-        return cats;
-      })
-      .catch(res => console.error(res));
+    } else {
+      let munRes = municipalService
+        .getMunicipals()
+        .then(municipals => {
+          let allMunicipals = municipals.data.map(m => {
+            return { key: m.id, value: m.id, text: m.name };
+          });
+          let allMyMunicipals = municipals.data.map(m => {
+            if (m.id == 1) {
+              //TRONDHEIM KOMMUNE = 1
+              return m.id;
+            }
+          });
+          this.setState({ municipals: allMunicipals, selectedMunicipals: allMyMunicipals });
+          return allMunicipals;
+        })
+        .catch(res => console.error(res));
 
-    Promise.all([munRes, catRes])
-      .then(() => {
-        this.getNews();
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ loading: false });
-      });
+      let catRes = categoryService
+        .getCategories()
+        .then(res => {
+          let cats = res.data.map(r => {
+            return { key: r.id, value: r.id, text: r.name };
+          });
+          this.setState({ categories: cats, selectedCategories: cats.map(c => c.value) });
+          return cats;
+        })
+        .catch(res => console.error(res));
+
+      Promise.all([munRes, catRes])
+        .then(() => {
+          this.getNews();
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ loading: false });
+        });
+    }
   }
 
   getNews() {
@@ -76,7 +116,11 @@ export class NewsFeedWidget extends Component {
       newsService
         .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, 1, this.state.limit)
         .then(res => {
-          this.setState({ news: res.data, loading: false });
+          if (res.success) {
+            this.setState({ news: res.data, loading: false });
+          } else {
+            this.setState({ loading: false });
+          }
         })
         .catch(err => {
           console.error(err);
@@ -135,6 +179,16 @@ export class NewsFeedWidget extends Component {
           {this.state.news.map(nc => (
             <NewsCaseWidget key={nc.id} newscase={nc} />
           ))}
+          {!this.state.empty ? (
+            <Button
+              primary
+              onClick={() => {
+                this.loadMoreNews();
+              }}
+            >
+              Last inn flere
+            </Button>
+          ) : null}
         </>
       );
     } else {
@@ -208,19 +262,7 @@ export class NewsFeedWidget extends Component {
             </Button>
           </Segment>
         </Grid.Column>
-        <Grid.Column width={11}>
-          {this.displayNews()}
-          {!this.state.empty ? (
-            <Button
-              primary
-              onClick={() => {
-                this.loadMoreNews();
-              }}
-            >
-              Last inn flere
-            </Button>
-          ) : null}
-        </Grid.Column>
+        <Grid.Column width={11}>{this.displayNews()}</Grid.Column>
       </Grid>
     );
   }

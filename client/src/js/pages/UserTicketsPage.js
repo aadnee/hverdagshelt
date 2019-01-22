@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Container, Modal, Segment } from 'semantic-ui-react';
+import { Grid, Header, Container, Modal, Segment, Divider } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
 import { ModalTicketWidget } from '../widgets/TicketFormWidget';
@@ -104,8 +104,10 @@ export class UserTicketsPage extends Component {
 
   render() {
     return (
-      <div>
+      <>
         <Container>
+          <Divider hidden />
+          <Divider hidden />
           <Header as="h1">Mine varslinger</Header>
           <Segment basic color="blue">
             <Grid stackable container columns={3}>
@@ -135,7 +137,7 @@ export class UserTicketsPage extends Component {
           customFunc={this.deleteTicket.bind(this, this.state.selectedTicket)}
           callback={this.close.bind(this, 'messageOpen')}
         />
-      </div>
+      </>
     );
   }
 }

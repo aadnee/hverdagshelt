@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const Op = Sequelize.Op;
-let sequelize = new Sequelize(
+export let sequelize = new Sequelize(
   process.env.CI ? 'Group8' : process.env.MYSQL_DB,
   process.env.CI ? 'root' : process.env.MYSQL_USR,
   process.env.CI ? '' : process.env.MYSQL_PWD,
@@ -25,7 +25,8 @@ let sequelize = new Sequelize(
       $lt: Op.lt,
       $lte: Op.lte,
       $like: Op.like,
-      $not: Op.ne
+      $not: Op.ne,
+      $gte: Op.gte
     },
     timezone: '+01:00'
   }

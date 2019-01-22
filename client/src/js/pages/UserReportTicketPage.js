@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Header, Container, Grid, Segment, Divider } from 'semantic-ui-react';
+import { Header, Container, Grid, Segment, Divider, Icon } from 'semantic-ui-react';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { MapWidget } from '../widgets/MapWidget';
 import { ticketService } from '../services/TicketServices';
@@ -35,6 +35,13 @@ export class UserReportTicketPage extends Component {
                 <MapWidget callback={this.callback} submit={Consumer._currentValue.ticketSubmit} />
               </Grid.Column>
               <Grid.Column width={6} only="computer" className="frontPageFeed">
+                <Divider hidden />
+                <Divider horizontal>
+                  <Header as="h5">
+                    <Icon name="bullhorn" />
+                    Varselinnmelding
+                  </Header>
+                </Divider>
                 <TicketFormWidget
                   borderless
                   latlng={this.state.latlng}
