@@ -74,7 +74,7 @@ export class PageController extends Component {
 
   dbStringConverter = dbString => {
     const dateArr = dbString.split('T')[0].split('-');
-    const date = dateArr[2] + ' / ' + dateArr[1] + ' / ' + dateArr[0];
+    const date = dateArr[2] + '/' + dateArr[1] + '/' + dateArr[0];
 
     const clockArr = dbString
       .split('T')[1]
@@ -82,7 +82,7 @@ export class PageController extends Component {
       .split(':');
 
     const clock = clockArr[0] + ':' + clockArr[1];
-    return [date, clock];
+    return date + ' ' + clock;
   };
 
   ticketSubmit = (headline, description, lat, lon, address, catId, municipalId, subscribed, image) => {
@@ -112,9 +112,6 @@ export class PageController extends Component {
   };
 
   render() {
-    const link = window.location.hash.split('#')[1];
-    const headerless = link == '/' || link == '/report';
-
     if (!this.state.renderReady) {
       return (
         <Dimmer active>
@@ -130,12 +127,6 @@ export class PageController extends Component {
               <Sidebar.Pushable style={{ minHeight: '100vh' }}>
                 <Sidebar.Pusher dimmed={this.state.visible} style={{ minHeight: '100vh' }}>
                   <HeaderWidget toggle={this.toggleSideBar} />
-                  {!headerless ? (
-                    <>
-                      <Divider hidden />
-                      <Divider hidden />
-                    </>
-                  ) : null}
                   <AppRouter />
                 </Sidebar.Pusher>
               </Sidebar.Pushable>

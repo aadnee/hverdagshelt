@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        html,
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui container center aligned">
+        <div id="pageHeader" class="ui huge header center aligned">Check the statistics</div>
+
+        <div class="ui grid centered padded">
+            <div class="ui statistics">
+                <div class="statistic">
+                    <div class="value">
+                        22
+                    </div>
+                    <div class="label">
+                        Faves
+                    </div>
+                </div>
+                <div class="statistic">
+                    <div class="value">
+                        31,200
+                    </div>
+                    <div class="label">
+                        Views
+                    </div>
+                </div>
+                <div class="statistic">
+                    <div class="value">
+                        22
+                    </div>
+                    <div class="label">
+                        Members
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="ui celled table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Job</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="Name">James</td>
+                    <td data-label="Age">24</td>
+                    <td data-label="Job">Engineer</td>
+                </tr>
+                <tr>
+                    <td data-label="Name">Jill</td>
+                    <td data-label="Age">26</td>
+                    <td data-label="Job">Engineer</td>
+                </tr>
+                <tr>
+                    <td data-label="Name">Elyse</td>
+                    <td data-label="Age">24</td>
+                    <td data-label="Job">Designer</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="ui two column grid">
+            <div class="column" id="piechart1" style="width:550px; height:300px;">
+            </div>
+            <div class="column" id="piechart2" style="width:550px; height:300px;">
+            </div>
+        </div>
+        <h2>Tittel her</h2>
+    </div>
+
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawCharts);
+
+        function drawCharts() {
+            drawChart1();
+            drawChart2();
+        }
+
+        function drawChart1() {
+            var data = google.visualization.arrayToDataTable([
+                ['Task', 'Hours per Day'],
+                ['Work', 8],
+                ['Eat', 2],
+                ['TV', 4],
+                ['Gym', 2],
+                ['Sleep', 8]
+            ]);
+
+            var options = {
+                'title': 'My Average Day 1'
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+            chart.draw(data, options);
+        }
+
+        function drawChart2() {
+            var data = google.visualization.arrayToDataTable([
+                ['Task', 'Hours per Day'],
+                ['Work', 8],
+                ['Eat', 2],
+                ['TV', 4],
+                ['Gym', 2],
+                ['Sleep', 8]
+            ]);
+
+            var options = {
+                'title': 'My Average Day 2'
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+</html>

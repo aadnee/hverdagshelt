@@ -8,3 +8,4 @@ server/.env
 client/src/js/AppRouter.js
 client/public/uploads
 server/coverage
+server/pdfs/file.pdf

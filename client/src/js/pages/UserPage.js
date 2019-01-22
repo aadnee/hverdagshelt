@@ -24,6 +24,8 @@ export class UserPage extends Component {
     if (this.state.user) {
       return (
         <Container>
+          <Divider hidden />
+          <Divider hidden />
           <Grid>
             <Grid.Column computer={13} tablet={16}>
               <Header as="h1">Min side</Header>
