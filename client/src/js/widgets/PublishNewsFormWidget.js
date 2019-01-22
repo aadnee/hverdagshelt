@@ -71,9 +71,6 @@ export class PublishNewsFormWidget extends Component {
   }
 
   componentWillMount() {
-    this.state.image.map((img, i) => {
-      img.id = i;
-    });
     console.log(this.state.image);
 
     categoryService.getCategories().then(res => {
