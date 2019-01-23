@@ -207,11 +207,11 @@ export class MapWidget extends Component {
       this.state.reverseSearch.latlng(this.state.marker.getLatLng()).run(function (error, result) {
         if (result.address.Address) {
           info = result.address.Address + ', ' + result.address.Subregion;
-          this.props.callbackArea([], info);
+          self.props.callbackPoint(self.state.marker.getLatLng(), info);
           self.setState({reverseSearchRes: result, info: info});
         } else {
           info = result.address.Match_addr + ', ' + result.address.Subregion;
-          this.props.callbackArea([], info);
+          self.props.callbackPoint(self.state.marker.getLatLng(), info);
           self.setState({
             reverseSearchRes: result,
             info: info
@@ -310,7 +310,7 @@ export class MapWidget extends Component {
       });
       this.state.map.flyTo(e.latlng, 18);
     }
-    this.props.placedMarker(true);
+    if(this.props.placedMarker) this.props.placedMarker(true);
     this.setState({markerPos: e.latlng, placedMarker: true});
     setTimeout(() => {
       this.setState({marker: this.markerRef.current.leafletElement});

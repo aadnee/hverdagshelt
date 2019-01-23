@@ -71,7 +71,16 @@ export class PublishNewsFormWidget extends Component {
   }
 
   componentWillMount() {
-    console.log(this.state.image);
+    if (this.props.news) {
+      let news = this.props.news;
+      this.setState({
+        title: news.title,
+        description: news.description,
+        receivedCategory: news.categoryId,
+        category: news.categoryId,
+        address: news.address
+      });
+    }
 
     categoryService.getCategories().then(res => {
       let cats = [];

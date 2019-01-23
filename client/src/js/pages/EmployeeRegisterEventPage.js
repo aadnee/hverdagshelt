@@ -49,6 +49,7 @@ export class EmployeeRegisterEventPage extends Component {
 
   submit = (title, description, start, end, municipalId, url) => {
     console.log(this.state);
+    console.log(this.state.area.toString());
     //lat, lon  is fetched from the map
 
     if (!title || !description || !this.state.area || !municipalId) {
@@ -57,7 +58,7 @@ export class EmployeeRegisterEventPage extends Component {
       });
     } else {
       eventService
-          .addEvent(title, description, this.state.area, this.state.address, start, end, municipalId, url)
+          .addEvent(title, description, this.state.area.toString(), this.state.address, start, end, municipalId, url)
           .then(res => {
             console.log(res);
             if (res.success) {
@@ -115,6 +116,7 @@ export class EmployeeRegisterEventPage extends Component {
                             onClick={() => this.mapWidget.removeMarker()}
                         />
                       </>) : null}
+                      <Divider hidden/>
                   <RegisterEventWidget
                       borderless
                       latlng={this.state.latlng}

@@ -60,7 +60,18 @@ export class NewsCaseWidget extends Component {
               />
             </Grid>
           </Segment>
-          <Button onClick={this.props.show}>Avslutt abonnement</Button>
+          <Grid>
+            <Grid.Column floated={'right'} width={4}>
+              {this.props.employee ? (
+                <Button.Group>
+                  <Button color={'teal'}>Endre</Button>
+                  <Button color={'red'}>Slett</Button>
+                </Button.Group>
+              ) : (
+                <Button onClick={this.props.show}>Avslutt abonnement</Button>
+              )}
+            </Grid.Column>
+          </Grid>
         </Container>
       </Segment>
     );
