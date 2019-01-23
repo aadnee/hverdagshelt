@@ -40,7 +40,7 @@ describe('Tickets test', () => {
       title: 'Vei problem',
       description: 'Pls sett opp brøytestikker her.',
       status: 4,
-      categoryId: 2
+      categoryId: 4
     });
   });
 });

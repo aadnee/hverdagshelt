@@ -20,12 +20,19 @@ import {
 import { categoryService } from '../services/CategoryServices';
 import { Consumer } from '../context';
 
+import { STATUS } from '../commons';
+import { companyService } from '../services/CompanyServices';
+import Cookies from 'js-cookie';
+
 export class PublishNewsFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: '',
       description: '',
+      subscription: false,
+      publish: true,
+      //CategoryStates
       receivedCategory: '',
       allCats: [],
       category: '',
@@ -33,12 +40,16 @@ export class PublishNewsFormWidget extends Component {
       subCategory: '',
       subCategoryOptions: [],
       categoryChanged: false,
+      //states for news administation
+      status: '',
+      statusOptions: [],
+      company: '',
+      companyOptions: [],
+      //map states
       position: [1, 1],
       address: '',
-      subscription: false,
       image: [],
-      imgModalOpen: false,
-      publish: true
+      imgModalOpen: false
     };
   }
 
@@ -53,7 +64,6 @@ export class PublishNewsFormWidget extends Component {
     this.state.allCats.map(cat => {
       if (cat.id === category) {
         subCats = cat.subs;
-        console.log(subCats);
       }
     });
     subCats.map(subCat => {
@@ -66,18 +76,38 @@ export class PublishNewsFormWidget extends Component {
   componentWillMount() {
     if (this.props.news) {
       let news = this.props.news;
-      console.log(news);
-      this.setState({
-        title: news.title,
-        description: news.description,
-        receivedCategory: news.categoryId,
-        category: news.categoryId,
-        address: news.address
+      let statusOptions = [
+        { key: 1, value: 2, text: STATUS[2].norwegian },
+        { key: 2, value: 3, text: STATUS[3].norwegian }
+      ];
+      let companyOptions = [];
+      //MunicipalId should be fetched from context
+      companyService.getLocalCompanies(Cookies.get('municipalId')).then(res => {
+        res.data.map(company => {
+          companyOptions.push({ key: 1, value: company.id, text: company.name });
+          companyOptions.push({ key: 2, value: company.id + 1, text: 'Company' });
+        });
       });
+      //console.log(news);
+      this.setState(
+        {
+          title: news.title,
+          description: news.description,
+          receivedCategory: news.categoryId,
+          category: news.categoryId,
+          address: news.address,
+          status: news.status,
+          statusOptions: statusOptions,
+          company: news.companyId ? news.companyId : 4,
+          companyOptions: companyOptions
+        },
+        () => {
+          console.log(this.state.company);
+        }
+      );
     }
     if (this.props.ticket) {
       let ticket = this.props.ticket;
-      console.log(ticket);
       this.setState({
         title: ticket.title,
         description: ticket.description,
@@ -99,7 +129,6 @@ export class PublishNewsFormWidget extends Component {
           if (this.props.ticket || this.props.news) {
             cat.subs.map(subCat => {
               if (subCat.id === this.state.receivedCategory) {
-                console.log(subCat.id);
                 parentId = subCat.parentId;
                 this.getSubCategories(parentId);
               }
@@ -108,7 +137,6 @@ export class PublishNewsFormWidget extends Component {
         });
       })
       .then(() => {
-        console.log(cats);
         !this.props.ticket && !this.props.news ? this.setState({ categoryOptions: cats, receivedCategory: -1 }) : null;
 
         this.props.ticket || this.props.news
@@ -119,7 +147,6 @@ export class PublishNewsFormWidget extends Component {
               },
               () => {
                 this.setState({ categoryOptions: cats, receivedCategory: -1 });
-                console.log(this.state);
               }
             )
           : null;
@@ -235,37 +262,88 @@ export class PublishNewsFormWidget extends Component {
                   </Form.Field>
                 ) : null}
 
+                {/*IF NEWS EXISTS */}
+                {this.props.news ? (
+                  <Form.Field>
+                    <Grid columns={'equal'}>
+                      <Grid.Column>
+                        <label>Knytt til bedrift</label>
+                        <Dropdown
+                          fluid
+                          selection
+                          options={this.state.companyOptions}
+                          placeholder={'Bedrift'}
+                          value={this.state.company}
+                          onChange={(event, data) => {
+                            this.handleInput('company', data.value);
+                          }}
+                        />
+                      </Grid.Column>
+                      <Grid.Column>
+                        <label>Status</label>
+                        <Dropdown
+                          fluid
+                          selection
+                          options={this.state.statusOptions}
+                          placeholder={'Underkategori'}
+                          value={this.state.status}
+                          onChange={(event, data) => {
+                            this.handleInput('status', data.value);
+                            console.log(this.state.status);
+                          }}
+                        />
+                      </Grid.Column>
+                    </Grid>
+                  </Form.Field>
+                ) : null}
+
                 <Form.Field>
-                  <Checkbox
-                    checked={this.state.publish}
-                    label={<label>Gjør nyhet synlig</label>}
-                    onChange={(event, data) => {
-                      this.handleInput('publish', data.checked);
-                      console.log(data.checked);
-                    }}
-                  />
+                  <Grid>
+                    <Grid.Column>
+                      <Checkbox
+                        checked={this.state.publish}
+                        label={<label>Gjør nyhet synlig</label>}
+                        onChange={(event, data) => {
+                          this.handleInput('publish', data.checked);
+                          console.log(data.checked);
+                        }}
+                      />
+                    </Grid.Column>
+                  </Grid>
                 </Form.Field>
+
                 <Button.Group fluid>
+                  <Button onClick={() => this.props.close()}>Avbryt</Button>
                   <Button
                     color="blue"
                     size="large"
                     onClick={() =>
-                      this.props.accept(
-                        this.state.title,
-                        this.state.description,
-                        this.state.position[0],
-                        this.state.position[1],
-                        this.state.address,
-                        this.state.category,
-                        this.state.publish,
-                        mun,
-                        this.state.image
-                      )
+                      this.props.ticket
+                        ? this.props.accept(
+                            this.state.title,
+                            this.state.description,
+                            this.state.position[0],
+                            this.state.position[1],
+                            this.state.address,
+                            this.state.subCategory,
+                            this.state.publish,
+                            mun,
+                            this.state.image
+                          )
+                        : this.props.news
+                        ? this.props.editNews(
+                            this.state.title,
+                            this.state.description,
+                            this.state.subCategory,
+                            this.state.status,
+                            this.state.publish,
+                            this.state.company
+                          )
+                        : null
                     }
                   >
                     {this.props.submitButton}
                   </Button>
-                  <Button onClick={() => this.props.close()}>Avbryt</Button>
                 </Button.Group>
               </Segment>
             </Form>

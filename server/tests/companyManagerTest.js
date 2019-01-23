@@ -134,7 +134,7 @@ describe('Finding,accepting, rejecting and finnishing tasks', () => {
     });
   });
   //Test for setting a task to finished with correct data
-  it('Finnish task, correct data', done => {
+  it('Finish task, correct data', done => {
     companyManager.finishTask(4, 1, function(result) {
       expect({
         success: result.success,

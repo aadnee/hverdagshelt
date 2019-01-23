@@ -8,7 +8,10 @@
   },
   "jest": {
     "testRegex": "./tests/.+Test\\.js$",
-    "testURL": "http://localhost"
+    "testURL": "http://localhost",
+    "globals": {
+      "TEST": true
+    }
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",

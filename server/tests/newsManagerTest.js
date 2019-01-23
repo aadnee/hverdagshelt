@@ -80,7 +80,7 @@ describe('Adding article', () => {
 //Test for finding filtered news
 describe('Get filtered News', () => {
   it('correct data', done => {
-    newsManager.getFilteredNews([1], [2], 1, 1, function(news) {
+    newsManager.getFilteredNews([1], [4], 1, 1, function(news) {
       expect({
         success: news.success
       }).toEqual({
