@@ -141,6 +141,20 @@ app.post('/api/register', (req, res) => {
   });
 });
 
+app.post('/api/reset/send', (req, res) => {
+  let b = req.body;
+  userManager.sendReset(b.email, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/reset/confirm', (req, res) => {
+  let b = req.body;
+  userManager.resetPassword(b.email, b.key, function(result) {
+    res.json(result);
+  });
+});
+
 app.get('/api/me', ensureLogin, (req, res) => {
   getUserId(req, function(userId) {
     userManager.getUser(userId, function(result) {

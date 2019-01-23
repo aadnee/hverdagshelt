@@ -37,6 +37,14 @@ class UserService {
     return api.delete('/api/users/' + userId);
   }
 
+  sendReset(email) {
+    return api.post('/api/reset/send', { email: email });
+  }
+
+  resetPassword(email, passwordKey) {
+    return api.post('/api/reset/confirm', { email: email, key: passwordKey });
+  }
+
   async getMe() {
     let name;
     let me = await api.get('/api/me').then(res => {

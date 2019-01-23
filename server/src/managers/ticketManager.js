@@ -86,7 +86,7 @@ module.exports = {
     Tickets.update({ status: status, newsId: newsId }, { where: { id: ticketId } }).then(
       res => {
         Users.findOne({
-          attributes: ['email', 'notifications'],
+          attributes: ['id', 'email', 'notifications'],
           include: [{ attributes: ['subscribed', 'title'], model: Tickets, required: true, where: { id: ticketId } }]
         }).then(
           res => {
@@ -104,7 +104,7 @@ module.exports = {
                   )
                 : null;
               status == 3
-                ? subscriptionManager.addSubscription(newsId, res.id, function() {
+                ? subscriptionManager.addSubscription(newsId, res.id, function(result) {
                     callback({
                       success: true,
                       message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }
@@ -130,18 +130,18 @@ module.exports = {
 
   //get all tickets submitted by a specific user
   getMyTickets: function(userId, callback) {
-    Tickets.findAll({ include: [{ model: Uploads }], where: { userId: userId } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    Tickets.findAll({
+      include: [{ model: Uploads }],
+      where: { userId: userId }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   //get all tickets in a specific municipal
   getLocalTickets: function(municipalId, callback) {
-    Tickets.findAll({ include: [{ model: Uploads }], where: { municipalId: municipalId, status: 1 } }).then(
-      res => callback({ success: true, data: res }),
-      err => callback({ success: false, message: err })
-    );
+    Tickets.findAll({
+      include: [{ model: Uploads, required: false }],
+      where: { municipalId: municipalId, status: 1 }
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
   makeNews: function(ticketId, title, description, lat, lon, address, categoryId, municipalId, imageIds, callback) {
@@ -190,60 +190,39 @@ module.exports = {
   },
 
   //statistics
-  getYearly: function(year, municipalId, categoryId, callback) {
-    if (categoryId != null) {
-      Tickets.count({
-        where: {
-          createdAt: {
-            $gte: new Date(year + '-01-01'),
-            $lte: new Date(year + '-12-31')
-          },
-          municipalId: municipalId,
-          categoryId: categoryId
-        }
-      }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
-    } else {
-      Tickets.count({
-        where: {
-          createdAt: {
-            $gte: new Date(year + '-01-01'),
-            $lte: new Date(year + '-12-31')
-          },
-          municipalId: municipalId
-        }
-      }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
-    }
-  },
-
   getMonthly: function(month, year, municipalId, callback) {
-    // Tickets.count({
-    //   where: {
-    //     createdAt: {
-    //       $gte: new Date(year + '-' + month + '-01'),
-    //       $lte: new Date(year + '-' + month + '-31')
-    //     },
-    //     municipalId: municipalId
-    //   }
-    // }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
-
     Categories.findAll({
       attributes: ['name'],
       include: [
         {
+          attributes: ['name'],
+          model: Categories,
           required: false,
-          attributes: [[sequelize.fn('COUNT', 'Tickets.categoryId'), 'amount']],
-          model: Tickets,
-          where: {
-            createdAt: {
-              $gte: new Date(year + '-' + month + '-01'),
-              $lte: new Date(year + '-' + month + '-31')
-            },
-            municipalId: municipalId
-          }
+          as: 'subs',
+          include: [
+            {
+              attributes: ['id'],
+              model: Tickets,
+              required: false,
+              where: {
+                createdAt: {
+                  $gte: new Date(year + '-' + month + '-01'),
+                  $lte: new Date(year + '-' + month + '-31')
+                },
+                municipalId: municipalId
+              }
+            }
+          ]
         }
       ],
-      where: { parentId: null },
-      group: ['Tickets.categoryId']
-    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+      where: { parentId: null }
+    }).then(res => {
+      let stats = [];
+      res.map((cat, i) => {
+        stats.push({ name: cat.name, subs: [] });
+        cat.subs.map((sub, j) => stats[i].subs.push({ name: sub.name, amount: sub.tickets.length }));
+      });
+      callback({ success: true, data: stats }), err => callback({ success: false, message: err });
+    });
   }
 };

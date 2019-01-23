@@ -27,38 +27,37 @@ export class UserTicketsPage extends Component {
     };
   }
 
-  editTicket = (id, title, description, lat, lng, address, category, municipalId, subscription, image, status) => {
-    if ((!title, !description, !category)) {
+  editTicket = (id, title, description, lat, lng, address, category, municipalId, subscribed, image, status) => {
+    if (!title || !description || !category) {
       toast.error('Vennligst fyll inn alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });
     }
+    console.log(id, title, description, lat, lng, address, category, municipalId, subscribed, image, status);
     ticketService
-      .updateTicket(id, title, description, lat, lng, address, category, municipalId, subscription, image)
+      .updateTicket(id, title, description, lat, lng, address, category, municipalId, subscribed, image)
       .then(res => {
         if (res.success) {
           this.setState({ showEditTicket: false });
           toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
-          let oldTicket = -1;
-          this.state.tickets.find((t, i) => {
-            id === t.id ? (oldTicket = i) : null;
-          });
-          this.state.tickets[oldTicket] = {
-            id: id,
-            title: title,
-            description: description,
-            lat: lat,
-            lon: lng,
-            address: address,
-            category: category,
-            municipalId: municipalId,
-            subscription: subscription,
-            image: image,
-            status: status
-          };
-          console.log(id, title, description, lat, lng, address, category, municipalId, subscription, image, status);
+          //finding index to old ticket
+          let index = -1;
+          this.state.tickets.filter((t, i) => (t.id === id ? (index = i) : null));
+
+          //setting variable to old ticket to new ticket values
+          let ti = this.state.tickets;
+          ti[index].title = title;
+          ti[index].description = description;
+          ti[index].category = category;
+          ti[index].subscribed = subscribed;
+          ti[index].image = image;
+          ti[index].status = status;
+
+          console.log(ti);
+
+          this.setState({ tickets: ti });
+
           this.close();
-          this.forceUpdate();
         } else {
           toast.error(res.message.no, { position: toast.POSITION.TOP_RIGHT });
         }

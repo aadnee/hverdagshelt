@@ -51,6 +51,7 @@ export class ShowInMapWidget extends Component {
         <Modal trigger={this.props.button} onClose={this.props.callback} closeIcon>
           {this.props.renderMap ? (
             <Map
+              center={cent}
               ref={this.mapRef}
               dragging={this.props.draggable ? true : false}
               center={[this.props.latlng[0][0], this.props.latlng[0][1]]}
