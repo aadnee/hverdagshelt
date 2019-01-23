@@ -47,12 +47,14 @@
                     <td>Lekasje</td>
                     <td>12</td>
                 </tr>
-                <% for(var i=0; i < test1.length; i++) { %>
-                  <tr>
-                    <td><%= test1[i] %></td>
-                    <td><%= test1[i] %></td>
-                    <td></td>
-                  </tr>
+                <% for(var i = 0; i < test1.length; i++) { %>
+                  <% for(var j = 0; j < test1.length; j++) { %>
+                    <tr>
+                      <td><%= test1[i] %></td>
+                      <td><%= test1[i] %></td>
+                      <td>0</td>
+                    </tr>
+                  <% } %>
                 <% } %>
                 <tr>
                   <td class="active">Total</td>
