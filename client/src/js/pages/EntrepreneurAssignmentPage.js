@@ -56,7 +56,7 @@ export class EntrepreneurAssignmentPage extends Component {
             {this.state.assignments.map((asg, i) =>
               asg.companyStatus === 1 ? (
                 <AssignmentWidget
-                  handleStatus={this.handleAccept.bind(this, asg.id)}
+                  handleStatus={this.handleStatus.bind(this, asg.id)}
                   handleDelete={this.handleDelete.bind(this, asg.id)}
                   assignment={asg}
                   newsOnly
@@ -72,7 +72,13 @@ export class EntrepreneurAssignmentPage extends Component {
         render: () => (
           <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
             {this.state.assignments.map((asg, i) =>
-              asg.companyStatus === 2 ? <ActiveAssignmentWidget assignment={asg} newsOnly key={i} /> : null
+              asg.companyStatus === 2 ? <ActiveAssignmentWidget
+                  handleStatus={this.handleStatus.bind(this, asg.id)}
+                  handleDelete={this.handleDelete.bind(this, asg.id)}
+                  assignment={asg}
+                  newsOnly
+                  key={i} />
+                  : null
             )}
           </Tab.Pane>
         )
