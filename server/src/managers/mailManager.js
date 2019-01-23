@@ -17,12 +17,14 @@ module.exports = {
       html: '<div style=\'font-family:"Times New Roman"\'>' + message + '</div>'
     };
 
-    transporter.sendMail(mailOptions, function(error, info) {
-      if (error) {
-        callback(false);
-      } else {
-        callback(true);
-      }
-    });
+    global.TEST
+      ? callback(true)
+      : transporter.sendMail(mailOptions, function(error, info) {
+          if (error) {
+            callback(false);
+          } else {
+            callback(true);
+          }
+        });
   }
 };

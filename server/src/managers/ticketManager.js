@@ -2,6 +2,7 @@ import { Tickets, Users, Uploads, Categories, sequelize } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
 import subscriptionManager from './subscriptionManager';
+import moment from 'moment';
 
 module.exports = {
   addTicket: function(
@@ -100,7 +101,8 @@ module.exports = {
                       '" ble ' +
                       textStatus +
                       '.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
-                    res.email
+                    res.email,
+                    function() {}
                   )
                 : null;
               status == 3
@@ -190,39 +192,63 @@ module.exports = {
   },
 
   //statistics
-  getMonthly: function(month, year, municipalId, callback) {
-    Categories.findAll({
-      attributes: ['name'],
-      include: [
-        {
-          attributes: ['name'],
-          model: Categories,
-          required: false,
-          as: 'subs',
-          include: [
-            {
-              attributes: ['id'],
-              model: Tickets,
-              required: false,
-              where: {
-                createdAt: {
-                  $gte: new Date(year + '-' + month + '-01'),
-                  $lte: new Date(year + '-' + month + '-31')
-                },
-                municipalId: municipalId
+  getTicketStatistics: function(municipalId, year, month, week, callback) {
+    let start;
+    let end;
+    if (municipalId == null || year == null) {
+      callback({ success: false, message: 'MunicipalId and year is required' });
+    } else {
+      if (week == null && month == null && year != null) {
+        start = moment(year + '-01-01');
+        end = moment(year + '-12-31');
+      } else if (week == null && month != null && year != null) {
+        start = moment(year + '-' + month + '-01');
+        end = moment(year + '-' + month + '-01').endOf('month');
+      } else if (week != null && year != null) {
+        start = moment(year + '-01-01')
+          .day('Monday')
+          .week(week);
+
+        week += 1;
+        end = moment(year + '-01-01')
+          .day('Monday')
+          .week(week);
+      }
+      Categories.findAll({
+        attributes: ['name'],
+        include: [
+          {
+            attributes: ['name'],
+            model: Categories,
+            required: false,
+            as: 'subs',
+            include: [
+              {
+                attributes: ['id'],
+                model: Tickets,
+                required: false,
+                where: {
+                  createdAt: {
+                    $gte: start,
+                    $lte: end
+                  },
+                  municipalId: municipalId
+                }
               }
-            }
-          ]
-        }
-      ],
-      where: { parentId: null }
-    }).then(res => {
-      let stats = [];
-      res.map((cat, i) => {
-        stats.push({ name: cat.name, subs: [] });
-        cat.subs.map((sub, j) => stats[i].subs.push({ name: sub.name, amount: sub.tickets.length }));
+            ]
+          }
+        ],
+        where: { parentId: null }
+      }).then(res => {
+        let stats = [];
+        res.map((cat, i) => {
+          stats.push({ name: cat.name, subs: [], start: start, end: end });
+          cat.subs.map(sub => {
+            stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
+          });
+        });
+        callback({ success: true, data: stats }), err => callback({ success: false, message: err });
       });
-      callback({ success: true, data: stats }), err => callback({ success: false, message: err });
-    });
+    }
   }
 };

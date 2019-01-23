@@ -20,25 +20,36 @@ import {
 import { categoryService } from '../services/CategoryServices';
 import { Consumer } from '../context';
 
+import { STATUS } from '../commons';
+import { companyService } from '../services/CompanyServices';
+import Cookies from 'js-cookie';
+
 export class PublishNewsFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: this.props.ticket.title,
-      description: this.props.ticket.description,
-      receivedCategory: this.props.ticket.categoryId,
+      title: '',
+      description: '',
+      subscription: false,
+      publish: true,
+      //CategoryStates
+      receivedCategory: '',
       allCats: [],
-      category: this.props.ticket.categoryId,
+      category: '',
       categoryOptions: [],
-      subcategory: '',
+      subCategory: '',
       subCategoryOptions: [],
       categoryChanged: false,
+      //states for news administation
+      status: '',
+      statusOptions: [],
+      company: '',
+      companyOptions: [],
+      //map states
       position: [1, 1],
-      address: this.props.ticket.address,
-      subscription: false,
-      image: this.props.ticket.uploads,
-      imgModalOpen: false,
-      publish: true
+      address: '',
+      image: [],
+      imgModalOpen: false
     };
   }
 
@@ -47,7 +58,6 @@ export class PublishNewsFormWidget extends Component {
   };
 
   getSubCategories(category) {
-    let bool = false;
     let subCats = [];
     let subCatsOpt = [];
 
@@ -56,32 +66,91 @@ export class PublishNewsFormWidget extends Component {
         subCats = cat.subs;
       }
     });
-
     subCats.map(subCat => {
-      if (this.state.receivedCategory === subCat.id) {
-        this.setState({ category: subCat.parentId, subcategory: this.state.receivedCategory });
-        bool = true;
-      }
       subCatsOpt.push({ key: subCat.id, value: subCat.id, text: subCat.name });
     });
-
-    if (bool || this.state.categoryChanged) {
-      this.setState({ subCategoryOptions: subCatsOpt });
-    }
+    this.setState({ subCategoryOptions: subCatsOpt });
+    this.state.receivedCategory === -1 ? this.setState({ subCategory: subCats[0].id }) : null;
   }
 
   componentWillMount() {
-    console.log(this.state.image);
-
-    categoryService.getCategories().then(res => {
-      let cats = [];
-      this.setState({ allCats: res.data });
-      res.data.map(cat => {
-        cats.push({ key: cat.id, value: cat.id, text: cat.name });
-        this.getSubCategories(cat.id);
+    if (this.props.news) {
+      let news = this.props.news;
+      let statusOptions = [
+        { key: 1, value: 2, text: STATUS[2].norwegian },
+        { key: 2, value: 3, text: STATUS[3].norwegian }
+      ];
+      let companyOptions = [];
+      //MunicipalId should be fetched from context
+      companyService.getLocalCompanies(Cookies.get('municipalId')).then(res => {
+        res.data.map(company => {
+          companyOptions.push({ key: 1, value: company.id, text: company.name });
+          companyOptions.push({ key: 2, value: company.id + 1, text: 'Company' });
+        });
       });
-      this.setState({ categoryOptions: cats });
-    });
+      //console.log(news);
+      this.setState(
+        {
+          title: news.title,
+          description: news.description,
+          receivedCategory: news.categoryId,
+          category: news.categoryId,
+          address: news.address,
+          status: news.status,
+          statusOptions: statusOptions,
+          company: news.companyId ? news.companyId : 4,
+          companyOptions: companyOptions
+        },
+        () => {
+          console.log(this.state.company);
+        }
+      );
+    }
+    if (this.props.ticket) {
+      let ticket = this.props.ticket;
+      this.setState({
+        title: ticket.title,
+        description: ticket.description,
+        receivedCategory: ticket.categoryId,
+        category: ticket.categoryId,
+        address: ticket.address,
+        image: ticket.uploads
+      });
+    }
+    let parentId = -1;
+    let cats = [];
+    categoryService
+      .getCategories()
+      .then(res => {
+        this.setState({ allCats: res.data });
+
+        res.data.map(cat => {
+          cats.push({ key: cat.id, value: cat.id, text: cat.name });
+          if (this.props.ticket || this.props.news) {
+            cat.subs.map(subCat => {
+              if (subCat.id === this.state.receivedCategory) {
+                parentId = subCat.parentId;
+                this.getSubCategories(parentId);
+              }
+            });
+          }
+        });
+      })
+      .then(() => {
+        !this.props.ticket && !this.props.news ? this.setState({ categoryOptions: cats, receivedCategory: -1 }) : null;
+
+        this.props.ticket || this.props.news
+          ? this.setState(
+              {
+                subCategory: this.state.receivedCategory,
+                category: parentId
+              },
+              () => {
+                this.setState({ categoryOptions: cats, receivedCategory: -1 });
+              }
+            )
+          : null;
+      });
   }
 
   render() {
@@ -93,7 +162,7 @@ export class PublishNewsFormWidget extends Component {
             <Form size="large">
               <Segment stacked>
                 <Form.Field>
-                  <label>Brukeren har meldt inn feil om:</label>
+                  <label>{this.props.news ? 'Nyhetstittel' : 'Brukeren har meldt inn feil om'}:</label>
                   <Input
                     fluid
                     icon="warning"
@@ -106,7 +175,7 @@ export class PublishNewsFormWidget extends Component {
                   />
                 </Form.Field>
                 <Form.Field>
-                  <label>Utdypet:</label>
+                  <label>{this.props.news ? 'Nyhetsbeskrivelse' : 'Utdypet'}</label>
                   <TextArea
                     placeholder={'Beskrivelse'}
                     value={this.state.description}
@@ -118,7 +187,7 @@ export class PublishNewsFormWidget extends Component {
                 <Form.Field>
                   <Grid columns={'equal'}>
                     <Grid.Column>
-                      <label>Kategori:</label>
+                      <label>Kategori</label>
                       <Dropdown
                         fluid
                         search
@@ -135,16 +204,16 @@ export class PublishNewsFormWidget extends Component {
                       />
                     </Grid.Column>
                     <Grid.Column>
-                      <label>Underkategori:</label>
+                      <label>Underkategori</label>
                       <Dropdown
                         fluid
                         search
                         selection
                         options={this.state.subCategoryOptions}
                         placeholder={'Underkategori'}
-                        value={this.state.subcategory}
+                        value={this.state.subCategory}
                         onChange={(event, data) => {
-                          this.handleInput('subcategory', data.value);
+                          this.handleInput('subCategory', data.value);
                         }}
                       />
                     </Grid.Column>
@@ -193,37 +262,89 @@ export class PublishNewsFormWidget extends Component {
                   </Form.Field>
                 ) : null}
 
+                {/*IF NEWS EXISTS */}
+                {this.props.news ? (
+                  <Form.Field>
+                    <Grid columns={'equal'}>
+                      <Grid.Column>
+                        <label>Knytt til bedrift</label>
+                        <Dropdown
+                          fluid
+                          selection
+                          options={this.state.companyOptions}
+                          placeholder={'Bedrift'}
+                          value={this.state.company}
+                          onChange={(event, data) => {
+                            this.handleInput('company', data.value);
+                          }}
+                        />
+                      </Grid.Column>
+                      <Grid.Column>
+                        <label>Status</label>
+                        <Dropdown
+                          fluid
+                          selection
+                          options={this.state.statusOptions}
+                          placeholder={'Underkategori'}
+                          value={this.state.status}
+                          onChange={(event, data) => {
+                            this.handleInput('status', data.value);
+                            console.log(this.state.status);
+                          }}
+                        />
+                      </Grid.Column>
+                    </Grid>
+                  </Form.Field>
+                ) : null}
+
                 <Form.Field>
-                  <Checkbox
-                    checked={this.state.publish}
-                    label={<label>Gjør nyhet synlig</label>}
-                    onChange={(event, data) => {
-                      this.handleInput('publish', data.checked);
-                      console.log(data.checked);
-                    }}
-                  />
+                  <Grid>
+                    <Grid.Column>
+                      <Checkbox
+                        checked={this.state.publish}
+                        label={<label>Gjør nyhet synlig</label>}
+                        onChange={(event, data) => {
+                          this.handleInput('publish', data.checked);
+                          console.log(data.checked);
+                        }}
+                      />
+                    </Grid.Column>
+                  </Grid>
                 </Form.Field>
 
-                <Button
-                  color="blue"
-                  fluid
-                  size="large"
-                  onClick={() =>
-                    this.props.accept(
-                      this.state.title,
-                      this.state.description,
-                      this.state.position[0],
-                      this.state.position[1],
-                      this.state.address,
-                      this.state.category,
-                      this.state.publish,
-                      mun,
-                      this.state.image
-                    )
-                  }
-                >
-                  {this.props.submitButton}
-                </Button>
+                <Button.Group fluid>
+                  <Button onClick={() => this.props.close()}>Avbryt</Button>
+                  <Button
+                    color="blue"
+                    size="large"
+                    onClick={() =>
+                      this.props.ticket
+                        ? this.props.accept(
+                            this.state.title,
+                            this.state.description,
+                            this.state.position[0],
+                            this.state.position[1],
+                            this.state.address,
+                            this.state.subCategory,
+                            this.state.publish,
+                            mun,
+                            this.state.image
+                          )
+                        : this.props.news
+                        ? this.props.editNews(
+                            this.state.title,
+                            this.state.description,
+                            this.state.subCategory,
+                            this.state.status,
+                            this.state.publish,
+                            this.state.company
+                          )
+                        : null
+                    }
+                  >
+                    {this.props.submitButton}
+                  </Button>
+                </Button.Group>
               </Segment>
             </Form>
           </Grid.Column>

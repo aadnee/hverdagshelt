@@ -48,6 +48,7 @@ module.exports = {
 
   register: function(name, email, phone, municipalId, rank, callback) {
     const password = generatePassword(12);
+    let userManager = this;
     bcrypt.genSalt(12, function(err, salt) {
       bcrypt.hash(password, salt, null, function(err, hash) {
         if (err) throw er;
@@ -81,19 +82,17 @@ module.exports = {
                     email,
                     function(result) {
                       if (result) {
-                        callback({
-                          success: true,
-                          message: { en: 'Email with new password sent.', no: 'Nytt passord er sent på epost.' }
+                        userManager.addMunicipal(res.id, municipalId, () => {
+                          callback({
+                            success: true,
+                            message: { en: 'Registration successful.', no: 'Registrering vellykket.' }
+                          });
                         });
                       } else {
                         callback({ success: false, message: { en: 'Email error.', no: 'Email error.' } });
                       }
                     }
                   );
-                  callback({
-                    success: true,
-                    message: { en: 'Registration successful.', no: 'Registrering vellykket.' }
-                  });
                 },
                 err => callback({ success: false, message: err })
               );
@@ -310,10 +309,90 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: { en: 'Municipal deleted.', no: 'Kommunen blir ikke lengre abbonert på.' }
+          message: { en: 'Municipal deleted.', no: 'Kommunen blir ikke lengre abonnert på.' }
         }),
       err => callback({ success: false, message: err })
     );
+  },
+
+  //statistics
+  userIncrease: function(municipalId, year, month, week, callback) {
+    // let startInt;
+    // let userbase = [];
+    // Users.count({
+    //   where: { createdAt: { $lte: start }, municipalId: municipalId }
+    // }).then(res => {
+    //   console.log(res);
+    //   startInt = parseInt(res);
+    //   userbase.push({ start: res });
+    // });
+    // Users.count({
+    //   where: { createdAt: { $lte: end }, municipalId: municipalId }
+    // }).then(
+    //   res => {
+    //     userbase.push({ end: res }, { increase: parseInt(res) + startInt });
+    //     console.log(parseInt(res) + startInt);
+    //     callback({ success: true, data: userbase });
+    //   },
+    //   err => callback({ success: false, message: err })
+    // );
+    let start;
+    let end;
+    if (municipalId == null || year == null) {
+      callback({ success: false, message: 'MunicipalId and year is required' });
+    } else {
+      if (week == null && month == null && year != null) {
+        start = moment(year + '-01-01');
+        end = moment(year + '-12-31');
+      } else if (week == null && month != null && year != null) {
+        start = moment(year + '-' + month + '-01');
+        end = moment(year + '-' + month + '-01').endOf('month');
+      } else if (week != null && year != null) {
+        start = moment(year + '-01-01')
+          .day('Monday')
+          .week(week);
+
+        week += 1;
+        end = moment(year + '-01-01')
+          .day('Monday')
+          .week(week);
+      }
+      Categories.findAll({
+        attributes: ['name'],
+        include: [
+          {
+            attributes: ['name'],
+            model: Categories,
+            required: false,
+            as: 'subs',
+            include: [
+              {
+                attributes: ['id'],
+                model: Tickets,
+                required: false,
+                where: {
+                  createdAt: {
+                    $gte: start,
+                    $lte: end
+                  },
+                  municipalId: municipalId
+                }
+              }
+            ]
+          }
+        ],
+        where: { parentId: null }
+      }).then(res => {
+        let stats = [];
+        res.map((cat, i) => {
+          stats.push({ name: cat.name, subs: [], start: start, end: end });
+          cat.subs.map(sub => {
+            stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
+          });
+        });
+        callback({ success: true, data: stats }), err => callback({ success: false, message: err });
+      });
+    }
   }
 };
 

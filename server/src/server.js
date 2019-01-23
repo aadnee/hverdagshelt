@@ -43,30 +43,42 @@ app.use(cookieParser());
 app.use(cors());
 
 app.get('/api/pdf', (req, res) => {
-  ejs.renderFile('./pdfs/file.ejs', { test1: 1, test2: 'fwewf' }, function(err, html) {
-    let config = {
-      format: 'A4',
-      orientation: 'portrait',
-      border: {
-        top: '10mm',
-        right: '10mm',
-        bottom: '10mm',
-        left: '10mm'
-      },
-      timeout: 30000,
-      renderDelay: 2000
-    };
-    let filepath = './pdfs/file.pdf';
-    pdf.create(html, config).toFile(filepath, function(err, file) {
-      res.json({ filename: file.filename });
-    });
-  });
+  ejs.renderFile(
+    './pdfs/file.ejs',
+    { test1: ['test', 'Tes2', 'Test3'], test2: 'HALLOOOOOOOOOOOO', test3: 'TEST REAL' },
+    function(err, html) {
+      let config = {
+        format: 'A4',
+        orientation: 'portrait',
+        border: {
+          top: '10mm',
+          right: '10mm',
+          bottom: '10mm',
+          left: '10mm'
+        },
+        timeout: 30000,
+        renderDelay: 2000
+      };
+      let filepath = './pdfs/file.pdf';
+      pdf.create(html, config).toFile(filepath, function(err, file) {
+        res.json({ filename: file.filename });
+      });
+    }
+  );
 });
 
 app.get('/api/pdf/html', (req, res) => {
-  ejs.renderFile('./pdfs/file.ejs', { test1: 1, test2: 'fwewf' }, function(err, html) {
-    res.send(html);
+  let municipalId = 1;
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
+    console.log(result);
   });
+  ejs.renderFile(
+    './pdfs/file.ejs',
+    { test1: ['test', 'Tes2', 'Test3'], test2: 'HALLOOOOOOOOOOOO', test3: 'TEST REAL' },
+    function(err, html) {
+      res.send(html);
+    }
+  );
 });
 
 app.post('/api/events/filter', (req, res) => {
@@ -78,7 +90,9 @@ app.post('/api/events/filter', (req, res) => {
 
 app.post('/api/events', ensureEmployee, (req, res) => {
   let b = req.body;
-  eventManager.addEvent(b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, function(result) {
+  eventManager.addEvent(b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, b.url, function(
+    result
+  ) {
     res.json(result);
   });
 });
@@ -86,11 +100,20 @@ app.post('/api/events', ensureEmployee, (req, res) => {
 app.put('/api/events/:eventId', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  eventManager.editEvent(p.eventId, b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, function(
-    result
-  ) {
-    res.json(result);
-  });
+  eventManager.editEvent(
+    p.eventId,
+    b.title,
+    b.description,
+    b.area,
+    b.address,
+    b.start,
+    b.end,
+    b.municipalId,
+    b.url,
+    function(result) {
+      res.json(result);
+    }
+  );
 });
 
 app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
@@ -501,14 +524,19 @@ app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
 });
 
 //statistics
-app.post('/api/statistics/tickets/year', ensureEmployee, (req, res) => {
-  ticketManager.getYearly(req.body.year, req.body.municipalId, req.body.categoryId, function(result) {
+
+// Returns number of tickets sent in per category for the given municipal
+// Returns yearly numbers if month and week is null, returns monthly if only week is null
+app.post('/api/statistics/tickets', ensureEmployee, (req, res) => {
+  ticketManager.getTicketStatistics(req.body.municipalId, req.body.year, req.body.month, req.body.week, function(
+    result
+  ) {
     res.json(result);
   });
 });
 
-app.post('/api/statistics/tickets/month', ensureEmployee, (req, res) => {
-  ticketManager.getMonthly(req.body.month, req.body.year, req.body.municipalId, function(result) {
+app.post('/api/statistics/users', ensureEmployee, (req, res) => {
+  userManager.userIncrease(req.body.municipalId, req.body.start, req.body.end, function(result) {
     res.json(result);
   });
 });

@@ -1,5 +1,6 @@
 import { Users, News, Uploads } from '../models';
 import userManager from './userManager';
+import mailManager from './mailManager';
 
 module.exports = {
   getCompanies: function(callback) {
@@ -75,7 +76,38 @@ module.exports = {
 
   finishTask: function(companyId, newsId, callback) {
     News.update({ status: 3, companyStatus: 3 }, { where: { id: newsId, companyId: companyId } }).then(
-      res => callback({ success: true, message: { en: 'Task finished.', no: 'Oppdraget ble markert som ferdig.' } }),
+      res => {
+        News.findOne({
+          attributes: ['title'],
+          include: [{ model: Users, attributes: ['email', 'notifications'], required: true }],
+          where: { id: newsId }
+        }).then(
+          res => {
+            if (res != null) {
+              let title = res.title;
+              res.users.map(user => {
+                user.notifications
+                  ? mailManager.send(
+                      'En nyhet du følger er fullført',
+                      '<h3>"' +
+                        title +
+                        '" ble markert som fullført.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
+                      user.email,
+                      function() {}
+                    )
+                  : null;
+                callback({
+                  success: true,
+                  message: { en: 'Task finished.', no: 'Oppdraget ble markert som ferdig.' }
+                });
+              });
+            } else {
+              callback({ success: true, message: { en: 'Task finished.', no: 'Oppdraget ble markert som ferdig.' } });
+            }
+          },
+          err => callback({ success: false, message: err })
+        );
+      },
       err => callback({ success: false, message: err })
     );
   }
