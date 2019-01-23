@@ -68,6 +68,10 @@ app.get('/api/pdf', (req, res) => {
 });
 
 app.get('/api/pdf/html', (req, res) => {
+  let municipalId = 1;
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
+    console.log(result);
+  });
   ejs.renderFile(
     './pdfs/file.ejs',
     { test1: ['test', 'Tes2', 'Test3'], test2: 'HALLOOOOOOOOOOOO', test3: 'TEST REAL' },
