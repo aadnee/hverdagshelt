@@ -225,7 +225,9 @@ app.delete('/api/users/:id', ensureAdmin, (req, res) => {
 app.put('/api/users/:id', ensureAdmin, (req, res) => {
   let b = req.body;
   let p = req.params;
-  userManager.editUser(b.name, b.email, b.phone, b.municipalId, p.id, b.rank, function(result) {
+  console.log(b);
+  console.log(p);
+  userManager.editUser(b.name, b.email, b.phone, b.municipalId, p.id, b.notifications, b.rank, function(result) {
     res.json(result);
   });
 });

@@ -5,13 +5,17 @@ import { AdminRegisterWidget } from './AdminRegisterWidget';
 import { EditUserWidget } from './EditUserWidget';
 import { userService } from '../services/UserServices';
 import { companyService } from '../services/CompanyServices';
+import { toast } from 'react-toastify';
 
 export class UserComponentListWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       users: [],
-      showRegisterModal: false,
+      user: null,
+      regModalOpen: false,
+      editModalOpen: false,
+      deleteModalOpen: false,
       popupMessage: '',
       popupSuccess: ''
     };
@@ -19,6 +23,18 @@ export class UserComponentListWidget extends React.Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
   }
+
+  setUser = user => {
+    this.setState({ user: user });
+    this.open('editModalOpen');
+  };
+
+  close = modal => {
+    this.setState({ [modal]: false });
+  };
+  open = modal => {
+    this.setState({ [modal]: true });
+  };
 
   componentWillMount() {
     this.props.usertype
@@ -45,67 +61,76 @@ export class UserComponentListWidget extends React.Component {
         });
   };
 
-  handleEdit = async user => {
-    console.table(user);
-    return this.props.usertype
-      ? userService.editUser(user.id, user.name, user.email, user.phone, user.municipalId, user.rank).then(res => {
-          console.log(res);
-          this.setState({
-            popupMessage: res.message.no,
-            popupSuccess: res.success,
-            showRegisterModal: true
-          });
+  handleEdit = user => {
+    console.log(user);
+    if (this.props.usertype) {
+      console.log('d');
+      userService.editUser(user.id, user.name, user.email, user.phone, user.municipalId, user.rank).then(res => {
+        console.log(res);
+        if (res.success) {
+          this.close('editModalOpen');
           let oldUser = null;
-          if (res.success) {
-            this.state.users.find((u, i) => {
-              user.id === u.id ? (oldUser = i) : null;
-            });
-            console.log(oldUser);
-            this.state.users[oldUser] = user;
-            this.forceUpdate();
-          }
-          return res.success;
-        })
-      : companyService.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
-          console.log(res);
-          this.setState({
-            popupMessage: res.message.no,
-            popupSuccess: res.success,
-            showRegisterModal: true
+          this.state.users.find((u, i) => {
+            user.id === u.id ? (oldUser = i) : null;
           });
+          this.state.users[oldUser] = user;
+          toast.success(res.message.no);
+          this.forceUpdate();
+        } else {
+          toast.error(res.message.no);
+        }
+      });
+    } else {
+      companyService.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
+        console.log(res);
+        if (res.success) {
+          this.close('editModalOpen');
+
           let oldUser = null;
-          if (res.success) {
-            this.state.users.find((u, i) => {
-              user.id === u.id ? (oldUser = i) : null;
-            });
-            console.log(oldUser);
-            this.state.users[oldUser] = user;
-            this.forceUpdate();
-          }
-          return res.success;
-        });
-  };
-  closeModals = () => {
-    this.setState({
-      showRegisterModal: false
-    });
+
+          this.state.users.find((u, i) => {
+            user.id === u.id ? (oldUser = i) : null;
+          });
+          console.log(oldUser);
+          this.state.users[oldUser] = user;
+          toast.success(res.message.no);
+
+          this.forceUpdate();
+        } else {
+          toast.error(res.message.no);
+        }
+      });
+    }
   };
 
-  handleRegister = async newUser => {
+  handleRegister = newUser => {
     //USERSERICE -> request cookie
-    return (await this.props.usertype)
+    this.props.usertype
       ? userService.register(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
-          let newArrayUsers = this.state.users;
-          newArrayUsers.push(newUser);
-          res.success ? this.setState({ users: newArrayUsers }) : null;
-          return res.success;
+          console.log(res);
+
+          if (res.success) {
+            this.close('regModalOpen');
+            let newArrayUsers = this.state.users;
+            newArrayUsers.push(newUser);
+            this.setState({ users: newArrayUsers });
+            toast.success(res.message.no);
+          } else {
+            toast.error(res.message.no);
+          }
         })
       : companyService.addCompany(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
           console.log(res);
-          let newArrayUsers = this.state.users;
-          newArrayUsers.push(newUser);
-          res.success ? this.setState({ users: newArrayUsers }) : null;
-          return res.success;
+          if (res.success) {
+            this.close('regModalOpen');
+
+            let newArrayUsers = this.state.users;
+            newArrayUsers.push(newUser);
+            this.setState({ users: newArrayUsers });
+            toast.success(res.message.no);
+          } else {
+            toast.error(res.message.no);
+          }
         });
   };
 
@@ -113,72 +138,71 @@ export class UserComponentListWidget extends React.Component {
     return (
       <div>
         <List divided relaxed>
-          {this.props.usertype
-            ? this.state.users.map((user, i) => {
-                return (
-                  <UserComponentListItemWidget
-                    handleDelete={this.handleDelete.bind(this, user.id)}
-                    handleEdit={this.handleEdit}
-                    usertype
-                    key={i}
-                    user={user}
-                  />
-                );
-              })
-            : this.state.users.map((user, i) => {
-                return (
-                  <UserComponentListItemWidget
-                    handleDelete={this.handleDelete.bind(this, user.id)}
-                    handleEdit={this.handleEdit}
-                    key={i}
-                    user={user}
-                  />
-                );
-              })}
+          {this.state.users.map((user, i) => (
+            <List.Item key={i}>
+              <List.Content floated="right">
+                <Button.Group compact={false}>
+                  <Button color="green" onClick={this.setUser.bind(this, user)}>
+                    Edit
+                  </Button>
+                  <DeleteUserWidget handleDelete={this.handleDelete} user={user} />
+                </Button.Group>
+              </List.Content>
+              <List.Icon name="user" size="large" verticalAlign="middle" />
+              <List.Content>
+                <List.Header>{user.name}</List.Header>
+                <List.Description>{user.email}</List.Description>
+              </List.Content>
+            </List.Item>
+          ))}
         </List>
-        {this.props.usertype ? (
-          <AdminRegisterWidget handleRegister={this.handleRegister} user />
-        ) : (
-          <AdminRegisterWidget handleRegister={this.handleRegister} />
-        )}
-        <Modal size={'tiny'} open={this.state.showRegisterModal}>
-          <Modal.Header>Registreringsstatus: {this.state.popupSuccess ? 'Suksess' : 'Error'}</Modal.Header>
+        <Modal
+          onClose={() => this.close('editModalOpen')}
+          onOpen={() => this.open('editModalOpen')}
+          open={this.state.editModalOpen}
+          closeIcon
+        >
+          <Modal.Header>Redigere Bruker</Modal.Header>
           <Modal.Content>
-            <p>{this.state.popupMessage}</p>
+            {this.props.usertype ? (
+              <EditUserWidget
+                user={this.state.user}
+                handleEdit={this.handleEdit}
+                close={this.close.bind(this, 'editModalOpen')}
+                userEdit={this.props.usertype}
+              />
+            ) : (
+              <EditUserWidget
+                user={this.state.user}
+                handleEdit={this.handleEdit}
+                close={this.close.bind(this, 'editModalOpen')}
+              />
+            )}
           </Modal.Content>
-          <Modal.Actions>
-            <Button icon="check" content="Ok" onClick={this.closeModals} />
-          </Modal.Actions>
+        </Modal>
+        <Modal
+          onClose={() => this.close('regModalOpen')}
+          onOpen={() => this.open('regModalOpen')}
+          open={this.state.regModalOpen}
+          trigger={<Button icon="add" inverted color="green" />}
+          closeIcon
+        >
+          <Modal.Header>
+            <h1>{this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}</h1>
+          </Modal.Header>
+          <Modal.Content>
+            {this.props.usertype ? (
+              <AdminRegisterWidget
+                user
+                handleRegister={this.handleRegister}
+                close={this.close.bind(this, 'regModalOpen')}
+              />
+            ) : (
+              <AdminRegisterWidget handleRegister={this.handleRegister} close={this.close.bind(this, 'regModalOpen')} />
+            )}
+          </Modal.Content>
         </Modal>
       </div>
-    );
-  }
-}
-
-export class UserComponentListItemWidget extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <List.Item>
-        <List.Content floated="right">
-          <Button.Group compact={false}>
-            {this.props.usertype ? (
-              <EditUserWidget user={this.props.user} handleEdit={this.props.handleEdit} userEdit />
-            ) : (
-              <EditUserWidget user={this.props.user} handleEdit={this.props.handleEdit} />
-            )}
-            <DeleteUserWidget handleDelete={this.props.handleDelete} user={this.props.user} />
-          </Button.Group>
-        </List.Content>
-        <List.Icon name="user" size="large" verticalAlign="middle" />
-        <List.Content>
-          <List.Header>{this.props.user.name}</List.Header>
-          <List.Description>{this.props.user.email}</List.Description>
-        </List.Content>
-      </List.Item>
     );
   }
 }
