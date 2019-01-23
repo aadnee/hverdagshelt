@@ -16,6 +16,7 @@ describe('Adding, editing and deleting event', () => {
       '2019-01-09 00:00:00',
       '2019-01-10 00:00:00',
       1,
+      '',
       function(result) {
         id = result.id;
         expect({
@@ -40,6 +41,7 @@ describe('Adding, editing and deleting event', () => {
       '2019-02-09 00:00:00',
       '2019-02-19 00:00:00',
       1,
+      '',
       function(result) {
         expect({
           success: result.success,

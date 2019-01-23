@@ -84,7 +84,6 @@ module.exports = {
         }).then(
           res => {
             if (res != null) {
-              console.log(res);
               let title = res.title;
               res.users.map(user => {
                 user.notifications
@@ -93,12 +92,18 @@ module.exports = {
                       '<h3>"' +
                         title +
                         '" ble markert som fullført.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
-                      user.email
+                      user.email,
+                      function() {}
                     )
                   : null;
+                callback({
+                  success: true,
+                  message: { en: 'Task finished.', no: 'Oppdraget ble markert som ferdig.' }
+                });
               });
+            } else {
+              callback({ success: true, message: { en: 'Task finished.', no: 'Oppdraget ble markert som ferdig.' } });
             }
-            callback({ success: true, message: { en: 'Task finished.', no: 'Oppdraget ble markert som ferdig.' } });
           },
           err => callback({ success: false, message: err })
         );
