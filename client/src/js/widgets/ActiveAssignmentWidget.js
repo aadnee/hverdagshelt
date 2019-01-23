@@ -92,10 +92,10 @@ export class ActiveAssignmentWidget extends Component {
                             </List.Content>
                         </List.Item>
                     </List>
-                        <Dropdown text='Sett status'>
+                        <Dropdown text='Sett status' className='companyDropdown'>
                             <Dropdown.Menu>
                                 <Dropdown.Item icon='times circle outline' text='Avbryt oppdrag' onClick={() => this.openModal("cancelModal")}/>
-                                <Dropdown.Item icon='check circle outline' text='Oppdrag ferdig' onClick={() => this.openModal("doneModal")}/>
+                                <Dropdown.Item icon='check circle outline' text='Fullfør oppdrag' onClick={() => this.openModal("doneModal")}/>
                             </Dropdown.Menu>
                         </Dropdown>
                 </Container>
@@ -104,8 +104,8 @@ export class ActiveAssignmentWidget extends Component {
                         Er du sikker?
                     </Modal.Header>
                     <Modal.Actions>
-                        <Button positive onClick={this.handleStatus}>Ja</Button>
                         <Button color='red' onClick={this.closeModal}>Nei</Button>
+                        <Button positive onClick={this.handleStatus}>Ja</Button>
                     </Modal.Actions>
                 </Modal>
             </Segment>

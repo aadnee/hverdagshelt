@@ -1,6 +1,19 @@
 import React from 'react';
 import { Component } from 'react';
-import { Divider, Segment, Container, Grid, List, Header, Image, Form, Input, Button, Modal } from 'semantic-ui-react';
+import {
+    Divider,
+    Segment,
+    Container,
+    Grid,
+    List,
+    Header,
+    Image,
+    Form,
+    Input,
+    Button,
+    Modal,
+    Dropdown
+} from 'semantic-ui-react';
 import { Consumer } from './../context';
 import { ShowInMapWidget } from './ShowInMapWidget';
 import { companyService } from '../services/CompanyServices';
@@ -86,15 +99,12 @@ export class AssignmentWidget extends Component {
               </List.Content>
             </List.Item>
           </List>
-          <Button.Group fluid>
-            <Button positive onClick={() => this.openModal('acceptModal')}>
-              Ta oppdrag
-            </Button>
-            <Button.Or text="&harr;" />
-            <Button color="red" onClick={() => this.openModal('declineModal')}>
-              Avslå oppdrag
-            </Button>
-          </Button.Group>
+            <Dropdown text='Svar' className='companyDropdown'>
+                <Dropdown.Menu>
+                    <Dropdown.Item icon='check circle outline' text='Aksepter oppdrag' onClick={() => this.openModal('acceptModal')}/>
+                    <Dropdown.Item icon='times circle outline' text='Avslå oppdrag' onClick={() => this.openModal('declineModal')}/>
+                </Dropdown.Menu>
+            </Dropdown>
         </Container>
         <Modal size={'tiny'} open={this.state.modal} onClose={this.closeModal}>
           <Modal.Header>Er du sikker?</Modal.Header>
