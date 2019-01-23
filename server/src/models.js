@@ -263,7 +263,8 @@ export function syncDatabase(callback) {
         lon: 1,
         address: 'Test street',
         categoryId: 2,
-        municipalId: 1
+        municipalId: 1,
+        companyId: 4
       });
       await News.create({
         title: 'Enda en nyhet!',
@@ -273,7 +274,9 @@ export function syncDatabase(callback) {
         lon: 1,
         address: 'Test street',
         categoryId: 1,
-        municipalId: 1
+        municipalId: 1,
+        companyId: 4
+
       });
       await News.create({
         title: 'En nyhet',
@@ -283,7 +286,9 @@ export function syncDatabase(callback) {
         lon: 1,
         address: 'Test street',
         categoryId: 1,
-        municipalId: 1
+        municipalId: 1,
+        companyId: 4
+
       });
       await Subscriptions.create({
         newsId: 1,
