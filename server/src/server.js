@@ -43,18 +43,19 @@ app.use(cookieParser());
 app.use(cors());
 
 app.get('/api/pdf', (req, res) => {
-  ejs.renderFile(
-    './pdfs/file.ejs',
-    { test1: ['test', 'Tes2', 'Test3'], test2: 'HALLOOOOOOOOOOOO', test3: 'TEST REAL' },
-    function(err, html) {
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
+    ejs.renderFile('./pdfs/file.ejs', { categories: result.data, start: result.start, end: result.end }, function(
+      err,
+      html
+    ) {
       let config = {
         format: 'A4',
         orientation: 'portrait',
         border: {
           top: '10mm',
-          right: '10mm',
+          right: '30mm',
           bottom: '10mm',
-          left: '10mm'
+          left: '30mm'
         },
         timeout: 30000,
         renderDelay: 2000
@@ -63,15 +64,17 @@ app.get('/api/pdf', (req, res) => {
       pdf.create(html, config).toFile(filepath, function(err, file) {
         res.json({ filename: file.filename });
       });
-    }
-  );
+    });
+  });
 });
 
 app.get('/api/pdf/html', (req, res) => {
   let municipalId = 1;
   ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
-    console.log(result);
-    ejs.renderFile('./pdfs/file.ejs', { categories: result.data }, function(err, html) {
+    ejs.renderFile('./pdfs/file.ejs', { categories: result.data, start: result.start, end: result.end }, function(
+      err,
+      html
+    ) {
       res.send(html);
     });
   });
