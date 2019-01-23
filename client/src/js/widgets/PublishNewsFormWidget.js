@@ -74,8 +74,10 @@ export class PublishNewsFormWidget extends Component {
         category: news.categoryId,
         address: news.address
       });
-    } else if (this.props.ticket) {
+    }
+    if (this.props.ticket) {
       let ticket = this.props.ticket;
+      console.log(ticket);
       this.setState({
         title: ticket.title,
         description: ticket.description,
@@ -94,7 +96,7 @@ export class PublishNewsFormWidget extends Component {
 
         res.data.map(cat => {
           cats.push({ key: cat.id, value: cat.id, text: cat.name });
-          if (this.props.ticket) {
+          if (this.props.ticket || this.props.news) {
             cat.subs.map(subCat => {
               if (subCat.id === this.state.receivedCategory) {
                 console.log(subCat.id);
@@ -107,9 +109,9 @@ export class PublishNewsFormWidget extends Component {
       })
       .then(() => {
         console.log(cats);
-        !this.props.ticket ? this.setState({ categoryOptions: cats, receivedCategory: -1 }) : null;
+        !this.props.ticket && !this.props.news ? this.setState({ categoryOptions: cats, receivedCategory: -1 }) : null;
 
-        this.props.ticket
+        this.props.ticket || this.props.news
           ? this.setState(
               {
                 subCategory: this.state.receivedCategory,
@@ -133,7 +135,7 @@ export class PublishNewsFormWidget extends Component {
             <Form size="large">
               <Segment stacked>
                 <Form.Field>
-                  <label>Brukeren har meldt inn feil om:</label>
+                  <label>{this.props.news ? 'Nyhetstittel' : 'Brukeren har meldt inn feil om'}:</label>
                   <Input
                     fluid
                     icon="warning"
@@ -146,7 +148,7 @@ export class PublishNewsFormWidget extends Component {
                   />
                 </Form.Field>
                 <Form.Field>
-                  <label>Utdypet:</label>
+                  <label>{this.props.news ? 'Nyhetsbeskrivelse' : 'Utdypet'}</label>
                   <TextArea
                     placeholder={'Beskrivelse'}
                     value={this.state.description}
@@ -243,27 +245,28 @@ export class PublishNewsFormWidget extends Component {
                     }}
                   />
                 </Form.Field>
-
-                <Button
-                  color="blue"
-                  fluid
-                  size="large"
-                  onClick={() =>
-                    this.props.accept(
-                      this.state.title,
-                      this.state.description,
-                      this.state.position[0],
-                      this.state.position[1],
-                      this.state.address,
-                      this.state.category,
-                      this.state.publish,
-                      mun,
-                      this.state.image
-                    )
-                  }
-                >
-                  {this.props.submitButton}
-                </Button>
+                <Button.Group fluid>
+                  <Button
+                    color="blue"
+                    size="large"
+                    onClick={() =>
+                      this.props.accept(
+                        this.state.title,
+                        this.state.description,
+                        this.state.position[0],
+                        this.state.position[1],
+                        this.state.address,
+                        this.state.category,
+                        this.state.publish,
+                        mun,
+                        this.state.image
+                      )
+                    }
+                  >
+                    {this.props.submitButton}
+                  </Button>
+                  <Button onClick={() => this.props.close()}>Avbryt</Button>
+                </Button.Group>
               </Segment>
             </Form>
           </Grid.Column>

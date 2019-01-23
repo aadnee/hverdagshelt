@@ -226,7 +226,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 2,
+        categoryId: 4,
         userId: 1,
         municipalId: 1,
         subscribed: true
@@ -238,7 +238,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 2,
+        categoryId: 3,
         userId: 1,
         municipalId: 1,
         subscribed: true
@@ -250,7 +250,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 2,
+        categoryId: 3,
         userId: 1,
         municipalId: 1,
         subscribed: true
