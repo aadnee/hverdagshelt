@@ -81,19 +81,19 @@ module.exports = {
                     email,
                     function(result) {
                       if (result) {
-                        callback({
-                          success: true,
-                          message: { en: 'Email with new password sent.', no: 'Nytt passord er sent på epost.' }
-                        });
+                        Users.addMunicipal(res.id, municipalId).then(
+                          res =>
+                            callback({
+                              success: true,
+                              message: { en: 'Registration successful.', no: 'Registrering vellykket.' }
+                            }),
+                          err => callback({ success: false, message: err })
+                        );
                       } else {
                         callback({ success: false, message: { en: 'Email error.', no: 'Email error.' } });
                       }
                     }
                   );
-                  callback({
-                    success: true,
-                    message: { en: 'Registration successful.', no: 'Registrering vellykket.' }
-                  });
                 },
                 err => callback({ success: false, message: err })
               );
