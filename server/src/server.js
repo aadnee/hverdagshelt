@@ -68,6 +68,10 @@ app.get('/api/pdf', (req, res) => {
 });
 
 app.get('/api/pdf/html', (req, res) => {
+  let municipalId = 1;
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
+    console.log(result);
+  });
   ejs.renderFile(
     './pdfs/file.ejs',
     { test1: ['test', 'Tes2', 'Test3'], test2: 'HALLOOOOOOOOOOOO', test3: 'TEST REAL' },
@@ -122,6 +126,13 @@ app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
 app.post('/api/news/filter', (req, res) => {
   let b = req.body;
   newsManager.getFilteredNews(b.municipalIds, b.categoryIds, b.page, b.limit, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/news/archive', (req, res) => {
+  let b = req.body;
+  newsManager.getArchivedNews(b.municipalIds, function(result) {
     res.json(result);
   });
 });
@@ -520,10 +531,19 @@ app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
 });
 
 //statistics
+
+// Returns number of tickets sent in per category for the given municipal
+// Returns yearly numbers if month and week is null, returns monthly if only week is null
 app.post('/api/statistics/tickets', ensureEmployee, (req, res) => {
-  ticketManager.getTicketStatistics(req.body.week, req.body.month, req.body.year, req.body.municipalId, function(
-    result
-  ) {
+  let b = req.body;
+  ticketManager.getTicketStatistics(b.municipalId, b.year, b.month, b.week, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/statistics/users', ensureEmployee, (req, res) => {
+  let b = req.body;
+  userManager.userIncrease(b.municipalId, b.year, b.month, b.week, function(result) {
     res.json(result);
   });
 });

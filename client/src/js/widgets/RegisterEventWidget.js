@@ -23,7 +23,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import {categoryService} from '../services/CategoryServices';
 
 import Cookies from 'js-cookie';
-import moment from "moment";
+import moment from 'moment';
 
 export class RegisterEventWidget extends Component {
   constructor(props) {
@@ -31,40 +31,41 @@ export class RegisterEventWidget extends Component {
     this.state = {
       address: this.props.address ? this.props.address : '',
       latlng: this.props.latlng ? this.props.latlng : [null, null],
-      title: '',
-      description: '',
-      url: '',
+      title: this.props.title ? this.props.title : '',
+      description: this.props.description ? this.props.description : '',
+      url: this.props.url ? this.props.url : '',
+      area: this.props.area ? this.props.area : '',
       tags: [],
       tagOptions: [],
       position: [null, null],
-      start: new Date(),
-      end: null,
+      start: this.props.start ? new Date(this.props.start) : new Date(),
+      end: this.props.end ? new Date(this.props.end) : null,
       startFormatted: moment(new Date()).format('YYYY-MM-D HH:mm:ss'),
-      endFormatted: null
+      endFormatted: this.props.end ? new Date(this.props.end) : null
     };
     this.setStartDate = this.setStartDate.bind(this);
     this.setEndDate = this.setEndDate.bind(this);
   }
 
-  close = () => this.setState({modalOpen: false});
+  close = () => this.setState({ modalOpen: false });
 
   componentDidUpdate(prevProps) {
     if (prevProps != this.props) {
       console.log(this.props);
-      this.setState({address: this.props.address, latlng: this.props.latlng});
+      this.setState({ address: this.props.address, latlng: this.props.latlng });
     }
   }
 
   handleInput = (key, value) => {
-    this.setState({[key]: value});
+    this.setState({ [key]: value });
   };
 
   setStartDate(date) {
-    this.setState({start: date, startFormatted: moment(date).format('YYYY-MM-D HH:mm:ss')});
+    this.setState({ start: date, startFormatted: moment(date).format('YYYY-MM-D HH:mm:ss') });
   }
 
   setEndDate(date) {
-    this.setState({end: date, endFormatted: moment(date).format('YYYY-MM-D HH:mm:ss')});
+    this.setState({ end: date, endFormatted: moment(date).format('YYYY-MM-D HH:mm:ss') });
   }
 
   render() {
@@ -83,6 +84,7 @@ export class RegisterEventWidget extends Component {
                         placeholder="Velg posisjon på kartet"
                         defaultValue={this.state.address}
                         readOnly
+                        onClick={this.props.setupClick ? (()=>this.props.setupClick(this.state.address)) : null}
                     />
                     <label>Hvilket arrangement vil du legge inn?</label>
                     <Input
@@ -146,28 +148,51 @@ export class RegisterEventWidget extends Component {
                                 timeFormat='HH:mm' dateFormat='dd.MM.yyyy HH:mm' showTimeSelect
                                 onChange={this.setEndDate}/>
                   </Form.Field>
+                  {this.props.submit ? (
                   <Button
-                      color="blue"
-                      fluid
-                      size="large"
-                      onClick={() =>
-                          this.props.submit(
-                              this.state.title,
-                              this.state.description,
-                              this.state.startFormatted,
-                              this.state.endFormatted,
-                              Cookies.get('municipalId'),
-                              this.state.url
-                          )
-                      }
+                    color="blue"
+                    fluid
+                    size="large"
+                    onClick={() => {
+                      this.props.submit(
+                        this.state.title,
+                        this.state.description,
+                        this.state.startFormatted,
+                        this.state.endFormatted,
+                        Cookies.get('municipalId'),
+                        this.state.url
+                      );
+                    }}
                   >
                     Registrer arrangement
                   </Button>
-                </Segment>
-              </Form>
-            </Grid.Column>
-          </Grid>
-        </Container>
+                ) : null}
+                {this.props.editEvent ? (
+                  <Button
+                    color="blue"
+                    fluid
+                    size="large"
+                    onClick={() =>
+                      this.props.editEvent(
+                        this.state.title,
+                        this.state.description,
+                        this.state.area,
+                        this.state.address,
+                        this.state.startFormatted,
+                        this.state.endFormatted,
+                        Cookies.get('municipalId'),
+                        this.state.url
+                      )
+                    }
+                  >
+                    Redigere arrangement
+                  </Button>
+                ) : null}
+              </Segment>
+            </Form>
+          </Grid.Column>
+        </Grid>
+      </Container>
     );
   }
 }
@@ -183,14 +208,14 @@ export class ModalTicketWidget extends Component {
 
   render() {
     return (
-        <Modal open={this.props.open}>
-          <TicketFormWidget
-              editTicket={this.props.editTicket}
-              close={this.props.close}
-              ticket={this.props.ticket}
-              submitButton={'Lagre endringer'}
-          />
-        </Modal>
+      <Modal open={this.props.open}>
+        <TicketFormWidget
+          editTicket={this.props.editTicket}
+          close={this.props.close}
+          ticket={this.props.ticket}
+          submitButton={'Lagre endringer'}
+        />
+      </Modal>
     );
   }
 }
