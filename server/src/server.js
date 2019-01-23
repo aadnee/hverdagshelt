@@ -520,14 +520,10 @@ app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
 });
 
 //statistics
-app.post('/api/statistics/tickets/year', ensureEmployee, (req, res) => {
-  ticketManager.getYearly(req.body.year, req.body.municipalId, req.body.categoryId, function(result) {
-    res.json(result);
-  });
-});
-
-app.post('/api/statistics/tickets/month', ensureEmployee, (req, res) => {
-  ticketManager.getMonthly(req.body.month, req.body.year, req.body.municipalId, function(result) {
+app.post('/api/statistics/tickets', ensureEmployee, (req, res) => {
+  ticketManager.getTicketStatistics(req.body.week, req.body.month, req.body.year, req.body.municipalId, function(
+    result
+  ) {
     res.json(result);
   });
 });
