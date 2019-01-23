@@ -88,7 +88,9 @@ export let Events = sequelize.define('events', {
   area: { type: Sequelize.TEXT, allowNull: false },
   address: { type: Sequelize.STRING, allowNull: false },
   start: { type: Sequelize.DATE, allowNull: false },
-  end: { type: Sequelize.DATE, allowNull: false }
+  end: { type: Sequelize.DATE, allowNull: false },
+  url: { type: Sequelize.STRING, allowNull: true },
+  active: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true }
 });
 
 export let Subscriptions = sequelize.define('subscriptions');

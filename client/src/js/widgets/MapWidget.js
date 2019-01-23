@@ -307,6 +307,7 @@ export class MapWidget extends Component {
         if (self.props.callbackPoint) {
           self.props.callbackPoint(e.latlng, info);
         }
+        if(self.props.ticket) self.props.callback(e.latlng, info)
       });
       this.state.map.flyTo(e.latlng, 18);
     }
