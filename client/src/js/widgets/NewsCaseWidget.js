@@ -25,9 +25,7 @@ export class NewsCaseWidget extends Component {
     this.setState({ editModalOpen: false });
   }
 
-  componentWillMount() {
-    console.log(this.props.newscase);
-  }
+  componentWillMount() {}
 
   editNews = (title, description, category, published) => {
     console.log(title, description, category, published);

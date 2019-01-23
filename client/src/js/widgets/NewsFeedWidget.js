@@ -57,7 +57,7 @@ export class NewsFeedWidget extends Component {
           let cats = res.data.map(r => {
             return { key: r.id, value: r.id, text: r.name };
           });
-          this.setState({ categories: cats, selectedCategories: cats.map(c => c.value) });
+          this.setState({ categories: cats });
           return cats;
         })
         .catch(res => console.error(res));
@@ -94,7 +94,7 @@ export class NewsFeedWidget extends Component {
           let cats = res.data.map(r => {
             return { key: r.id, value: r.id, text: r.name };
           });
-          this.setState({ categories: cats, selectedCategories: cats.map(c => c.value) });
+          this.setState({ categories: cats });
           return cats;
         })
         .catch(res => console.error(res));
@@ -115,8 +115,20 @@ export class NewsFeedWidget extends Component {
     console.log(this.state.selectedMunicipals);
     console.log(this.state.selectedCategories);
     setTimeout(() => {
+      const munsearch =
+        this.state.selectedMunicipals.length > 0
+          ? this.state.selectedMunicipals
+          : this.state.municipals.map(m => m.key);
+      const catsearch =
+        this.state.selectedCategories.length > 0
+          ? this.state.selectedCategories
+          : this.state.categories.map(c => c.key);
+
+      console.log(munsearch);
+      console.log(catsearch);
+
       newsService
-        .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, 0, 0)
+        .getFilteredNews(munsearch, catsearch, 0, 0)
         .then(res => {
           console.log(res);
           if (res.success) {
@@ -212,7 +224,7 @@ export class NewsFeedWidget extends Component {
       return <>{this.displayNews()}</>;
     }
     return (
-      <Grid divided columns={2}>
+      <Grid divided stackable columns={2}>
         <Grid.Column width={5}>
           <Segment>
             <Header as="h5">

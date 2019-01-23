@@ -17,11 +17,19 @@ export class ShowInMapWidget extends Component {
   }
 
   render() {
-    const la = this.props.latlng.reduce((lat, latn) => {
-      return [lat[0] + latn[0], lat[1] + latn[1]];
-    });
+    let la;
+    let cent;
+    if (this.props.latlng.length > 2) {
+      console.log(this.props.latlng.length);
+      la = this.props.latlng.reduce((lat, latn) => {
+        return [lat[0] + latn[0], lat[1] + latn[1]];
+      });
 
-    const cent = [la[0] / this.props.latlng.length, la[1] / this.props.latlng.length];
+      cent = [la[0] / this.props.latlng.length, la[1] / this.props.latlng.length];
+    } else {
+      cent = this.props.latlng;
+    }
+
     if (this.props.mapOnly) {
       return (
         <Map
@@ -37,10 +45,10 @@ export class ShowInMapWidget extends Component {
             url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-          {this.props.latlng.length > 1 ? (
+          {this.props.latlng.length > 2 ? (
             <Polygon positions={this.props.latlng} />
           ) : (
-            <Marker position={this.props.latlng[0]} />
+            <Marker position={this.props.latlng} />
           )}
         </Map>
       );
@@ -48,21 +56,15 @@ export class ShowInMapWidget extends Component {
       return (
         <Modal trigger={this.props.button} onClose={this.props.callback} closeIcon>
           {this.props.renderMap ? (
-            <Map
-              center={cent}
-              ref={this.mapRef}
-              dragging={this.props.draggable ? true : false}
-              center={[this.props.latlng[0][0], this.props.latlng[0][1]]}
-              zoom={14}
-            >
+            <Map center={cent} ref={this.mapRef} dragging={this.props.draggable ? true : false} zoom={14}>
               <TileLayer
                 url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               />
-              {this.props.latlng.length > 1 ? (
+              {this.props.latlng.length > 2 ? (
                 <Polygon positions={this.props.latlng} />
               ) : (
-                <Marker position={this.props.latlng[0]} />
+                <Marker position={this.props.latlng} />
               )}
             </Map>
           ) : null}
