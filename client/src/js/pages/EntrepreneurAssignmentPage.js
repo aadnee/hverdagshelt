@@ -6,7 +6,6 @@ import {Container, Grid, Header, Divider, Segment, Tab} from 'semantic-ui-react'
 import { companyService } from '../services/CompanyServices';
 
 import {AssignmentWidget} from "../widgets/AssignmentWidget";
-import {AssignmentRejectedWidgetWidget} from "../widgets/AssignmentRejectedWidget";
 
 export class EntrepreneurAssignmentPage extends Component {
     constructor(props) {
