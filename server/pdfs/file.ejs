@@ -17,7 +17,9 @@
 <body>
     <div class="ui container center aligned">
         <div id="pageHeader" class="ui huge header center aligned">Hverdagshelt statistikk</div>
-
+<% if(test1) { %>
+  <h1><%= test1[2] %></h1>
+  <% } %>
         <table class="ui celled structured table">
             <thead>
                 <tr>
@@ -45,10 +47,17 @@
                     <td>Lekasje</td>
                     <td>12</td>
                 </tr>
+                <% for(var i=0; i < test1.length; i++) { %>
+                  <tr>
+                    <td><%= test1[i] %></td>
+                    <td><%= test1[i] %></td>
+                    <td></td>
+                  </tr>
+                <% } %>
                 <tr>
-                  <tr class="active">Total</tr>
-                  <tr class="active">100</tr>
-                  <tr class="active"></tr>
+                  <td class="active">Total</td>
+                  <td class="active"></td>
+                  <td class="active">100</td>
                 </tr>
             </tbody>
         </table>

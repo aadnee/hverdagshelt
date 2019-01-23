@@ -25,13 +25,19 @@ export class EmployeeManageNewsPage extends Component {
       .then(res => {
         res.data.map(c => {
           catIds.push(c.id);
+          c.subs.map(subCat => {
+            catIds.push(subCat.id);
+          });
         });
       })
+
       .then(() => {
+        console.log(catIds);
         //change Cookies.get('municipalId) with Consumer._currentValue.user.municipalId
         //didnt work for me
-        newsService.getFilteredNews(Cookies.get('municipalId'), catIds, 0, 0).then(res => {
+        newsService.getFilteredNews(1, catIds, 0, 0).then(res => {
           news = res.data;
+          console.log(res);
           this.setState({ news: news });
           console.log(this.state.news);
         });
