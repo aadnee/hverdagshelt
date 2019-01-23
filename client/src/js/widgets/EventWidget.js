@@ -19,20 +19,7 @@ export class EventWidget extends Component {
   }
 
   render() {
-    const event = {
-      title: 'Tittel',
-      description: 'Text',
-      area: [
-        [63.430077389845316, 10.394222660617093],
-        [63.4308760020093, 10.394409402459962],
-        [63.430861138815914, 10.396042035002921],
-        [63.4299956393304, 10.39595646787154]
-      ],
-      address: 'Tulleveien 420',
-      start: '2019-05-07T14:00:00.000Z',
-      end: '2019-05-10T14:00:00.000Z',
-      createdAt: '2019-05-06T14:00:00.000Z'
-    };
+    const event = this.props.event;
     const dateInfo = Consumer._currentValue.convDbString(event.createdAt);
 
     return (
