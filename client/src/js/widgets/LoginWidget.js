@@ -63,6 +63,9 @@ export class LoginWidget extends Component {
                           this.handleInput('password', data.value);
                         }}
                       />
+                      <label>
+                        <NavLink to="/forgotpassword">Glemt passord?</NavLink>
+                      </label>
                     </Form.Field>
 
                     <Button

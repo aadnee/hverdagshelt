@@ -2,6 +2,7 @@ import { Users, UserMunicipals, Municipals } from '../models.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
 import mailManager from './mailManager';
+import moment from 'moment';
 
 module.exports = {
   login: function(email, password, callback) {
@@ -309,8 +310,53 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: { en: 'Municipal deleted.', no: 'Kommunen blir ikke lengre abbonert på.' }
+          message: { en: 'Municipal deleted.', no: 'Kommunen blir ikke lengre abonnert på.' }
         }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  //statistics
+  userIncrease: function(municipalId, year, month, week, callback) {
+    let start;
+    let end;
+    if (municipalId == null || year == null) {
+      callback({ success: false, message: 'MunicipalId and year is required' });
+    } else {
+      if (week == null && month == null && year != null) {
+        start = moment(year + '-01-01');
+        end = moment(year + '-12-31');
+      } else if (week == null && month != null && year != null) {
+        start = moment(year + '-' + month + '-01');
+        end = moment(year + '-' + month + '-01').endOf('month');
+      } else if (week != null && year != null) {
+        start = moment(year + '-01-01')
+          .day('Monday')
+          .week(week);
+
+        week += 1;
+        end = moment(year + '-01-01')
+          .day('Monday')
+          .week(week);
+      }
+    }
+    let startInt;
+    let userbase = [];
+    Users.count({
+      where: { createdAt: { $lte: start }, municipalId: municipalId }
+    }).then(res => {
+      console.log(res);
+      startInt = parseInt(res);
+      userbase.push({ start: res });
+    });
+    Users.count({
+      where: { createdAt: { $lte: end }, municipalId: municipalId }
+    }).then(
+      res => {
+        userbase.push({ end: res }, { increase: parseInt(res) + startInt });
+        console.log(parseInt(res) + startInt);
+        callback({ success: true, data: userbase });
+      },
       err => callback({ success: false, message: err })
     );
   }

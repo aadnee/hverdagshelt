@@ -20,7 +20,6 @@ import companyManager from './managers/companyManager';
 import eventManager from './managers/eventManager';
 import { syncDatabase } from './models';
 syncDatabase(res => console.log(res));
-console.log(process.env.TEST);
 
 const public_path = path.join(__dirname, '/../../client/public');
 
@@ -44,18 +43,19 @@ app.use(cookieParser());
 app.use(cors());
 
 app.get('/api/pdf', (req, res) => {
-  ejs.renderFile(
-    './pdfs/file.ejs',
-    { test1: ['test', 'Tes2', 'Test3'], test2: 'HALLOOOOOOOOOOOO', test3: 'TEST REAL' },
-    function(err, html) {
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
+    ejs.renderFile('./pdfs/file.ejs', { categories: result.data, start: result.start, end: result.end }, function(
+      err,
+      html
+    ) {
       let config = {
         format: 'A4',
         orientation: 'portrait',
         border: {
           top: '10mm',
-          right: '10mm',
+          right: '30mm',
           bottom: '10mm',
-          left: '10mm'
+          left: '30mm'
         },
         timeout: 30000,
         renderDelay: 2000
@@ -64,18 +64,20 @@ app.get('/api/pdf', (req, res) => {
       pdf.create(html, config).toFile(filepath, function(err, file) {
         res.json({ filename: file.filename });
       });
-    }
-  );
+    });
+  });
 });
 
 app.get('/api/pdf/html', (req, res) => {
-  ejs.renderFile(
-    './pdfs/file.ejs',
-    { test1: ['test', 'Tes2', 'Test3'], test2: 'HALLOOOOOOOOOOOO', test3: 'TEST REAL' },
-    function(err, html) {
+  let municipalId = 1;
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
+    ejs.renderFile('./pdfs/file.ejs', { categories: result.data, start: result.start, end: result.end }, function(
+      err,
+      html
+    ) {
       res.send(html);
-    }
-  );
+    });
+  });
 });
 
 app.post('/api/events/filter', (req, res) => {
@@ -123,6 +125,13 @@ app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
 app.post('/api/news/filter', (req, res) => {
   let b = req.body;
   newsManager.getFilteredNews(b.municipalIds, b.categoryIds, b.page, b.limit, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/news/archive', (req, res) => {
+  let b = req.body;
+  newsManager.getArchivedNews(b.municipalIds, function(result) {
     res.json(result);
   });
 });
@@ -523,10 +532,19 @@ app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
 });
 
 //statistics
+
+// Returns number of tickets sent in per category for the given municipal
+// Returns yearly numbers if month and week is null, returns monthly if only week is null
 app.post('/api/statistics/tickets', ensureEmployee, (req, res) => {
-  ticketManager.getTicketStatistics(req.body.week, req.body.month, req.body.year, req.body.municipalId, function(
-    result
-  ) {
+  let b = req.body;
+  ticketManager.getTicketStatistics(b.municipalId, b.year, b.month, b.week, function(result) {
+    res.json(result);
+  });
+});
+
+app.post('/api/statistics/users', ensureEmployee, (req, res) => {
+  let b = req.body;
+  userManager.userIncrease(b.municipalId, b.year, b.month, b.week, function(result) {
     res.json(result);
   });
 });
