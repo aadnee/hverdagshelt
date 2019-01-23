@@ -192,62 +192,63 @@ module.exports = {
   },
 
   //statistics
-  getTicketStatistics: function(week, month, year, municipalId, callback) {
+  getTicketStatistics: function(municipalId, year, month, week, callback) {
     let start;
     let end;
-
-    if (week == null && month == null && year != null) {
-      start = moment(year + '-01-01');
-      end = moment(year + '-12-31');
-    } else if (week == null && month != null && year != null) {
-      start = moment(year + '-' + month + '-01');
-      end = moment(year + '-' + month + '-01').endOf('month');
-    } else if (week != null && year != null) {
-      start = moment(year + '-01-01')
-        .day('Monday')
-        .week(week);
-
-      week += 1;
-      end = moment(year + '-01-01')
-        .day('Monday')
-        .week(week);
+    if (municipalId == null || year == null) {
+      callback({ success: false, message: 'MunicipalId and year is required' });
     } else {
-      callback({ success: false, message: err });
-    }
-    Categories.findAll({
-      attributes: ['name'],
-      include: [
-        {
-          attributes: ['name'],
-          model: Categories,
-          required: false,
-          as: 'subs',
-          include: [
-            {
-              attributes: ['id'],
-              model: Tickets,
-              required: false,
-              where: {
-                createdAt: {
-                  $gte: start.format('YYYY-MM-DD'),
-                  $lte: end.format('YYYY-MM-DD')
-                },
-                municipalId: municipalId
+      if (week == null && month == null && year != null) {
+        start = moment(year + '-01-01');
+        end = moment(year + '-12-31');
+      } else if (week == null && month != null && year != null) {
+        start = moment(year + '-' + month + '-01');
+        end = moment(year + '-' + month + '-01').endOf('month');
+      } else if (week != null && year != null) {
+        start = moment(year + '-01-01')
+          .day('Monday')
+          .week(week);
+
+        week += 1;
+        end = moment(year + '-01-01')
+          .day('Monday')
+          .week(week);
+      }
+      Categories.findAll({
+        attributes: ['name'],
+        include: [
+          {
+            attributes: ['name'],
+            model: Categories,
+            required: false,
+            as: 'subs',
+            include: [
+              {
+                attributes: ['id'],
+                model: Tickets,
+                required: false,
+                where: {
+                  createdAt: {
+                    $gte: start,
+                    $lte: end
+                  },
+                  municipalId: municipalId
+                }
               }
-            }
-          ]
-        }
-      ],
-      where: { parentId: null }
-    }).then(res => {
-      let stats = [];
-      res.map((cat, i) => {
-        stats.push({ name: cat.name, subs: [], start: start, end: end });
-        cat.subs.map(sub => {
-          stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
+            ]
+          }
+        ],
+        where: { parentId: null }
+      }).then(res => {
+        let stats = [];
+        res.map((cat, i) => {
+          stats.push({ name: cat.name, subs: [], start: start, end: end });
+          cat.subs.map(sub => {
+            stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
+          });
         });
+        callback({ success: true, data: stats }), err => callback({ success: false, message: err });
       });
-      callback({ success: true, data: stats }), err => callback({ success: false, message: err });
-    });
+    }
   }
 };
