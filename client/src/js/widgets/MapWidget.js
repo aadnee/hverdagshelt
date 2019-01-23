@@ -34,6 +34,7 @@ export class MapWidget extends Component {
       info: null,
       reverseSearch: null,
       reverseSearchRes: null,
+      searchControl: null,
       loggedIn: (Consumer._currentValue.user ? true : false),
       userRank: (Consumer._currentValue.user ? Consumer._currentValue.user.rank : -1)
     };
@@ -78,6 +79,10 @@ export class MapWidget extends Component {
                   if (self.props.callbackPoint) {
                     self.props.callbackPoint(e.latlng, result.address.Address + ', ' + result.address.Subregion);
                   }
+                  if(self.props.callback){
+                    self.props.callback(e.latlng, result.address.Address + ', ' + result.address.Subregion);
+
+                  }
                 });
               }
             })
@@ -85,23 +90,25 @@ export class MapWidget extends Component {
           self.setState({foundPos: false});
         });
 
-    let arcgisOnline = new ELG.ArcgisOnlineProvider({countries: ['NO']});
-    const searchControl = new ELG.Geosearch({
-      providers: [arcgisOnline],
-      allowMultipleResults: false,
-      useMapBounds: false,
-      collapseAfterResult: false,
-      expanded: true,
-      placeholder: 'Søk etter steder eller adresser'
-    }).addTo(map);
-    searchControl.on('results', function (data) {
-      console.log(data.results.length);
-      if (data.results.length < 1) {
-        toast.warn('Ingen lokasjon funnet');
-      } else {
-        self.handleClick(data.results[0]);
-      }
-    });
+    if(this.props.searchControl){
+      let arcgisOnline = new ELG.ArcgisOnlineProvider({countries: ['NO']});
+      const searchControl = new ELG.Geosearch({
+        providers: [arcgisOnline],
+        allowMultipleResults: false,
+        useMapBounds: false,
+        position: 'topright',
+        placeholder: 'Søk etter steder eller adresser'
+      }).addTo(map);
+      searchControl.on('results', function (data) {
+        console.log(data.results.length);
+        if (data.results.length < 1) {
+          toast.warn('Ingen resultater');
+        } else {
+          self.handleClick(data.results[0]);
+        }
+      });
+      self.setState({searchControl: searchControl});
+    }
     this.setState({map: map, reverseSearch: reverseSearch});
   }
 
