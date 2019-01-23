@@ -3,9 +3,10 @@ import {Component} from 'react';
 import {NavLink} from 'react-router-dom';
 import {Container, Grid, Header, Divider, Segment, Tab} from 'semantic-ui-react';
 
-import { companyService } from '../services/CompanyServices';
+import {companyService} from '../services/CompanyServices';
 
 import {AssignmentWidget} from "../widgets/AssignmentWidget";
+import {ActiveAssignmentWidget} from "../widgets/ActiveAssignmentWidget";
 
 export class EntrepreneurAssignmentPage extends Component {
     constructor(props) {
@@ -17,7 +18,10 @@ export class EntrepreneurAssignmentPage extends Component {
     }
 
     componentWillMount() {
-        companyService.getTasks().then((res)=>{console.log(res);this.setState({assignments: res.res})});
+        companyService.getTasks().then((res) => {
+            console.log(res);
+            this.setState({assignments: res.res})
+        });
     }
 
     render() {
@@ -26,7 +30,8 @@ export class EntrepreneurAssignmentPage extends Component {
                 menuItem: 'Oppdragsforespørsler',
                 render: () => (
                     <Tab.Pane className="companyAssignmentTab frontPageFeedTab">
-                        {this.state.assignments.map((asg,i) => (<AssignmentWidget assignment={asg} newsOnly key={i}/>))}
+                        {this.state.assignments.map((asg, i) => (
+                            <AssignmentWidget assignment={asg} newsOnly key={i}/>))}
                     </Tab.Pane>
                 )
             },
@@ -34,7 +39,12 @@ export class EntrepreneurAssignmentPage extends Component {
                 menuItem: 'Aktive oppdrag',
                 render: () => (
                     <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
-                    <p>Hei</p>
+                        {this.state.assignments.map((asg, i) => (
+                            asg.companyStatus === 2 ?
+                                <ActiveAssignmentWidget assignment={asg} newsOnly key={i}/>
+                            : null
+                            ))
+                        }
                     </Tab.Pane>
                 )
             }
