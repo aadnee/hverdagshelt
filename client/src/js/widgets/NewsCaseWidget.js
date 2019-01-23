@@ -1,9 +1,10 @@
 import React from 'react';
 import { Component } from 'react';
-import { Divider, Segment, Container, Grid, List, Header, Image, Form, Input, Button } from 'semantic-ui-react';
+import { Divider, Segment, Container, Grid, List, Header, Image, Form, Modal, Button } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { Consumer } from './../context';
 import { ShowInMapWidget } from './ShowInMapWidget';
+import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 
 export class NewsCaseWidget extends Component {
   constructor(props) {
@@ -59,8 +60,26 @@ export class NewsCaseWidget extends Component {
                 latlng={[newscase.lat, newscase.lon]}
               />
             </Grid>
-            {this.props.employee ? <p>yeet</p> : <Button onClick={this.props.show}>Avslutt abonnement</Button>}
           </Segment>
+          <Grid>
+            <Grid.Column floated={'right'} width={4}>
+              {this.props.employee ? (
+                <Button.Group>
+                  <Modal closeIcon trigger={<Button color={'teal'}>Endre</Button>}>
+                    <Modal.Header>Editer Nyhet</Modal.Header>
+                    <Modal.Content>
+                      <PublishNewsFormWidget news={newscase} />
+                    </Modal.Content>
+                    <Modal.Actions>dd</Modal.Actions>
+                  </Modal>
+
+                  <Button color={'red'}>Slett</Button>
+                </Button.Group>
+              ) : (
+                <Button onClick={this.props.show}>Avslutt abonnement</Button>
+              )}
+            </Grid.Column>
+          </Grid>
         </Container>
       </Segment>
     );

@@ -7,6 +7,7 @@ export * from './AdminEditCategoryPage';
 export * from './EmployeeManageTicketsPage';
 export * from './EmployeePublishTicketPage';
 export * from './EmployeeManageNewsPage';
+export * from './EmployeeManageEventPage';
 export * from './EmployeeEditNewscasePage';
 export * from './EmployeeManageAssignmentsPage';
 export * from './EmployeeEditAssignmentPage';

@@ -16,60 +16,39 @@
 
 <body>
     <div class="ui container center aligned">
-        <div id="pageHeader" class="ui huge header center aligned">Check the statistics</div>
+        <div id="pageHeader" class="ui huge header center aligned">Hverdagshelt statistikk</div>
 
-        <div class="ui grid centered padded">
-            <div class="ui statistics">
-                <div class="statistic">
-                    <div class="value">
-                        22
-                    </div>
-                    <div class="label">
-                        Faves
-                    </div>
-                </div>
-                <div class="statistic">
-                    <div class="value">
-                        31,200
-                    </div>
-                    <div class="label">
-                        Views
-                    </div>
-                </div>
-                <div class="statistic">
-                    <div class="value">
-                        22
-                    </div>
-                    <div class="label">
-                        Members
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <table class="ui celled table">
+        <table class="ui celled structured table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Job</th>
+                    <th rowspan="1">Overkategori</th>
+                    <th rowspan="1">Underkategori</th>
+                    <th rowspan="1">Antall varslinger</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td data-label="Name">James</td>
-                    <td data-label="Age">24</td>
-                    <td data-label="Job">Engineer</td>
+                    <td rowspan="2">Vei</td>
+                    <td>Sementlegging</td>
+                    <td>29</td>
                 </tr>
                 <tr>
-                    <td data-label="Name">Jill</td>
-                    <td data-label="Age">26</td>
-                    <td data-label="Job">Engineer</td>
+                    <td>Brøytestikker</td>
+                    <td>287</td>
                 </tr>
                 <tr>
-                    <td data-label="Name">Elyse</td>
-                    <td data-label="Age">24</td>
-                    <td data-label="Job">Designer</td>
+                    <td rowspan="2">Kloakk</td>
+                    <td>Komlokk</td>
+                    <td>52</td>
+                </tr>
+                <tr>
+                    <td>Lekasje</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                  <tr class="active">Total</tr>
+                  <tr class="active">100</tr>
+                  <tr class="active"></tr>
                 </tr>
             </tbody>
         </table>
@@ -129,4 +108,5 @@
         }
     </script>
 </body>
+
 </html>

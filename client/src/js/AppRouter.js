@@ -17,6 +17,7 @@ import {
   EmployeeManageTicketsPage,
   EmployeePublishTicketPage,
   EmployeeManageNewsPage,
+  EmployeeManageEventPage,
   EmployeeEditNewscasePage,
   EmployeeManageAssignmentsPage,
   EmployeeEditAssignmentPage,
