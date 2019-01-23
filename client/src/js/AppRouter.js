@@ -55,7 +55,7 @@ export class AppRouter extends Component {
           <EmployeeRoute exact path="/employee/tickets" component={EmployeeManageTicketsPage} />
           <EmployeeRoute exact path="/employee/publish/:ticketid" component={EmployeePublishTicketPage} />
           <EmployeeRoute exact path="/employee/news" component={EmployeeManageNewsPage} />
-          <EmployeeRoute exact path="/employee/event" component={EmployeeManageEventPage} />
+          <EmployeeRoute exact path="/employee/events" component={EmployeeManageEventPage} />
           <EmployeeRoute exact path="/employee/registerEvent" component={EmployeeRegisterEventPage} />
           <EmployeeRoute exact path="/employee/news/:newscaseid/edit" component={EmployeeEditNewscasePage} />
           <EmployeeRoute exact path="/employee/assignments" component={EmployeeManageAssignmentsPage} />

@@ -2,6 +2,7 @@ import { Tickets, Users, Uploads, Categories, sequelize } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
 import subscriptionManager from './subscriptionManager';
+import moment from 'moment';
 
 module.exports = {
   addTicket: function(
@@ -190,7 +191,28 @@ module.exports = {
   },
 
   //statistics
-  getMonthly: function(month, year, municipalId, callback) {
+  getTicketStatistics: function(week, month, year, municipalId, callback) {
+    let start;
+    let end;
+
+    if (week == null && month == null && year != null) {
+      start = moment(year + '-01-01');
+      end = moment(year + '-12-31');
+    } else if (week == null && month != null && year != null) {
+      start = moment(year + '-' + month + '-01');
+      end = moment(year + '-' + month + '-01').endOf('month');
+    } else if (week != null && year != null) {
+      start = moment(year + '-01-01')
+        .day('Monday')
+        .week(week);
+
+      week += 1;
+      end = moment(year + '-01-01')
+        .day('Monday')
+        .week(week);
+    } else {
+      callback({ success: false, message: err });
+    }
     Categories.findAll({
       attributes: ['name'],
       include: [
@@ -206,8 +228,8 @@ module.exports = {
               required: false,
               where: {
                 createdAt: {
-                  $gte: new Date(year + '-' + month + '-01'),
-                  $lte: new Date(year + '-' + month + '-31')
+                  $gte: start.format('YYYY-MM-DD'),
+                  $lte: end.format('YYYY-MM-DD')
                 },
                 municipalId: municipalId
               }
@@ -219,8 +241,10 @@ module.exports = {
     }).then(res => {
       let stats = [];
       res.map((cat, i) => {
-        stats.push({ name: cat.name, subs: [] });
-        cat.subs.map((sub, j) => stats[i].subs.push({ name: sub.name, amount: sub.tickets.length }));
+        stats.push({ name: cat.name, subs: [], start: start, end: end });
+        cat.subs.map(sub => {
+          stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
+        });
       });
       callback({ success: true, data: stats }), err => callback({ success: false, message: err });
     });
