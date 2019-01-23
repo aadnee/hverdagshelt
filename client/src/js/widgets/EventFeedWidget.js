@@ -8,12 +8,12 @@ import { Consumer } from './../context';
 
 import { municipalService } from './../services/MunicipalServices';
 import { categoryService } from './../services/CategoryServices';
-import { newsService } from './../services/NewsServices';
+import { eventService } from './../services/EventServices';
 import { userService } from './../services/UserServices';
 
-import { NewsCaseWidget } from './NewsCaseWidget';
+import { EventWidget } from './EventWidget';
 
-export class NewsFeedWidget extends Component {
+export class EventFeedWidget extends Component {
   constructor(props) {
     super(props);
 
@@ -23,8 +23,8 @@ export class NewsFeedWidget extends Component {
       categories: [],
       selectedCategories: [],
       news: [],
-      page: 2,
-      limit: 3,
+      page: 0,
+      limit: 0,
       empty: false
     };
   }
@@ -49,20 +49,6 @@ export class NewsFeedWidget extends Component {
             })
             .catch(res => console.error(res));
         })
-        .catch(res => console.error(res));
-
-      let catRes = categoryService
-        .getCategories()
-        .then(res => {
-          let cats = res.data.map(r => {
-            return { key: r.id, value: r.id, text: r.name };
-          });
-          this.setState({ categories: cats });
-          return cats;
-        })
-        .catch(res => console.error(res));
-
-      Promise.all([munRes, catRes])
         .then(() => {
           this.getNews();
         })
@@ -86,20 +72,6 @@ export class NewsFeedWidget extends Component {
           this.setState({ municipals: allMunicipals, selectedMunicipals: allMyMunicipals });
           return allMunicipals;
         })
-        .catch(res => console.error(res));
-
-      let catRes = categoryService
-        .getCategories()
-        .then(res => {
-          let cats = res.data.map(r => {
-            return { key: r.id, value: r.id, text: r.name };
-          });
-          this.setState({ categories: cats });
-          return cats;
-        })
-        .catch(res => console.error(res));
-
-      Promise.all([munRes, catRes])
         .then(() => {
           this.getNews();
         })
@@ -112,25 +84,10 @@ export class NewsFeedWidget extends Component {
 
   getNews() {
     this.setState({ loading: true });
-    console.log(this.state.selectedMunicipals);
-    console.log(this.state.selectedCategories);
     setTimeout(() => {
-      const munsearch =
-        this.state.selectedMunicipals.length > 0
-          ? this.state.selectedMunicipals
-          : this.state.municipals.map(m => m.key);
-      const catsearch =
-        this.state.selectedCategories.length > 0
-          ? this.state.selectedCategories
-          : this.state.categories.map(c => c.key);
-
-      console.log(munsearch);
-      console.log(catsearch);
-
-      newsService
-        .getFilteredNews(munsearch, catsearch, 0, 0)
+      eventService
+        .getFilteredEvents(this.state.selectedMunicipals, this.state.page, this.state.limit)
         .then(res => {
-          console.log(res);
           if (res.success) {
             this.setState({ news: res.data, loading: false });
           } else {
@@ -145,8 +102,13 @@ export class NewsFeedWidget extends Component {
   }
 
   loadMoreNews() {
-    newsService
-      .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, this.state.page, this.state.limit)
+    eventService
+      .getFilteredEvents(
+        this.state.selectedMunicipals,
+        this.state.selectedCategories,
+        (this.state.page += 1),
+        this.state.limit
+      )
       .then(res => {
         if (res.data.length == 0) {
           toast.warning('Ingen flere nyheter å laste', {
@@ -172,11 +134,6 @@ export class NewsFeedWidget extends Component {
     this.getNews();
   }
 
-  selectCategory(value) {
-    this.setState({ selectedCategories: value });
-    this.getNews();
-  }
-
   displayNews = () => {
     if (this.state.loading) {
       return (
@@ -192,9 +149,9 @@ export class NewsFeedWidget extends Component {
       return (
         <>
           {this.state.news.map(nc => (
-            <NewsCaseWidget key={nc.id} newscase={nc} />
+            <EventWidget key={nc.id} event={nc} />
           ))}
-          {!this.state.empty ? (
+          {!this.state.empty && !this.state.limit == 0 ? (
             <Button
               primary
               onClick={() => {
@@ -212,7 +169,7 @@ export class NewsFeedWidget extends Component {
           <Icon name="folder open outline" />
           <Message.Content>
             <Message.Header>Tomt!</Message.Header>
-            Vi finner ingen nyhetsoppdateringer til de valgte kommunene.
+            Vi finner ingen arrangementer for dine valgte kommunene.
           </Message.Content>
         </Message>
       );
@@ -246,22 +203,6 @@ export class NewsFeedWidget extends Component {
                 this.selectMunicipal(data.value);
               }}
               placeholder="Søk etter kommune"
-              search
-              multiple
-              selection
-            />
-            <Header as="h6">
-              <Header.Subheader>Velg kategorier</Header.Subheader>
-            </Header>
-            <Dropdown
-              deburr
-              fluid
-              options={this.state.categories}
-              value={this.state.selectedCategories}
-              onChange={(event, data) => {
-                this.selectCategory(data.value);
-              }}
-              placeholder="Søk etter kategori"
               search
               multiple
               selection

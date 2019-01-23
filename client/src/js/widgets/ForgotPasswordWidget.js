@@ -59,7 +59,7 @@ export class ForgotPasswordWidget extends Component {
                     {this.state.sentMail ? (
                       <div>
                         <Form.Field>
-                          <Header>Gjennoprett passord</Header>
+                          <Header>Tilbakestill passord</Header>
                           <label>E-postadresse</label>
                           <Input
                             fluid
@@ -81,7 +81,7 @@ export class ForgotPasswordWidget extends Component {
                             this.sentResetPassword();
                           }}
                         >
-                          Send email
+                          Tilbakestill
                         </Button>
                       </div>
                     ) : (

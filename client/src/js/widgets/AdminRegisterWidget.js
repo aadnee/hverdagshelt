@@ -14,8 +14,7 @@ export class AdminRegisterWidget extends React.Component {
       phone: '',
       selectedOption: '',
       options: [],
-      user: true,
-      showMainModal: false
+      user: true
     };
   }
 
@@ -31,26 +30,16 @@ export class AdminRegisterWidget extends React.Component {
     });
   }
 
-  modalChange = () => {
-    this.setState({ showMainModal: false });
-  };
-
   changeUser = user => () => this.setState({ user: user });
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
   };
 
-  closeModals = () => {
-    this.setState({
-      showRegisterModal: false
-    });
-  };
-
   handle = () => {
     if (
       this.state.firstname &&
-      this.state.lastname &&
+      (this.props.user ? this.state.lastname : true) &&
       this.state.email &&
       this.state.phone &&
       this.state.selectedOption
@@ -61,152 +50,120 @@ export class AdminRegisterWidget extends React.Component {
         phone: this.state.phone,
         municipalId: this.state.selectedOption
       };
-      this.props.handleRegister(newUser).then(res => {
-        if (res) {
-          toast.success('Vellykket registrering', { position: toast.POSITION.TOP_RIGHT });
-          this.setState({
-            firstname: '',
-            lastname: '',
-            email: '',
-            phone: '',
-            selectedOption: ''
-          });
-          this.modalChange();
-        }
-      });
-    } else {
-      toast.error('Fyll inn de tome feltene');
+
+      console.log(newUser);
+      this.props.handleRegister(newUser);
     }
   };
 
   render() {
     return (
-      <div>
-        <Modal
-          onClose={this.modalChange}
-          open={this.state.showMainModal}
-          trigger={<Button icon="add" inverted color="green" onClick={() => this.setState({ showMainModal: true })} />}
-          closeIcon
-        >
-          <Modal.Header>
-            <h1>{this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}</h1>
-          </Modal.Header>
-          <Modal.Content>
-            <Container>
-              <Grid centered divided="vertically">
-                <Grid.Column mobile={16}>
-                  {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
-                  <Form size="large">
-                    <Segment>
-                      {this.props.user ? (
-                        <div>
-                          <Form.Field>
-                            <label>Fornavn</label>
-                            <Input
-                              fluid
-                              icon="user"
-                              iconPosition="left"
-                              placeholder="Ola"
-                              type="text"
-                              value={this.state.firstname}
-                              onChange={(event, data) => {
-                                this.handleInput('firstname', data.value);
-                              }}
-                            />
-                          </Form.Field>
-                          <Form.Field>
-                            <label>Etternavn</label>
-                            <Input
-                              fluid
-                              icon="user"
-                              iconPosition="left"
-                              placeholder="Nordmann"
-                              type="text"
-                              value={this.state.lastname}
-                              onChange={(event, data) => {
-                                this.handleInput('lastname', data.value);
-                              }}
-                            />
-                          </Form.Field>
-                        </div>
-                      ) : (
-                        <Form.Field>
-                          <label>Bedriftsnavn</label>
-                          <Input
-                            fluid
-                            icon="building"
-                            iconPosition="left"
-                            placeholder="Bedriftsnavn"
-                            type="text"
-                            value={this.state.firstname}
-                            onChange={(event, data) => {
-                              this.handleInput('firstname', data.value);
-                            }}
-                          />
-                        </Form.Field>
-                      )}
-                      <Form.Field>
-                        <label>E-postadresse</label>
-                        <Input
-                          fluid
-                          icon="envelope"
-                          iconPosition="left"
-                          placeholder="E-postadresse"
-                          value={this.state.email}
-                          onChange={(event, data) => {
-                            this.handleInput('email', data.value);
-                          }}
-                        />
-                      </Form.Field>
-                      <Form.Field>
-                        <label>Telefonnummer</label>
-                        <Input
-                          fluid
-                          icon="phone"
-                          iconPosition="left"
-                          placeholder={'Telefonnumer'}
-                          type={'number'}
-                          value={this.state.phone}
-                          onChange={(event, data) => {
-                            this.handleInput('phone', data.value);
-                          }}
-                        />
-                      </Form.Field>
-                      <Form.Field>
-                        <label>Kommune</label>
-
-                        <Dropdown
-                          fluid
-                          selection
-                          search
-                          placeholder="Velg kommune"
-                          options={this.state.options}
-                          onChange={(event, data) => {
-                            this.handleInput('selectedOption', data.value);
-                          }}
-                        />
-                      </Form.Field>
-                      <Button color="blue" fluid size="large" onClick={() => this.handle()}>
-                        {this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}
-                      </Button>
-                      <Button
-                        color="grey"
+      <Container>
+        <Grid centered divided="vertically">
+          <Grid.Column mobile={16}>
+            {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
+            <Form size="large">
+              <Segment>
+                {this.props.user ? (
+                  <div>
+                    <Form.Field>
+                      <label>Fornavn</label>
+                      <Input
                         fluid
-                        size="large"
-                        onClick={() => {
-                          this.modalChange();
+                        icon="user"
+                        iconPosition="left"
+                        placeholder="Ola"
+                        type="text"
+                        value={this.state.firstname}
+                        onChange={(event, data) => {
+                          this.handleInput('firstname', data.value);
                         }}
-                      >
-                        Avbryt
-                      </Button>
-                    </Segment>
-                  </Form>
-                </Grid.Column>
-              </Grid>
-            </Container>
-          </Modal.Content>
-        </Modal>
-      </div>
+                      />
+                    </Form.Field>
+                    <Form.Field>
+                      <label>Etternavn</label>
+                      <Input
+                        fluid
+                        icon="user"
+                        iconPosition="left"
+                        placeholder="Nordmann"
+                        type="text"
+                        value={this.state.lastname}
+                        onChange={(event, data) => {
+                          this.handleInput('lastname', data.value);
+                        }}
+                      />
+                    </Form.Field>
+                  </div>
+                ) : (
+                  <Form.Field>
+                    <label>Bedriftsnavn</label>
+                    <Input
+                      fluid
+                      icon="building"
+                      iconPosition="left"
+                      placeholder="Bedriftsnavn"
+                      type="text"
+                      value={this.state.firstname}
+                      onChange={(event, data) => {
+                        this.handleInput('firstname', data.value);
+                      }}
+                    />
+                  </Form.Field>
+                )}
+                <Form.Field>
+                  <label>E-postadresse</label>
+                  <Input
+                    fluid
+                    icon="envelope"
+                    iconPosition="left"
+                    placeholder="E-postadresse"
+                    value={this.state.email}
+                    onChange={(event, data) => {
+                      this.handleInput('email', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Telefonnummer</label>
+                  <Input
+                    fluid
+                    icon="phone"
+                    iconPosition="left"
+                    placeholder={'Telefonnumer'}
+                    type={'number'}
+                    value={this.state.phone}
+                    onChange={(event, data) => {
+                      this.handleInput('phone', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Kommune</label>
+
+                  <Dropdown
+                    fluid
+                    selection
+                    search
+                    placeholder="Velg kommune"
+                    options={this.state.options}
+                    onChange={(event, data) => {
+                      this.handleInput('selectedOption', data.value);
+                    }}
+                  />
+                </Form.Field>
+
+                <Button color="blue" fluid size="large" onClick={() => this.handle()}>
+                  {this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}
+                </Button>
+                <Button color="grey" fluid size="large" onClick={() => this.props.close()}>
+                  Avbryt
+                </Button>
+              </Segment>
+            </Form>
+          </Grid.Column>
+        </Grid>
+      </Container>
     );
   }
 }

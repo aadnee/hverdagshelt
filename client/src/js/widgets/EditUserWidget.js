@@ -15,10 +15,7 @@ export class EditUserWidget extends Component {
       phone: null,
       municipalId: '',
       options: [],
-      showModal: false,
-      showRegisterModal: false,
-      popupMessage: '',
-      popupSuccess: '',
+
       rank: null
     };
   }
@@ -45,15 +42,12 @@ export class EditUserWidget extends Component {
       rank: this.props.user.rank
     });
 
-  close = () => this.setState({ open: false });
-
-  closeModals = () => {
-    this.setState({
-      showModal: false,
-      showRegisterModal: false
-    });
-    this.resetState();
+  handleInput = (key, value) => {
+    this.setState({ [key]: value });
   };
+
+  componentDidMount() {}
+
   handle = () => {
     let editedUser = {
       id: this.props.user.id,
@@ -64,152 +58,120 @@ export class EditUserWidget extends Component {
       rank: this.state.rank
     };
     console.log(editedUser);
-    this.props.handleEdit(editedUser).then(res => {
-      console.log(res);
-      res ? this.closeModals() : null;
-    });
+    this.props.handleEdit(editedUser);
   };
-  handleInput = (key, value) => {
-    this.setState({ [key]: value });
-  };
-
-  componentDidMount() {}
 
   render() {
     return (
-      <div>
-        <Button color="green" onClick={() => this.setState({ showModal: true })}>
-          Edit
-        </Button>
-        <Modal open={this.state.showModal}>
-          <Modal.Header>Redigere Bruker</Modal.Header>
-          <Container>
-            <Grid centered divided="vertically">
-              <Grid.Column mobile={16}>
-                {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
-                <Form size="large">
-                  <Segment>
-                    {this.props.userEdit ? (
-                      <div>
-                        <Form.Field>
-                          <label>Navn</label>
-                          <Input
-                            fluid
-                            icon="user"
-                            iconPosition="left"
-                            placeholder="Ola"
-                            type="text"
-                            value={this.state.name}
-                            onChange={(event, data) => {
-                              this.handleInput('name', data.value);
-                            }}
-                          />
-                        </Form.Field>
-                      </div>
-                    ) : (
-                      <Form.Field>
-                        <label>Bedriftsnavn</label>
-                        <Input
-                          fluid
-                          icon="building"
-                          iconPosition="left"
-                          placeholder="Bedriftsnavn"
-                          type="text"
-                          value={this.state.name}
-                          onChange={(event, data) => {
-                            this.handleInput('name', data.value);
-                          }}
-                        />
-                      </Form.Field>
-                    )}
+      <Container>
+        <Grid centered divided="vertically">
+          <Grid.Column mobile={16}>
+            {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
+            <Form size="large">
+              <Segment>
+                {this.props.userEdit ? (
+                  <div>
                     <Form.Field>
-                      <label>E-postadresse</label>
+                      <label>Navn</label>
                       <Input
                         fluid
-                        icon="envelope"
+                        icon="user"
                         iconPosition="left"
-                        placeholder="E-postadresse"
-                        value={this.state.email}
+                        placeholder="Ola"
+                        type="text"
+                        value={this.state.name}
                         onChange={(event, data) => {
-                          this.handleInput('email', data.value);
+                          this.handleInput('name', data.value);
                         }}
                       />
                     </Form.Field>
-                    <Form.Field>
-                      <label>Telefonnummer</label>
-                      <Input
-                        fluid
-                        icon="phone"
-                        iconPosition="left"
-                        placeholder={'Telefonnumer'}
-                        type={'number'}
-                        value={this.state.phone}
-                        onChange={(event, data) => {
-                          this.handleInput('phone', data.value);
-                        }}
-                      />
-                    </Form.Field>
-                    <Form.Field>
-                      <label>Kommune</label>
-
-                      <Dropdown
-                        fluid
-                        selection
-                        search
-                        placeholder="Velg kommune"
-                        defaultValue={this.state.municipalId}
-                        options={this.state.options}
-                        onChange={(event, data) => {
-                          this.handleInput('municipalId', data.value);
-                        }}
-                      />
-                    </Form.Field>
-                    {this.props.userEdit ? (
-                      <Form.Field>
-                        <label>Velg rang til bruker</label>
-
-                        <Dropdown
-                          fluid
-                          selection
-                          search
-                          placeholder="Velg bruker rang"
-                          value={this.state.rank}
-                          options={USERTYPE}
-                          onChange={(event, data) => {
-                            this.handleInput('rank', data.value);
-                          }}
-                        />
-                      </Form.Field>
-                    ) : null}
-                    <Button color="blue" fluid size="large" onClick={this.handle}>
-                      Endre Bruker
-                    </Button>
-                    <Button
-                      color="grey"
+                  </div>
+                ) : (
+                  <Form.Field>
+                    <label>Bedriftsnavn</label>
+                    <Input
                       fluid
-                      size="large"
-                      onClick={() => {
-                        this.closeModals();
+                      icon="building"
+                      iconPosition="left"
+                      placeholder="Bedriftsnavn"
+                      type="text"
+                      value={this.state.name}
+                      onChange={(event, data) => {
+                        this.handleInput('name', data.value);
                       }}
-                    >
-                      Avbryt
-                    </Button>
-                  </Segment>
-                </Form>
-              </Grid.Column>
-            </Grid>
-          </Container>
-        </Modal>
-        <Modal size={'tiny'} open={this.state.showRegisterModal}>
-          <Modal.Header>Registreringsstatus: {this.state.popupSuccess ? 'Suksess' : 'Error'}</Modal.Header>
-          <Modal.Content>
-            <p>{this.state.popupMessage}</p>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button icon="check" content="Ok" onClick={this.closeModals} />
-          </Modal.Actions>
-        </Modal>
-      </div>
+                    />
+                  </Form.Field>
+                )}
+                <Form.Field>
+                  <label>E-postadresse</label>
+                  <Input
+                    fluid
+                    icon="envelope"
+                    iconPosition="left"
+                    placeholder="E-postadresse"
+                    value={this.state.email}
+                    onChange={(event, data) => {
+                      this.handleInput('email', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Telefonnummer</label>
+                  <Input
+                    fluid
+                    icon="phone"
+                    iconPosition="left"
+                    placeholder={'Telefonnumer'}
+                    type={'number'}
+                    value={this.state.phone}
+                    onChange={(event, data) => {
+                      this.handleInput('phone', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Kommune</label>
+
+                  <Dropdown
+                    fluid
+                    selection
+                    search
+                    placeholder="Velg kommune"
+                    defaultValue={this.state.municipalId}
+                    options={this.state.options}
+                    onChange={(event, data) => {
+                      this.handleInput('municipalId', data.value);
+                    }}
+                  />
+                </Form.Field>
+                {this.props.userEdit ? (
+                  <Form.Field>
+                    <label>Velg rang til bruker</label>
+
+                    <Dropdown
+                      fluid
+                      selection
+                      search
+                      placeholder="Velg brukerrang"
+                      value={this.state.rank}
+                      options={USERTYPE}
+                      onChange={(event, data) => {
+                        this.handleInput('rank', data.value);
+                      }}
+                    />
+                  </Form.Field>
+                ) : null}
+                <Button color="blue" fluid size="large" onClick={() => this.handle()}>
+                  Lagre endringer
+                </Button>
+                <Button color="grey" fluid size="large" onClick={() => this.props.close()}>
+                  Avbryt
+                </Button>
+              </Segment>
+            </Form>
+          </Grid.Column>
+        </Grid>
+      </Container>
     );
   }
 }
