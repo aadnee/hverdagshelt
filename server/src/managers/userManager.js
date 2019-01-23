@@ -2,6 +2,7 @@ import { Users, UserMunicipals, Municipals } from '../models.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
 import mailManager from './mailManager';
+import moment from 'moment';
 
 module.exports = {
   login: function(email, password, callback) {
@@ -317,25 +318,6 @@ module.exports = {
 
   //statistics
   userIncrease: function(municipalId, year, month, week, callback) {
-    // let startInt;
-    // let userbase = [];
-    // Users.count({
-    //   where: { createdAt: { $lte: start }, municipalId: municipalId }
-    // }).then(res => {
-    //   console.log(res);
-    //   startInt = parseInt(res);
-    //   userbase.push({ start: res });
-    // });
-    // Users.count({
-    //   where: { createdAt: { $lte: end }, municipalId: municipalId }
-    // }).then(
-    //   res => {
-    //     userbase.push({ end: res }, { increase: parseInt(res) + startInt });
-    //     console.log(parseInt(res) + startInt);
-    //     callback({ success: true, data: userbase });
-    //   },
-    //   err => callback({ success: false, message: err })
-    // );
     let start;
     let end;
     if (municipalId == null || year == null) {
@@ -357,42 +339,26 @@ module.exports = {
           .day('Monday')
           .week(week);
       }
-      Categories.findAll({
-        attributes: ['name'],
-        include: [
-          {
-            attributes: ['name'],
-            model: Categories,
-            required: false,
-            as: 'subs',
-            include: [
-              {
-                attributes: ['id'],
-                model: Tickets,
-                required: false,
-                where: {
-                  createdAt: {
-                    $gte: start,
-                    $lte: end
-                  },
-                  municipalId: municipalId
-                }
-              }
-            ]
-          }
-        ],
-        where: { parentId: null }
-      }).then(res => {
-        let stats = [];
-        res.map((cat, i) => {
-          stats.push({ name: cat.name, subs: [], start: start, end: end });
-          cat.subs.map(sub => {
-            stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
-          });
-        });
-        callback({ success: true, data: stats }), err => callback({ success: false, message: err });
-      });
     }
+    let startInt;
+    let userbase = [];
+    Users.count({
+      where: { createdAt: { $lte: start }, municipalId: municipalId }
+    }).then(res => {
+      console.log(res);
+      startInt = parseInt(res);
+      userbase.push({ start: res });
+    });
+    Users.count({
+      where: { createdAt: { $lte: end }, municipalId: municipalId }
+    }).then(
+      res => {
+        userbase.push({ end: res }, { increase: parseInt(res) + startInt });
+        console.log(parseInt(res) + startInt);
+        callback({ success: true, data: userbase });
+      },
+      err => callback({ success: false, message: err })
+    );
   }
 };
 
