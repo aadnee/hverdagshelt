@@ -26,6 +26,7 @@ import {
   UserPage,
   UserReportTicketPage,
   UserNewsFeedPage,
+  UserEventFeedPage,
   UserTicketsPage,
   UserSubscriptionPage,
   RegisterPage,
@@ -55,8 +56,8 @@ export class AppRouter extends Component {
           <EmployeeRoute exact path="/employee/tickets" component={EmployeeManageTicketsPage} />
           <EmployeeRoute exact path="/employee/publish/:ticketid" component={EmployeePublishTicketPage} />
           <EmployeeRoute exact path="/employee/news" component={EmployeeManageNewsPage} />
+          <EmployeeRoute exact path="/employee/event" component={EmployeeRegisterEventPage} />
           <EmployeeRoute exact path="/employee/events" component={EmployeeManageEventPage} />
-          <EmployeeRoute exact path="/employee/registerEvent" component={EmployeeRegisterEventPage} />
           <EmployeeRoute exact path="/employee/news/:newscaseid/edit" component={EmployeeEditNewscasePage} />
           <EmployeeRoute exact path="/employee/assignments" component={EmployeeManageAssignmentsPage} />
           <EmployeeRoute exact path="/employee/assignments/:assignmentid/edit" component={EmployeeEditAssignmentPage} />
@@ -66,6 +67,7 @@ export class AppRouter extends Component {
           <UserRoute exact path="/profile" component={UserPage} />
           <UserRoute exact path="/report" component={UserReportTicketPage} />
           <UserRoute exact path="/feed" component={UserNewsFeedPage} />
+          <UserRoute exact path="/events" component={UserEventFeedPage} />
           <UserRoute exact path="/tickets" component={UserTicketsPage} />
           <UserRoute exact path="/tickets/:ticketid/edit" component={UserTicketsPage} />
           <UserRoute exact path="/subscriptions" component={UserSubscriptionPage} />
@@ -73,7 +75,7 @@ export class AppRouter extends Component {
           {/* Others */}
           <NonLoggedInRoute exact path="/register" component={RegisterPage} />
           <NonLoggedInRoute exact path="/login" component={LoginPage} />
-          <NonLoggedInRoute exact path="/glemt_passord" component={ForgotPasswordPage} />
+          <NonLoggedInRoute exact path="/forgotpassword" component={ForgotPasswordPage} />
           <Route exact path="/logout" component={LogoutPage} />
 
           {/* Develoopment */}

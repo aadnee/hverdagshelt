@@ -7,6 +7,7 @@ import { SidebarWidget } from './../widgets/SidebarWidget';
 import { MapWidget } from './../widgets/MapWidget';
 import { TicketFormWidget } from './../widgets/TicketFormWidget';
 import { NewsFeedWidget } from './../widgets/NewsFeedWidget';
+import { EventFeedWidget } from './../widgets/EventFeedWidget';
 
 import { Consumer } from './../context';
 
@@ -30,7 +31,11 @@ export class HomePage extends Component {
       },
       {
         menuItem: 'Arrangementer i Trondheim',
-        render: () => <Tab.Pane className="frontPageFeedTab">Eventstrøm</Tab.Pane>
+        render: () => (
+          <Tab.Pane className="frontPageFeedTab">
+            <EventFeedWidget newsOnly />
+          </Tab.Pane>
+        )
       }
     ];
 

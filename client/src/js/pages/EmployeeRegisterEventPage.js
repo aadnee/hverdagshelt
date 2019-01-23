@@ -27,6 +27,7 @@ export class EmployeeRegisterEventPage extends Component {
     this.submit = this.submit.bind(this);
     this.areaToggler = this.areaToggler.bind(this);
     this.placedMarker = this.placedMarker.bind(this);
+    this.setupClick = this.setupClick.bind(this);
   }
 
   callbackPoint(latlng, address) {
@@ -45,11 +46,17 @@ export class EmployeeRegisterEventPage extends Component {
     this.setState({placedMarker: markerPlaced})
   }
 
+  setupClick(address){
+    this.mapWidget.state.searchControl._setupClick();
+    this.mapWidget.state.searchControl._input.value = address;
+  };
+
   callbackFake() {
   }
 
   submit = (title, description, start, end, municipalId, url) => {
     console.log(this.state);
+    console.log(JSON.stringify(this.state.area));
     //lat, lon  is fetched from the map
 
     if (!title || !description || !this.state.area || !municipalId) {
@@ -83,7 +90,7 @@ export class EmployeeRegisterEventPage extends Component {
             <Grid className="mapGrid">
               <Grid.Row columns={2} only="computer" className="mapRow">
                 <Grid.Column width={10} className="mapRow">
-                  <MapWidget onRef={ref => (this.mapWidget = ref)} callbackPoint={this.callbackPoint} callbackArea={this.callbackArea} areaToggle={this.areaToggler} submit={this.submit} placedMarker={this.placedMarker}/>
+                  <MapWidget onRef={ref => (this.mapWidget = ref)} searchControl callbackPoint={this.callbackPoint} callbackArea={this.callbackArea} areaToggle={this.areaToggler} submit={this.submit} placedMarker={this.placedMarker}/>
                 </Grid.Column>
                 <Grid.Column width={6} only="computer" className="frontPageFeed">
                   <Divider hidden/>
@@ -122,6 +129,7 @@ export class EmployeeRegisterEventPage extends Component {
                       latlng={this.state.latlng}
                       address={this.state.address}
                       submit={this.submit}
+                      setupClick={this.setupClick}
                   />
                   <Divider hidden/>
                 </Grid.Column>

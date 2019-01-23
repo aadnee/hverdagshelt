@@ -135,13 +135,13 @@ class MunicipalOptions extends Component {
         <NavLink exact to="/employee/events" activeClassName="active" className="ui item">
           Behandle arrangementer
         </NavLink>
-        <NavLink exact to="/employee/assignments" activeClassName="active" className="ui item">
+        {/*<NavLink exact to="/employee/assignments" activeClassName="active" className="ui item">
           Behandle avslåtte oppdrag
-        </NavLink>
+        </NavLink>*/}
         <NavLink exact to="/employee/news" activeClassName="active" className="ui item">
           Administrer nyheter
         </NavLink>
-        <NavLink exact to="/employee/registerEvent" activeClassName="active" className="ui item">
+        <NavLink exact to="/employee/event" activeClassName="active" className="ui item">
           Registrer arrangement
         </NavLink>
         <div className="ui item disabled" />
@@ -184,6 +184,9 @@ class PrivateOptions extends Component {
         </NavLink>
         <NavLink exact to="/feed" activeClassName="active" className="ui item">
           Nyhetsstrøm
+        </NavLink>
+        <NavLink exact to="/events" activeClassName="active" className="ui item">
+          Arrangementer
         </NavLink>
         <NavLink exact to="/tickets" activeClassName="active" className="ui item">
           Mine varslinger

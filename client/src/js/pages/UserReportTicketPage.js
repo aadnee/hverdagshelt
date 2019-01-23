@@ -17,7 +17,14 @@ export class UserReportTicketPage extends Component {
       address: null
     };
     this.callback = this.callback.bind(this);
+    this.setupClick = this.setupClick.bind(this);
   }
+
+  setupClick(address){
+    console.log(address);
+    this.mapWidget.state.searchControl._setupClick();
+    this.mapWidget.state.searchControl._input.value = address;
+  };
 
   callback(latlng, address) {
     this.setState({ latlng: latlng, address: address });
@@ -32,7 +39,7 @@ export class UserReportTicketPage extends Component {
           <Grid className="mapGrid">
             <Grid.Row columns={2} only="computer" className="mapRow">
               <Grid.Column width={10} className="mapRow">
-                <MapWidget callback={this.callback} ticket submit={Consumer._currentValue.ticketSubmit} />
+                <MapWidget onRef={ref => (this.mapWidget = ref)} callback={this.callback} searchControl ticket submit={Consumer._currentValue.ticketSubmit} />
               </Grid.Column>
               <Grid.Column width={6} only="computer" className="frontPageFeed">
                 <Divider hidden />
@@ -47,6 +54,8 @@ export class UserReportTicketPage extends Component {
                   latlng={this.state.latlng}
                   address={this.state.address}
                   submit={Consumer._currentValue.ticketSubmit}
+                  setupClick={this.setupClick}
+                  returnAddress={this.returnAddress}
                 />
                 <Divider hidden />
               </Grid.Column>

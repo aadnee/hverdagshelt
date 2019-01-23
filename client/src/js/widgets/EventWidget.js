@@ -19,20 +19,10 @@ export class EventWidget extends Component {
   }
 
   render() {
-    const event = {
-      title: 'Tittel',
-      description: 'Text',
-      area: [
-        [63.430077389845316, 10.394222660617093],
-        [63.4308760020093, 10.394409402459962],
-        [63.430861138815914, 10.396042035002921],
-        [63.4299956393304, 10.39595646787154]
-      ],
-      address: 'Tulleveien 420',
-      start: '2019-05-07T14:00:00.000Z',
-      end: '2019-05-10T14:00:00.000Z',
-      createdAt: '2019-05-06T14:00:00.000Z'
-    };
+    const event = this.props.event;
+    const area = JSON.parse(event.area).map(cord => {
+      return [cord.lat, cord.lng];
+    });
     const dateInfo = Consumer._currentValue.convDbString(event.createdAt);
 
     return (
@@ -43,11 +33,11 @@ export class EventWidget extends Component {
           <Divider />
           <Segment vertical>
             <Grid divided inverted stackable>
-              <Grid.Column width={12} textAlign="left">
+              <Grid.Column width={8} textAlign="left">
                 <p>{event.description}</p>
               </Grid.Column>
-              <Grid.Column width={4} align="right" only="tablet computer">
-                <ShowInMapWidget latlng={event.area} mapOnly />
+              <Grid.Column width={8} align="right" only="tablet computer">
+                <ShowInMapWidget latlng={area} mapOnly />
               </Grid.Column>
             </Grid>
           </Segment>
@@ -63,11 +53,10 @@ export class EventWidget extends Component {
                     vis i kart
                   </span>
                 }
-                latlng={event.area}
+                latlng={area}
               />
             </Grid>
           </Segment>
-          <Button onClick={this.props.show}>Avslutt abonnement</Button>
         </Container>
       </Segment>
     );
