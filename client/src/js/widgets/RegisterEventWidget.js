@@ -76,7 +76,7 @@ export class RegisterEventWidget extends Component {
   }
 
   setEndDate(date) {
-    this.setState({end: date, endFormattes: this.dBStringConverter(date.toISOString())});
+    this.setState({end: date, endFormatted: this.dBStringConverter(date.toISOString())});
   }
 
   render() {
