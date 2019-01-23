@@ -26,7 +26,6 @@ export class UserSubscriptionPage extends Component {
 
   componentWillMount() {
     subscriptionService.getSubscriptions().then(sub => {
-      console.log(sub.data);
       if (sub.data.length > 0) {
         this.setState({ news: sub.data });
       } else {

@@ -57,7 +57,7 @@ class TicketServices {
       categoryId: categoryId,
       publish: publish,
       municipalId: municipalId,
-      images: images
+      imageIds: images
     });
   }
 

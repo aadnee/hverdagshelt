@@ -18,6 +18,10 @@ export class NewsCaseWidget extends Component {
     this.setState({ renderMap: false });
   }
 
+  componentWillMount() {
+    console.log(this.props.newscase);
+  }
+
   render() {
     const newscase = this.props.newscase;
     const dateInfo = Consumer._currentValue.convDbString(newscase.createdAt);
