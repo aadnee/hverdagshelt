@@ -23,13 +23,13 @@ class UserService {
   }
 
   editUser(userId, name, email, phone, municipalId, rank) {
-    console.log(userId, name, email, phone, municipalId, rank);
     return api.put('/api/users/' + userId, {
       name: name,
       email: email,
       phone: phone,
       municipalId: municipalId,
-      rank: rank
+      rank: rank,
+      notifications: false
     });
   }
 
