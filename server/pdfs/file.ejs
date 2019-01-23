@@ -15,12 +15,14 @@
 </head>
 
 <body>
+  <div id="pageHeader" class="ui huge header center aligned">
+    <h1>Hverdagshelt statistikk</h1>
+    <h2><%= start + " til " + end%></h2>
+  </div>
     <div class="ui container center aligned">
-        <div id="pageHeader" class="ui huge header center aligned">Hverdagshelt statistikk</div>
-<% if(test1) { %>
-  <h1><%= test1[2] %></h1>
-  <% } %>
-        <table class="ui celled structured table">
+
+
+        <table class="ui celled structured table large">
             <thead>
                 <tr>
                     <th rowspan="1">Overkategori</th>
@@ -29,39 +31,42 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td rowspan="2">Vei</td>
-                    <td>Sementlegging</td>
-                    <td>29</td>
-                </tr>
-                <tr>
-                    <td>Brøytestikker</td>
-                    <td>287</td>
-                </tr>
-                <tr>
-                    <td rowspan="2">Kloakk</td>
-                    <td>Komlokk</td>
-                    <td>52</td>
-                </tr>
-                <tr>
-                    <td>Lekasje</td>
-                    <td>12</td>
-                </tr>
-                <% for(var i = 0; i < test1.length; i++) { %>
-                  <% for(var j = 0; j < test1.length; j++) { %>
+                <% var total = 0; %>
+                <% for(var i = 0; i < categories.length; i++) { %>
+                  <% if(categories[i].subs.length == 0) { %>
                     <tr>
-                      <td><%= test1[i] %></td>
-                      <td><%= test1[i] %></td>
+                      <td class=""><b><%= categories[i].name %></b></td>
+                      <td></td>
                       <td>0</td>
                     </tr>
                   <% } %>
+                  <% for(var j = 0; j < categories[i].subs.length; j++) { %>
+                    <% total = total + categories[i].subs[j].amount; %>
+                    <% if(j == 0) { %>
+                      <tr>
+                        <td class="" rowspan="<%= categories[i].subs.length %>"><b><%= categories[i].name %></b></td>
+                        <td><%= categories[i].subs[j].name %></td>
+                        <td><%= categories[i].subs[j].amount %></td>
+                      </tr>
+                    <% } else { %>
+                      <tr>
+                        <td><%= categories[i].subs[j].name %></td>
+                        <td><%= categories[i].subs[j].amount %></td>
+                      </tr>
+                    <% } %>
+                  <% } %>
+                  <% if(i != (categories.length - 1)) { %>
+                    <tr class="active"><td colspan="3" style="padding:2px"</td></tr>
+                  <% } %>
                 <% } %>
-                <tr>
-                  <td class="active">Total</td>
-                  <td class="active"></td>
-                  <td class="active">100</td>
-                </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th></th>
+                <th><b><%= total %></b></th>
+              </tr>
+            </tfoot>
         </table>
 
         <div class="ui two column grid">
@@ -70,8 +75,10 @@
             <div class="column" id="piechart2" style="width:550px; height:300px;">
             </div>
         </div>
-        <h2>Tittel her</h2>
-    </div>
+
+      </div>
+      <div id="pageFooter" class="ui huge header center aligned"><h3>Hverdagshelt</h3></div>
+
 
     <script type="text/javascript">
         google.charts.load('current', {

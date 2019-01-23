@@ -132,6 +132,7 @@ export class TicketFormWidget extends Component {
                     placeholder="Velg posisjon på kartet"
                     defaultValue={this.state.address}
                     readOnly
+                    onClick={this.props.setupClick ? (()=>this.props.setupClick(this.state.address)) : null}
                   />
                   <label>Hva vil du melde inn?</label>
                 </Form.Field>

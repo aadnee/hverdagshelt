@@ -17,6 +17,7 @@ export * from './ForgotPasswordPage';
 export * from './UserPage';
 export * from './UserReportTicketPage';
 export * from './UserNewsFeedPage';
+export * from './UserEventFeedPage';
 export * from './UserTicketsPage';
 export * from './UserSubscriptionPage';
 export * from './RegisterPage';
