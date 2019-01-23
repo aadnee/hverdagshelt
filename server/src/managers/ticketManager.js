@@ -242,12 +242,13 @@ module.exports = {
       }).then(res => {
         let stats = [];
         res.map((cat, i) => {
-          stats.push({ name: cat.name, subs: [], start: start, end: end });
+          stats.push({ name: cat.name, subs: [] });
           cat.subs.map(sub => {
             stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
           });
         });
-        callback({ success: true, data: stats }), err => callback({ success: false, message: err });
+        callback({ success: true, data: stats, start: start.format('DD/MM/YYYY'), end: end.format('DD/MM/YYYY') }),
+          err => callback({ success: false, message: err });
       });
     }
   }

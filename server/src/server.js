@@ -130,6 +130,13 @@ app.post('/api/news/filter', (req, res) => {
   });
 });
 
+app.post('/api/news/archive', (req, res) => {
+  let b = req.body;
+  newsManager.getArchivedNews(b.municipalIds, function(result) {
+    res.json(result);
+  });
+});
+
 app.put('/api/news/:id', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
