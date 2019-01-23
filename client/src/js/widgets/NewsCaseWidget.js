@@ -10,13 +10,18 @@ export class NewsCaseWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      renderMap: false
+      renderMap: false,
+      editModalOpen: false
     };
     this.close = this.close.bind(this);
   }
 
   close() {
     this.setState({ renderMap: false });
+  }
+
+  closeModal() {
+    this.setState({ editModalOpen: false });
   }
 
   componentWillMount() {
@@ -65,12 +70,11 @@ export class NewsCaseWidget extends Component {
             <Grid.Column floated={'right'} width={4}>
               {this.props.employee ? (
                 <Button.Group>
-                  <Modal closeIcon trigger={<Button color={'teal'}>Endre</Button>}>
+                  <Modal closeIcon trigger={<Button color={'teal'}>Endre</Button>} onClose={this.closeModal}>
                     <Modal.Header>Editer Nyhet</Modal.Header>
                     <Modal.Content>
-                      <PublishNewsFormWidget news={newscase} />
+                      <PublishNewsFormWidget submitButton={'Lagre endringer'} news={newscase} close={this.closeModal} />
                     </Modal.Content>
-                    <Modal.Actions>dd</Modal.Actions>
                   </Modal>
 
                   <Button color={'red'}>Slett</Button>
