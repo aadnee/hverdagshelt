@@ -88,7 +88,9 @@ export let Events = sequelize.define('events', {
   area: { type: Sequelize.TEXT, allowNull: false },
   address: { type: Sequelize.STRING, allowNull: false },
   start: { type: Sequelize.DATE, allowNull: false },
-  end: { type: Sequelize.DATE, allowNull: false }
+  end: { type: Sequelize.DATE, allowNull: false },
+  url: { type: Sequelize.STRING, allowNull: true },
+  active: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true }
 });
 
 export let Subscriptions = sequelize.define('subscriptions');
@@ -226,7 +228,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 2,
+        categoryId: 4,
         userId: 1,
         municipalId: 1,
         subscribed: true
@@ -238,7 +240,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 2,
+        categoryId: 3,
         userId: 1,
         municipalId: 1,
         subscribed: true
@@ -250,7 +252,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 2,
+        categoryId: 3,
         userId: 1,
         municipalId: 1,
         subscribed: true
@@ -262,7 +264,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 2,
+        categoryId: 3,
         municipalId: 1
       });
       await News.create({
@@ -272,7 +274,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 1,
+        categoryId: 3,
         municipalId: 1
       });
       await News.create({
@@ -282,7 +284,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 1,
+        categoryId: 4,
         municipalId: 1
       });
       await Subscriptions.create({

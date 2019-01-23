@@ -43,7 +43,7 @@ app.use(cookieParser());
 app.use(cors());
 
 app.get('/api/pdf', (req, res) => {
-  ejs.renderFile('./pdfs/file.ejs', { test1: 1, test2: 'fwewf' }, function(err, html) {
+  ejs.renderFile('./pdfs/file.ejs', { test1: ['test', 'Tes2', 'Test3'], test2: 'fwewf' }, function(err, html) {
     let config = {
       format: 'A4',
       orientation: 'portrait',
@@ -78,7 +78,9 @@ app.post('/api/events/filter', (req, res) => {
 
 app.post('/api/events', ensureEmployee, (req, res) => {
   let b = req.body;
-  eventManager.addEvent(b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, function(result) {
+  eventManager.addEvent(b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, b.url, function(
+    result
+  ) {
     res.json(result);
   });
 });
@@ -86,11 +88,20 @@ app.post('/api/events', ensureEmployee, (req, res) => {
 app.put('/api/events/:eventId', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  eventManager.editEvent(p.eventId, b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, function(
-    result
-  ) {
-    res.json(result);
-  });
+  eventManager.editEvent(
+    p.eventId,
+    b.title,
+    b.description,
+    b.area,
+    b.address,
+    b.start,
+    b.end,
+    b.municipalId,
+    b.url,
+    function(result) {
+      res.json(result);
+    }
+  );
 });
 
 app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
