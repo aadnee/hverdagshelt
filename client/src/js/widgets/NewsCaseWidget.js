@@ -6,6 +6,10 @@ import { Consumer } from './../context';
 import { ShowInMapWidget } from './ShowInMapWidget';
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 
+import { subscriptionService } from './../services/SubscriptionServices';
+
+import { toast } from 'react-toastify';
+
 import { INPROGRESS, DONE, SOFT_DELETED, STATUS } from '../commons';
 
 export class NewsCaseWidget extends Component {
@@ -33,6 +37,17 @@ export class NewsCaseWidget extends Component {
     this.props.editNews(title, description, category, status, published, company);
 
     this.closeModal();
+  };
+
+  followCase = () => {
+    subscriptionService.addSubscription(this.props.newscase.id).then(res => {
+      if (res.success) {
+        this.props.startFollowCallBack(this.props.newscase.id);
+        toast.success('Du følger nå saken');
+      } else {
+        toast.warn('Noe gikk galt, prøv igjen senere');
+      }
+    });
   };
 
   render() {
@@ -70,7 +85,7 @@ export class NewsCaseWidget extends Component {
           </Segment>
           <Segment basic>
             <Grid stackable>
-              <Grid.Column floated={'left'} width={4}>
+              <Grid.Column width={16}>
                 Hendelses-adresse: {newscase.address},
                 <ShowInMapWidget
                   callback={this.close}
@@ -105,11 +120,13 @@ export class NewsCaseWidget extends Component {
                     </Modal>
                   </Button.Group>
                 </Grid.Column>
-              ) : (
-                <Button size={'large'} onClick={this.props.show}>
-                  Avslutt abonnement
-                </Button>
-              )}
+              ) : this.props.following ? (
+                this.props.frontpage ? null : (
+                  <Button onClick={this.props.show}>Avslutt abonnement</Button>
+                )
+              ) : Consumer._currentValue.user ? (
+                <Button onClick={this.followCase}>Følg saken</Button>
+              ) : null}
             </Grid>
           </Segment>
         </Container>

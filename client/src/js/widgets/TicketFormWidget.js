@@ -37,7 +37,7 @@ export class TicketFormWidget extends Component {
       subCategory: '',
       subCategoryOptions: [],
       position: [null, null],
-      subscribed: this.props.ticket ? this.props.ticket.subscribed : false,
+      subscribed: this.props.ticket ? this.props.ticket.subscribed : true,
       selectedCategory: false,
       modalMessage: '',
       modalOpen: false,
@@ -132,7 +132,7 @@ export class TicketFormWidget extends Component {
                     placeholder="Velg posisjon på kartet"
                     defaultValue={this.state.address}
                     readOnly
-                    onClick={this.props.setupClick ? (()=>this.props.setupClick(this.state.address)) : null}
+                    onClick={this.props.setupClick ? () => this.props.setupClick(this.state.address) : null}
                   />
                   <label>Hva vil du melde inn?</label>
                 </Form.Field>

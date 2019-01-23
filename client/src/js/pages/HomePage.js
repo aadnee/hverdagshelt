@@ -25,7 +25,7 @@ export class HomePage extends Component {
         menuItem: 'Nyheter i Trondheim',
         render: () => (
           <Tab.Pane className="frontPageFeedTab">
-            <NewsFeedWidget newsOnly />
+            <NewsFeedWidget newsOnly frontpage />
           </Tab.Pane>
         )
       },
