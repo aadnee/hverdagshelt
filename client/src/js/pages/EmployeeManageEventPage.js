@@ -2,27 +2,19 @@ import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Grid, Header, Message, Container, Segment, Divider } from 'semantic-ui-react';
-import { TicketWidget } from '../widgets/TicketWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
+import { eventService } from '../services/EventServices';
 import { ticketService } from '../services/TicketServices';
 import { subscriptionService } from '../services/SubscriptionServices';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 
-export class EmployeeManageTicketsPage extends React.Component {
+export class EmployeeManageEventPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tickets: [],
-      hasTickets: true,
-      modalOpen: false,
-      modalParam: '',
-      bindNewsModalOpen: false
+      eventList: []
     };
-    this.reject = this.reject.bind(this);
-    this.accept = this.accept.bind(this);
-    this.bindUserToNews = this.bindUserToNews.bind(this);
-    this.show = this.show.bind(this);
   }
 
   show = id => {
@@ -32,13 +24,9 @@ export class EmployeeManageTicketsPage extends React.Component {
   close = () => this.setState({ modalOpen: false });
 
   componentWillMount() {
-    //Fetch id based on user bound to municipal
-
-    ticketService.getMunicipalTickets(Cookies.get('municipalId')).then(res => {
-      if (res.data.length < 1) {
-        this.setState({ hasTickets: false });
-      }
-      this.setState({ tickets: res.data });
+    //Fetch events
+    eventService.getFilteredEvents(Cookies.get('municipalId'), 0, 0).then(res => {
+      console.log(res.data);
     });
   }
 
@@ -47,28 +35,9 @@ export class EmployeeManageTicketsPage extends React.Component {
       <Container>
         <Divider hidden />
         <Divider hidden />
-        <Header as="h1">Varslinger fra brukerne</Header>
+        <Header as="h1">Behandle event</Header>
         <Segment color="blue" basic>
-          <Grid stackable container columns={3}>
-            {!this.state.hasTickets ? (
-              <Grid.Row centered>
-                <Message size={'massive'}>
-                  <p>Du har ingen flere varsler å administrere</p>
-                </Message>
-              </Grid.Row>
-            ) : null}
-            {this.state.tickets.map(ticket => (
-              <Grid.Column key={ticket.id}>
-                <TicketWidget
-                  employee
-                  ticket={ticket}
-                  accept={this.accept.bind(this, ticket.id)}
-                  show={this.show.bind(this, ticket.id)}
-                  link={this.bindUserToNews.bind(this, ticket.id)}
-                />
-              </Grid.Column>
-            ))}
-          </Grid>
+          <Grid stackable container columns={3} />
           <MessageWidget
             title={'Avslå nyhet'}
             size={'tiny'}
@@ -78,11 +47,6 @@ export class EmployeeManageTicketsPage extends React.Component {
             callback={this.close}
           />
         </Segment>
-        <Divider hidden />
-        <Divider hidden />
-        <Divider hidden />
-        <Divider hidden />
-        <Divider hidden />
       </Container>
     );
   }
@@ -149,6 +113,8 @@ export class EmployeeManageTicketsPage extends React.Component {
   }
 
   bindUserToNews(ticketId, newsId) {
+    console.log(ticketId);
+    console.log(newsId);
     if (!ticketId || !newsId) {
       toast.error('Noe gikk galt, prøv igjen', {
         position: toast.POSITION.TOP_RIGHT

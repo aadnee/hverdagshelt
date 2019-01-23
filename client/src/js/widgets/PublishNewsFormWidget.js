@@ -24,19 +24,19 @@ export class PublishNewsFormWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: this.props.ticket.title,
-      description: this.props.ticket.description,
-      receivedCategory: this.props.ticket.categoryId,
+      title: '',
+      description: '',
+      receivedCategory: '',
       allCats: [],
-      category: this.props.ticket.categoryId,
+      category: '',
       categoryOptions: [],
-      subcategory: '',
+      subCategory: '',
       subCategoryOptions: [],
       categoryChanged: false,
       position: [1, 1],
-      address: this.props.ticket.address,
+      address: '',
       subscription: false,
-      image: this.props.ticket.uploads,
+      image: [],
       imgModalOpen: false,
       publish: true
     };
@@ -47,41 +47,81 @@ export class PublishNewsFormWidget extends Component {
   };
 
   getSubCategories(category) {
-    let bool = false;
     let subCats = [];
     let subCatsOpt = [];
 
     this.state.allCats.map(cat => {
       if (cat.id === category) {
         subCats = cat.subs;
+        console.log(subCats);
       }
     });
-
     subCats.map(subCat => {
-      if (this.state.receivedCategory === subCat.id) {
-        this.setState({ category: subCat.parentId, subcategory: this.state.receivedCategory });
-        bool = true;
-      }
       subCatsOpt.push({ key: subCat.id, value: subCat.id, text: subCat.name });
     });
-
-    if (bool || this.state.categoryChanged) {
-      this.setState({ subCategoryOptions: subCatsOpt });
-    }
+    this.setState({ subCategoryOptions: subCatsOpt });
+    this.state.receivedCategory === -1 ? this.setState({ subCategory: subCats[0].id }) : null;
   }
 
   componentWillMount() {
-    console.log(this.state.image);
-
-    categoryService.getCategories().then(res => {
-      let cats = [];
-      this.setState({ allCats: res.data });
-      res.data.map(cat => {
-        cats.push({ key: cat.id, value: cat.id, text: cat.name });
-        this.getSubCategories(cat.id);
+    if (this.props.news) {
+      let news = this.props.news;
+      console.log(news);
+      this.setState({
+        title: news.title,
+        description: news.description,
+        receivedCategory: news.categoryId,
+        category: news.categoryId,
+        address: news.address
       });
-      this.setState({ categoryOptions: cats });
-    });
+    } else if (this.props.ticket) {
+      let ticket = this.props.ticket;
+      this.setState({
+        title: ticket.title,
+        description: ticket.description,
+        receivedCategory: ticket.categoryId,
+        category: ticket.categoryId,
+        address: ticket.address,
+        image: ticket.uploads
+      });
+    }
+    let parentId = -1;
+    let cats = [];
+    categoryService
+      .getCategories()
+      .then(res => {
+        this.setState({ allCats: res.data });
+
+        res.data.map(cat => {
+          cats.push({ key: cat.id, value: cat.id, text: cat.name });
+          if (this.props.ticket) {
+            cat.subs.map(subCat => {
+              if (subCat.id === this.state.receivedCategory) {
+                console.log(subCat.id);
+                parentId = subCat.parentId;
+                this.getSubCategories(parentId);
+              }
+            });
+          }
+        });
+      })
+      .then(() => {
+        console.log(cats);
+        !this.props.ticket ? this.setState({ categoryOptions: cats, receivedCategory: -1 }) : null;
+
+        this.props.ticket
+          ? this.setState(
+              {
+                subCategory: this.state.receivedCategory,
+                category: parentId
+              },
+              () => {
+                this.setState({ categoryOptions: cats, receivedCategory: -1 });
+                console.log(this.state);
+              }
+            )
+          : null;
+      });
   }
 
   render() {
@@ -118,7 +158,7 @@ export class PublishNewsFormWidget extends Component {
                 <Form.Field>
                   <Grid columns={'equal'}>
                     <Grid.Column>
-                      <label>Kategori:</label>
+                      <label>Kategori</label>
                       <Dropdown
                         fluid
                         search
@@ -135,16 +175,16 @@ export class PublishNewsFormWidget extends Component {
                       />
                     </Grid.Column>
                     <Grid.Column>
-                      <label>Underkategori:</label>
+                      <label>Underkategori</label>
                       <Dropdown
                         fluid
                         search
                         selection
                         options={this.state.subCategoryOptions}
                         placeholder={'Underkategori'}
-                        value={this.state.subcategory}
+                        value={this.state.subCategory}
                         onChange={(event, data) => {
-                          this.handleInput('subcategory', data.value);
+                          this.handleInput('subCategory', data.value);
                         }}
                       />
                     </Grid.Column>

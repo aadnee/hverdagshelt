@@ -127,3 +127,7 @@ input[type='file'] {
 .showInMap:hover {
   cursor: pointer;
 }
+
+.leaflet-control-attribution {
+  visibility: hidden;
+}

@@ -1,9 +1,10 @@
+import moment from 'moment';
 import { Events } from '../models';
 
 module.exports = {
   getFilteredEvents: function(municipalIds, page, limit, callback) {
     Events.findAll({
-      where: { municipalId: municipalIds, end: { $gt: Date.now() } },
+      where: { municipalId: municipalIds, end: { $gte: moment().format('YYYY-MM-DD') } },
       offset: page == 0 ? null : (page - 1) * limit,
       limit: limit == 0 ? null : limit,
       order: [['id', 'DESC']]
