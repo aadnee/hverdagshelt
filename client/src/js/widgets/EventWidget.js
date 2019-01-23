@@ -20,6 +20,10 @@ export class EventWidget extends Component {
 
   render() {
     const event = this.props.event;
+    const areaJson = JSON.parse(event.area);
+    const area = areaJson.map(cord => {
+      return [cord.lat, cord.lng];
+    });
     const dateInfo = Consumer._currentValue.convDbString(event.createdAt);
 
     return (
@@ -34,7 +38,7 @@ export class EventWidget extends Component {
                 <p>{event.description}</p>
               </Grid.Column>
               <Grid.Column width={4} align="right" only="tablet computer">
-                <ShowInMapWidget latlng={event.area} mapOnly />
+                <ShowInMapWidget latlng={area} mapOnly />
               </Grid.Column>
             </Grid>
           </Segment>
@@ -50,11 +54,10 @@ export class EventWidget extends Component {
                     vis i kart
                   </span>
                 }
-                latlng={event.area}
+                latlng={area}
               />
             </Grid>
           </Segment>
-          <Button onClick={this.props.show}>Avslutt abonnement</Button>
         </Container>
       </Segment>
     );

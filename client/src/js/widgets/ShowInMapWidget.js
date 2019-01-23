@@ -18,8 +18,6 @@ export class ShowInMapWidget extends Component {
 
   render() {
     const la = this.props.latlng.reduce((lat, latn) => {
-      console.log(lat);
-      console.log(latn);
       return [lat[0] + latn[0], lat[1] + latn[1]];
     });
 

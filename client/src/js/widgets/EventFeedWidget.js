@@ -23,7 +23,7 @@ export class EventFeedWidget extends Component {
       categories: [],
       selectedCategories: [],
       news: [],
-      page: 2,
+      page: 1,
       limit: 3,
       empty: false
     };
@@ -86,7 +86,7 @@ export class EventFeedWidget extends Component {
     this.setState({ loading: true });
     setTimeout(() => {
       eventService
-        .getFilteredEvents(this.state.selectedMunicipals, 1, this.state.limit)
+        .getFilteredEvents(this.state.selectedMunicipals, this.state.page, this.state.limit)
         .then(res => {
           if (res.success) {
             this.setState({ news: res.data, loading: false });
@@ -106,7 +106,7 @@ export class EventFeedWidget extends Component {
       .getFilteredEvents(
         this.state.selectedMunicipals,
         this.state.selectedCategories,
-        this.state.page,
+        (this.state.page += 1),
         this.state.limit
       )
       .then(res => {
@@ -134,11 +134,6 @@ export class EventFeedWidget extends Component {
     this.getNews();
   }
 
-  selectCategory(value) {
-    this.setState({ selectedCategories: value });
-    this.getNews();
-  }
-
   displayNews = () => {
     if (this.state.loading) {
       return (
@@ -154,7 +149,7 @@ export class EventFeedWidget extends Component {
       return (
         <>
           {this.state.news.map(nc => (
-            <EventCaseWidget key={nc.id} event={nc} />
+            <EventWidget key={nc.id} event={nc} />
           ))}
           {!this.state.empty ? (
             <Button
