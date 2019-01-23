@@ -1,28 +1,51 @@
 import React from 'react';
-import {Component} from 'react';
-import {NavLink} from 'react-router-dom';
-import {Container, Grid, Header, Divider, Segment, Tab} from 'semantic-ui-react';
+import { Component } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Container, Grid, Header, Divider, Segment, Tab } from 'semantic-ui-react';
 
-import {companyService} from '../services/CompanyServices';
+import { companyService } from '../services/CompanyServices';
 
 import {AssignmentWidget} from "../widgets/AssignmentWidget";
 import {ActiveAssignmentWidget} from "../widgets/ActiveAssignmentWidget";
 
 export class EntrepreneurAssignmentPage extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            assignments: []
-        };
-    }
+    this.handleDelete = this.handleDelete.bind(this);
 
-    componentWillMount() {
-        companyService.getTasks().then((res) => {
-            console.log(res);
-            this.setState({assignments: res.res})
-        });
-    }
+    this.state = {
+      assignments: []
+    };
+  }
+
+  handleDelete = assigmentId => {
+    this.state.assignments.map((assigment, index) => {
+      if (assigment.id === assigmentId) {
+        let tempAssigments = this.state.assignments;
+        tempAssigments.splice(index, 1);
+        this.setState({ assignments: tempAssigments });
+      }
+    });
+  };
+
+  handleAccept = assigmentId => {
+    this.state.assignments.map((assigment, index) => {
+      if (assigment.id === assigmentId) {
+        let tempAssigments = this.state.assignments;
+        let asg = this.state.assignments[index];
+        tempAssigments.splice(index, 1, asg);
+        this.setState({ assignments: tempAssigments });
+      }
+    });
+  };
+
+  componentWillMount() {
+    companyService.getTasks().then(res => {
+      console.log(res);
+      this.setState({ assignments: res.res });
+    });
+  }
 
     render() {
         let panes = [
@@ -31,8 +54,7 @@ export class EntrepreneurAssignmentPage extends Component {
                 render: () => (
                     <Tab.Pane className="companyAssignmentTab frontPageFeedTab">
                         {this.state.assignments.map((asg, i) => (
-                            <AssignmentWidget assignment={asg} newsOnly key={i}/>))}
-                    </Tab.Pane>
+                            <AssignmentWidget handleDelete={this.handleDelete.bind(this, asg.id)} assignment={asg} newsOnly key={i} />                    </Tab.Pane>
                 )
             },
             {

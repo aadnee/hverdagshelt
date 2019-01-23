@@ -82,7 +82,7 @@ export class AdminCategoriesWidget extends Component {
                   <List.Item>
                     <List.Content>
                       <Button inverted color="green" fluid onClick={() => this.openModalAddCategory(false)}>
-                        Legg til undergategori i {this.state.mainCategory.name}
+                        Legg til underkategorier i {this.state.mainCategory.name}
                       </Button>
                     </List.Content>
                   </List.Item>

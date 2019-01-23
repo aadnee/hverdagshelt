@@ -98,5 +98,13 @@ module.exports = {
       limit: limit == 0 ? null : limit,
       order: [['id', 'DESC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+  },
+
+  getArchivedNews: function(municipalIds, callback) {
+    News.findAll({
+      include: [{ model: Uploads }],
+      where: { municipalId: municipalIds, status: 5 },
+      order: [['updatedAt', 'DESC']]
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }
 };
