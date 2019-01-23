@@ -194,7 +194,7 @@ module.exports = {
             }
           });
         } else {
-          let key = generatePassword(20);
+          let key = generatePassword(5);
           Users.update({ reset: key }, { where: { email: email } }).then(
             res => {
               mailManager.send(
@@ -223,7 +223,8 @@ module.exports = {
   },
 
   resetPassword: function(email, key, callback) {
-    Users.findOne({ where: { email: email, reset: key } }).then(
+    var tenMinutes = new Date(Date.now() - 1000 * 60 * 10);
+    Users.findOne({ where: { email: email, reset: key, updatedAt: { $gte: tenMinutes } } }).then(
       res => {
         if (res == null) {
           callback({ success: false, message: { en: 'Wrong email/key.', no: 'Feil epost eller kode.' } });
