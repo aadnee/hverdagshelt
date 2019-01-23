@@ -54,8 +54,10 @@ export class EntrepreneurAssignmentPage extends Component {
                 render: () => (
                     <Tab.Pane className="companyAssignmentTab frontPageFeedTab">
                         {this.state.assignments.map((asg, i) => (
-                            <AssignmentWidget handleDelete={this.handleDelete.bind(this, asg.id)} assignment={asg} newsOnly key={i} />                    </Tab.Pane>
-                )
+                            asg.companyStatus===1 ?
+                            <AssignmentWidget handleAccept={this.handleAccept} handleDelete={this.handleDelete.bind(this, asg.id)} assignment={asg} newsOnly key={i} />:null
+                        ))}
+                    </Tab.Pane>)
             },
             {
                 menuItem: 'Aktive oppdrag',

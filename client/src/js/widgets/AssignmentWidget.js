@@ -32,6 +32,7 @@ export class AssignmentWidget extends Component {
     console.log(this.state.modalType, this.props.assignment);
     if (this.state.modalType === 'acceptModal') {
       companyService.acceptTask(this.props.assignment.id);
+      this.props.handleAccept();
       this.closeModal();
     } else if (this.state.modalType === 'declineModal') {
       companyService.rejectTask(this.props.assignment.id);
