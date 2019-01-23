@@ -30,11 +30,14 @@ export class ActiveAssignmentWidget extends Component {
 
     handleStatus() {
         console.log(this.state.modalType);
-        if(this.state.modalType===''){
-            console.log(this.state.id);
-            companyService.rejectTask(this.state.id);
-        }else if(this.state.modalType===''){
+        if(this.state.modalType==='cancelModal'){
+            companyService.rejectTask(this.props.assignment.id);
+            this.props.handleDelete();
+            this.closeModal();
+        }else if(this.state.modalType==='doneModal'){
             companyService.finishTask(this.state.id);
+            this.props.handleStatus(3);
+            this.closeModal();
         }
     }
 
@@ -90,8 +93,8 @@ export class ActiveAssignmentWidget extends Component {
                         {/*<Button positive onClick={() => this.openModal("acceptModal")}>Ta oppdrag</Button>*/}
                         <Dropdown text='Sett status'>
                             <Dropdown.Menu>
-                                <Dropdown.Item icon='check circle outline' text='Avbryt oppdrag'/>
-                                <Dropdown.Item icon='times circle outline' text='Oppdrag ferdig'/>
+                                <Dropdown.Item icon='check circle outline' text='Avbryt oppdrag' onClick={() => this.openModal("cancelModal")}/>
+                                <Dropdown.Item icon='times circle outline' text='Oppdrag ferdig' onClick={() => this.openModal("doneModal")}/>
                             </Dropdown.Menu>
                         </Dropdown>
                 </Container>
