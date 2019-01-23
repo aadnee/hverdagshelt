@@ -533,7 +533,7 @@ app.post('/api/statistics/tickets', ensureEmployee, (req, res) => {
 });
 
 app.post('/api/statistics/users', ensureEmployee, (req, res) => {
-  userManager.userIncrease(req.body.municipalId, req.body.start, req.body.end, function(result) {
+  userManager.userIncrease(req.body.municipalId, req.body.year, req.body.month, req.body.week, function(result) {
     res.json(result);
   });
 });
