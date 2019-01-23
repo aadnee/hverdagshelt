@@ -59,8 +59,8 @@ export class NewsCaseWidget extends Component {
                 latlng={[newscase.lat, newscase.lon]}
               />
             </Grid>
+            {this.props.employee ? <p>yeet</p> : <Button onClick={this.props.show}>Avslutt abonnement</Button>}
           </Segment>
-          <Button onClick={this.props.show}>Avslutt abonnement</Button>
         </Container>
       </Segment>
     );
