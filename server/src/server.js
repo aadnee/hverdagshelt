@@ -512,10 +512,19 @@ app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
 });
 
 //statistics
+
+// Returns number of tickets sent in per category for the given municipal
+// Returns yearly numbers if month and week is null, returns monthly if only week is null
 app.post('/api/statistics/tickets', ensureEmployee, (req, res) => {
-  ticketManager.getTicketStatistics(req.body.week, req.body.month, req.body.year, req.body.municipalId, function(
+  ticketManager.getTicketStatistics(req.body.municipalId, req.body.year, req.body.month, req.body.week, function(
     result
   ) {
+    res.json(result);
+  });
+});
+
+app.post('/api/statistics/users', ensureEmployee, (req, res) => {
+  userManager.userIncrease(req.body.municipalId, req.body.start, req.body.end, function(result) {
     res.json(result);
   });
 });
