@@ -110,7 +110,13 @@ export class TicketWidget extends Component {
               <Dropdown text={'Behandle'} simple>
                 <Dropdown.Menu>
                   {/*REGISRER SOM NYHET*/}
-                  <Modal trigger={<Dropdown.Item icon={'newspaper'} text={'Publiser som nyhet'} />}>
+                  <Modal
+                    open={this.state.regModalOpen}
+                    onOpen={() => this.setState({ regModalOpen: true })}
+                    onClose={() => this.closeRegModal()}
+                    trigger={<Dropdown.Item icon={'newspaper'} text={'Publiser som nyhet'} />}
+                    closeIcon
+                  >
                     <Modal.Header>Registrer varselen som nyhet</Modal.Header>
                     <Modal.Content>
                       <Modal.Description>
@@ -128,7 +134,7 @@ export class TicketWidget extends Component {
 
                   <Modal
                     open={this.state.open}
-                    onOpen={() => this.setState({ open: true })}
+                    onOpen={() => this.close()}
                     onClose={() => this.setState({ open: false })}
                     trigger={<Dropdown.Item icon={'linkify'} text={'Knytt til samme nyhet'} />}
                     size={'tiny'}

@@ -8,27 +8,50 @@ import { ticketService } from '../services/TicketServices';
 import { subscriptionService } from '../services/SubscriptionServices';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import { EventCardWidget } from '../widgets/EventCardWidget';
 
 export class EmployeeManageEventPage extends React.Component {
   constructor(props) {
     super(props);
+
+    this.deleteEvent = this.deleteEvent.bind(this);
+    this.openDeleteMessage = this.openDeleteMessage.bind(this);
+
     this.state = {
-      eventList: []
+      eventList: [],
+      deleteEventMessage: false,
+      selectedEvent: ''
     };
   }
-
-  show = id => {
-    this.setState({ modalOpen: true, modalParam: id });
-  };
-
-  close = () => this.setState({ modalOpen: false });
 
   componentWillMount() {
     //Fetch events
     eventService.getFilteredEvents(Cookies.get('municipalId'), 0, 0).then(res => {
       console.log(res.data);
+      this.setState({ eventList: res.data });
     });
   }
+
+  openDeleteMessage = eventId => {
+    this.setState({ deleteEventMessage: true, selectedEvent: eventId });
+  };
+
+  deleteEvent = () => {
+    eventService.deleteEvent(this.state.selectedEvent).then(res => {
+      if (res.success) {
+        toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
+        this.state.eventList.map((currentEvent, index) => {
+          if (currentEvent.id === this.state.selectedEvent) {
+            let newEventList = this.state.eventList;
+            newEventList.splice(index, 1);
+            this.setState({ eventList: newEventList });
+          }
+        });
+      } else {
+        toast.error(res.message.no, { position: toast.POSITION.TOP_RIGHT });
+      }
+    });
+  };
 
   render() {
     return (
@@ -37,99 +60,28 @@ export class EmployeeManageEventPage extends React.Component {
         <Divider hidden />
         <Header as="h1">Behandle event</Header>
         <Segment color="blue" basic>
-          <Grid stackable container columns={3} />
-          <MessageWidget
-            title={'Avslå nyhet'}
-            size={'tiny'}
-            open={this.state.modalOpen}
-            message="Er du sikker på at du vil avslå innsendingen?"
-            customFunc={this.reject.bind(this, this.state.modalParam)}
-            callback={this.close}
-          />
+          <Divider hidden />
+          <Divider hidden />
+          <Grid stackable container columns={3}>
+            {this.state.eventList.map((eventItem, keyId) => (
+              <EventCardWidget
+                header={eventItem.title}
+                key={keyId}
+                description={eventItem.description}
+                deleteEvent={this.openDeleteMessage.bind(this, eventItem.id)}
+              />
+            ))}
+          </Grid>
         </Segment>
+        <MessageWidget
+          size={'tiny'}
+          open={this.state.deleteEventMessage}
+          title={'Slette event'}
+          message={'Vil du slette denne eventen?'}
+          customFunc={this.deleteEvent}
+          callback={() => this.setState({ deleteEventMessage: false })}
+        />
       </Container>
     );
-  }
-
-  reject(id) {
-    console.log(id);
-
-    if (!id) {
-      toast.error('Noe gikk galt, prøv igjen', {
-        position: toast.POSITION.TOP_RIGHT
-      });
-    } else {
-      ticketService.rejectTicket(id).then(res => {
-        if (res.success) {
-          this.setState({ tickets: this.state.tickets.filter(t => t.id !== id), modalOpen: false });
-
-          if (this.state.tickets.length < 1) {
-            this.setState({ hasTickets: false });
-          }
-          toast.success(res.message.no, {
-            position: toast.POSITION.TOP_RIGHT
-          });
-        } else {
-          toast.error(res.message.no, {
-            position: toast.POSITION.TOP_RIGHT
-          });
-        }
-      });
-    }
-  }
-
-  accept(id, title, description, lat, lon, address, categoryId, publish, municipalId, images) {
-    if (!title || !description || !lat || !lon || !categoryId) {
-      toast.error('Vennligst fyll ut alle felt', {
-        position: toast.POSITION.TOP_RIGHT
-      });
-    } else {
-      let imgIds = images.map(i => i.id);
-      console.log(imgIds);
-      ticketService
-        .acceptTicket(id, title, description, lat, lon, address, categoryId, publish, municipalId, imgIds)
-        .then(res => {
-          if (res.success) {
-            let ticket = this.state.tickets.find(t => t.id === id);
-            if (ticket.subscribed) {
-              subscriptionService.addSubscription(res.id, ticket.userId).then(res => {
-                console.log(res.message.no);
-              });
-            }
-            this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
-            if (this.state.tickets.length < 1) {
-              this.setState({ hasTickets: false });
-            }
-            toast.success(res.message.no, {
-              position: toast.POSITION.TOP_RIGHT
-            });
-          } else {
-            toast.error(res.message.no, {
-              position: toast.POSITION.TOP_RIGHT
-            });
-          }
-        });
-    }
-  }
-
-  bindUserToNews(ticketId, newsId) {
-    console.log(ticketId);
-    console.log(newsId);
-    if (!ticketId || !newsId) {
-      toast.error('Noe gikk galt, prøv igjen', {
-        position: toast.POSITION.TOP_RIGHT
-      });
-    }
-    ticketService.linkTicket(ticketId, newsId).then(res => {
-      if (res.success) {
-        toast.success(res.message.no, {
-          position: toast.POSITION.TOP_RIGHT
-        });
-      } else {
-        toast.error(res.message.no, {
-          position: toast.POSITION.TOP_RIGHT
-        });
-      }
-    });
   }
 }

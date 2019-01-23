@@ -77,7 +77,6 @@ export class PublishNewsFormWidget extends Component {
     }
     if (this.props.ticket) {
       let ticket = this.props.ticket;
-      console.log(ticket);
       this.setState({
         title: ticket.title,
         description: ticket.description,
@@ -236,36 +235,66 @@ export class PublishNewsFormWidget extends Component {
                 ) : null}
 
                 <Form.Field>
-                  <Checkbox
-                    checked={this.state.publish}
-                    label={<label>Gjør nyhet synlig</label>}
-                    onChange={(event, data) => {
-                      this.handleInput('publish', data.checked);
-                      console.log(data.checked);
-                    }}
-                  />
+                  <Grid columns={'equal'}>
+                    <Grid.Column>
+                      <Checkbox
+                        checked={this.state.publish}
+                        label={<label>Gjør nyhet synlig</label>}
+                        onChange={(event, data) => {
+                          this.handleInput('publish', data.checked);
+                          console.log(data.checked);
+                        }}
+                      />
+                    </Grid.Column>
+                    {this.props.news ? (
+                      <Grid.Column>
+                        <label>Underkategori</label>
+                        <Dropdown
+                          fluid
+                          search
+                          selection
+                          options={this.state.subCategoryOptions}
+                          placeholder={'Underkategori'}
+                          value={this.state.subCategory}
+                          onChange={(event, data) => {
+                            this.handleInput('subCategory', data.value);
+                          }}
+                        />
+                      </Grid.Column>
+                    ) : null}
+                  </Grid>
                 </Form.Field>
+
                 <Button.Group fluid>
+                  <Button onClick={() => this.props.close()}>Avbryt</Button>
                   <Button
                     color="blue"
                     size="large"
                     onClick={() =>
-                      this.props.accept(
-                        this.state.title,
-                        this.state.description,
-                        this.state.position[0],
-                        this.state.position[1],
-                        this.state.address,
-                        this.state.category,
-                        this.state.publish,
-                        mun,
-                        this.state.image
-                      )
+                      this.props.ticket
+                        ? this.props.accept(
+                            this.state.title,
+                            this.state.description,
+                            this.state.position[0],
+                            this.state.position[1],
+                            this.state.address,
+                            this.state.subCategory,
+                            this.state.publish,
+                            mun,
+                            this.state.image
+                          )
+                        : this.props.news
+                        ? this.props.editNews(
+                            this.state.title,
+                            this.state.description,
+                            this.state.category,
+                            this.state.subCategory
+                          )
+                        : null
                     }
                   >
                     {this.props.submitButton}
                   </Button>
-                  <Button onClick={() => this.props.close()}>Avbryt</Button>
                 </Button.Group>
               </Segment>
             </Form>

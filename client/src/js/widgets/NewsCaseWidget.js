@@ -14,6 +14,7 @@ export class NewsCaseWidget extends Component {
       editModalOpen: false
     };
     this.close = this.close.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   close() {
@@ -27,6 +28,12 @@ export class NewsCaseWidget extends Component {
   componentWillMount() {
     console.log(this.props.newscase);
   }
+
+  editNews = (title, description, category, published) => {
+    console.log(title, description, category, published);
+
+    this.closeModal();
+  };
 
   render() {
     const newscase = this.props.newscase;
@@ -70,10 +77,21 @@ export class NewsCaseWidget extends Component {
             <Grid.Column floated={'right'} width={4}>
               {this.props.employee ? (
                 <Button.Group>
-                  <Modal closeIcon trigger={<Button color={'teal'}>Endre</Button>} onClose={this.closeModal}>
+                  <Modal
+                    open={this.state.editModalOpen}
+                    closeIcon
+                    trigger={<Button color={'teal'}>Endre</Button>}
+                    onClose={() => this.closeModal()}
+                    onOpen={() => this.setState({ editModalOpen: true })}
+                  >
                     <Modal.Header>Editer Nyhet</Modal.Header>
                     <Modal.Content>
-                      <PublishNewsFormWidget submitButton={'Lagre endringer'} news={newscase} close={this.closeModal} />
+                      <PublishNewsFormWidget
+                        submitButton={'Lagre endringer'}
+                        news={newscase}
+                        close={this.closeModal}
+                        editNews={this.editNews}
+                      />
                     </Modal.Content>
                   </Modal>
 
