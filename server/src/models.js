@@ -317,6 +317,24 @@ export function syncDatabase(callback) {
         filename: '123.png',
         ticketId: 2
       });
+      await Events.create({
+        title: 'Taco buffet',
+        description: 'Deilig taco buffet med ost og lefser',
+        area: '{json: object}',
+        address: 'Kalvskinnet',
+        start: '2019-01-23',
+        end: '2019-01-23',
+        municipalId: 2
+      });
+      await Events.create({
+        title: 'Taco buffet LINDESNES',
+        description: 'Deilig taco buffet med ost og lefser på LINDESNES',
+        area: '{json: object}',
+        address: 'Kalvskinnet',
+        start: '2019-02-29',
+        end: '2019-02-29',
+        municipalId: 1
+      });
       callback('Database synced.');
     }
   });

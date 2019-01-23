@@ -106,7 +106,7 @@ describe('Finding all users', () => {
 //Test for editing a user with correct data
 describe('Edit and delete user', () => {
   it('correct data', done => {
-    userManager.editUser('Nytt Navn', 'user1@user1.com', 32145, 1, 1, true, 2, function(result) {
+    userManager.editUser('Nytt Navn', 'user1@user1.com', 32145, 1, 1, false, 2, function(result) {
       expect({
         success: result.success,
         message: result.message.en

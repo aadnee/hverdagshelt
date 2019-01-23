@@ -78,6 +78,11 @@ export class EmployeeManageTicketsPage extends React.Component {
             callback={this.close}
           />
         </Segment>
+        <Divider hidden />
+        <Divider hidden />
+        <Divider hidden />
+        <Divider hidden />
+        <Divider hidden />
       </Container>
     );
   }
