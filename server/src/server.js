@@ -71,14 +71,10 @@ app.get('/api/pdf/html', (req, res) => {
   let municipalId = 1;
   ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
     console.log(result);
-  });
-  ejs.renderFile(
-    './pdfs/file.ejs',
-    { test1: ['test', 'Tes2', 'Test3'], test2: 'HALLOOOOOOOOOOOO', test3: 'TEST REAL' },
-    function(err, html) {
+    ejs.renderFile('./pdfs/file.ejs', { categories: result.data }, function(err, html) {
       res.send(html);
-    }
-  );
+    });
+  });
 });
 
 app.post('/api/events/filter', (req, res) => {
