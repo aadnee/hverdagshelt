@@ -144,8 +144,6 @@ export class EmployeeManageTicketsPage extends React.Component {
   }
 
   bindUserToNews(ticketId, newsId) {
-    console.log(ticketId);
-    console.log(newsId);
     if (!ticketId || !newsId) {
       toast.error('Noe gikk galt, prøv igjen', {
         position: toast.POSITION.TOP_RIGHT
