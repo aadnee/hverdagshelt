@@ -59,8 +59,19 @@ export class NewsCaseWidget extends Component {
                 latlng={[newscase.lat, newscase.lon]}
               />
             </Grid>
-            {this.props.employee ? <p>yeet</p> : <Button onClick={this.props.show}>Avslutt abonnement</Button>}
           </Segment>
+          <Grid>
+            <Grid.Column floated={'right'} width={4}>
+              {this.props.employee ? (
+                <Button.Group>
+                  <Button color={'teal'}>Endre</Button>
+                  <Button color={'red'}>Slett</Button>
+                </Button.Group>
+              ) : (
+                <Button onClick={this.props.show}>Avslutt abonnement</Button>
+              )}
+            </Grid.Column>
+          </Grid>
         </Container>
       </Segment>
     );
