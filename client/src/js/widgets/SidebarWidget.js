@@ -46,15 +46,15 @@ export class SidebarWidget extends Component {
               Meny
             </Header>
             <PrivateOptions />
-            {rank == ADMIN ? (
-              <>
-                <Divider /> <AdminOptions />
-              </>
-            ) : null}
             {rank >= EMPLOYEE ? (
               <>
                 <Divider />
                 <MunicipalOptions />
+              </>
+            ) : null}
+            {rank == ADMIN ? (
+              <>
+                <Divider /> <AdminOptions />
               </>
             ) : null}
             {rank == COMPANY ? (
