@@ -48,6 +48,7 @@ module.exports = {
 
   register: function(name, email, phone, municipalId, rank, callback) {
     const password = generatePassword(12);
+    let userManager = this;
     bcrypt.genSalt(12, function(err, salt) {
       bcrypt.hash(password, salt, null, function(err, hash) {
         if (err) throw er;
@@ -81,14 +82,12 @@ module.exports = {
                     email,
                     function(result) {
                       if (result) {
-                        Users.addMunicipal(res.id, municipalId).then(
-                          res =>
-                            callback({
-                              success: true,
-                              message: { en: 'Registration successful.', no: 'Registrering vellykket.' }
-                            }),
-                          err => callback({ success: false, message: err })
-                        );
+                        userManager.addMunicipal(res.id, municipalId, () => {
+                          callback({
+                            success: true,
+                            message: { en: 'Registration successful.', no: 'Registrering vellykket.' }
+                          });
+                        });
                       } else {
                         callback({ success: false, message: { en: 'Email error.', no: 'Email error.' } });
                       }
