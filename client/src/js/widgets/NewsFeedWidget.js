@@ -112,10 +112,13 @@ export class NewsFeedWidget extends Component {
 
   getNews() {
     this.setState({ loading: true });
+    console.log(this.state.selectedMunicipals);
+    console.log(this.state.selectedCategories);
     setTimeout(() => {
       newsService
-        .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, 1, this.state.limit)
+        .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, 0, 0)
         .then(res => {
+          console.log(res);
           if (res.success) {
             this.setState({ news: res.data, loading: false });
           } else {

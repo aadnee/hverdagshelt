@@ -16,7 +16,7 @@ export class UserNewsFeedPage extends Component {
         <Divider hidden />
         <Header as="h1">Nyhetsstrøm</Header>
         <Segment color="blue" basic>
-          <Grid columns={2} centered>
+          <Grid columns={2} stackable centered>
             <Grid.Column width={16}>
               <Divider hidden />
               <NewsFeedWidget />

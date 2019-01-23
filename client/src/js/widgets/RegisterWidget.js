@@ -65,9 +65,8 @@ export class RegisterWidget extends React.Component {
 
   render() {
     return (
-      <div>
+      <>
         <Container>
-          <h1>Registrer deg</h1>
           <Grid centered divided="vertically">
             <Grid.Column mobile={16}>
               {this.props.logo ? <Image src="img/vector-logo-lav-farge.png" /> : null}
@@ -166,7 +165,7 @@ export class RegisterWidget extends React.Component {
             <Button icon="check" content="Ok" onClick={this.handleComplete} />
           </Modal.Actions>
         </Modal>
-      </div>
+      </>
     );
   }
 }

@@ -20,8 +20,7 @@ export class EventWidget extends Component {
 
   render() {
     const event = this.props.event;
-    const areaJson = JSON.parse(event.area);
-    const area = areaJson.map(cord => {
+    const area = JSON.parse(event.area).map(cord => {
       return [cord.lat, cord.lng];
     });
     const dateInfo = Consumer._currentValue.convDbString(event.createdAt);
@@ -34,10 +33,10 @@ export class EventWidget extends Component {
           <Divider />
           <Segment vertical>
             <Grid divided inverted stackable>
-              <Grid.Column width={12} textAlign="left">
+              <Grid.Column width={8} textAlign="left">
                 <p>{event.description}</p>
               </Grid.Column>
-              <Grid.Column width={4} align="right" only="tablet computer">
+              <Grid.Column width={8} align="right" only="tablet computer">
                 <ShowInMapWidget latlng={area} mapOnly />
               </Grid.Column>
             </Grid>

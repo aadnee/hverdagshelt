@@ -23,8 +23,8 @@ export class EventFeedWidget extends Component {
       categories: [],
       selectedCategories: [],
       news: [],
-      page: 1,
-      limit: 3,
+      page: 0,
+      limit: 0,
       empty: false
     };
   }
@@ -151,7 +151,7 @@ export class EventFeedWidget extends Component {
           {this.state.news.map(nc => (
             <EventWidget key={nc.id} event={nc} />
           ))}
-          {!this.state.empty ? (
+          {!this.state.empty && !this.state.limit == 0 ? (
             <Button
               primary
               onClick={() => {
@@ -181,7 +181,7 @@ export class EventFeedWidget extends Component {
       return <>{this.displayNews()}</>;
     }
     return (
-      <Grid divided columns={2}>
+      <Grid divided stackable columns={2}>
         <Grid.Column width={5}>
           <Segment>
             <Header as="h5">
