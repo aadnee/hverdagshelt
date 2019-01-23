@@ -130,6 +130,13 @@ app.post('/api/news/filter', (req, res) => {
   });
 });
 
+app.post('/api/news/archive', (req, res) => {
+  let b = req.body;
+  newsManager.getArchivedNews(b.municipalIds, function(result) {
+    res.json(result);
+  });
+});
+
 app.put('/api/news/:id', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
@@ -528,15 +535,15 @@ app.delete('/api/mymunicipals/:municipalId', ensureLogin, (req, res) => {
 // Returns number of tickets sent in per category for the given municipal
 // Returns yearly numbers if month and week is null, returns monthly if only week is null
 app.post('/api/statistics/tickets', ensureEmployee, (req, res) => {
-  ticketManager.getTicketStatistics(req.body.municipalId, req.body.year, req.body.month, req.body.week, function(
-    result
-  ) {
+  let b = req.body;
+  ticketManager.getTicketStatistics(b.municipalId, b.year, b.month, b.week, function(result) {
     res.json(result);
   });
 });
 
 app.post('/api/statistics/users', ensureEmployee, (req, res) => {
-  userManager.userIncrease(req.body.municipalId, req.body.start, req.body.end, function(result) {
+  let b = req.body;
+  userManager.userIncrease(b.municipalId, b.year, b.month, b.week, function(result) {
     res.json(result);
   });
 });
