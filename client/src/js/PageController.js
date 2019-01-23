@@ -92,7 +92,7 @@ export class PageController extends Component {
     //lat, lon  is fetched from the map
 
     if (!title || !description || !lat || !lon || !catId || !municipalId) {
-      console.log(title, description, lat, lon, catId, municipalId);
+      console.log(title, description, lat, lon, catId, municipalId, subscribed, image);
       toast.error('Vennligst fyll ut alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });

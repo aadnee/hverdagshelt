@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import {toast} from 'react-toastify';
 import {Consumer} from '../context';
 import {TicketFormWidget} from "../widgets/TicketFormWidget";
+import moment from "moment";
 
 export class EmployeeRegisterEventPage extends Component {
   constructor(props) {
@@ -57,14 +58,14 @@ export class EmployeeRegisterEventPage extends Component {
       });
     } else {
       eventService
-          .addEvent(title, description, this.state.area, this.state.address, start, end, municipalId, url)
+          .addEvent(title, description, JSON.stringify(this.state.area), this.state.address, start, end, municipalId, url)
           .then(res => {
             console.log(res);
             if (res.success) {
               toast.success(res.message.no, {
                 position: toast.POSITION.TOP_RIGHT
               });
-              //Consumer._currentValue.history.push({pathname: '/events'});
+              Consumer._currentValue.history.push({pathname: '/events'});
             } else {
               toast.error(res.message.no, {
                 position: toast.POSITION.TOP_RIGHT
@@ -115,6 +116,7 @@ export class EmployeeRegisterEventPage extends Component {
                             onClick={() => this.mapWidget.removeMarker()}
                         />
                       </>) : null}
+                      <Divider hidden/>
                   <RegisterEventWidget
                       borderless
                       latlng={this.state.latlng}

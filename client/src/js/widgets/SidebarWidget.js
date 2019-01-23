@@ -132,11 +132,14 @@ class MunicipalOptions extends Component {
             </Label>
           ) : null}
         </NavLink>
-        <NavLink exact to="/employee/news" activeClassName="active" className="ui item">
-          Administrer nyheter
+        <NavLink exact to="/employee/events" activeClassName="active" className="ui item">
+          Behandle arrangementer
         </NavLink>
         <NavLink exact to="/employee/assignments" activeClassName="active" className="ui item">
           Behandle avslåtte oppdrag
+        </NavLink>
+        <NavLink exact to="/employee/news" activeClassName="active" className="ui item">
+          Administrer nyheter
         </NavLink>
         <NavLink exact to="/employee/registerEvent" activeClassName="active" className="ui item">
           Registrer arrangement

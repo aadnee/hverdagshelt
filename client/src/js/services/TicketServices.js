@@ -38,6 +38,8 @@ class TicketServices {
   }
 
   linkTicket(ticketId, newsId) {
+    console.log(ticketId);
+    console.log(newsId);
     return api.put('/api/tickets/' + ticketId + '/link', {
       newsId: newsId
     });
@@ -57,7 +59,7 @@ class TicketServices {
       categoryId: categoryId,
       publish: publish,
       municipalId: municipalId,
-      images: images
+      imageIds: images
     });
   }
 

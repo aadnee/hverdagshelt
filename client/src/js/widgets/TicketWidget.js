@@ -24,6 +24,7 @@ export class TicketWidget extends Component {
     super(props);
     this.state = {
       open: false,
+      regModalOpen: false,
       selectedNews: '',
       dropdownOpen: false,
       newsOptions: [],
@@ -33,6 +34,7 @@ export class TicketWidget extends Component {
   }
 
   close = () => this.setState({ open: false });
+  closeRegModal = () => this.setState({ regModalOpen: false });
 
   handleInput(state, value) {
     this.setState({ [state]: value });
@@ -116,6 +118,7 @@ export class TicketWidget extends Component {
                           ticket={this.props.ticket}
                           accept={this.props.accept}
                           submitButton={'Publiser'}
+                          close={this.closeRegModal}
                         />
                       </Modal.Description>
                     </Modal.Content>

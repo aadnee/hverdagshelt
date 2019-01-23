@@ -32,7 +32,7 @@ export class UserReportTicketPage extends Component {
           <Grid className="mapGrid">
             <Grid.Row columns={2} only="computer" className="mapRow">
               <Grid.Column width={10} className="mapRow">
-                <MapWidget callback={this.callback} submit={Consumer._currentValue.ticketSubmit} />
+                <MapWidget callback={this.callback} ticket submit={Consumer._currentValue.ticketSubmit} />
               </Grid.Column>
               <Grid.Column width={6} only="computer" className="frontPageFeed">
                 <Divider hidden />

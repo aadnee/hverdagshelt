@@ -87,7 +87,7 @@ module.exports = {
     Tickets.update({ status: status, newsId: newsId }, { where: { id: ticketId } }).then(
       res => {
         Users.findOne({
-          attributes: ['email', 'notifications'],
+          attributes: ['id', 'email', 'notifications'],
           include: [{ attributes: ['subscribed', 'title'], model: Tickets, required: true, where: { id: ticketId } }]
         }).then(
           res => {
@@ -105,7 +105,7 @@ module.exports = {
                   )
                 : null;
               status == 3
-                ? subscriptionManager.addSubscription(newsId, res.id, function() {
+                ? subscriptionManager.addSubscription(newsId, res.id, function(result) {
                     callback({
                       success: true,
                       message: { en: 'Status updated.', no: 'Statusen ble oppdatert.' }

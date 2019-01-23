@@ -1,21 +1,31 @@
 import React from 'react';
 import { Component } from 'react';
-import { Divider, Segment, Container, Grid, List, Header, Image, Form, Input, Button } from 'semantic-ui-react';
+import { Divider, Segment, Container, Grid, List, Header, Image, Form, Modal, Button } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { Consumer } from './../context';
 import { ShowInMapWidget } from './ShowInMapWidget';
+import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 
 export class NewsCaseWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      renderMap: false
+      renderMap: false,
+      editModalOpen: false
     };
     this.close = this.close.bind(this);
   }
 
   close() {
     this.setState({ renderMap: false });
+  }
+
+  closeModal() {
+    this.setState({ editModalOpen: false });
+  }
+
+  componentWillMount() {
+    console.log(this.props.newscase);
   }
 
   render() {
@@ -56,7 +66,24 @@ export class NewsCaseWidget extends Component {
               />
             </Grid>
           </Segment>
-          <Button onClick={this.props.show}>Avslutt abonnement</Button>
+          <Grid>
+            <Grid.Column floated={'right'} width={4}>
+              {this.props.employee ? (
+                <Button.Group>
+                  <Modal closeIcon trigger={<Button color={'teal'}>Endre</Button>} onClose={this.closeModal}>
+                    <Modal.Header>Editer Nyhet</Modal.Header>
+                    <Modal.Content>
+                      <PublishNewsFormWidget submitButton={'Lagre endringer'} news={newscase} close={this.closeModal} />
+                    </Modal.Content>
+                  </Modal>
+
+                  <Button color={'red'}>Slett</Button>
+                </Button.Group>
+              ) : (
+                <Button onClick={this.props.show}>Avslutt abonnement</Button>
+              )}
+            </Grid.Column>
+          </Grid>
         </Container>
       </Segment>
     );
