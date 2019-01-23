@@ -101,7 +101,8 @@ module.exports = {
                       '" ble ' +
                       textStatus +
                       '.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
-                    res.email
+                    res.email,
+                    function() {}
                   )
                 : null;
               status == 3

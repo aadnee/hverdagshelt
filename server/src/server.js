@@ -20,6 +20,7 @@ import companyManager from './managers/companyManager';
 import eventManager from './managers/eventManager';
 import { syncDatabase } from './models';
 syncDatabase(res => console.log(res));
+console.log(process.env.TEST);
 
 const public_path = path.join(__dirname, '/../../client/public');
 
