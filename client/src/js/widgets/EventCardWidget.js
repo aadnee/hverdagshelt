@@ -1,11 +1,14 @@
 import React from 'react';
 import { Card, Button } from 'semantic-ui-react';
+import { ShowInMapWidget } from './ShowInMapWidget';
 
 export class EventCardWidget extends React.Component {
   constructor(props) {
     super(props);
   }
-
+  /*
+            <ShowInMapWidget mapOnly latlng={this.props.latlng} />
+            */
   render() {
     return (
       <Card fluid>
@@ -13,7 +16,7 @@ export class EventCardWidget extends React.Component {
         <Card.Content description={this.props.description} />
         <Card.Content extra>
           <Button onClick={this.props.deleteEvent} content={'Fjern event'} floated={'right'} negative />
-          <Button content={'Rediger event'} floated={'right'} positive />
+          <Button onClick={this.props.editEvent} content={'Rediger event'} floated={'right'} positive />
         </Card.Content>
       </Card>
     );
