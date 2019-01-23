@@ -264,7 +264,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 2,
+        categoryId: 3,
         municipalId: 1
       });
       await News.create({
@@ -274,7 +274,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 1,
+        categoryId: 3,
         municipalId: 1
       });
       await News.create({
@@ -284,7 +284,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 1,
+        categoryId: 4,
         municipalId: 1
       });
       await Subscriptions.create({

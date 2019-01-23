@@ -23,6 +23,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import {categoryService} from '../services/CategoryServices';
 
 import Cookies from 'js-cookie';
+import moment from "moment";
 
 export class RegisterEventWidget extends Component {
   constructor(props) {
@@ -37,8 +38,8 @@ export class RegisterEventWidget extends Component {
       tagOptions: [],
       position: [null, null],
       start: new Date(),
-      end: new Date(),
-      startFormatted: null,
+      end: null,
+      startFormatted: moment(new Date()).format('YYYY-MM-D HH:mm:ss'),
       endFormatted: null
     };
     this.setStartDate = this.setStartDate.bind(this);
@@ -58,25 +59,12 @@ export class RegisterEventWidget extends Component {
     this.setState({[key]: value});
   };
 
-  dBStringConverter(dbString){
-    const dateArr = dbString.split('T')[0].split('-');
-    const date = dateArr[2] + ' / ' + dateArr[1] + ' / ' + dateArr[0];
-
-    const clockArr = dbString
-        .split('T')[1]
-        .split('.')[0]
-        .split(':');
-
-    const clock = clockArr[0] + ':' + clockArr[1];
-    return [date, clock];
-  };
-
   setStartDate(date) {
-    this.setState({start: date, startFormatted: this.dBStringConverter(date.toISOString())});
+    this.setState({start: date, startFormatted: moment(date).format('YYYY-MM-D HH:mm:ss')});
   }
 
   setEndDate(date) {
-    this.setState({end: date, endFormatted: this.dBStringConverter(date.toISOString())});
+    this.setState({end: date, endFormatted: moment(date).format('YYYY-MM-D HH:mm:ss')});
   }
 
   render() {
