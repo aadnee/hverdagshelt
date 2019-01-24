@@ -156,9 +156,11 @@ app.post('/api/news', ensureEmployee, (req, res) => {
 app.post('/api/login', (req, res) => {
   let b = req.body;
   userManager.login(b.email, b.password, function(result) {
-    res.cookie('token', result.token);
-    res.cookie('rank', result.rank);
-    res.cookie('municipalId', result.municipalId);
+    if (result.token) {
+      res.cookie('token', result.token);
+      res.cookie('rank', result.rank);
+      res.cookie('municipalId', result.municipalId);
+    }
     res.json(result);
   });
 });
@@ -570,6 +572,7 @@ function ensureLogin(req, res, next) {
     } else {
       res.clearCookie('token');
       res.clearCookie('rank');
+      res.clearCookie('municipalId');
       res.sendStatus(403);
     }
   });
