@@ -176,6 +176,7 @@ describe('Withdraw ticket', () => {
   });
 });
 
+// Test for ticket statistics
 describe('Ticket statistics testing', () => {
   it('correct data', done => {
     ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
