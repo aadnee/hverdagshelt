@@ -1,7 +1,20 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Message, Container, Segment, Divider } from 'semantic-ui-react';
+import {
+  Grid,
+  Header,
+  Message,
+  Container,
+  Segment,
+  Divider,
+  Modal,
+  Input,
+  Button,
+  Icon,
+  Form,
+  Pagination
+} from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
 import { ticketService } from '../services/TicketServices';
@@ -19,9 +32,13 @@ export class EmployeeManageTicketsPage extends React.Component {
       hasTickets: true,
       modalOpen: false,
       modalParam: '',
+      message: '',
       bindNewsModalOpen: false,
       news: [],
-      newsOptions: []
+      newsOptions: [],
+      loading: true,
+      page: 1,
+      totalPages: 0
     };
     this.reject = this.reject.bind(this);
     this.accept = this.accept.bind(this);
@@ -56,16 +73,20 @@ export class EmployeeManageTicketsPage extends React.Component {
             res.data.map(cat => {
               ids.push(cat.id);
             });
-            console.log(ids);
           })
           .then(() => {
             newsService.getFilteredNews(Cookies.get('municipalId'), ids, 0, 0).then(res => {
-              console.log(res.data);
               res.data.map(news => {
                 newsOptions.push({ key: news.id, value: news.id, text: news.title });
               });
               news = res.data;
-              this.setState({ tickets: tickets, news: news, newsOptions: newsOptions });
+              this.setState({
+                tickets: tickets,
+                news: news,
+                newsOptions: newsOptions,
+                totalPages: Math.ceil(tickets.length / 9),
+                loading: false
+              });
             });
           });
       });
@@ -73,6 +94,7 @@ export class EmployeeManageTicketsPage extends React.Component {
 
   render() {
     const { news, newsOptions } = this.state;
+
     return (
       <Container>
         <Divider hidden />
@@ -87,40 +109,108 @@ export class EmployeeManageTicketsPage extends React.Component {
                 </Message>
               </Grid.Row>
             ) : null}
-            {this.state.tickets.map(ticket => (
-              <Grid.Column key={ticket.id}>
-                <TicketWidget
-                  employee
-                  ticket={ticket}
-                  accept={this.accept.bind(this, ticket.id)}
-                  show={this.show.bind(this, ticket.id)}
-                  link={this.bindUserToNews.bind(this, ticket.id)}
-                  news={news}
-                  newsOptions={newsOptions}
-                />
-              </Grid.Column>
-            ))}
+            {this.state.loading ? (
+              <>
+                <Divider hidden />
+                <Message icon>
+                  <Icon name="circle notched" loading />
+                  <Message.Content>
+                    <Message.Header>Vennligst vent</Message.Header>
+                    Henter informasjon
+                  </Message.Content>
+                </Message>
+              </>
+            ) : (
+              <>
+                {this.state.tickets.map((ticket, i) => (
+                  <React.Fragment key={i}>
+                    {i <= this.state.page * 9 - 1 && i > (this.state.page - 1) * 9 - 1 ? (
+                      <Grid.Column>
+                        <TicketWidget
+                          employee
+                          ticket={ticket}
+                          accept={this.accept.bind(this, ticket.id)}
+                          show={this.show.bind(this, ticket.id)}
+                          link={this.bindUserToNews.bind(this, ticket.id)}
+                          news={news}
+                          newsOptions={newsOptions}
+                        />
+                      </Grid.Column>
+                    ) : null}
+                  </React.Fragment>
+                ))}
+              </>
+            )}
           </Grid>
-          <MessageWidget
+
+          <Modal open={this.state.modalOpen} onClose={this.close} closeIcon>
+            <Header icon="trash" content="Avslå varsel" />
+            <Modal.Content>
+              <Form>
+                <Form.Field>
+                  <label>Melding til varsler:</label>
+                  <Input
+                    value={this.state.message}
+                    fluid
+                    placeholder="Melding til varsler om avslag"
+                    onChange={(e, d) => {
+                      this.setState({ message: d.value });
+                    }}
+                  />
+                </Form.Field>
+              </Form>
+            </Modal.Content>
+            <Modal.Actions>
+              <Button secondary>
+                <Icon name="remove" /> Avbryt
+              </Button>
+              <Button
+                primary
+                onClick={() => {
+                  this.reject(this.state.modalParam, this.state.message);
+                }}
+              >
+                <Icon name="checkmark" /> Send avslag
+              </Button>
+            </Modal.Actions>
+          </Modal>
+          {/*<MessageWidget
             title={'Avslå nyhet'}
             size={'tiny'}
             open={this.state.modalOpen}
             message="Er du sikker på at du vil avslå innsendingen?"
             customFunc={this.reject.bind(this, this.state.modalParam)}
             callback={this.close}
-          />
+          />*/}
         </Segment>
-        <Divider hidden />
-        <Divider hidden />
-        <Divider hidden />
-        <Divider hidden />
-        <Divider hidden />
+        <Container textAlign="center">
+          <Divider hidden />
+          <Divider hidden />
+          <Divider hidden />
+          {!this.state.loading ? (
+            <Pagination
+              defaultActivePage={this.state.page}
+              firstItem={null}
+              lastItem={null}
+              pointing
+              secondary
+              totalPages={this.state.totalPages}
+              onPageChange={(e, d) => this.setState({ page: d.activePage })}
+            />
+          ) : null}
+          <Divider hidden />
+          <Divider hidden />
+          <Divider hidden />
+          <Divider hidden />
+          <Divider hidden />
+        </Container>
       </Container>
     );
   }
 
-  reject(id) {
+  reject(id, msg) {
     console.log(id);
+    console.log(msg);
 
     if (!id) {
       toast.error('Noe gikk galt, prøv igjen', {

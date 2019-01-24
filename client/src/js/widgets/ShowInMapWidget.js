@@ -20,21 +20,17 @@ export class ShowInMapWidget extends Component {
     let la;
     let cent;
     if (this.props.latlng.length > 2) {
-      console.log(this.props.latlng.length);
       la = this.props.latlng.reduce((lat, latn) => {
         return [lat[0] + latn[0], lat[1] + latn[1]];
       });
 
       cent = [la[0] / this.props.latlng.length, la[1] / this.props.latlng.length];
     } else {
-      console.log(this.props.latlng);
       cent = this.props.latlng[0];
     }
 
     if (this.props.mapOnly) {
-      console.log(this.props.pointer);
       const mouseStyle = this.props.pointer ? 'mapPointer' : '';
-      console.log(cent);
       return (
         <Map
           ref={this.mapRef}

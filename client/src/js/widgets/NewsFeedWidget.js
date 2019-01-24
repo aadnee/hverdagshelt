@@ -130,8 +130,6 @@ export class NewsFeedWidget extends Component {
 
   getNews() {
     this.setState({ loading: true });
-    console.log(this.state.selectedMunicipals);
-    console.log(this.state.selectedCategories);
     setTimeout(() => {
       const munsearch =
         this.state.selectedMunicipals.length > 0
@@ -142,13 +140,9 @@ export class NewsFeedWidget extends Component {
           ? this.state.selectedCategories
           : this.state.categories.map(c => c.key);
 
-      console.log(munsearch);
-      console.log(catsearch);
-
       newsService
         .getFilteredNews(munsearch, catsearch, 0, 0)
         .then(res => {
-          console.log(res);
           if (res.success) {
             this.setState({ news: res.data, loading: false });
           } else {
@@ -241,7 +235,6 @@ export class NewsFeedWidget extends Component {
   };
 
   render() {
-    console.log(this.state.subs);
     if (this.props.newsOnly) {
       return <>{this.displayNews()}</>;
     } else if (!this.state.ready) {
