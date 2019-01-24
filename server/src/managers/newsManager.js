@@ -1,4 +1,4 @@
-import { News, Users, Uploads } from '../models.js';
+import { News, Users, Uploads, Categories } from '../models.js';
 import mailManager from './mailManager';
 
 module.exports = {
@@ -99,8 +99,8 @@ module.exports = {
 
   getFilteredNews: function(municipalIds, categoryIds, page, limit, callback) {
     News.findAll({
-      include: [{ model: Uploads }],
-      where: { municipalId: municipalIds, categoryId: categoryIds, status: 2 },
+      include: [{ model: Uploads }, { attributes: [], model: Categories, where: { parentId: categoryIds } }],
+      where: { municipalId: municipalIds, status: 2 },
       offset: page == 0 ? null : (page - 1) * limit,
       limit: limit == 0 ? null : limit,
       order: [['id', 'DESC']]
