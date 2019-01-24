@@ -44,9 +44,16 @@ export class PageController extends Component {
   }
 
   componentWillMount() {
+    const ckie = Cookies.get('token') || false;
+    console.log(ckie);
     if (Cookies.get('token') && this.state.user == null) {
       userService.getMe().then(res => {
-        if (res.success) this.setState({ user: res.data, renderReady: true });
+        console.log(res);
+        if (res.success) {
+          this.setState({ user: res.data, renderReady: true });
+        } else {
+          this.setState({ user: null, renderReady: true });
+        }
       });
     } else {
       this.setState({ renderReady: true });
@@ -62,8 +69,14 @@ export class PageController extends Component {
       console.log(res);
       if (res.success) {
         userService.getMe().then(res => {
-          this.setState({ user: res.data });
+          if (res.success) {
+            this.setState({ user: res.data });
+          } else {
+            toast.error('Noe gikk galt, prøv igjen senere.');
+          }
         });
+      } else {
+        toast.error('Brukernavn eller passord er feil.');
       }
     });
   };
