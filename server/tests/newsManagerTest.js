@@ -91,3 +91,18 @@ describe('Get filtered News', () => {
     });
   });
 });
+
+// Test for finding archived news
+describe('Get archived News', () => {
+  it('correct data', done => {
+    newsManager.getArchivedNews(1, function(news) {
+      expect({
+        success: news.success
+      }).toEqual({
+        success: true
+      });
+      expect(news.data).toHaveLength(0);
+      done();
+    });
+  });
+});
