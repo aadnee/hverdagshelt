@@ -40,7 +40,7 @@ module.exports = {
         );
         callback({
           success: true,
-          message: { en: 'Ticket sent.', no: 'Varselen ble sent.' },
+          message: { en: 'Ticket sent.', no: 'Varslingen ble sendt.' },
           id: res.id
         });
       },
@@ -77,7 +77,7 @@ module.exports = {
       res =>
         callback({
           success: true,
-          message: { en: 'Ticket saved.', no: 'Varselen ble lagret.' }
+          message: { en: 'Ticket saved.', no: 'Varslingen ble lagret.' }
         }),
       err => callback({ success: false, message: err })
     );
@@ -171,7 +171,7 @@ module.exports = {
     Tickets.update({ status: 5 }, { where: { id: ticketId, userId: userId } }).then(
       res => {
         if (res != 0) {
-          callback({ success: true, message: { en: 'Ticket removed.', no: 'Varsel ble trukket tilbake.' } });
+          callback({ success: true, message: { en: 'Ticket removed.', no: 'Varslingen ble trukket tilbake.' } });
         } else {
           callback({
             success: false,
