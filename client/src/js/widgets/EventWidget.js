@@ -15,7 +15,7 @@ export class EventWidget extends Component {
   }
 
   close() {
-    this.setState({ renderMap: false });
+    this.setState({ renderMap: false, openMap: false });
   }
 
   render() {
@@ -37,22 +37,23 @@ export class EventWidget extends Component {
                 <p>{event.description}</p>
               </Grid.Column>
               <Grid.Column width={8} align="right" only="tablet computer">
-                <ShowInMapWidget latlng={area} mapOnly />
+                <span onClick={() => this.setState({ renderMap: true, openMap: true })}>
+                  <ShowInMapWidget latlng={area} mapOnly pointer />
+                </span>
               </Grid.Column>
             </Grid>
           </Segment>
           <Segment basic>
             <Grid stackable>
               Hendelses-adresse: {event.address},
+              <span className="showInMap" onClick={() => this.setState({ renderMap: true, openMap: true })}>
+                vis i kart
+              </span>
               <ShowInMapWidget
                 draggable
+                open={this.state.openMap}
                 callback={this.close}
                 renderMap={this.state.renderMap}
-                button={
-                  <span className="showInMap" onClick={() => this.setState({ renderMap: true })}>
-                    vis i kart
-                  </span>
-                }
                 latlng={area}
               />
             </Grid>

@@ -25,8 +25,8 @@ export class NewsFeedWidget extends Component {
       selectedCategories: [],
       news: [],
       subs: [],
-      page: 2,
-      limit: 3,
+      page: 0,
+      limit: 0,
       empty: false,
       ready: false
     };
@@ -167,14 +167,7 @@ export class NewsFeedWidget extends Component {
       .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, this.state.page, this.state.limit)
       .then(res => {
         if (res.data.length == 0) {
-          toast.warning('Ingen flere nyheter å laste', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true
-          });
+          toast.warning('Ingen flere nyheter å laste');
           this.setState({ empty: true });
         } else {
           this.setState({ news: this.state.news.concat(res.data), page: this.state.page + 1 });
