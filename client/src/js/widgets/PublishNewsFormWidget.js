@@ -296,7 +296,7 @@ export class PublishNewsFormWidget extends Component {
                     </Grid>
                   </Form.Field>
                 ) : null}*/}
-
+                {/*}
                 <Form.Field>
                   <Grid>
                     <Grid.Column>
@@ -311,7 +311,7 @@ export class PublishNewsFormWidget extends Component {
                     </Grid.Column>
                   </Grid>
                 </Form.Field>
-
+*/}
                 <Button.Group fluid>
                   <Button onClick={() => this.props.close()}>Avbryt</Button>
                   <Button

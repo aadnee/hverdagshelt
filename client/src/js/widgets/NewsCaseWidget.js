@@ -94,6 +94,7 @@ export class NewsCaseWidget extends Component {
 
   render() {
     const newscase = this.props.newscase;
+    console.log(newscase);
     const dateInfo = Consumer._currentValue.convDbString(newscase.createdAt);
     return (
       <Segment color="blue" fluid="true">

@@ -155,7 +155,7 @@ class CompanyOptions extends Component {
     return (
       <Menu borderless fluid inverted vertical size="large" color={menuColor}>
         <Header as="h3" inverted>
-          Bedrift:
+          {Consumer._currentValue.user.name}
         </Header>
         <NavLink exact to="/assignments" activeClassName="active" className="ui item">
           Mine oppdrag
