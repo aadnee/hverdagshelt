@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { List, Button, Modal } from 'semantic-ui-react';
-import { DeleteUserWidget } from './DeleteUserWidget';
 import { AdminRegisterWidget } from './AdminRegisterWidget';
 import { EditUserWidget } from './EditUserWidget';
 import { userService } from '../services/UserServices';
