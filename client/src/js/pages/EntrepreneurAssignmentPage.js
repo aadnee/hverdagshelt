@@ -8,6 +8,8 @@ import { companyService } from '../services/CompanyServices';
 import { AssignmentWidget } from '../widgets/AssignmentWidget';
 import { ActiveAssignmentWidget } from '../widgets/ActiveAssignmentWidget';
 
+import { toast } from 'react-toastify';
+
 export class EntrepreneurAssignmentPage extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +44,6 @@ export class EntrepreneurAssignmentPage extends Component {
 
   componentWillMount() {
     companyService.getTasks().then(res => {
-      console.log(res);
       this.setState({ assignments: res.res });
     });
   }
@@ -72,13 +73,15 @@ export class EntrepreneurAssignmentPage extends Component {
         render: () => (
           <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
             {this.state.assignments.map((asg, i) =>
-              asg.companyStatus === 2 ? <ActiveAssignmentWidget
+              asg.companyStatus === 2 ? (
+                <ActiveAssignmentWidget
                   handleStatus={this.handleStatus.bind(this, asg.id)}
                   handleDelete={this.handleDelete.bind(this, asg.id)}
                   assignment={asg}
                   newsOnly
-                  key={i} />
-                  : null
+                  key={i}
+                />
+              ) : null
             )}
           </Tab.Pane>
         )

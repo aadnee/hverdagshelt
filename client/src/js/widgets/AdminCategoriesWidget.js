@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import { Grid, Segment, List, Icon, Button, Header, Modal, Form } from 'semantic-ui-react';
+import { Grid, Segment, List, Icon, Button, Header, Modal, Form, Dropdown } from 'semantic-ui-react';
 import { categoryService } from '../services/CategoryServices';
 import { toast } from 'react-toastify';
 
@@ -15,9 +15,47 @@ export class AdminCategoriesWidget extends Component {
       mainCategory: '',
       subCategory: '',
       openNewCategories: false,
-      newName: ''
+      edit: '',
+      name: '',
+      categoriesModal: false
     };
   }
+
+  deleteCat = cat => {
+    if (cat === 'main') {
+      this.props.deleteCat(this.state.mainCategory);
+      this.setState({ mainCategory: '' });
+    } else {
+      this.props.deleteCat(this.state.subCategory);
+      this.setState({ subCategory: '' });
+    }
+  };
+
+  openModalNewName = edit => {
+    if (edit === 'mainEdit' && this.state.mainCategory) {
+      this.setState({ categoriesModal: true, edit: edit, name: this.state.mainCategory.name });
+    }
+    if (edit === 'subEdit' && this.state.subCategory) {
+      this.setState({ categoriesModal: true, edit: edit, name: this.state.subCategory.name });
+    }
+    if (edit === 'newMainCat') {
+      this.setState({ categoriesModal: true, edit: edit, name: '' });
+    }
+    if (edit === 'newSubCat') {
+      this.setState({ categoriesModal: true, edit: edit, name: '' });
+    }
+  };
+
+  closeModalNewName = () => {
+    this.setState({ categoriesModal: false });
+  };
+
+  editCat = (cat, newName) => {
+    console.log(cat);
+    this.props.editCat(cat, newName);
+    this.closeModalNewName();
+    this.setState({ mainCategory: '', subCategory: '' });
+  };
 
   selectSubCat = currentSubCat => {
     this.setState({ subCategory: currentSubCat });
@@ -37,118 +75,153 @@ export class AdminCategoriesWidget extends Component {
     }
   };
 
-  handleChange = (name, value) => this.setState({ [name]: value });
+  handleChange = (name, value) => {
+    console.log(name, value);
+    this.setState({ [name]: value });
+  };
 
-  handleAddCategory = () => {
-    console.log();
-    this.state.mainCategory
-      ? this.props.addCategory(this.state.newName, this.state.mainCategory.id)
-      : this.props.addCategory(this.state.newName, null);
-    this.setState({ newName: '', openNewCategories: false });
+  handleAddCategory = type => {
+    if (type === 'main') {
+      this.props.addCat(this.state.name, null);
+    } else {
+      this.props.addCat(this.state.name, this.state.mainCategory.id);
+    }
+    this.closeModalNewName();
   };
 
   render() {
     return (
       <div>
-        <Grid columns="equal">
-          <Grid.Column width={6}>
-            <Segment>
-              <Header as="h3">Hovedkategori: </Header>
-              <List divided relaxed size="large">
-                <List.Item>
-                  <List.Content>
-                    <Button inverted color="green" fluid onClick={() => this.openModalAddCategory(true)}>
-                      Legg til hovedkategori
-                    </Button>
-                  </List.Content>
-                </List.Item>
-                {this.props.categories
-                  ? this.props.categories.map((mainCat, keyId) => (
-                      <ListItemCategoriesWidget
-                        func={this.selectMainCat.bind(this, mainCat)}
-                        category={mainCat}
-                        key={keyId}
-                      />
-                    ))
-                  : null}
-              </List>
-            </Segment>
-          </Grid.Column>
-          <Grid.Column width={10}>
-            <Segment>
-              <Header as="h3">Underkategorier: </Header>
-              <List divided relaxed size="large">
-                {this.state.mainCategory ? (
-                  <List.Item>
-                    <List.Content>
-                      <Button inverted color="green" fluid onClick={() => this.openModalAddCategory(false)}>
-                        Legg til underkategorier i {this.state.mainCategory.name}
-                      </Button>
-                    </List.Content>
-                  </List.Item>
-                ) : null}
-                {this.state.mainCategory.subs
-                  ? this.state.mainCategory.subs.map((subCat, keyId) => (
-                      <ListItemCategoriesWidget
-                        func={this.selectSubCat.bind(this, subCat)}
-                        category={subCat}
-                        key={keyId}
-                      />
-                    ))
-                  : null}
-              </List>
-            </Segment>
-          </Grid.Column>
-        </Grid>
-        <Modal size="tiny" open={this.state.openNewCategories} onClose={this.close}>
-          <Modal.Header>Velg navn på ny kategori:</Modal.Header>
+        <Segment>
+          <Header as="h3">
+            Hovedkategori:
+            <Button.Group floated="right">
+              <Button positive content="Rediger" onClick={() => this.openModalNewName('mainEdit')} />
+              <Button
+                negative
+                content="Slett"
+                onClick={() => {
+                  this.deleteCat('main');
+                }}
+              />
+            </Button.Group>
+          </Header>
+
+          <List divided relaxed size="large">
+            <List.Item>
+              <List.Content>
+                <Button inverted color="green" fluid onClick={() => this.openModalNewName('newMainCat')}>
+                  Legg til hovedkategori
+                </Button>
+              </List.Content>
+            </List.Item>
+
+            {this.props.categories ? (
+              <Dropdown
+                placeholder="Velg hovedkategori"
+                fluid
+                search
+                selection
+                onChange={(event, data) => {
+                  this.props.categories.find(c => (c.id === data.value ? this.handleChange('mainCategory', c) : null));
+                }}
+                options={this.props.categories}
+              />
+            ) : null}
+          </List>
+        </Segment>
+        {this.state.mainCategory ? (
+          <Segment>
+            <Header as="h3">
+              Underkategorier:
+              <Button.Group floated="right">
+                <Button positive content="Rediger" onClick={() => this.openModalNewName('subEdit')} />
+                <Button negative content="Slett" onClick={this.deleteCat} />
+              </Button.Group>
+            </Header>
+            <List divided relaxed size="large">
+              <List.Item>
+                <List.Content>
+                  <Button inverted color="green" fluid onClick={() => this.openModalNewName('newSubCat')}>
+                    Legg til underkategorier i {this.state.mainCategory.name}
+                  </Button>
+                </List.Content>
+              </List.Item>
+              {this.state.mainCategory.subs ? (
+                <Dropdown
+                  placeholder="Velg underkategori"
+                  fluid
+                  search
+                  onChange={(event, data) => {
+                    this.state.mainCategory.subs.find(c =>
+                      c.id === data.value ? this.handleChange('subCategory', c) : null
+                    );
+                  }}
+                  selection
+                  options={this.state.mainCategory.subs}
+                />
+              ) : null}
+            </List>
+          </Segment>
+        ) : null}
+
+        <Modal size="tiny" open={this.state.categoriesModal} onClose={this.closeModalNewName}>
+          <Modal.Header>Velg navn på kategori:</Modal.Header>
           <Modal.Content>
             <Header as="h3">Navn:</Header>
             <Form.Input
               fluid
               placeholder="Name"
               name="newName"
-              value={this.state.newName}
+              value={this.state.name}
               onChange={(event, data) => {
-                this.handleChange('newName', data.value);
+                this.handleChange('name', data.value);
               }}
             />
           </Modal.Content>
           <Modal.Actions>
-            <Button onClick={() => this.setState({ openNewCategories: false })} negative>
+            <Button onClick={() => this.setState({ categoriesModal: false })} negative>
               Avbryt
             </Button>
-            <Button
-              positive
-              onClick={this.handleAddCategory}
-              icon="checkmark"
-              labelPosition="right"
-              content="Legg til"
-            />
+            {this.state.edit === 'mainEdit' ? (
+              <Button
+                positive
+                onClick={() => this.editCat(this.state.mainCategory, this.state.name)}
+                icon="checkmark"
+                labelPosition="right"
+                content="Rediger"
+              />
+            ) : null}
+            {this.state.edit === 'subEdit' ? (
+              <Button
+                positive
+                onClick={() => this.editCat(this.state.subCategory, this.state.name)}
+                icon="checkmark"
+                labelPosition="right"
+                content="Rediger"
+              />
+            ) : null}
+            {this.state.edit === 'newMainCat' ? (
+              <Button
+                positive
+                onClick={() => this.handleAddCategory('main')}
+                icon="checkmark"
+                labelPosition="right"
+                content="Legg til hovedkategori"
+              />
+            ) : null}
+            {this.state.edit === 'newSubCat' ? (
+              <Button
+                positive
+                onClick={() => this.handleAddCategory('sub')}
+                icon="checkmark"
+                labelPosition="right"
+                content="Legg til underkategori"
+              />
+            ) : null}
           </Modal.Actions>
         </Modal>
       </div>
-    );
-  }
-}
-
-export class ListItemCategoriesWidget extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      active: false
-    };
-  }
-
-  render() {
-    return (
-      <List.Item>
-        <List.Content>
-          <Button inverted color="blue" fluid onClick={this.props.func}>
-            {this.props.category.name}
-          </Button>
-        </List.Content>
-      </List.Item>
     );
   }
 }
