@@ -50,10 +50,9 @@ export class EmployeeManageNewsPage extends Component {
         //change Cookies.get('municipalId) with Consumer._currentValue.user.municipalId
         newsService.getFilteredNews(1, catIds, 0, 0).then(res => {
           news = res.data;
-          res.data.map(n => {
-            if (n.companyId) {
-              let company = companies.map(comp => comp.id === n.companyId);
-              console.log(company);
+          res.data.map(news => {
+            if (news.companyId) {
+              let company = companies.find(comp => comp.id === news.companyId);
               executedBy = company.name;
             }
           });
@@ -107,7 +106,7 @@ export class EmployeeManageNewsPage extends Component {
         let news = this.state.news;
         news[index].companyId = id;
         this.setState({ news: news });
-
+        this.forceUpdate();
         toast.success(res.message.no);
         return true;
       } else {
