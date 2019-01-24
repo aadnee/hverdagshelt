@@ -220,3 +220,34 @@ describe('Change password', () => {
     });
   });
 });
+
+describe('User statistics testing', () => {
+  it('correct data', done => {
+    userManager.userIncrease(1, 2019, null, 4, function(result) {
+      expect({
+        success: result.success,
+        start: result.start,
+        end: result.end,
+        increase: result.increase
+      }).toEqual({
+        success: true,
+        start: 0,
+        end: 4,
+        increase: 4
+      });
+      done();
+    });
+  });
+  it('incorrect data', done => {
+    userManager.userIncrease(1, null, null, 4, function(result) {
+      expect({
+        success: result.success,
+        message: result.message
+      }).toEqual({
+        success: false,
+        message: 'MunicipalId and year is required'
+      });
+      done();
+    });
+  });
+});
