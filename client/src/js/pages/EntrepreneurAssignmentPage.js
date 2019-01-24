@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Container, Grid, Header, Divider, Segment, Tab, Button } from 'semantic-ui-react';
+import { Container, Grid, Header, Divider, Segment, Tab, Button, Message, Icon } from 'semantic-ui-react';
 
 import { companyService } from '../services/CompanyServices';
 
@@ -51,37 +51,89 @@ export class EntrepreneurAssignmentPage extends Component {
   render() {
     let panes = [
       {
-        menuItem: 'Oppdragsforespørsler',
+        menuItem: 'Forespørsler',
         render: () => (
-          <Tab.Pane className="companyAssignmentTab frontPageFeedTab">
-            {this.state.assignments.map((asg, i) =>
-              asg.companyStatus === 1 ? (
-                <AssignmentWidget
-                  handleStatus={this.handleStatus.bind(this, asg.id)}
-                  handleDelete={this.handleDelete.bind(this, asg.id)}
-                  assignment={asg}
-                  newsOnly
-                  key={i}
-                />
-              ) : null
+          <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
+            {console.log('status 1: ' + this.state.assignments.filter(res => res.companyStatus === 1).length)}
+            {this.state.assignments.filter(res => res.companyStatus === 1).length > 0 ? (
+              this.state.assignments.map((asg, i) =>
+                asg.companyStatus === 1 ? (
+                  <AssignmentWidget
+                    handleStatus={this.handleStatus.bind(this, asg.id)}
+                    handleDelete={this.handleDelete.bind(this, asg.id)}
+                    assignment={asg}
+                    newsOnly
+                    key={i}
+                  />
+                ) : null
+              )
+            ) : (
+              <Message icon success>
+                <Icon name="folder open outline" />
+                <Message.Content>
+                  <Message.Header>Tomt!</Message.Header>
+                  Det finnes ingen oppdragsforespørsler.
+                </Message.Content>
+              </Message>
             )}
           </Tab.Pane>
         )
       },
       {
-        menuItem: 'Aktive oppdrag',
+        menuItem: 'Aktiv',
         render: () => (
           <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
-            {this.state.assignments.map((asg, i) =>
-              asg.companyStatus === 2 ? (
-                <ActiveAssignmentWidget
-                  handleStatus={this.handleStatus.bind(this, asg.id)}
-                  handleDelete={this.handleDelete.bind(this, asg.id)}
-                  assignment={asg}
-                  newsOnly
-                  key={i}
-                />
-              ) : null
+            {console.log('status 2: ' + this.state.assignments.filter(res => res.companyStatus === 2).length)}
+            {this.state.assignments.filter(res => res.companyStatus === 2).length > 0 ? (
+              this.state.assignments.map((asg, i) =>
+                asg.companyStatus === 2 ? (
+                  <ActiveAssignmentWidget
+                    handleStatus={this.handleStatus.bind(this, asg.id)}
+                    handleDelete={this.handleDelete.bind(this, asg.id)}
+                    assignment={asg}
+                    newsOnly
+                    key={i}
+                  />
+                ) : null
+              )
+            ) : (
+              <Message icon success>
+                <Icon name="folder open outline" />
+                <Message.Content>
+                  <Message.Header>Tomt!</Message.Header>
+                  Det finnes ingen aktive oppdrag
+                </Message.Content>
+              </Message>
+            )}
+          </Tab.Pane>
+        )
+      },
+      {
+        menuItem: 'Fullført',
+        render: () => (
+          <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
+            {console.log('status 3: ' + this.state.assignments.filter(res => res.companyStatus === 3).length)}
+            {this.state.assignments.filter(res => res.companyStatus === 3).length > 0 ? (
+              this.state.assignments.map((asg, i) =>
+                asg.companyStatus === 3 ? (
+                  <AssignmentWidget
+                    handleStatus={this.handleStatus.bind(this, asg.id)}
+                    handleDelete={this.handleDelete.bind(this, asg.id)}
+                    assignment={asg}
+                    newsOnly
+                    disabled
+                    key={i}
+                  />
+                ) : null
+              )
+            ) : (
+              <Message icon success>
+                <Icon name="folder open outline" />
+                <Message.Content>
+                  <Message.Header>Tomt!</Message.Header>
+                  Det finnes ingen fullførte oppdrag.
+                </Message.Content>
+              </Message>
             )}
           </Tab.Pane>
         )

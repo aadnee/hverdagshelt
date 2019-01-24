@@ -10,6 +10,7 @@ import multer from 'multer';
 import cors from 'cors';
 import pdf from 'html-pdf';
 import ejs from 'ejs';
+import utmObj from 'utm-latlng';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
@@ -19,7 +20,43 @@ import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
 import eventManager from './managers/eventManager';
 import { syncDatabase } from './models';
-syncDatabase(res => console.log(res));
+syncDatabase(res => {
+  console.log(res);
+  fs.readFile('src/testdata/vegvesen.json', 'utf8', function(err, data) {
+    if (err) throw err;
+    let reps = JSON.parse(data).Reports;
+    let utm = new utmObj();
+    reps.map(rep => {
+      let coords = utm.convertUtmToLatLng(rep.Easting, rep.Northing, 33, 'N');
+      if (rep.Status == 'new') {
+        ticketManager.addTicket(
+          rep.Subject,
+          'Beskrivelse her',
+          coords.lat,
+          coords.lng,
+          'Hjemme hos ' + rep.ReporterName,
+          7,
+          1,
+          1,
+          [],
+          3,
+          function(result) {}
+        );
+      } else {
+        newsManager.addArticle(
+          rep.Subject,
+          'Beskrivelse her',
+          7,
+          coords.lat,
+          coords.lng,
+          'Hjemme hos ' + rep.ReporterName,
+          1,
+          function() {}
+        );
+      }
+    });
+  });
+});
 
 const public_path = path.join(__dirname, '/../../client/public');
 
@@ -43,39 +80,46 @@ app.use(cookieParser());
 app.use(cors());
 
 app.get('/api/pdf', (req, res) => {
-  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
-    ejs.renderFile('./pdfs/file.ejs', { categories: result.data, start: result.start, end: result.end }, function(
-      err,
-      html
-    ) {
-      let config = {
-        format: 'A4',
-        orientation: 'portrait',
-        border: {
-          top: '10mm',
-          right: '30mm',
-          bottom: '10mm',
-          left: '30mm'
-        },
-        timeout: 30000,
-        renderDelay: 2000
-      };
-      let filepath = './pdfs/file.pdf';
-      pdf.create(html, config).toFile(filepath, function(err, file) {
-        res.json({ filename: file.filename });
-      });
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(cats) {
+    userManager.userIncrease(1, 2019, null, 4, function(users) {
+      ejs.renderFile(
+        './pdfs/file.ejs',
+        { categories: cats.data, users: users, start: cats.start, end: cats.end },
+        function(err, html) {
+          let config = {
+            format: 'A4',
+            orientation: 'portrait',
+            border: {
+              top: '0mm',
+              right: '30mm',
+              bottom: '10mm',
+              left: '30mm'
+            },
+            timeout: 30000,
+            renderDelay: 2000
+          };
+          let filepath = './pdfs/file.pdf';
+          pdf.create(html, config).toFile(filepath, function(err, file) {
+            res.json({ filename: file.filename });
+          });
+        }
+      );
     });
   });
 });
 
 app.get('/api/pdf/html', (req, res) => {
   let municipalId = 1;
-  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
-    ejs.renderFile('./pdfs/file.ejs', { categories: result.data, start: result.start, end: result.end }, function(
-      err,
-      html
-    ) {
-      res.send(html);
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(cats) {
+    userManager.userIncrease(1, 2019, null, 4, function(users) {
+      console.log(users);
+      ejs.renderFile(
+        './pdfs/file.ejs',
+        { categories: cats.data, users: users, start: cats.start, end: cats.end },
+        function(err, html) {
+          res.send(html);
+        }
+      );
     });
   });
 });
@@ -83,6 +127,12 @@ app.get('/api/pdf/html', (req, res) => {
 app.post('/api/events/filter', (req, res) => {
   let b = req.body;
   eventManager.getFilteredEvents(b.municipalIds, b.page, b.limit, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/events', (req, res) => {
+  eventManager.getEvents(function(result) {
     res.json(result);
   });
 });
@@ -122,6 +172,12 @@ app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
   });
 });
 
+app.get('/api/news', (req, res) => {
+  newsManager.getNews(function(result) {
+    res.json(result);
+  });
+});
+
 app.post('/api/news/filter', (req, res) => {
   let b = req.body;
   newsManager.getFilteredNews(b.municipalIds, b.categoryIds, b.page, b.limit, function(result) {
@@ -139,7 +195,22 @@ app.post('/api/news/archive', (req, res) => {
 app.put('/api/news/:id', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  newsManager.updateNews(p.id, b.title, b.description, b.status, b.categoryId, b.companyId, function(result) {
+  newsManager.updateNews(p.id, b.title, b.description, b.categoryId, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/news/:id/finish', ensureEmployee, (req, res) => {
+  let p = req.params;
+  newsManager.finishNews(p.id, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/news/:id/company', ensureEmployee, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  newsManager.assignCompany(p.id, b.companyId, function(result) {
     res.json(result);
   });
 });
@@ -156,9 +227,11 @@ app.post('/api/news', ensureEmployee, (req, res) => {
 app.post('/api/login', (req, res) => {
   let b = req.body;
   userManager.login(b.email, b.password, function(result) {
-    res.cookie('token', result.token);
-    res.cookie('rank', result.rank);
-    res.cookie('municipalId', result.municipalId);
+    if (result.token) {
+      res.cookie('token', result.token);
+      res.cookie('rank', result.rank);
+      res.cookie('municipalId', result.municipalId);
+    }
     res.json(result);
   });
 });
@@ -306,7 +379,7 @@ app.post('/api/companies', ensureEmployee, (req, res) => {
 app.put('/api/companies/:id', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  companyManager.editCompany(b.name, b.email, b.phone, b.municipalId, p.id, function(result) {
+  companyManager.editCompany(b.name, b.email, b.phone, b.municipalId, b.notifications, p.id, function(result) {
     res.json(result);
   });
 });
@@ -570,6 +643,7 @@ function ensureLogin(req, res, next) {
     } else {
       res.clearCookie('token');
       res.clearCookie('rank');
+      res.clearCookie('municipalId');
       res.sendStatus(403);
     }
   });

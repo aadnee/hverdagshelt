@@ -27,7 +27,8 @@ class CompanyServices {
       name: name,
       email: email,
       phone: phone,
-      municipalId: municipalId
+      municipalId: municipalId,
+      notifications: false
     });
   }
 

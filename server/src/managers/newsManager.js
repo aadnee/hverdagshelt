@@ -1,4 +1,4 @@
-import { News, Users, Uploads } from '../models.js';
+import { News, Users, Uploads, Categories } from '../models.js';
 import mailManager from './mailManager';
 
 module.exports = {
@@ -23,7 +23,93 @@ module.exports = {
     );
   },
 
-  updateNews: function(id, title, description, status, categoryId, companyId, callback) {
+  finishNews: function(id, callback) {
+    News.findOne({ where: { id: id } }).then(
+      article => {
+        if (article == null) {
+          callback({
+            success: false,
+            message: { en: 'Article not found.', no: 'Artikkelen kunne ikke bli funnet.' }
+          });
+        } else {
+          News.update(
+            {
+              status: 3
+            },
+            {
+              where: { id: id }
+            }
+          ).then(
+            res => {
+              // Send mail alerting subscribers
+              News.findOne({
+                attributes: ['title'],
+                include: [{ model: Users, attributes: ['email', 'notifications'], required: true }],
+                where: { id: id }
+              }).then(
+                res => {
+                  if (res != null) {
+                    let title = res.title;
+                    res.users.map(user => {
+                      user.notifications
+                        ? mailManager.send(
+                            'En nyhet du følger er fullført',
+                            '<h3>"' +
+                              title +
+                              '" ble markert som fullført.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
+                            user.email
+                          )
+                        : null;
+                    });
+                  }
+                  callback({
+                    success: true,
+                    message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
+                  });
+                },
+                err => callback({ success: false, message: err })
+              );
+            },
+            err => callback({ success: false, message: err })
+          );
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  assignCompany: function(id, companyId, callback) {
+    News.findOne({ where: { id: id } }).then(
+      article => {
+        if (article == null) {
+          callback({
+            success: false,
+            message: { en: 'Article not found.', no: 'Artikkelen kunne ikke bli funnet.' }
+          });
+        } else {
+          News.update(
+            {
+              companyId: companyId
+            },
+            {
+              where: { id: id }
+            }
+          ).then(
+            res => {
+              callback({
+                success: true,
+                message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
+              });
+            },
+            err => callback({ success: false, message: err })
+          );
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  updateNews: function(id, title, description, categoryId, callback) {
     News.findOne({ where: { id: id } }).then(
       article => {
         if (article == null) {
@@ -36,51 +122,17 @@ module.exports = {
             {
               title: title,
               description: description,
-              status: status,
-              categoryId: categoryId,
-              companyId: companyId
+              categoryId: categoryId
             },
             {
               where: { id: id }
             }
           ).then(
             res => {
-              if (article.status != status) {
-                // Send mail alerting subscribers
-                News.findOne({
-                  attributes: ['title'],
-                  include: [{ model: Users, attributes: ['email', 'notifications'], required: true }],
-                  where: { id: id }
-                }).then(
-                  res => {
-                    if (res != null) {
-                      console.log(res);
-                      let title = res.title;
-                      res.users.map(user => {
-                        user.notifications
-                          ? mailManager.send(
-                              'En nyhet du følger er fullført',
-                              '<h3>"' +
-                                title +
-                                '" ble markert som fullført.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
-                              user.email
-                            )
-                          : null;
-                      });
-                    }
-                    callback({
-                      success: true,
-                      message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
-                    });
-                  },
-                  err => callback({ success: false, message: err })
-                );
-              } else {
-                callback({
-                  success: true,
-                  message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
-                });
-              }
+              callback({
+                success: true,
+                message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
+              });
             },
             err => callback({ success: false, message: err })
           );
@@ -90,10 +142,19 @@ module.exports = {
     );
   },
 
+  getNews: function(callback) {
+    var sevenDays = new Date(Date.now() - 60 * 60 * 24 * 7 * 1000);
+    News.findAll({
+      where: { $or: [{ status: 2 }, { status: 3, updatedAt: { $gte: sevenDays } }] },
+      include: [{ model: Uploads }],
+      order: [['id', 'DESC']]
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+  },
+
   getFilteredNews: function(municipalIds, categoryIds, page, limit, callback) {
     News.findAll({
-      include: [{ model: Uploads }],
-      where: { municipalId: municipalIds, categoryId: categoryIds, status: 2 },
+      include: [{ model: Uploads }, { attributes: [], model: Categories, where: { parentId: categoryIds } }],
+      where: { municipalId: municipalIds, status: 2 },
       offset: page == 0 ? null : (page - 1) * limit,
       limit: limit == 0 ? null : limit,
       order: [['id', 'DESC']]
@@ -103,7 +164,7 @@ module.exports = {
   getArchivedNews: function(municipalIds, callback) {
     News.findAll({
       include: [{ model: Uploads }],
-      where: { municipalId: municipalIds, status: 5 },
+      where: { municipalId: municipalIds, status: 3 },
       order: [['updatedAt', 'DESC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }

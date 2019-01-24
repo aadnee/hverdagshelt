@@ -1,32 +1,38 @@
 import * as React from 'react';
-import { List, Button, Modal } from 'semantic-ui-react';
-import { DeleteUserWidget } from './DeleteUserWidget';
+import { List, Button, Modal, Input } from 'semantic-ui-react';
 import { AdminRegisterWidget } from './AdminRegisterWidget';
 import { EditUserWidget } from './EditUserWidget';
 import { userService } from '../services/UserServices';
 import { companyService } from '../services/CompanyServices';
 import { toast } from 'react-toastify';
+import { MessageWidget } from './MessageWidget';
 
 export class UserComponentListWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       users: [],
+      allUsers: [],
       user: null,
+      selectedName: null,
       regModalOpen: false,
       editModalOpen: false,
       deleteModalOpen: false,
       popupMessage: '',
-      popupSuccess: ''
+      popupSuccess: '',
+      searchValue: ''
     };
     this.handleDelete = this.handleDelete.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
+    this.close = this.close.bind(this);
   }
 
-  setUser = user => {
-    this.setState({ user: user });
-    this.open('editModalOpen');
+  setUser = (user, modal) => {
+    this.setState({ user: user, selectedName: user.name }, () => {
+      this.open(modal);
+      console.log(this.state.user);
+    });
   };
 
   close = modal => {
@@ -40,40 +46,62 @@ export class UserComponentListWidget extends React.Component {
     this.props.usertype
       ? userService.getUsers().then(res => {
           this.setState({
-            users: res.data
+            users: res.data,
+            allUsers: res.data
           });
         })
       : companyService.getCompanies().then(res => {
           this.setState({
-            users: res.data
+            users: res.data,
+            allUsers: res.data
           });
         });
   }
-  handleDelete = id => {
+
+  handleDelete = user => {
     this.props.usertype
-      ? userService.deleteUser(id).then(res => {
-          console.log(res);
-          this.setState({ users: this.state.users.filter(u => u.id !== id) });
+      ? userService.deleteUser(user.id).then(res => {
+          if (res.success) {
+            toast.success(res.message.no);
+
+            this.setState({
+              users: this.state.users.filter(u => u.id !== user.id),
+              allUsers: this.state.users.filter(u => u.id !== user.id)
+            });
+            this.close('deleteModalOpen');
+          } else {
+            toast.error(res.message.no);
+          }
         })
-      : companyService.deleteCompany(id).then(res => {
-          console.log(res);
-          this.setState({ users: this.state.users.filter(u => u.id !== id) });
+      : companyService.deleteCompany(user.id).then(res => {
+          if (res.success) {
+            toast.success(res.message.no);
+            this.setState({
+              users: this.state.users.filter(u => u.id !== user.id),
+              allUsers: this.state.users.filter(u => u.id !== user.id)
+            });
+            this.close('deleteModalOpen');
+          } else {
+            toast.error(res.message.no);
+          }
         });
   };
 
   handleEdit = user => {
-    console.log(user);
     if (this.props.usertype) {
-      console.log('d');
       userService.editUser(user.id, user.name, user.email, user.phone, user.municipalId, user.rank).then(res => {
         console.log(res);
         if (res.success) {
+          //Find old user
+
           this.close('editModalOpen');
           let oldUser = null;
           this.state.users.find((u, i) => {
             user.id === u.id ? (oldUser = i) : null;
           });
           this.state.users[oldUser] = user;
+          this.state.allUsers[oldUser] = user;
+
           toast.success(res.message.no);
           this.forceUpdate();
         } else {
@@ -82,19 +110,16 @@ export class UserComponentListWidget extends React.Component {
       });
     } else {
       companyService.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
-        console.log(res);
         if (res.success) {
           this.close('editModalOpen');
-
+          //Find old user
           let oldUser = null;
-
           this.state.users.find((u, i) => {
             user.id === u.id ? (oldUser = i) : null;
           });
-          console.log(oldUser);
           this.state.users[oldUser] = user;
+          this.state.allUsers[oldUser] = user;
           toast.success(res.message.no);
-
           this.forceUpdate();
         } else {
           toast.error(res.message.no);
@@ -113,7 +138,7 @@ export class UserComponentListWidget extends React.Component {
             this.close('regModalOpen');
             let newArrayUsers = this.state.users;
             newArrayUsers.push(newUser);
-            this.setState({ users: newArrayUsers });
+            this.setState({ users: newArrayUsers, allUsers: newArrayUsers });
             toast.success(res.message.no);
           } else {
             toast.error(res.message.no);
@@ -126,7 +151,7 @@ export class UserComponentListWidget extends React.Component {
 
             let newArrayUsers = this.state.users;
             newArrayUsers.push(newUser);
-            this.setState({ users: newArrayUsers });
+            this.setState({ users: newArrayUsers, allUsers: newArrayUsers });
             toast.success(res.message.no);
           } else {
             toast.error(res.message.no);
@@ -137,15 +162,40 @@ export class UserComponentListWidget extends React.Component {
   render() {
     return (
       <div>
+        <Input
+          fluid
+          icon="search"
+          placeholder="Search..."
+          value={this.state.searchValue}
+          onChange={(event, data) => {
+            this.setState({ searchValue: data.value }, () => {
+              let newArr = [];
+
+              this.state.allUsers.map(user => {
+                console.log(user.name.toLowerCase());
+                console.log(this.state.searchValue);
+                if (user.name.toLowerCase().includes(this.state.searchValue)) {
+                  newArr.push(user);
+                } else {
+                  return null;
+                }
+              });
+              console.log(newArr);
+              this.setState({ users: newArr });
+            });
+          }}
+        />
         <List divided relaxed>
           {this.state.users.map((user, i) => (
             <List.Item key={i}>
               <List.Content floated="right">
                 <Button.Group compact={false}>
-                  <Button color="green" onClick={this.setUser.bind(this, user)}>
-                    Edit
+                  <Button color="green" onClick={this.setUser.bind(this, user, 'editModalOpen')}>
+                    Endre
                   </Button>
-                  <DeleteUserWidget handleDelete={this.handleDelete} user={user} />
+                  <Button color="red" onClick={this.setUser.bind(this, user, 'deleteModalOpen')} inverted>
+                    Slett
+                  </Button>
                 </Button.Group>
               </List.Content>
               <List.Icon name="user" size="large" verticalAlign="middle" />
@@ -156,13 +206,23 @@ export class UserComponentListWidget extends React.Component {
             </List.Item>
           ))}
         </List>
+
+        <MessageWidget
+          size={'tiny'}
+          open={this.state.deleteModalOpen}
+          title={'Sletting av ' + this.state.selectedName}
+          message={'Er du sikker på at du vil slette ' + this.state.selectedName}
+          customFunc={this.handleDelete.bind(this, this.state.user)}
+          callback={this.close}
+          closeParam={'deleteModalOpen'}
+        />
         <Modal
           onClose={() => this.close('editModalOpen')}
           onOpen={() => this.open('editModalOpen')}
           open={this.state.editModalOpen}
           closeIcon
         >
-          <Modal.Header>Redigere Bruker</Modal.Header>
+          <Modal.Header>{this.props.usertype ? 'Rediger bruker' : 'Rediger Bedrift'}</Modal.Header>
           <Modal.Content>
             {this.props.usertype ? (
               <EditUserWidget
@@ -188,7 +248,7 @@ export class UserComponentListWidget extends React.Component {
           closeIcon
         >
           <Modal.Header>
-            <h1>{this.props.user ? 'Registrer bruker' : 'Registrer bedrift'}</h1>
+            <h1>{this.props.usertype ? 'Registrer bruker' : 'Registrer bedrift'}</h1>
           </Modal.Header>
           <Modal.Content>
             {this.props.usertype ? (

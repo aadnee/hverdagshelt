@@ -39,7 +39,7 @@ export class UserReportTicketPage extends Component {
           <Grid className="mapGrid">
             <Grid.Row columns={2} only="computer" className="mapRow">
               <Grid.Column width={10} className="mapRow">
-                <MapWidget onRef={ref => (this.mapWidget = ref)} callback={this.callback} searchControl ticket submit={Consumer._currentValue.ticketSubmit} />
+                <MapWidget onRef={ref => (this.mapWidget = ref)} locate callback={this.callback} searchControl ticket submit={Consumer._currentValue.ticketSubmit} />
               </Grid.Column>
               <Grid.Column width={6} only="computer" className="frontPageFeed">
                 <Divider hidden />
@@ -63,7 +63,7 @@ export class UserReportTicketPage extends Component {
 
             <Grid.Row columns={1} only="mobile tablet" className="mapRow">
               <Grid.Column colSpan={2} className="mapGrid">
-                <MapWidget modal submit={Consumer._currentValue.ticketSubmit} callback={this.callbackFake} />
+                <MapWidget modal locate submit={Consumer._currentValue.ticketSubmit} callback={this.callbackFake} />
               </Grid.Column>
             </Grid.Row>
           </Grid>

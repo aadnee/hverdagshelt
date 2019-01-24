@@ -27,10 +27,14 @@ export class ShowInMapWidget extends Component {
 
       cent = [la[0] / this.props.latlng.length, la[1] / this.props.latlng.length];
     } else {
-      cent = this.props.latlng;
+      console.log(this.props.latlng);
+      cent = this.props.latlng[0];
     }
 
     if (this.props.mapOnly) {
+      console.log(this.props.pointer);
+      const mouseStyle = this.props.pointer ? 'mapPointer' : '';
+      console.log(cent);
       return (
         <Map
           ref={this.mapRef}
@@ -38,8 +42,9 @@ export class ShowInMapWidget extends Component {
           center={cent}
           zoomControl={false}
           scrollWheelZoom={false}
-          zoom={15}
+          zoom={this.props.zoom || 15}
           style={{ height: '200px', width: '200px' }}
+          className={mouseStyle}
         >
           <TileLayer
             url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
@@ -48,15 +53,20 @@ export class ShowInMapWidget extends Component {
           {this.props.latlng.length > 2 ? (
             <Polygon positions={this.props.latlng} />
           ) : (
-            <Marker position={this.props.latlng} />
+            <Marker position={this.props.latlng[0]} />
           )}
         </Map>
       );
     } else {
       return (
-        <Modal trigger={this.props.button} onClose={this.props.callback} closeIcon>
+        <Modal open={this.props.open} onClose={this.props.callback} closeIcon>
           {this.props.renderMap ? (
-            <Map center={cent} ref={this.mapRef} dragging={this.props.draggable ? true : false} zoom={14}>
+            <Map
+              center={cent}
+              ref={this.mapRef}
+              dragging={this.props.draggable ? true : false}
+              zoom={this.props.zoom || 14}
+            >
               <TileLayer
                 url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -64,7 +74,7 @@ export class ShowInMapWidget extends Component {
               {this.props.latlng.length > 2 ? (
                 <Polygon positions={this.props.latlng} />
               ) : (
-                <Marker position={this.props.latlng} />
+                <Marker position={this.props.latlng[0]} />
               )}
             </Map>
           ) : null}

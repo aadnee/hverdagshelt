@@ -4,6 +4,7 @@ import { companyServices } from '../services/CompanyServices';
 import { Button, Container, Dropdown, Image, Input, Modal, Segment, Grid, Form } from 'semantic-ui-react';
 import { USER, COMPANY, EMPLOYEE, ADMIN, USERTYPE } from '../commons';
 import { municipalService } from '../services/MunicipalServices';
+import { toast } from 'react-toastify';
 
 export class EditUserWidget extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ export class EditUserWidget extends Component {
     this.state = {
       name: '',
       email: '',
-      phone: null,
+      phone: '',
       municipalId: '',
       options: [],
 
@@ -46,19 +47,28 @@ export class EditUserWidget extends Component {
     this.setState({ [key]: value });
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    console.log(this.state);
+  }
 
   handle = () => {
-    let editedUser = {
-      id: this.props.user.id,
-      name: this.state.name,
-      email: this.state.email,
-      phone: this.state.phone,
-      municipalId: this.state.municipalId,
-      rank: this.state.rank
-    };
-    console.log(editedUser);
-    this.props.handleEdit(editedUser);
+    if (this.state.name && this.state.email && this.state.phone && this.state.municipalId) {
+      if (this.state.phone.toString().length < 10) {
+        let editedUser = {
+          id: this.props.user.id,
+          name: this.state.name,
+          email: this.state.email,
+          phone: this.state.phone,
+          municipalId: this.state.municipalId,
+          rank: this.state.rank
+        };
+        this.props.handleEdit(editedUser);
+      } else {
+        toast.error('Telefonnummeret kan ikke være lengre enn 9 siffer');
+      }
+    } else {
+      toast.error('Vennligst fyll inn alle felt');
+    }
   };
 
   render() {

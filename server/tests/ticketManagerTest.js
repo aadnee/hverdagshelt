@@ -175,3 +175,33 @@ describe('Withdraw ticket', () => {
     });
   });
 });
+
+// Test for ticket statistics
+describe('Ticket statistics testing', () => {
+  it('correct data', done => {
+    ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
+      expect({
+        success: result.success,
+        start: result.start,
+        end: result.end
+      }).toEqual({
+        success: true,
+        start: '21/01/2019',
+        end: '28/01/2019'
+      });
+      done();
+    });
+  });
+  it('incorrect data', done => {
+    ticketManager.getTicketStatistics(1, null, null, 4, function(result) {
+      expect({
+        success: result.success,
+        message: result.message
+      }).toEqual({
+        success: false,
+        message: 'MunicipalId and year is required'
+      });
+      done();
+    });
+  });
+});

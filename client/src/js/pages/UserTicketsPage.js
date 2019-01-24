@@ -32,36 +32,34 @@ export class UserTicketsPage extends Component {
       toast.error('Vennligst fyll inn alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });
+    } else {
+      ticketService
+        .updateTicket(id, title, description, lat, lng, address, category, municipalId, subscribed, image)
+        .then(res => {
+          if (res.success) {
+            this.setState({ showEditTicket: false });
+            toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
+            //finding index to old ticket
+            let index = -1;
+            this.state.tickets.filter((t, i) => (t.id === id ? (index = i) : null));
+
+            //setting variable to old ticket to new ticket values
+            let ti = this.state.tickets;
+            ti[index].title = title;
+            ti[index].description = description;
+            ti[index].category = category;
+            ti[index].subscribed = subscribed;
+            ti[index].image = image;
+            ti[index].status = status;
+
+            this.setState({ tickets: ti });
+
+            this.close();
+          } else {
+            toast.error(res.message.no, { position: toast.POSITION.TOP_RIGHT });
+          }
+        });
     }
-    console.log(id, title, description, lat, lng, address, category, municipalId, subscribed, image, status);
-    ticketService
-      .updateTicket(id, title, description, lat, lng, address, category, municipalId, subscribed, image)
-      .then(res => {
-        if (res.success) {
-          this.setState({ showEditTicket: false });
-          toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
-          //finding index to old ticket
-          let index = -1;
-          this.state.tickets.filter((t, i) => (t.id === id ? (index = i) : null));
-
-          //setting variable to old ticket to new ticket values
-          let ti = this.state.tickets;
-          ti[index].title = title;
-          ti[index].description = description;
-          ti[index].category = category;
-          ti[index].subscribed = subscribed;
-          ti[index].image = image;
-          ti[index].status = status;
-
-          console.log(ti);
-
-          this.setState({ tickets: ti });
-
-          this.close();
-        } else {
-          toast.error(res.message.no, { position: toast.POSITION.TOP_RIGHT });
-        }
-      });
   };
 
   close = state => {
@@ -74,13 +72,11 @@ export class UserTicketsPage extends Component {
 
   componentWillMount() {
     ticketService.getTickets().then(res => {
-      console.log(res.data);
       this.setState({ tickets: res.data });
     });
   }
 
   deleteTicket(id) {
-    console.log(id);
     if (!id) {
       toast.error('Noe gikk galt, prøv igjen', {
         position: toast.POSITION.TOP_RIGHT
