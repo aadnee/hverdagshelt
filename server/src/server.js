@@ -94,6 +94,12 @@ app.post('/api/events/filter', (req, res) => {
   });
 });
 
+app.get('/api/events', (req, res) => {
+  eventManager.getEvents(function(result) {
+    res.json(result);
+  });
+});
+
 app.post('/api/events', ensureEmployee, (req, res) => {
   let b = req.body;
   eventManager.addEvent(b.title, b.description, b.area, b.address, b.start, b.end, b.municipalId, b.url, function(

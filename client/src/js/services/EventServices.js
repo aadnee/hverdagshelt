@@ -9,6 +9,10 @@ class EventServices {
     });
   }
 
+  getEvents() {
+    return api.get('/api/events');
+  }
+
   addEvent(title, description, area, address, start, end, municipalId, url) {
     return api.post('/api/events', {
       title: title,
