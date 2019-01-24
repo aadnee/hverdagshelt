@@ -35,7 +35,8 @@ export class NewsCaseWidget extends Component {
       messageModalOpen: false,
       companyModalOpen: false,
       company: '',
-      companyOptions: []
+      companyOptions: [],
+      executedBy: ''
     };
     this.close = this.close.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -54,13 +55,9 @@ export class NewsCaseWidget extends Component {
   };
 
   componentWillMount() {
-    companyService.getCompanies().then(res => {
-      let comp = [];
-      res.data.map(company => {
-        comp.push({ key: company.id, value: company.id, text: company.name });
-      });
-      this.setState({ companyOptions: comp });
-    });
+    if (this.props.companies) {
+      this.setState({ companyOptions: this.props.companyOptions, executedBy: this.props.executedBy });
+    }
   }
 
   editNews = (title, description, category, published) => {
@@ -142,6 +139,9 @@ export class NewsCaseWidget extends Component {
                   }
                   latlng={[newscase.lat, newscase.lon]}
                 />
+              </Grid.Column>
+              <Grid.Column width={16}>
+                {newscase.companyId ? 'Oppdrag utføres av: ' + this.state.executedBy : null}
               </Grid.Column>
               {this.props.employee ? (
                 <Grid.Column floated={'right'} width={2}>

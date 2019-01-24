@@ -7,6 +7,7 @@ import { newsService } from '../services/NewsServices';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import { companyService } from '../services/CompanyServices';
 
 //import {} from './../widgets';
 
@@ -14,13 +15,19 @@ export class EmployeeManageNewsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      news: []
+      news: [],
+      companies: [],
+      companyOptions: [],
+      executedBy: ''
     };
   }
 
   componentWillMount() {
     let catIds = [];
     let news = [];
+    let companies = [];
+    let companyOptions = [];
+    let executedBy = '';
     categoryService
       .getCategories()
       .then(res => {
@@ -31,14 +38,26 @@ export class EmployeeManageNewsPage extends Component {
           });
         });
       })
-
+      .then(() => {
+        companyService.getCompanies().then(res => {
+          companies = res.data;
+          res.data.map(comp => {
+            companyOptions.push({ key: comp.id, value: comp.id, text: comp.name });
+          });
+        });
+      })
       .then(() => {
         //change Cookies.get('municipalId) with Consumer._currentValue.user.municipalId
-        //didnt work for me
         newsService.getFilteredNews(1, catIds, 0, 0).then(res => {
           news = res.data;
-
-          this.setState({ news: news });
+          res.data.map(n => {
+            if (n.companyId) {
+              let company = companies.map(comp => comp.id === n.companyId);
+              console.log(company);
+              executedBy = company.name;
+            }
+          });
+          this.setState({ news: news, companies: companies, companyOptions: companyOptions, executedBy: executedBy });
         });
       });
   }
@@ -122,6 +141,9 @@ export class EmployeeManageNewsPage extends Component {
                   editNews={this.editNews.bind(this, news.id)}
                   setStatus={this.setStatus.bind(this, news.id)}
                   sendToCompany={this.sendToCompany.bind(this, news.id)}
+                  companies={this.state.companies}
+                  companyOptions={this.state.companyOptions}
+                  executedBy={this.state.executedBy}
                 />
               </Grid.Row>
             );
