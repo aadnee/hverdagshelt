@@ -135,3 +135,7 @@ input[type='file'] {
 .companyDropdown {
   color: #2185d0;
 }
+
+.mapPointer {
+  cursor: pointer;
+}
