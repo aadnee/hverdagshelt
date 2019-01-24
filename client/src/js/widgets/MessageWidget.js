@@ -1,26 +1,13 @@
 import React from 'react';
-import { Component } from 'react';
-import { NavLink } from 'react-router-dom';
-import {
-  Button,
-  Checkbox,
-  Container,
-  Dropdown,
-  Form,
-  Grid,
-  Header,
-  Icon,
-  Input,
-  Modal,
-  Segment,
-  TextArea
-} from 'semantic-ui-react';
+
+import { Button, Modal } from 'semantic-ui-react';
 
 export class MessageWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      closeParam: this.props.closeParam ? this.props.closeParam : ''
     };
   }
 
@@ -33,7 +20,7 @@ export class MessageWidget extends React.Component {
   show = () => () => this.setState({ open: true });
   close = () => {
     this.setState({ open: false });
-    this.props.callback();
+    this.props.callback(this.state.closeParam);
   };
 
   componentWillReceiveProps(props) {
@@ -42,7 +29,7 @@ export class MessageWidget extends React.Component {
 
   render() {
     return (
-      <Modal size={this.props.size} open={this.state.open} onClose={this.close}>
+      <Modal size={this.props.size} open={this.state.open} onOpen={this.show} onClose={this.close}>
         <Modal.Header>{this.props.title}</Modal.Header>
         <Modal.Content>
           <p>{this.props.message}</p>
