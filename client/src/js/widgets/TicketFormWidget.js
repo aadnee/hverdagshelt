@@ -10,6 +10,7 @@ import {
   Grid,
   Header,
   Icon,
+  Image,
   Input,
   Label,
   Modal,
@@ -234,23 +235,51 @@ export class TicketFormWidget extends Component {
                     </Label>
                   ) : null}
                   {this.state.image.length > 0
-                    ? this.state.image.map((image, i) => {
-                        return (
+                    ? this.state.image.map((image, i) =>
+                        this.props.ticket ? (
+                          <Modal
+                            basic
+                            dimmer={'blurring'}
+                            size={'large'}
+                            key={i}
+                            trigger={
+                              <Label
+                                key={i}
+                                id={i}
+                                as={'a'}
+                                removeIcon={<Icon name={'delete'} />}
+                                size={'large'}
+                                content={image.name || image.filename}
+                              />
+                            }
+                          >
+                            <Modal.Content image>
+                              <Image wrapped src={'http://localhost:3000/uploads/' + image.filename} />
+                            </Modal.Content>
+                          </Modal>
+                        ) : (
                           <Label
                             key={i}
                             id={i}
+                            as={'a'}
                             removeIcon={<Icon name={'delete'} />}
                             size={'large'}
                             onRemove={(event, data) => {
-                              let imgs = this.state.image;
-                              imgs.splice(data.id, 1);
-                              this.setState({ image: imgs });
-                              console.log(imgs);
+                              let newImages = [];
+                              this.state.image.map((img, i) => {
+                                if (i !== data.id) {
+                                  newImages.push(img);
+                                }
+                              });
+
+                              this.setState({ image: newImages }, () => {
+                                console.log(this.state.image);
+                              });
                             }}
                             content={image.name || image.filename}
                           />
-                        );
-                      })
+                        )
+                      )
                     : null}
                 </Form.Field>
 
