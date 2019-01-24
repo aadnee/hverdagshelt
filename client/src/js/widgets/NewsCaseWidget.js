@@ -63,22 +63,25 @@ export class NewsCaseWidget extends Component {
     });
   }
 
-  editNews = (title, description, category, status, published, company) => {
-    this.props.editNews(title, description, category, status, published, company);
-
+  editNews = (title, description, category, published) => {
+    this.props.editNews(title, description, category, published);
     this.closeModal();
   };
 
   setStatus() {
-    console.log('setstatus');
     if (this.props.setStatus()) {
       this.setState({ messageModalOpen: false });
     }
   }
 
-  sendToCompany() {
-    console.log('company');
-    this.props.sendToCompany();
+  sendToCompany(companyId) {
+    if (!companyId) {
+      toast.error('Velg en bedrift');
+    } else {
+      if (this.props.sendToCompany(companyId)) {
+        this.setState({ companyModalOpen: false });
+      }
+    }
   }
 
   followCase = () => {
@@ -147,7 +150,7 @@ export class NewsCaseWidget extends Component {
                       <Modal
                         open={this.state.editModalOpen}
                         closeIcon
-                        trigger={<Dropdown.Item color={'teal'}>Behandle</Dropdown.Item>}
+                        trigger={<Dropdown.Item color={'teal'}>Endre</Dropdown.Item>}
                         onClose={() => this.closeModal()}
                         onOpen={() => this.setState({ editModalOpen: true })}
                       >
@@ -210,7 +213,7 @@ export class NewsCaseWidget extends Component {
                           />
                         </Modal.Content>
                         <Modal.Actions>
-                          <Button color={'green'} onClick={() => this.sendToCompany()}>
+                          <Button color={'green'} onClick={() => this.sendToCompany(this.state.company)}>
                             Lagre
                           </Button>
                           <Button onClick={() => this.setState({ companyModalOpen: false })}>Avbryt</Button>

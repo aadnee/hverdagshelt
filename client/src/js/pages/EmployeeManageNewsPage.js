@@ -43,10 +43,8 @@ export class EmployeeManageNewsPage extends Component {
       });
   }
 
-  editNews(id, title, description, category, status, published, company) {
-    console.log('cat ' + category, 'status' + status, 'company' + company);
-
-    newsService.updateNews(id, title, description, category, status, published, company).then(res => {
+  editNews(id, title, description, category, published) {
+    newsService.updateNews(id, title, description, category, published).then(res => {
       if (res.success) {
         let index = -1;
         this.state.news.map((news, i) => (news.id === id ? (index = i) : null));
@@ -54,11 +52,8 @@ export class EmployeeManageNewsPage extends Component {
         news[index].title = title;
         news[index].description = description;
         news[index].categoryId = category;
-        news[index].status = status;
         news[index].published = published;
-        news[index].companyId = company;
         this.setState({ news: news });
-
         toast.success(res.message.no);
       } else {
         toast.error(res.message.no);
@@ -68,11 +63,38 @@ export class EmployeeManageNewsPage extends Component {
 
   setStatus(id) {
     console.log(id);
-    return true;
+    return newsService.finishNews(id).then(res => {
+      console.log(res);
+      if (res.success) {
+        let index = -1;
+        this.state.news.map((news, i) => (news.id === id ? (index = i) : null));
+        let news = this.state.news;
+        news[index].status = 3;
+        this.setState({ news: news });
+
+        toast.success(res.message.no);
+        return true;
+      } else {
+        toast.error(res.message.no);
+      }
+    });
   }
 
-  sendToCompany(id) {
-    console.log(id);
+  sendToCompany(id, companyId) {
+    return newsService.assignCompany(id, companyId).then(res => {
+      if (res.success) {
+        let index = -1;
+        this.state.news.map((news, i) => (news.id === id ? (index = i) : null));
+        let news = this.state.news;
+        news[index].companyId = id;
+        this.setState({ news: news });
+
+        toast.success(res.message.no);
+        return true;
+      } else {
+        toast.error(res.message.no);
+      }
+    });
   }
 
   render() {

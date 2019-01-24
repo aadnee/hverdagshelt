@@ -125,7 +125,6 @@ export class UserTicketsPage extends Component {
   }
 
   render() {
-    console.log(this.state.news);
     return (
       <>
         <Container>

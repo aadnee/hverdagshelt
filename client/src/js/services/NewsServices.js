@@ -1,22 +1,22 @@
 import api from './api';
 
 class NewsService {
-  updateNews(id, title, description, published, companyId) {
+  updateNews(id, title, description, published, categoryId) {
     console.log(categoryId);
     return api.put('/api/news/' + id, {
       title: title,
       description: description,
       published: published,
-      companyId: companyId
+      categoryId: categoryId
     });
   }
 
   finishNews(id) {
-    return api.put('/api/news/' + id + 'finish');
+    return api.put('/api/news/' + id + '/finish');
   }
 
-  assignCompany(id) {
-    return api.put('/api/news/' + id + 'company', {
+  assignCompany(id, companyId) {
+    return api.put('/api/news/' + id + '/company', {
       companyId: companyId
     });
   }
