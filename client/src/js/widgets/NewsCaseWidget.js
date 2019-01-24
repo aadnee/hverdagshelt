@@ -94,7 +94,6 @@ export class NewsCaseWidget extends Component {
 
   render() {
     const newscase = this.props.newscase;
-    console.log(newscase);
     const dateInfo = Consumer._currentValue.convDbString(newscase.createdAt);
     return (
       <Segment color="blue" fluid="true">
@@ -220,7 +219,7 @@ export class NewsCaseWidget extends Component {
                     </Dropdown.Menu>
                   </Dropdown>
                 </Grid.Column>
-              ) : this.props.following ? (
+              ) : this.props.show ? null : this.props.following ? (
                 this.props.frontpage ? null : (
                   <Button onClick={this.props.show}>Avslutt abonnement</Button>
                 )

@@ -45,11 +45,15 @@ export class TicketWidget extends Component {
   handleInput(state, value) {
     this.setState({ [state]: value });
   }
-
+  /*
   componentWillMount() {
     if (this.props.news) {
-      this.setState({ news: this.props.news, newsOptions: this.props.newsOptions, newsCase: this.props.newscase });
+      console.log(this.props.news);
+      this.setState({ news: this.props.news, newsOptions: this.props.newsOptions });
     }
+  }*/
+  componentWillReceiveProps(nextProps, nextContext) {
+    this.setState({ news: nextProps.news });
   }
 
   link() {
@@ -57,7 +61,15 @@ export class TicketWidget extends Component {
     this.props.link(this.state.selectedNews);
   }
 
-  showNews() {}
+  showNews(id) {
+    let news = null;
+    console.log(this.state.news);
+    news = this.state.news.find(n => n.id === id);
+
+    this.setState({ newsCase: news }, () => {
+      this.setState({ newsModalOpen: true });
+    });
+  }
 
   render() {
     let more = false;
@@ -159,7 +171,7 @@ export class TicketWidget extends Component {
                     size={'tiny'}
                     closeIcon
                   >
-                    <Modal.Header>Knytt til samme nyhet</Modal.Header>
+                    <Modal.Header>Knytt til lik nyhet</Modal.Header>
                     <Modal.Content>
                       <Dropdown
                         fluid
@@ -203,7 +215,7 @@ export class TicketWidget extends Component {
                 closeIcon
               >
                 <Modal.Content>
-                  <NewsCaseWidget newscase={this.state.newsCase} />
+                  <NewsCaseWidget newscase={this.state.newsCase} show />
                 </Modal.Content>
               </Modal>
             </Button.Group>
