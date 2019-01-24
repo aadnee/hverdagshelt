@@ -23,7 +23,93 @@ module.exports = {
     );
   },
 
-  updateNews: function(id, title, description, status, categoryId, companyId, callback) {
+  finishNews: function(id, callback) {
+    News.findOne({ where: { id: id } }).then(
+      article => {
+        if (article == null) {
+          callback({
+            success: false,
+            message: { en: 'Article not found.', no: 'Artikkelen kunne ikke bli funnet.' }
+          });
+        } else {
+          News.update(
+            {
+              status: 3
+            },
+            {
+              where: { id: id }
+            }
+          ).then(
+            res => {
+              // Send mail alerting subscribers
+              News.findOne({
+                attributes: ['title'],
+                include: [{ model: Users, attributes: ['email', 'notifications'], required: true }],
+                where: { id: id }
+              }).then(
+                res => {
+                  if (res != null) {
+                    let title = res.title;
+                    res.users.map(user => {
+                      user.notifications
+                        ? mailManager.send(
+                            'En nyhet du følger er fullført',
+                            '<h3>"' +
+                              title +
+                              '" ble markert som fullført.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
+                            user.email
+                          )
+                        : null;
+                    });
+                  }
+                  callback({
+                    success: true,
+                    message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
+                  });
+                },
+                err => callback({ success: false, message: err })
+              );
+            },
+            err => callback({ success: false, message: err })
+          );
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  assignCompany: function(id, companyId, callback) {
+    News.findOne({ where: { id: id } }).then(
+      article => {
+        if (article == null) {
+          callback({
+            success: false,
+            message: { en: 'Article not found.', no: 'Artikkelen kunne ikke bli funnet.' }
+          });
+        } else {
+          News.update(
+            {
+              companyId: companyId
+            },
+            {
+              where: { id: id }
+            }
+          ).then(
+            res => {
+              callback({
+                success: true,
+                message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
+              });
+            },
+            err => callback({ success: false, message: err })
+          );
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  updateNews: function(id, title, description, categoryId, callback) {
     News.findOne({ where: { id: id } }).then(
       article => {
         if (article == null) {
@@ -36,51 +122,17 @@ module.exports = {
             {
               title: title,
               description: description,
-              status: status,
-              categoryId: categoryId,
-              companyId: companyId
+              categoryId: categoryId
             },
             {
               where: { id: id }
             }
           ).then(
             res => {
-              if (article.status != status) {
-                // Send mail alerting subscribers
-                News.findOne({
-                  attributes: ['title'],
-                  include: [{ model: Users, attributes: ['email', 'notifications'], required: true }],
-                  where: { id: id }
-                }).then(
-                  res => {
-                    if (res != null) {
-                      console.log(res);
-                      let title = res.title;
-                      res.users.map(user => {
-                        user.notifications
-                          ? mailManager.send(
-                              'En nyhet du følger er fullført',
-                              '<h3>"' +
-                                title +
-                                '" ble markert som fullført.</h3><h4>Sjekk Hverdagshelt nettsiden for mer informasjon.</h4>',
-                              user.email
-                            )
-                          : null;
-                      });
-                    }
-                    callback({
-                      success: true,
-                      message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
-                    });
-                  },
-                  err => callback({ success: false, message: err })
-                );
-              } else {
-                callback({
-                  success: true,
-                  message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
-                });
-              }
+              callback({
+                success: true,
+                message: { en: 'Article updated successfully', no: 'Artikkelen ble oppdatert.' }
+              });
             },
             err => callback({ success: false, message: err })
           );
