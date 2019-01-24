@@ -62,7 +62,8 @@ export let Tickets = sequelize.define('tickets', {
   lat: { type: Sequelize.FLOAT, allowNull: false },
   lon: { type: Sequelize.FLOAT, allowNull: false },
   address: { type: Sequelize.STRING },
-  subscribed: { type: Sequelize.BOOLEAN, allowNull: true }
+  subscribed: { type: Sequelize.BOOLEAN, allowNull: true },
+  feedback: { type: Sequelize.TEXT, length: 'medium', allowNull: true }
 });
 
 export let Uploads = sequelize.define('uploads', {

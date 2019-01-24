@@ -62,7 +62,7 @@ describe('Editing ticket', () => {
 //Test for setting status on a ticket with correct data
 describe('Setting status', () => {
   it('correct data', done => {
-    ticketManager.setStatus(1, 4, 1, function(ticket) {
+    ticketManager.setStatus(1, 4, 1, null, function(ticket) {
       expect({
         success: ticket.success,
         message: ticket.message.en
@@ -75,7 +75,7 @@ describe('Setting status', () => {
   });
   //Test for setting status on a ticket with wrong data
   it('Wrong data', done => {
-    ticketManager.setStatus('String', 4, 1, function(ticket) {
+    ticketManager.setStatus('String', 4, 1, null, function(ticket) {
       expect({
         success: ticket.success
         //  message: ticket.message.en

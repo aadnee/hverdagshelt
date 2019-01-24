@@ -83,8 +83,8 @@ module.exports = {
     );
   },
 
-  setStatus: function(status, ticketId, newsId, callback) {
-    Tickets.update({ status: status, newsId: newsId }, { where: { id: ticketId } }).then(
+  setStatus: function(status, ticketId, newsId, feedback, callback) {
+    Tickets.update({ status: status, newsId: newsId, feedback: feedback }, { where: { id: ticketId } }).then(
       res => {
         Users.findOne({
           attributes: ['id', 'email', 'notifications'],
@@ -158,7 +158,7 @@ module.exports = {
             { where: { id: imageId } }
           ).then(res => null, err => callback({ success: false, message: err }));
         });
-        ticketManager.setStatus(3, ticketId, result.id, function(res) {
+        ticketManager.setStatus(3, ticketId, result.id, null, function(res) {
           callback(result);
         });
       } else {

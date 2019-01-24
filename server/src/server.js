@@ -449,7 +449,8 @@ app.put('/api/tickets/:ticketId', ensureLogin, (req, res) => {
 
 app.put('/api/tickets/:ticketId/reject', ensureEmployee, (req, res) => {
   let p = req.params;
-  ticketManager.setStatus(4, p.ticketId, null, function(result) {
+  let b = req.body;
+  ticketManager.setStatus(4, p.ticketId, null, b.feedback, function(result) {
     res.json(result);
   });
 });
@@ -485,7 +486,7 @@ app.put('/api/tickets/:ticketId/accept', ensureEmployee, (req, res) => {
 app.put('/api/tickets/:ticketId/link', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  ticketManager.setStatus(3, p.ticketId, b.newsId, function(result) {
+  ticketManager.setStatus(3, p.ticketId, b.newsId, null, function(result) {
     res.json(result);
   });
 });
