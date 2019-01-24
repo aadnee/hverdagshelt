@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { List, Button, Modal } from 'semantic-ui-react';
-import { DeleteUserWidget } from './DeleteUserWidget';
 import { AdminRegisterWidget } from './AdminRegisterWidget';
 import { EditUserWidget } from './EditUserWidget';
 import { userService } from '../services/UserServices';
@@ -30,6 +29,7 @@ export class UserComponentListWidget extends React.Component {
   setUser = (user, modal) => {
     this.setState({ user: user, selectedName: user.name }, () => {
       this.open(modal);
+      console.log(this.state.user);
     });
   };
 
@@ -56,7 +56,6 @@ export class UserComponentListWidget extends React.Component {
   handleDelete = user => {
     this.props.usertype
       ? userService.deleteUser(user.id).then(res => {
-          console.log(res);
           if (res.success) {
             toast.success(res.message.no);
             this.setState({ users: this.state.users.filter(u => u.id !== user.id) });
@@ -66,7 +65,6 @@ export class UserComponentListWidget extends React.Component {
           }
         })
       : companyService.deleteCompany(user.id).then(res => {
-          console.log(res);
           if (res.success) {
             toast.success(res.message.no);
             this.setState({ users: this.state.users.filter(u => u.id !== user.id) });
@@ -78,12 +76,12 @@ export class UserComponentListWidget extends React.Component {
   };
 
   handleEdit = user => {
-    console.log(user);
     if (this.props.usertype) {
-      console.log('d');
       userService.editUser(user.id, user.name, user.email, user.phone, user.municipalId, user.rank).then(res => {
         console.log(res);
         if (res.success) {
+          //Find old user
+
           this.close('editModalOpen');
           let oldUser = null;
           this.state.users.find((u, i) => {
@@ -98,19 +96,15 @@ export class UserComponentListWidget extends React.Component {
       });
     } else {
       companyService.editCompany(user.id, user.name, user.email, user.phone, user.municipalId).then(res => {
-        console.log(res);
         if (res.success) {
           this.close('editModalOpen');
-
+          //Find old user
           let oldUser = null;
-
           this.state.users.find((u, i) => {
             user.id === u.id ? (oldUser = i) : null;
           });
-          console.log(oldUser);
           this.state.users[oldUser] = user;
           toast.success(res.message.no);
-
           this.forceUpdate();
         } else {
           toast.error(res.message.no);

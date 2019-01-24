@@ -308,7 +308,7 @@ app.post('/api/companies', ensureEmployee, (req, res) => {
 app.put('/api/companies/:id', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  companyManager.editCompany(b.name, b.email, b.phone, b.municipalId, p.id, function(result) {
+  companyManager.editCompany(b.name, b.email, b.phone, b.municipalId, b.notifications, p.id, function(result) {
     res.json(result);
   });
 });

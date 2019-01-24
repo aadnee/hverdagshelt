@@ -14,7 +14,7 @@ export class AdminUsersPage extends Component {
         <Divider hidden />
         <Header as="h1">Brukere</Header>
         <Segment basic color="blue">
-          <p>Litt informasjon om hvordan man endrer brukere</p>
+          <p>Her kan du administrer brukere. Trykk på den grønne plussen for å legge til en ny bruker/bedrift</p>
           <Grid divided>
             <Grid.Column>
               <UserComponentListWidget usertype />
