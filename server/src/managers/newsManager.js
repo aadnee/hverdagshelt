@@ -110,7 +110,7 @@ module.exports = {
   getArchivedNews: function(municipalIds, callback) {
     News.findAll({
       include: [{ model: Uploads }],
-      where: { municipalId: municipalIds, status: 5 },
+      where: { municipalId: municipalIds, status: 3 },
       order: [['updatedAt', 'DESC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }

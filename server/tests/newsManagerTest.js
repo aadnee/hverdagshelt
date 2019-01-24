@@ -101,7 +101,20 @@ describe('Get archived News', () => {
       }).toEqual({
         success: true
       });
-      expect(news.data).toHaveLength(0);
+      done();
+    });
+  });
+});
+
+// Test for finding news
+describe('Get news', () => {
+  it('correct data', done => {
+    newsManager.getNews(function(news) {
+      expect({
+        success: news.success
+      }).toEqual({
+        success: true
+      });
       done();
     });
   });
