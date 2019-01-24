@@ -11,6 +11,13 @@ module.exports = {
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
+  getEvents: function(callback) {
+    Events.findAll({
+      where: { end: { $gte: moment().format('YYYY-MM-DD') }, active: true },
+      order: [['id', 'DESC']]
+    }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
+  },
+
   addEvent: function(title, description, area, address, start, end, municipalId, url, callback) {
     Events.create({
       title: title,

@@ -31,6 +31,9 @@ export class ShowInMapWidget extends Component {
     }
 
     if (this.props.mapOnly) {
+      console.log(this.props.pointer);
+      const mouseStyle = this.props.pointer ? 'mapPointer' : '';
+      console.log(mouseStyle);
       return (
         <Map
           ref={this.mapRef}
@@ -38,8 +41,9 @@ export class ShowInMapWidget extends Component {
           center={cent}
           zoomControl={false}
           scrollWheelZoom={false}
-          zoom={15}
+          zoom={this.props.zoom || 15}
           style={{ height: '200px', width: '200px' }}
+          className={mouseStyle}
         >
           <TileLayer
             url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
@@ -54,9 +58,14 @@ export class ShowInMapWidget extends Component {
       );
     } else {
       return (
-        <Modal trigger={this.props.button} onClose={this.props.callback} closeIcon>
+        <Modal open={this.props.open} onClose={this.props.callback} closeIcon>
           {this.props.renderMap ? (
-            <Map center={cent} ref={this.mapRef} dragging={this.props.draggable ? true : false} zoom={14}>
+            <Map
+              center={cent}
+              ref={this.mapRef}
+              dragging={this.props.draggable ? true : false}
+              zoom={this.props.zoom || 14}
+            >
               <TileLayer
                 url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
