@@ -1,7 +1,5 @@
 import companyManager from '../src/managers/companyManager';
 
-jest.setTimeout(30000);
-
 // Testing if we can find companies
 describe('Finding all companies', () => {
   it('correct data', done => {

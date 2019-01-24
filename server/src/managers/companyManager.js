@@ -110,5 +110,33 @@ module.exports = {
       },
       err => callback({ success: false, message: err })
     );
+  },
+
+  checkTimeLimits: function(callback) {
+    var days = new Date(Date.now() - 60 * 60 * 24 * 7 * 1000);
+    News.findAll({ where: { companyStatus: 1, updatedAt: { $lte: days } } }).then(
+      res => {
+        if (res.length > 0) {
+          res.map((article, i) => {
+            News.update({ companyId: null, companyStatus: 4 }, { where: { id: article.id } }).then(
+              res =>
+                i == res.length - 1
+                  ? callback({
+                      success: true,
+                      message: {
+                        en: res.length + ' task(s) returned.',
+                        no: res.length + ' oppdrag har utgått og ble sendt tilbake.'
+                      }
+                    })
+                  : null,
+              err => callback({ success: false, message: err })
+            );
+          });
+        } else {
+          callback({ success: true, message: { en: 'No expired tasks.', no: 'Ingen utgåtte oppdrag.' } });
+        }
+      },
+      err => callback({ success: false, message: err })
+    );
   }
 };

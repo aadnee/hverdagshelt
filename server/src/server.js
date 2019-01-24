@@ -11,6 +11,7 @@ import cors from 'cors';
 import pdf from 'html-pdf';
 import ejs from 'ejs';
 import utmObj from 'utm-latlng';
+import { CronJob } from 'cron';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
@@ -20,6 +21,7 @@ import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
 import eventManager from './managers/eventManager';
 import { syncDatabase } from './models';
+
 syncDatabase(res => {
   console.log(res);
   fs.readFile('src/testdata/vegvesen.json', 'utf8', function(err, data) {
@@ -58,27 +60,28 @@ syncDatabase(res => {
   });
 });
 
-const public_path = path.join(__dirname, '/../../client/public');
-
-let storage = multer.diskStorage({
-  destination: '../client/public/uploads/',
-  filename: function(req, file, cb) {
-    let fileParts = file.originalname.split('.');
-    let ext = fileParts.pop();
-    let name = Math.random()
-      .toString(36)
-      .substr(2, 5);
-    cb(null, name + '-' + Date.now() + '.' + ext);
-  }
-});
-let upload = multer({ storage: storage });
-
+let public_path = path.join(__dirname, '/../../client/public');
 let app = express();
+
 app.use(express.static(public_path));
 app.use(express.json());
 app.set('json spaces', 2);
 app.use(cookieParser());
 app.use(cors());
+
+let upload = multer({
+  storage: multer.diskStorage({
+    destination: '../client/public/uploads/',
+    filename: function(req, file, cb) {
+      let fileParts = file.originalname.split('.');
+      let ext = fileParts.pop();
+      let name = Math.random()
+        .toString(36)
+        .substr(2, 5);
+      cb(null, name + '-' + Date.now() + '.' + ext);
+    }
+  })
+});
 
 app.get('/api/pdf', (req, res) => {
   let municipalId = 1;
@@ -117,29 +120,6 @@ app.get('/api/pdf', (req, res) => {
               stream.pipe(res);
             }
           });
-        }
-      );
-    });
-  });
-});
-
-app.get('/api/pdf/html', (req, res) => {
-  let municipalId = 1;
-  let year = 2019;
-  let month;
-  let week;
-
-  ticketManager.getTicketStatistics(municipalId, year, month, week, function(cats) {
-    userManager.userIncrease(municipalId, year, month, week, function(users) {
-      let period = month ? month + ' / 2019' : week ? 'uke ' + week + ' 2019' : year;
-      var projectRoot = process.cwd();
-      projectRoot = projectRoot.replace(/\\/g, '/');
-      var link = 'file:///' + projectRoot + '/pdfs/';
-      ejs.renderFile(
-        './pdfs/file.ejs',
-        { categories: cats.data, users: users, start: cats.start, end: cats.end, period: period, link: link },
-        function(err, html) {
-          res.send(html);
         }
       );
     });
@@ -320,8 +300,6 @@ app.delete('/api/users/:id', ensureAdmin, (req, res) => {
 app.put('/api/users/:id', ensureAdmin, (req, res) => {
   let b = req.body;
   let p = req.params;
-  console.log(b);
-  console.log(p);
   userManager.editUser(b.name, b.email, b.phone, b.municipalId, p.id, b.notifications, b.rank, function(result) {
     res.json(result);
   });
@@ -400,6 +378,12 @@ app.put('/api/companies/:id', ensureEmployee, (req, res) => {
 app.get('/api/companies/municipal/:municipalId', ensureEmployee, (req, res) => {
   let p = req.params;
   companyManager.getLocalCompanies(p.municipalId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/companies/check', ensureEmployee, (req, res) => {
+  companyManager.checkTimeLimits(function(result) {
     res.json(result);
   });
 });
@@ -683,18 +667,28 @@ function ensureAdmin(req, res, next) {
   });
 }
 
-// Hot reload application when not in production environment
 if (process.env.NODE_ENV !== 'production') {
   let reloadServer = reload(app);
   fs.watch(public_path, () => reloadServer.reload());
 }
 
-http.createServer(app).listen(3000);
-
 const options = {
   key: fs.readFileSync('./src/security/private.key'),
   cert: fs.readFileSync('./src/security/certificate.crt')
 };
-
+http.createServer(app).listen(3000);
 https.createServer(options, app).listen(3001);
+
+var job = new CronJob(
+  '45 34 20 * * 1-7',
+  function() {
+    companyManager.checkTimeLimits(result => {});
+  },
+  function() {
+    console.error('Stopped checking assigned tasks for companies.');
+  },
+  true,
+  'Europe/Amsterdam'
+);
+
 console.log('Server listening.');

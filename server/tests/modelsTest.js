@@ -1,8 +1,6 @@
 import { Users, Companies, Municipals, Categories, Tickets, News, Subscriptions } from '../src/models.js';
 import newsManager from '../src/managers/newsManager';
 
-jest.setTimeout(30000);
-
 // Testing the Municipals table in the database
 describe('Municipals test', () => {
   it('correct data', async () => {

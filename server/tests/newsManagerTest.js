@@ -1,8 +1,6 @@
 import { News } from '../src/models';
 import newsManager from '../src/managers/newsManager';
 
-jest.setTimeout(30000);
-
 // Testing adding a new article
 describe('Adding article', () => {
   let id;

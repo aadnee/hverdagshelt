@@ -12,6 +12,7 @@ import {
 } from '../src/models';
 
 beforeAll(async done => {
+  jest.setTimeout(30000);
   await sequelize.sync({ force: true }).then(async () => {
     await Municipals.create({
       name: 'Lindesnes'

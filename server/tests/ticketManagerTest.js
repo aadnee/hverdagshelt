@@ -1,8 +1,6 @@
 import { Tickets, Uploads } from '../src/models';
 import ticketManager from '../src/managers/ticketManager';
 
-jest.setTimeout(30000);
-
 // Testing adding a new article
 describe('Adding ticket', () => {
   it('correct data', done => {

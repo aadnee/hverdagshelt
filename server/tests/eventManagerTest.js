@@ -1,8 +1,6 @@
 import { Events } from '../src/models.js';
 import eventManager from '../src/managers/eventManager.js';
 
-jest.setTimeout(30000);
-
 // Testing event
 describe('Adding, editing and deleting event', () => {
   let id;

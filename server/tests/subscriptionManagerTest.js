@@ -1,7 +1,5 @@
 import subscriptionManager from '../src/managers/subscriptionManager';
 
-jest.setTimeout(30000);
-
 describe('Adding and removing subscriptions', () => {
   it('Checking length before adding', done => {
     subscriptionManager.getSubscriptions(2, function(subscriptions) {
