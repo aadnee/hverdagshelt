@@ -74,7 +74,6 @@ export class UserTicketsPage extends Component {
 
   componentWillMount() {
     ticketService.getTickets().then(res => {
-      console.log(res.data);
       this.setState({ tickets: res.data });
     });
   }

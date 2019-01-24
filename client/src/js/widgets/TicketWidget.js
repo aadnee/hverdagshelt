@@ -24,6 +24,7 @@ export class TicketWidget extends Component {
     super(props);
     this.state = {
       open: false,
+      letters: 100,
       regModalOpen: false,
       selectedNews: '',
       dropdownOpen: false,
@@ -71,6 +72,7 @@ export class TicketWidget extends Component {
   }
 
   render() {
+    let more = false;
     return (
       <Card centered>
         <Image>
@@ -102,7 +104,36 @@ export class TicketWidget extends Component {
             </Header.Content>
           </Header>
           <Card.Meta>{Consumer._currentValue.convDbString(this.state.createdAt)}</Card.Meta>
-          <Card.Description>{this.state.ticket.description}</Card.Description>
+          <Card.Description>
+            {this.state.ticket.description
+              .split('')
+              .map((letter, i) => (i < this.state.letters ? letter : (more = true)))}
+            {more ? (
+              <>
+                ...{' '}
+                <span
+                  className="showInMap"
+                  onClick={() => {
+                    this.setState({ letters: Number.MAX_SAFE_INTEGER });
+                  }}
+                >
+                  Vis mer
+                </span>{' '}
+              </>
+            ) : this.state.letters === Number.MAX_SAFE_INTEGER ? (
+              <>
+                {'\n'}
+                <span
+                  className="showInMap"
+                  onClick={() => {
+                    this.setState({ letters: 100 });
+                  }}
+                >
+                  Vis mindre
+                </span>{' '}
+              </>
+            ) : null}
+          </Card.Description>
         </Card.Content>
         {this.props.employee ? (
           this.state.ticket.status === PENDING ? (
