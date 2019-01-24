@@ -6,6 +6,7 @@ import { EditUserWidget } from './EditUserWidget';
 import { userService } from '../services/UserServices';
 import { companyService } from '../services/CompanyServices';
 import { toast } from 'react-toastify';
+import { MessageWidget } from './MessageWidget';
 
 export class UserComponentListWidget extends React.Component {
   constructor(props) {
@@ -13,6 +14,7 @@ export class UserComponentListWidget extends React.Component {
     this.state = {
       users: [],
       user: null,
+      selectedName: null,
       regModalOpen: false,
       editModalOpen: false,
       deleteModalOpen: false,
@@ -22,11 +24,13 @@ export class UserComponentListWidget extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
+    this.close = this.close.bind(this);
   }
 
-  setUser = user => {
-    this.setState({ user: user });
-    this.open('editModalOpen');
+  setUser = (user, modal) => {
+    this.setState({ user: user, selectedName: user.name }, () => {
+      this.open(modal);
+    });
   };
 
   close = modal => {
@@ -49,15 +53,27 @@ export class UserComponentListWidget extends React.Component {
           });
         });
   }
-  handleDelete = id => {
+  handleDelete = user => {
     this.props.usertype
-      ? userService.deleteUser(id).then(res => {
+      ? userService.deleteUser(user.id).then(res => {
           console.log(res);
-          this.setState({ users: this.state.users.filter(u => u.id !== id) });
+          if (res.success) {
+            toast.success(res.message.no);
+            this.setState({ users: this.state.users.filter(u => u.id !== user.id) });
+            this.close('deleteModalOpen');
+          } else {
+            toast.error(res.message.no);
+          }
         })
-      : companyService.deleteCompany(id).then(res => {
+      : companyService.deleteCompany(user.id).then(res => {
           console.log(res);
-          this.setState({ users: this.state.users.filter(u => u.id !== id) });
+          if (res.success) {
+            toast.success(res.message.no);
+            this.setState({ users: this.state.users.filter(u => u.id !== user.id) });
+            this.close('deleteModalOpen');
+          } else {
+            toast.error(res.message.no);
+          }
         });
   };
 
@@ -142,10 +158,12 @@ export class UserComponentListWidget extends React.Component {
             <List.Item key={i}>
               <List.Content floated="right">
                 <Button.Group compact={false}>
-                  <Button color="green" onClick={this.setUser.bind(this, user)}>
+                  <Button color="green" onClick={this.setUser.bind(this, user, 'editModalOpen')}>
                     Edit
                   </Button>
-                  <DeleteUserWidget handleDelete={this.handleDelete} user={user} />
+                  <Button color="red" onClick={this.setUser.bind(this, user, 'deleteModalOpen')} inverted>
+                    Slett
+                  </Button>
                 </Button.Group>
               </List.Content>
               <List.Icon name="user" size="large" verticalAlign="middle" />
@@ -156,6 +174,16 @@ export class UserComponentListWidget extends React.Component {
             </List.Item>
           ))}
         </List>
+
+        <MessageWidget
+          size={'tiny'}
+          open={this.state.deleteModalOpen}
+          title={'Sletting av ' + this.state.selectedName}
+          message={'Er du sikker på at du vil slette ' + this.state.selectedName}
+          customFunc={this.handleDelete.bind(this, this.state.user)}
+          callback={this.close}
+          closeParam={'deleteModalOpen'}
+        />
         <Modal
           onClose={() => this.close('editModalOpen')}
           onOpen={() => this.open('editModalOpen')}
