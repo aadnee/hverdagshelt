@@ -90,6 +90,13 @@ module.exports = {
     );
   },
 
+  getNews: function(callback) {
+    News.findAll({ include: [{ model: Uploads }], order: [['id', 'DESC']] }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
   getFilteredNews: function(municipalIds, categoryIds, page, limit, callback) {
     News.findAll({
       include: [{ model: Uploads }],

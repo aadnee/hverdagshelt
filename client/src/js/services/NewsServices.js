@@ -21,6 +21,10 @@ class NewsService {
       limit: limit
     });
   }
+
+  getNews() {
+    return api.get('/api/news');
+  }
 }
 
 export let newsService = new NewsService();

@@ -41,7 +41,7 @@
                   <% for(var j = 0; j < categories[i].subs.length; j++) { %>
                     <% total = total + categories[i].subs[j].amount; %>
                     <% if(j == 0) { %>
-                      <tr>
+                      <tr style="page-break-inside: avoid;">
                         <td class="" rowspan="<%= categories[i].subs.length %>"><b><%= categories[i].name %></b></td>
                         <td><%= categories[i].subs[j].name %></td>
                         <td><%= categories[i].subs[j].amount %></td>
@@ -67,11 +67,14 @@
             </tfoot>
         </table>
         <div class="ui grid center aligned" style="page-break-before:always;">
-          <h2 class="ui header center aligned">Brukerstatistikk</h2>
-          <div class="sixteen wide column" id="piechart1" style="width:800px; height:600px;">
+          <div style="width:50%;">
+            <h2 class="ui header center aligned">Brukerstatistikk</h2>
+          </div>
+          <div class="sixteen wide column">
+            <div id="piechart1" style="height:500px; width:500px;"></div>
           </div>
         </div>
-        <div class="ui grid" style="page-break-before:always;">
+        <div class="ui grid center aligned" style="page-break-before:always;">
           <h2 class="ui header center aligned">Annen statistikk</h2>
         </div>
       </div>
