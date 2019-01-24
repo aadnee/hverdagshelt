@@ -53,8 +53,7 @@ export class EditUserWidget extends Component {
 
   handle = () => {
     if (this.state.name && this.state.email && this.state.phone && this.state.municipalId) {
-      console.log(this.state.phone.length);
-      if (this.state.phone.length < 10) {
+      if (this.state.phone.toString().length < 10) {
         let editedUser = {
           id: this.props.user.id,
           name: this.state.name,

@@ -77,8 +77,8 @@ export class PublishNewsFormWidget extends Component {
     if (this.props.news) {
       let news = this.props.news;
       let statusOptions = [
-        { key: 1, value: 2, text: STATUS[2].norwegian },
-        { key: 2, value: 3, text: STATUS[3].norwegian }
+        { key: 1, value: 2, text: STATUS[1].norwegian },
+        { key: 2, value: 3, text: STATUS[2].norwegian }
       ];
       let companyOptions = [];
       //MunicipalId should be fetched from context
@@ -263,7 +263,7 @@ export class PublishNewsFormWidget extends Component {
                 ) : null}
 
                 {/*IF NEWS EXISTS */}
-                {this.props.news ? (
+                {/*{this.props.news ? (
                   <Form.Field>
                     <Grid columns={'equal'}>
                       <Grid.Column>
@@ -295,7 +295,7 @@ export class PublishNewsFormWidget extends Component {
                       </Grid.Column>
                     </Grid>
                   </Form.Field>
-                ) : null}
+                ) : null}*/}
 
                 <Form.Field>
                   <Grid>
