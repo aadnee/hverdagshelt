@@ -342,21 +342,22 @@ module.exports = {
       }
     }
     let startInt;
-    let userbase = [];
     Users.count({
       where: { createdAt: { $lte: start }, municipalId: municipalId }
     }).then(res => {
-      console.log(res);
       startInt = parseInt(res);
-      userbase.push({ start: res });
     });
     Users.count({
       where: { createdAt: { $lte: end }, municipalId: municipalId }
     }).then(
       res => {
-        userbase.push({ end: res }, { increase: parseInt(res) + startInt });
-        console.log(parseInt(res) + startInt);
-        callback({ success: true, data: userbase });
+        let endInt = parseInt(res);
+        let increase = endInt - startInt;
+        let percentage = null;
+        if (startInt != 0) {
+          percentage = parseFloat(Math.round(increase / startInt) * 100).toFixed(2);
+        }
+        callback({ success: true, start: startInt, end: endInt, increase: increase, percentageIncrease: percentage });
       },
       err => callback({ success: false, message: err })
     );

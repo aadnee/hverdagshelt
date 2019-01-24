@@ -15,7 +15,7 @@
 </head>
 
 <body>
-  <div id="pageHeader" class="ui huge header center aligned">
+  <div id="pageHeader-first" class="ui huge header center aligned">
     <h1>Hverdagshelt statistikk</h1>
     <h2><%= start + " til " + end%></h2>
   </div>
@@ -68,16 +68,16 @@
               </tr>
             </tfoot>
         </table>
-
-        <div class="ui two column grid">
-            <div class="column" id="piechart1" style="width:550px; height:300px;">
+        <div class="ui grid" style="page-break-before:always;">
+            <div class="sixteen wide column" id="piechart1" style="width:800px; height:600px;">
             </div>
-            <div class="column" id="piechart2" style="width:550px; height:300px;">
+        </div>
+        <div class="ui grid" style="page-break-before:always;">
+            <div class="sixteen wide column" id="piechart2" style="width:800px; height:300px;">
             </div>
         </div>
 
       </div>
-      <div id="pageFooter" class="ui huge header center aligned"><h3>Hverdagshelt</h3></div>
 
 
     <script type="text/javascript">
