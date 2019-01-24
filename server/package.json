@@ -27,7 +27,8 @@
     "mysql2": "^1.6.1",
     "nodemailer": "^5.1.0",
     "reload": "^2.3.1",
-    "sequelize": "^4.41.0"
+    "sequelize": "^4.41.0",
+    "utm-latlng": "^1.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",

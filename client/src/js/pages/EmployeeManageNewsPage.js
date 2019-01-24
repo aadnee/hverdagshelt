@@ -66,6 +66,15 @@ export class EmployeeManageNewsPage extends Component {
     });
   }
 
+  setStatus(id) {
+    console.log(id);
+    return true;
+  }
+
+  sendToCompany(id) {
+    console.log(id);
+  }
+
   render() {
     return (
       <Container>
@@ -85,7 +94,13 @@ export class EmployeeManageNewsPage extends Component {
           {this.state.news.map(news => {
             return (
               <Grid.Row key={news.id}>
-                <NewsCaseWidget newscase={news} employee editNews={this.editNews.bind(this, news.id)} />
+                <NewsCaseWidget
+                  newscase={news}
+                  employee
+                  editNews={this.editNews.bind(this, news.id)}
+                  setStatus={this.setStatus.bind(this, news.id)}
+                  sendToCompany={this.sendToCompany.bind(this, news.id)}
+                />
               </Grid.Row>
             );
           })}

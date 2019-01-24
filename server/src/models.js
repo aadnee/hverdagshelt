@@ -424,7 +424,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 4,
+        categoryId: 7,
         userId: 1,
         municipalId: 1,
         subscribed: true
@@ -436,7 +436,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 3,
+        categoryId: 8,
         userId: 1,
         municipalId: 1,
         subscribed: true
@@ -448,7 +448,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 3,
+        categoryId: 7,
         userId: 1,
         municipalId: 1,
         subscribed: true
@@ -460,7 +460,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 3,
+        categoryId: 7,
         municipalId: 1
       });
       await News.create({
@@ -470,7 +470,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 3,
+        categoryId: 8,
         municipalId: 1
       });
       await News.create({
@@ -480,7 +480,7 @@ export function syncDatabase(callback) {
         lat: 1,
         lon: 1,
         address: 'Test street',
-        categoryId: 4,
+        categoryId: 7,
         municipalId: 1
       });
       await Subscriptions.create({

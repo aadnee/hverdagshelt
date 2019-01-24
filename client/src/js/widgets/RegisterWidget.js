@@ -1,4 +1,17 @@
-import { Button, Container, Image, Input, Message, Segment, Grid, Form, Dropdown, Modal } from 'semantic-ui-react';
+import {
+  Button,
+  Container,
+  Image,
+  Input,
+  Message,
+  Segment,
+  Grid,
+  Form,
+  Dropdown,
+  Dimmer,
+  Loader,
+  Icon
+} from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
 import { municipalService } from '../services/MunicipalServices';
 import { NavLink } from 'react-router-dom';
@@ -16,10 +29,7 @@ export class RegisterWidget extends React.Component {
       phone: '',
       selectedOption: '',
       options: [],
-      showModal: false,
-      showRegisterModal: false,
-      popupMessage: '',
-      popupSuccess: ''
+      success: true
     };
   }
 
@@ -50,6 +60,7 @@ export class RegisterWidget extends React.Component {
       this.state.selectedOption
     ) {
       if (this.state.phone.length < 10) {
+        this.setState({ success: false });
         userService
           .register(
             this.state.firstname + ' ' + this.state.lastname,
@@ -59,6 +70,8 @@ export class RegisterWidget extends React.Component {
           )
           .then(res => {
             if (res.success) {
+              this.setState({ success: true });
+
               toast.success(res.message.no);
               Consumer._currentValue.history.push('/login');
             } else {
@@ -71,11 +84,6 @@ export class RegisterWidget extends React.Component {
     } else {
       toast.error('Vennligst fyll inn alle felt');
     }
-  };
-
-  handleComplete = () => {
-    this.setState({ showRegisterModal: false });
-    this.state.popupSuccess ? Consumer._currentValue.history.push({ pathname: '/login' }) : null;
   };
 
   render() {
@@ -164,7 +172,7 @@ export class RegisterWidget extends React.Component {
                       this.handleSubmit();
                     }}
                   >
-                    Registrer deg
+                    {!this.state.success ? <Icon size={'small'} name="circle notched" loading /> : 'Registrer deg'}
                   </Button>
                 </Segment>
               </Form>

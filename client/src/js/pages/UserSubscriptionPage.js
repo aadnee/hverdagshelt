@@ -26,6 +26,7 @@ export class UserSubscriptionPage extends Component {
 
   componentWillMount() {
     subscriptionService.getSubscriptions().then(sub => {
+      console.log(sub.data);
       if (sub.data.length > 0) {
         this.setState({ news: sub.data });
       } else {
@@ -56,7 +57,7 @@ export class UserSubscriptionPage extends Component {
             <Divider hidden />
             <Header as="h1">Nyheter jeg abonnerer på</Header>
             <Segment color="blue" basic>
-              <Grid container centered>
+              <Grid container>
                 {this.state.news.length < 1 ? (
                   <Grid.Row centered>
                     <Message size={'massive'}>

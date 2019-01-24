@@ -90,7 +90,7 @@ export class EmployeeRegisterEventPage extends Component {
             <Grid className="mapGrid">
               <Grid.Row columns={2} only="computer" className="mapRow">
                 <Grid.Column width={10} className="mapRow">
-                  <MapWidget onRef={ref => (this.mapWidget = ref)} searchControl callbackPoint={this.callbackPoint} callbackArea={this.callbackArea} areaToggle={this.areaToggler} submit={this.submit} placedMarker={this.placedMarker}/>
+                  <MapWidget onRef={ref => (this.mapWidget = ref)} searchControl locate callbackPoint={this.callbackPoint} callbackArea={this.callbackArea} areaToggle={this.areaToggler} submit={this.submit} placedMarker={this.placedMarker}/>
                 </Grid.Column>
                 <Grid.Column width={6} only="computer" className="frontPageFeed">
                   <Divider hidden/>
@@ -137,7 +137,7 @@ export class EmployeeRegisterEventPage extends Component {
 
               <Grid.Row columns={1} only="mobile tablet">
                 <Grid.Column colSpan={2}>
-                  <MapWidget modal event submit={this.submit} callback={this.callbackFake}/>
+                  <MapWidget modal event locate submit={this.submit} callback={this.callbackFake}/>
                 </Grid.Column>
               </Grid.Row>
             </Grid>

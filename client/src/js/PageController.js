@@ -46,7 +46,12 @@ export class PageController extends Component {
   componentWillMount() {
     if (Cookies.get('token') && this.state.user == null) {
       userService.getMe().then(res => {
-        if (res.success) this.setState({ user: res.data, renderReady: true });
+        console.log(res);
+        if (res.success) {
+          this.setState({ user: res.data, renderReady: true });
+        } else {
+          this.setState({ user: null, renderReady: true });
+        }
       });
     } else {
       this.setState({ renderReady: true });
@@ -59,11 +64,16 @@ export class PageController extends Component {
 
   login = (email, password) => {
     userService.login(email, password).then(res => {
-      console.log(res);
       if (res.success) {
         userService.getMe().then(res => {
-          this.setState({ user: res.data });
+          if (res.success) {
+            this.setState({ user: res.data });
+          } else {
+            toast.error('Noe gikk galt, prøv igjen senere.');
+          }
         });
+      } else {
+        toast.error('Brukernavn eller passord er feil.');
       }
     });
   };
@@ -152,7 +162,7 @@ export class PageController extends Component {
               </Sidebar.Pushable>
               <ToastContainer
                 position="top-right"
-                autoClose={5000}
+                autoClose={2000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
