@@ -156,7 +156,6 @@ export class MapWidget extends Component {
               onClick={this.handleClick}
               zoomControl={false}
               maxZoom={19}
-              minZoom={10}
           >
             <TileLayer
                 url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
