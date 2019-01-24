@@ -10,7 +10,9 @@ import {
   Dropdown,
   Dimmer,
   Loader,
-  Icon
+  Icon,
+  Header,
+  Modal
 } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
 import { municipalService } from '../services/MunicipalServices';
@@ -29,7 +31,10 @@ export class RegisterWidget extends React.Component {
       phone: '',
       selectedOption: '',
       options: [],
-      success: true
+      success: true,
+      message: '',
+      titleModal: '',
+      messageModal: false
     };
   }
 
@@ -47,6 +52,10 @@ export class RegisterWidget extends React.Component {
 
   handleInput = (key, value) => {
     this.setState({ [key]: value });
+  };
+
+  handleMessage = () => {
+    Consumer._currentValue.history.push('/login');
   };
 
   handleSubmit = () => {
@@ -73,8 +82,13 @@ export class RegisterWidget extends React.Component {
               this.setState({ success: true });
 
               toast.success(res.message.no);
-              Consumer._currentValue.history.push('/login');
+              this.setState({
+                messageModal: true,
+                titleModal: 'Registering vellykket',
+                message: 'Du har nå fått tilsendt passord på mail'
+              });
             } else {
+              this.setState({ success: false });
               toast.error(res.message.no);
             }
           });
@@ -178,6 +192,17 @@ export class RegisterWidget extends React.Component {
               </Form>
             </Grid.Column>
           </Grid>
+          <Modal open={this.state.messageModal} onClose={this.closeMessage} basic size="small">
+            <Header icon="user" content={this.state.titleModal} />
+            <Modal.Content>
+              <h3>{this.state.message}</h3>
+            </Modal.Content>
+            <Modal.Actions>
+              <Button color="green" onClick={this.handleMessage} inverted>
+                <Icon name="checkmark" /> Ok
+              </Button>
+            </Modal.Actions>
+          </Modal>
         </Container>
       </>
     );
