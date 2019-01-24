@@ -251,7 +251,7 @@ export class NewsFeedWidget extends Component {
     console.log(this.state.subs);
     if (this.props.newsOnly) {
       return <>{this.displayNews()}</>;
-    } else if (this.state.ready) {
+    } else if (!this.state.ready) {
       return (
         <Message icon>
           <Icon name="circle notched" loading />
