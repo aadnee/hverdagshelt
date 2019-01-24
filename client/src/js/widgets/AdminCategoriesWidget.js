@@ -87,6 +87,7 @@ export class AdminCategoriesWidget extends Component {
       this.props.addCat(this.state.name, this.state.mainCategory.id);
     }
     this.closeModalNewName();
+
   };
 
   render() {
