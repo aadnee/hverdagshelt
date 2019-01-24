@@ -456,7 +456,7 @@ export function syncDatabase(callback) {
       await News.create({
         title: 'Problem ved vei i TRD sentrum.',
         description: 'Brøytestikker skal bli satt opp.',
-        status: 2,
+        status: 3,
         lat: 1,
         lon: 1,
         address: 'Test street',

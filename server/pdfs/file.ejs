@@ -2,8 +2,8 @@
 <html>
 
 <head>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link rel="stylesheet" type="text/css" href="<%= link %>semantic.min.css">
+    <script type="text/javascript" src="<%= link %>loader.js"></script>
     <style>
         html,
         body {
@@ -29,58 +29,68 @@
 </head>
 
 <body>
-    <div id="pageHeader-first" class="ui huge header center aligned">
-        <h1><%= start + " til " + end%></h1>
+    <div class="ui container center aligned" >
+      <img src="<%= link %>hverdagshelt_logo.png" style="width:100%" />
+      <h1>Statistikk for <%= period %></h1>
+      <h2><%= start + " til " + end%></h2>
     </div>
-    <div class="ui container center aligned">
+    <div class="ui container center aligned" style="page-break-before:always;">
         <h2 class="ui large header center aligned">Varslingsstatistikk</h2>
         <table class="ui celled structured table large">
             <thead>
                 <tr>
                     <th rowspan="1" width="25%">Overkategori</th>
-                    <th rowspan="1" width="55%">Underkategori</th>
-                    <th rowspan="1" width="20%">Antall varslinger</th>
+                    <th rowspan="1" width="45%">Underkategori</th>
+                    <th rowspan="1" width="15%">Varslinger</th>
+                    <th rowspan="1" width="15%">% utførte</th>
                 </tr>
             </thead>
         </table>
 
         <% var total = 0; %>
+        <% var totalFinished = 0; %>
+        <% var totalPercent = 0; %>
             <% for(var i = 0; i < categories.length; i++) { %>
                 <table class="ui celled structured table large">
                     <tbody>
                         <% if(categories[i].subs.length == 0) { %>
                             <tr>
                                 <td width="25%"><b><%= categories[i].name %></b></td>
-                                <td width="55%"></td>
-                                <td width="20%">0</td>
+                                <td width="45%"></td>
+                                <td width="15%">0</td>
+                                <td width="15%">0</td>
                             </tr>
                             <% } %>
                                 <% for(var j = 0; j < categories[i].subs.length; j++) { %>
-                                    <% total = total + categories[i].subs[j].amount; %>
+                                    <% total = total + categories[i].subs[j].tickets; %>
+                                    <% totalFinished = totalFinished + categories[i].subs[j].finished; %>
                                         <% if(j == 0) { %>
                                             <tr style="page-break-inside: avoid;">
                                                 <td width="25%" rowspan="<%= categories[i].subs.length %>"><b><%= categories[i].name %></b></td>
-                                                <td width="55%">
-                                                    <%= categories[i].subs[j].name %>
-                                                </td>
-                                                <td width="20%">
-                                                    <%= categories[i].subs[j].amount %>
-                                                </td>
-                                            </tr>
-                                            <% } else { %>
-                                                <tr>
-                                                    <td width="55%">
+                                                <% } else { %>
+                                                    <tr>
+                                                      <% } %>
+
+                                                    <td width="45%">
                                                         <%= categories[i].subs[j].name %>
                                                     </td>
-                                                    <td width="20%">
-                                                        <%= categories[i].subs[j].amount %>
+                                                    <td width="15%">
+                                                        <%= categories[i].subs[j].tickets %>
+                                                    </td>
+                                                    <td width="15%">
+                                                      <% if(categories[i].subs[j].finished == 0 || categories[i].subs[j].tickets == 0) { %>
+                                                        0.00 %
+                                                      <% } else { %>
+                                                        <% totalPercent = totalPercent + ((categories[i].subs[j].finished / categories[i].subs[j].tickets) * 100) %>
+                                                        <%= ((categories[i].subs[j].finished / categories[i].subs[j].tickets) * 100).toFixed(2) %> %
+                                                      <% } %>
                                                     </td>
                                                 </tr>
-                                                <% } %>
+
                                                     <% } %>
                                                         <% if(i != (categories.length - 1)) { %>
                                                             <tr class="active">
-                                                                <td colspan="3" style="padding:2px" </td>
+                                                                <td colspan="4" style="padding:2px" </td>
                                                             </tr>
                                                             <% } %>
                     </tbody>
@@ -90,9 +100,10 @@
                     <table class="ui celled structured table large">
                         <tfoot>
                             <tr>
-                                <th width="25%">Total</th>
-                                <th width="55%"></th>
-                                <th width="20%"><b><%= total %></b></th>
+                                <th width="25%">Totaler</th>
+                                <th width="45%"></th>
+                                <th width="15%"><b><%= total %></b></th>
+                                <th width="15%"><b><%= ((totalFinished/total)*100).toFixed(2) %> %</b></th>
                             </tr>
                         </tfoot>
                     </table>

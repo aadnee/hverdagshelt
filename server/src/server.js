@@ -35,7 +35,7 @@ syncDatabase(res => {
           coords.lat,
           coords.lng,
           'Hjemme hos ' + rep.ReporterName,
-          7,
+          Math.floor(Math.random() * 10) + 7,
           1,
           1,
           [],
@@ -46,7 +46,7 @@ syncDatabase(res => {
         newsManager.addArticle(
           rep.Subject,
           'Beskrivelse her',
-          7,
+          Math.floor(Math.random() * 10) + 7,
           coords.lat,
           coords.lng,
           'Hjemme hos ' + rep.ReporterName,
@@ -76,31 +76,46 @@ let upload = multer({ storage: storage });
 let app = express();
 app.use(express.static(public_path));
 app.use(express.json());
+app.set('json spaces', 2);
 app.use(cookieParser());
 app.use(cors());
 
 app.get('/api/pdf', (req, res) => {
-  ticketManager.getTicketStatistics(1, 2019, null, 4, function(cats) {
-    userManager.userIncrease(1, 2019, null, 4, function(users) {
+  let municipalId = 1;
+  let year = 2019;
+  let month;
+  let week;
+
+  ticketManager.getTicketStatistics(municipalId, year, month, week, function(cats) {
+    userManager.userIncrease(municipalId, year, month, week, function(users) {
+      let period = month ? month + ' / 2019' : week ? 'uke ' + week + ' 2019' : year;
+      var projectRoot = process.cwd();
+      projectRoot = projectRoot.replace(/\\/g, '/');
+      var link = 'file:///' + projectRoot + '/pdfs/';
       ejs.renderFile(
         './pdfs/file.ejs',
-        { categories: cats.data, users: users, start: cats.start, end: cats.end },
+        { categories: cats.data, users: users, start: cats.start, end: cats.end, period: period, link: link },
         function(err, html) {
           let config = {
             format: 'A4',
             orientation: 'portrait',
             border: {
-              top: '0mm',
+              top: '20mm',
               right: '30mm',
-              bottom: '10mm',
+              bottom: '20mm',
               left: '30mm'
             },
             timeout: 30000,
-            renderDelay: 2000
+            renderDelay: 5000
           };
           let filepath = './pdfs/file.pdf';
-          pdf.create(html, config).toFile(filepath, function(err, file) {
-            res.json({ filename: file.filename });
+          pdf.create(html, config).toStream(function(err, stream) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.set('Content-type', 'application/pdf');
+              stream.pipe(res);
+            }
           });
         }
       );
@@ -110,12 +125,19 @@ app.get('/api/pdf', (req, res) => {
 
 app.get('/api/pdf/html', (req, res) => {
   let municipalId = 1;
-  ticketManager.getTicketStatistics(1, 2019, null, 4, function(cats) {
-    userManager.userIncrease(1, 2019, null, 4, function(users) {
-      console.log(users);
+  let year = 2019;
+  let month;
+  let week;
+
+  ticketManager.getTicketStatistics(municipalId, year, month, week, function(cats) {
+    userManager.userIncrease(municipalId, year, month, week, function(users) {
+      let period = month ? month + ' / 2019' : week ? 'uke ' + week + ' 2019' : year;
+      var projectRoot = process.cwd();
+      projectRoot = projectRoot.replace(/\\/g, '/');
+      var link = 'file:///' + projectRoot + '/pdfs/';
       ejs.renderFile(
         './pdfs/file.ejs',
-        { categories: cats.data, users: users, start: cats.start, end: cats.end },
+        { categories: cats.data, users: users, start: cats.start, end: cats.end, period: period, link: link },
         function(err, html) {
           res.send(html);
         }
@@ -196,15 +218,6 @@ app.put('/api/news/:id', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
   newsManager.updateNews(p.id, b.title, b.description, b.status, b.categoryId, b.companyId, function(result) {
-    res.json(result);
-  });
-});
-
-app.post('/api/news', ensureEmployee, (req, res) => {
-  let b = req.body;
-  newsManager.addArticle(b.title, by.description, b.categoryId, b.lat, b.lon, b.address, b.municipalId, function(
-    result
-  ) {
     res.json(result);
   });
 });

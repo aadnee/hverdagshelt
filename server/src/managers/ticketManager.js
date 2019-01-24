@@ -1,4 +1,4 @@
-import { Tickets, Users, Uploads, Categories, sequelize } from '../models';
+import { Tickets, Users, Uploads, Categories, News, sequelize } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
 import subscriptionManager from './subscriptionManager';
@@ -234,6 +234,19 @@ module.exports = {
                   },
                   municipalId: municipalId
                 }
+              },
+              {
+                attributes: ['id'],
+                model: News,
+                required: false,
+                where: {
+                  createdAt: {
+                    $gte: start,
+                    $lte: end
+                  },
+                  municipalId: municipalId,
+                  status: 3
+                }
               }
             ]
           }
@@ -244,7 +257,11 @@ module.exports = {
         res.map((cat, i) => {
           stats.push({ name: cat.name, subs: [] });
           cat.subs.map(sub => {
-            stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
+            stats[i].subs.push({
+              name: sub.name,
+              tickets: sub.tickets.length,
+              finished: sub.news.length
+            });
           });
         });
         callback({ success: true, data: stats, start: start.format('DD/MM/YYYY'), end: end.format('DD/MM/YYYY') }),
