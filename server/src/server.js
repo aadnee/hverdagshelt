@@ -10,6 +10,7 @@ import multer from 'multer';
 import cors from 'cors';
 import pdf from 'html-pdf';
 import ejs from 'ejs';
+import utmObj from 'utm-latlng';
 import userManager from './managers/userManager';
 import newsManager from './managers/newsManager';
 import ticketManager from './managers/ticketManager';
@@ -19,7 +20,43 @@ import categoryManager from './managers/categoryManager';
 import companyManager from './managers/companyManager';
 import eventManager from './managers/eventManager';
 import { syncDatabase } from './models';
-syncDatabase(res => console.log(res));
+syncDatabase(res => {
+  console.log(res);
+  fs.readFile('src/testdata/vegvesen.json', 'utf8', function(err, data) {
+    if (err) throw err;
+    let reps = JSON.parse(data).Reports;
+    let utm = new utmObj();
+    reps.map(rep => {
+      let coords = utm.convertUtmToLatLng(rep.Easting, rep.Northing, 33, 'N');
+      if (rep.Status == 'new') {
+        ticketManager.addTicket(
+          rep.Subject,
+          'Beskrivelse her',
+          coords.lat,
+          coords.lng,
+          'Hjemme hos ' + rep.ReporterName,
+          7,
+          1,
+          1,
+          [],
+          3,
+          function(result) {}
+        );
+      } else {
+        newsManager.addArticle(
+          rep.Subject,
+          'Beskrivelse her',
+          7,
+          coords.lat,
+          coords.lng,
+          'Hjemme hos ' + rep.ReporterName,
+          1,
+          function() {}
+        );
+      }
+    });
+  });
+});
 
 const public_path = path.join(__dirname, '/../../client/public');
 
