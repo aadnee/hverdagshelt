@@ -52,8 +52,6 @@ export class UserTicketsPage extends Component {
             ti[index].image = image;
             ti[index].status = status;
 
-            console.log(ti);
-
             this.setState({ tickets: ti });
 
             this.close();
@@ -74,13 +72,11 @@ export class UserTicketsPage extends Component {
 
   componentWillMount() {
     ticketService.getTickets().then(res => {
-      console.log(res.data);
       this.setState({ tickets: res.data });
     });
   }
 
   deleteTicket(id) {
-    console.log(id);
     if (!id) {
       toast.error('Noe gikk galt, prøv igjen', {
         position: toast.POSITION.TOP_RIGHT
