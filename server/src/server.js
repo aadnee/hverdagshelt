@@ -572,6 +572,7 @@ function ensureLogin(req, res, next) {
     } else {
       res.clearCookie('token');
       res.clearCookie('rank');
+      res.clearCookie('municipalId');
       res.sendStatus(403);
     }
   });

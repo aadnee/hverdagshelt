@@ -16,12 +16,10 @@
 
 <body>
   <div id="pageHeader-first" class="ui huge header center aligned">
-    <h1>Hverdagshelt statistikk</h1>
-    <h2><%= start + " til " + end%></h2>
+    <h1><%= start + " til " + end%></h1>
   </div>
     <div class="ui container center aligned">
-
-
+      <h2 class="ui large header center aligned">Varslingsstatistikk</h2>
         <table class="ui celled structured table large">
             <thead>
                 <tr>
@@ -68,15 +66,14 @@
               </tr>
             </tfoot>
         </table>
-        <div class="ui grid" style="page-break-before:always;">
-            <div class="sixteen wide column" id="piechart1" style="width:800px; height:600px;">
-            </div>
+        <div class="ui grid center aligned" style="page-break-before:always;">
+          <h2 class="ui header center aligned">Brukerstatistikk</h2>
+          <div class="sixteen wide column" id="piechart1" style="width:800px; height:600px;">
+          </div>
         </div>
         <div class="ui grid" style="page-break-before:always;">
-            <div class="sixteen wide column" id="piechart2" style="width:800px; height:300px;">
-            </div>
+          <h2 class="ui header center aligned">Annen statistikk</h2>
         </div>
-
       </div>
 
 
@@ -88,7 +85,6 @@
 
         function drawCharts() {
             drawChart1();
-            drawChart2();
         }
 
         function drawChart1() {
@@ -105,23 +101,6 @@
                 'title': 'My Average Day 1'
             };
             var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
-            chart.draw(data, options);
-        }
-
-        function drawChart2() {
-            var data = google.visualization.arrayToDataTable([
-                ['Task', 'Hours per Day'],
-                ['Work', 8],
-                ['Eat', 2],
-                ['TV', 4],
-                ['Gym', 2],
-                ['Sleep', 8]
-            ]);
-
-            var options = {
-                'title': 'My Average Day 2'
-            };
-            var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
             chart.draw(data, options);
         }
     </script>
