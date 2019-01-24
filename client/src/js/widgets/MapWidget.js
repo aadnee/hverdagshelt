@@ -64,31 +64,32 @@ export class MapWidget extends Component {
     if(this.props.onRef){
       this.props.onRef(this);
     }
-
-    map
-        .locate({setView: true, maxZoom: 15, enableHighAccuracy: true})
-        .on('locationfound', function (e) {
-              console.log(e);
-              if (e.accuracy < 100) {
-                reverseSearch.latlng(e.latlng).run(function (error, result) {
-                  self.setState({
-                    userInfo: result.address.Address + ', ' + result.address.Subregion,
-                    userPos: [e.latitude, e.longitude],
-                    foundPos: true
-                  });
-                  if (self.props.callbackPoint) {
-                    self.props.callbackPoint(e.latlng, result.address.Address + ', ' + result.address.Subregion);
-                  }
-                  if(self.props.callback){
-                    self.props.callback(e.latlng, result.address.Address + ', ' + result.address.Subregion);
-
-                  }
+    if(this.props.locate){
+      map
+          .locate({setView: true, maxZoom: 15, enableHighAccuracy: true})
+          .on('locationfound', function (e) {
+            console.log(e);
+            if (e.accuracy < 100) {
+              reverseSearch.latlng(e.latlng).run(function (error, result) {
+                self.setState({
+                  userInfo: result.address.Address + ', ' + result.address.Subregion,
+                  userPos: [e.latitude, e.longitude],
+                  foundPos: true
                 });
-              }
-            })
-        .on('locationerror', function (e) {
-          self.setState({foundPos: false});
-        });
+                if (self.props.callbackPoint) {
+                  self.props.callbackPoint(e.latlng, result.address.Address + ', ' + result.address.Subregion);
+                }
+                if(self.props.callback){
+                  self.props.callback(e.latlng, result.address.Address + ', ' + result.address.Subregion);
+
+                }
+              });
+            }
+          })
+          .on('locationerror', function (e) {
+            self.setState({foundPos: false});
+          });
+    }
 
     if(this.props.searchControl){
       let arcgisOnline = new ELG.ArcgisOnlineProvider({countries: ['NO']});
@@ -96,6 +97,8 @@ export class MapWidget extends Component {
         providers: [arcgisOnline],
         allowMultipleResults: false,
         useMapBounds: false,
+        expanded: !!this.props.openSearch,
+        collapseAfterResult: !this.props.openSearch,
         position: 'topright',
         placeholder: 'Søk etter steder eller adresser'
       }).addTo(map);
