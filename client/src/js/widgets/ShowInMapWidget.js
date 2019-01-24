@@ -27,13 +27,14 @@ export class ShowInMapWidget extends Component {
 
       cent = [la[0] / this.props.latlng.length, la[1] / this.props.latlng.length];
     } else {
-      cent = this.props.latlng;
+      console.log(this.props.latlng);
+      cent = this.props.latlng[0];
     }
 
     if (this.props.mapOnly) {
       console.log(this.props.pointer);
       const mouseStyle = this.props.pointer ? 'mapPointer' : '';
-      console.log(mouseStyle);
+      console.log(cent);
       return (
         <Map
           ref={this.mapRef}
@@ -52,7 +53,7 @@ export class ShowInMapWidget extends Component {
           {this.props.latlng.length > 2 ? (
             <Polygon positions={this.props.latlng} />
           ) : (
-            <Marker position={this.props.latlng} />
+            <Marker position={this.props.latlng[0]} />
           )}
         </Map>
       );
@@ -73,7 +74,7 @@ export class ShowInMapWidget extends Component {
               {this.props.latlng.length > 2 ? (
                 <Polygon positions={this.props.latlng} />
               ) : (
-                <Marker position={this.props.latlng} />
+                <Marker position={this.props.latlng[0]} />
               )}
             </Map>
           ) : null}

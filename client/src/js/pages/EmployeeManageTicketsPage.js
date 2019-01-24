@@ -8,6 +8,8 @@ import { ticketService } from '../services/TicketServices';
 import { subscriptionService } from '../services/SubscriptionServices';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import { newsService } from '../services/NewsServices';
+import { categoryService } from '../services/CategoryServices';
 
 export class EmployeeManageTicketsPage extends React.Component {
   constructor(props) {
@@ -17,7 +19,9 @@ export class EmployeeManageTicketsPage extends React.Component {
       hasTickets: true,
       modalOpen: false,
       modalParam: '',
-      bindNewsModalOpen: false
+      bindNewsModalOpen: false,
+      news: [],
+      newsOptions: []
     };
     this.reject = this.reject.bind(this);
     this.accept = this.accept.bind(this);
@@ -33,16 +37,42 @@ export class EmployeeManageTicketsPage extends React.Component {
 
   componentWillMount() {
     //Fetch id based on user bound to municipal
-
-    ticketService.getMunicipalTickets(Cookies.get('municipalId')).then(res => {
-      if (res.data.length < 1) {
-        this.setState({ hasTickets: false });
-      }
-      this.setState({ tickets: res.data });
-    });
+    let tickets = [];
+    let ids = [];
+    let news = [];
+    let newsOptions = [];
+    ticketService
+      .getMunicipalTickets(Cookies.get('municipalId'))
+      .then(res => {
+        if (res.data.length < 1) {
+          this.setState({ hasTickets: false });
+        }
+        tickets = res.data;
+      })
+      .then(() => {
+        categoryService
+          .getCategories()
+          .then(res => {
+            res.data.map(cat => {
+              ids.push(cat.id);
+            });
+            console.log(ids);
+          })
+          .then(() => {
+            newsService.getFilteredNews(Cookies.get('municipalId'), ids, 0, 0).then(res => {
+              console.log(res.data);
+              res.data.map(news => {
+                newsOptions.push({ key: news.id, value: news.id, text: news.title });
+              });
+              news = res.data;
+              this.setState({ tickets: tickets, news: news, newsOptions: newsOptions });
+            });
+          });
+      });
   }
 
   render() {
+    const { news, newsOptions } = this.state;
     return (
       <Container>
         <Divider hidden />
@@ -65,6 +95,8 @@ export class EmployeeManageTicketsPage extends React.Component {
                   accept={this.accept.bind(this, ticket.id)}
                   show={this.show.bind(this, ticket.id)}
                   link={this.bindUserToNews.bind(this, ticket.id)}
+                  news={news}
+                  newsOptions={newsOptions}
                 />
               </Grid.Column>
             ))}
