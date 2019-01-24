@@ -226,7 +226,7 @@ export class PublishNewsFormWidget extends Component {
                         return (
                           <Modal
                             basic
-                            dimmer={'inverted'}
+                            dimmer={'blurring'}
                             size={'large'}
                             closeIcon
                             key={i}
@@ -248,7 +248,7 @@ export class PublishNewsFormWidget extends Component {
                                   });
                                 }}
                                 as={'a'}
-                                content={image.filename}
+                                content={image.filename || image.name}
                               />
                             }
                           >

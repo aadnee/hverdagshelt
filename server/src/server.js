@@ -52,7 +52,7 @@ app.get('/api/pdf', (req, res) => {
         format: 'A4',
         orientation: 'portrait',
         border: {
-          top: '10mm',
+          top: '0mm',
           right: '30mm',
           bottom: '10mm',
           left: '30mm'
@@ -118,6 +118,12 @@ app.put('/api/events/:eventId', ensureEmployee, (req, res) => {
 app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
   let p = req.params;
   eventManager.deleteEvent(p.eventId, function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/news', (req, res) => {
+  newsManager.getNews(function(result) {
     res.json(result);
   });
 });
@@ -572,6 +578,7 @@ function ensureLogin(req, res, next) {
     } else {
       res.clearCookie('token');
       res.clearCookie('rank');
+      res.clearCookie('municipalId');
       res.sendStatus(403);
     }
   });

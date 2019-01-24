@@ -16,12 +16,10 @@
 
 <body>
   <div id="pageHeader-first" class="ui huge header center aligned">
-    <h1>Hverdagshelt statistikk</h1>
-    <h2><%= start + " til " + end%></h2>
+    <h1><%= start + " til " + end%></h1>
   </div>
     <div class="ui container center aligned">
-
-
+      <h2 class="ui large header center aligned">Varslingsstatistikk</h2>
         <table class="ui celled structured table large">
             <thead>
                 <tr>
@@ -43,7 +41,7 @@
                   <% for(var j = 0; j < categories[i].subs.length; j++) { %>
                     <% total = total + categories[i].subs[j].amount; %>
                     <% if(j == 0) { %>
-                      <tr>
+                      <tr style="page-break-inside: avoid;">
                         <td class="" rowspan="<%= categories[i].subs.length %>"><b><%= categories[i].name %></b></td>
                         <td><%= categories[i].subs[j].name %></td>
                         <td><%= categories[i].subs[j].amount %></td>
@@ -68,15 +66,17 @@
               </tr>
             </tfoot>
         </table>
-        <div class="ui grid" style="page-break-before:always;">
-            <div class="sixteen wide column" id="piechart1" style="width:800px; height:600px;">
-            </div>
+        <div class="ui grid center aligned" style="page-break-before:always;">
+          <div style="width:50%;">
+            <h2 class="ui header center aligned">Brukerstatistikk</h2>
+          </div>
+          <div class="sixteen wide column">
+            <div id="piechart1" style="height:500px; width:500px;"></div>
+          </div>
         </div>
-        <div class="ui grid" style="page-break-before:always;">
-            <div class="sixteen wide column" id="piechart2" style="width:800px; height:300px;">
-            </div>
+        <div class="ui grid center aligned" style="page-break-before:always;">
+          <h2 class="ui header center aligned">Annen statistikk</h2>
         </div>
-
       </div>
 
 
@@ -88,7 +88,6 @@
 
         function drawCharts() {
             drawChart1();
-            drawChart2();
         }
 
         function drawChart1() {
@@ -105,23 +104,6 @@
                 'title': 'My Average Day 1'
             };
             var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
-            chart.draw(data, options);
-        }
-
-        function drawChart2() {
-            var data = google.visualization.arrayToDataTable([
-                ['Task', 'Hours per Day'],
-                ['Work', 8],
-                ['Eat', 2],
-                ['TV', 4],
-                ['Gym', 2],
-                ['Sleep', 8]
-            ]);
-
-            var options = {
-                'title': 'My Average Day 2'
-            };
-            var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
             chart.draw(data, options);
         }
     </script>
