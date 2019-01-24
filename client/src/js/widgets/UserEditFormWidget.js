@@ -207,59 +207,22 @@ export class UserEditFormWidget extends Component {
                   <Grid.Column>
                     <Form.Input
                       fluid
-                      id="form-subcomponent-shorthand-input-first-name"
                       label="Fornavn"
                       placeholder="Fornavn"
-                      action
                       value={this.state.firstName}
                       onChange={(event, data) => {
                         this.handleInput('firstName', data.value);
-                      }}
-                    >
-                      <input disabled={!this.state.editFirstname} />
-                      <Popup
-                        trigger={
-                          <Button
-                            icon={'edit'}
-                            color={'blue'}
-                            onClick={() => {
-                              this.handleEdit('editFirstname');
-                            }}
-                          />
-                        }
-                      >
-                        Endre fornavn
-                      </Popup>
-                    </Form.Input>
+                      }}/>
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
                       fluid
-                      id="form-subcomponent-shorthand-input-last-name"
                       label="Etternavn"
                       placeholder="Etternavn"
-                      action
                       value={this.state.lastName}
                       onChange={(event, data) => {
                         this.handleInput('lastName', data.value);
-                      }}
-                    >
-                      <input disabled={!this.state.editLastname} />
-                      <Popup
-                        trigger={
-                          <Button
-                            icon={<Icon name="edit" />}
-                            color={'blue'}
-                            onClick={() => {
-                              this.handleEdit('editLastname');
-                            }}
-                            toggle
-                          />
-                        }
-                      >
-                        Endre etternavn
-                      </Popup>
-                    </Form.Input>
+                      }}/>
                   </Grid.Column>
                 </Grid>
               </Form.Field>
@@ -269,61 +232,26 @@ export class UserEditFormWidget extends Component {
                     <Form.Input
                       fluid
                       label="Telefonnummer"
+                      icon="phone"
                       iconPosition="left"
                       placeholder="Telefonnummer"
-                      action
                       value={this.state.phone}
                       onChange={(event, data) => {
                         this.handleInput('phone', data.value);
-                      }}
-                    >
-                      <Icon name="phone" color="blue" />
-                      <input disabled={!this.state.editPhonenumber} />
-                      <Popup
-                        trigger={
-                          <Button
-                            icon={'edit'}
-                            color={'blue'}
-                            onClick={() => {
-                              this.handleEdit('editPhonenumber');
-                            }}
-                            toggle
-                          />
-                        }
-                      >
-                        Endre telefonnummer
-                      </Popup>
-                    </Form.Input>
+                      }}/>
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
                       fluid
                       label="E-mail"
                       iconPosition="left"
+                      icon="mail"
                       placeholder="E-mail"
-                      action
                       value={this.state.email}
                       onChange={(event, data) => {
                         this.handleInput('email', data.value);
                       }}
-                    >
-                      <Icon name="mail" color="blue" />
-                      <input disabled={!this.state.editEmail} />
-                      <Popup
-                        trigger={
-                          <Button
-                            icon={'edit'}
-                            color={'blue'}
-                            onClick={() => {
-                              this.handleEdit('editEmail');
-                            }}
-                            toggle
-                          />
-                        }
-                      >
-                        Endre email
-                      </Popup>
-                    </Form.Input>
+                    />
                   </Grid.Column>
                 </Grid>
                 <Divider hidden />
