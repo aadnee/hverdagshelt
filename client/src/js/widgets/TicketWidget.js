@@ -134,7 +134,7 @@ export class TicketWidget extends Component {
 
                   <Modal
                     open={this.state.open}
-                    onOpen={() => this.close()}
+                    onOpen={() => this.setState({ open: true })}
                     onClose={() => this.setState({ open: false })}
                     trigger={<Dropdown.Item icon={'linkify'} text={'Knytt til samme nyhet'} />}
                     size={'tiny'}
