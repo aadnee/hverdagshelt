@@ -82,7 +82,7 @@ describe('Get filtered News', () => {
       }).toEqual({
         success: true
       });
-      //expect(news.data).toHaveLength(1);
+      expect(news.data).toHaveLength(0);
       done();
     });
   });

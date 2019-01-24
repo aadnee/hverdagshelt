@@ -4,14 +4,15 @@
   "scripts": {
     "start": "nodemon --exec babel-node src/server.js",
     "start-prod": "cross-env NODE_ENV=production babel-node src/server.js",
-    "test": "babel-node ./tests/setup.js && jest --forceExit --runInBand --coverage"
+    "test": "jest --forceExit --runInBand --coverage"
   },
   "jest": {
     "testRegex": "./tests/.+Test\\.js$",
     "testURL": "http://localhost",
     "globals": {
       "TEST": true
-    }
+    },
+    "setupTestFrameworkScriptFile": "./tests/setup.js"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",

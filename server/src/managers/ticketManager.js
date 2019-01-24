@@ -1,4 +1,4 @@
-import { Tickets, Users, Uploads, Categories, sequelize } from '../models';
+import { Tickets, Users, Uploads, Categories, News, sequelize } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
 import subscriptionManager from './subscriptionManager';
@@ -83,8 +83,8 @@ module.exports = {
     );
   },
 
-  setStatus: function(status, ticketId, newsId, callback) {
-    Tickets.update({ status: status, newsId: newsId }, { where: { id: ticketId } }).then(
+  setStatus: function(status, ticketId, newsId, feedback, callback) {
+    Tickets.update({ status: status, newsId: newsId, feedback: feedback }, { where: { id: ticketId } }).then(
       res => {
         Users.findOne({
           attributes: ['id', 'email', 'notifications'],
@@ -158,7 +158,7 @@ module.exports = {
             { where: { id: imageId } }
           ).then(res => null, err => callback({ success: false, message: err }));
         });
-        ticketManager.setStatus(3, ticketId, result.id, function(res) {
+        ticketManager.setStatus(3, ticketId, result.id, null, function(res) {
           callback(result);
         });
       } else {
@@ -234,6 +234,19 @@ module.exports = {
                   },
                   municipalId: municipalId
                 }
+              },
+              {
+                attributes: ['id'],
+                model: News,
+                required: false,
+                where: {
+                  createdAt: {
+                    $gte: start,
+                    $lte: end
+                  },
+                  municipalId: municipalId,
+                  status: 3
+                }
               }
             ]
           }
@@ -246,7 +259,11 @@ module.exports = {
           total = 0;
           stats.push({ name: cat.name, total: 0, subs: [] });
           cat.subs.map(sub => {
-            stats[i].subs.push({ name: sub.name, amount: sub.tickets.length });
+            stats[i].subs.push({
+              name: sub.name,
+              tickets: sub.tickets.length,
+              finished: sub.news.length
+            });
             total += parseInt(sub.tickets.length);
           });
           stats[i].total = total;

@@ -56,7 +56,7 @@ export class NewsCaseWidget extends Component {
 
   componentWillMount() {
     if (this.props.companies) {
-      this.setState({ companyOptions: this.props.companyOptions, executedBy: this.props.executedBy });
+      this.setState({ companyOptions: this.props.companyOptions });
     }
   }
 
@@ -128,7 +128,7 @@ export class NewsCaseWidget extends Component {
           <Segment basic>
             <Grid stackable>
               <Grid.Column width={16}>
-                Hendelses-adresse: {newscase.address},
+                Hendelses-adresse: {newscase.address}
                 <ShowInMapWidget
                   callback={this.close}
                   renderMap={this.state.renderMap}
@@ -141,7 +141,7 @@ export class NewsCaseWidget extends Component {
                 />
               </Grid.Column>
               <Grid.Column width={16}>
-                {newscase.companyId ? 'Oppdrag utføres av: ' + this.state.executedBy : null}
+                {newscase.companyId ? 'Oppdrag utføres av firmaet: ' + this.props.newscase.executedBy : null}
               </Grid.Column>
               {this.props.employee ? (
                 <Grid.Column floated={'right'} width={2}>

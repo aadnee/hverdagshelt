@@ -33,8 +33,8 @@ class TicketServices {
     return api.get('/api/tickets/municipal/' + ticketId);
   }
 
-  rejectTicket(ticketId) {
-    return api.put('/api/tickets/' + ticketId + '/reject');
+  rejectTicket(ticketId, feedback) {
+    return api.put('/api/tickets/' + ticketId + '/reject', { feedback: feedback });
   }
 
   linkTicket(ticketId, newsId) {

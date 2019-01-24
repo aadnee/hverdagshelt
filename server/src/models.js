@@ -62,7 +62,8 @@ export let Tickets = sequelize.define('tickets', {
   lat: { type: Sequelize.FLOAT, allowNull: false },
   lon: { type: Sequelize.FLOAT, allowNull: false },
   address: { type: Sequelize.STRING },
-  subscribed: { type: Sequelize.BOOLEAN, allowNull: true }
+  subscribed: { type: Sequelize.BOOLEAN, allowNull: true },
+  feedback: { type: Sequelize.TEXT, length: 'medium', allowNull: true }
 });
 
 export let Uploads = sequelize.define('uploads', {
@@ -456,7 +457,7 @@ export function syncDatabase(callback) {
       await News.create({
         title: 'Problem ved vei i TRD sentrum.',
         description: 'Brøytestikker skal bli satt opp.',
-        status: 2,
+        status: 3,
         lat: 1,
         lon: 1,
         address: 'Test street',
