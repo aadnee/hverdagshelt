@@ -96,6 +96,7 @@ export class PublishNewsFormWidget extends Component {
           receivedCategory: news.categoryId,
           category: news.categoryId,
           address: news.address,
+          position: [news.lat, news.lon],
           status: news.status,
           statusOptions: statusOptions,
           company: news.companyId ? news.companyId : 4,
@@ -114,7 +115,8 @@ export class PublishNewsFormWidget extends Component {
         receivedCategory: ticket.categoryId,
         category: ticket.categoryId,
         address: ticket.address,
-        image: ticket.uploads
+        image: ticket.uploads,
+        position: [ticket.lat, ticket.lon]
       });
     }
     let parentId = -1;

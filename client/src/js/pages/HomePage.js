@@ -27,20 +27,20 @@ export class HomePage extends Component {
       eventPolys: []
     };
     this.yellowMarker = new L.Icon({
-      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
+      iconSize: [20, 33],
+      iconAnchor: [10, 33],
+      popupAnchor: [1, -26],
+      shadowSize: [33, 33]
     });
     this.purpleMarker = new L.Icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
+      iconSize: [20, 33],
+      iconAnchor: [10, 33],
+      popupAnchor: [1, -29],
+      shadowSize: [33, 33]
     });
   }
 
@@ -79,7 +79,7 @@ export class HomePage extends Component {
           this.mapRef.state.map.addLayer(poly);
           this.state.eventPolys.push(poly);
         } else {
-          let eventMarker = L.marker(area, { icon: this.purpleMarker }).bindPopup(popup);
+          let eventMarker = L.marker(area[0], { icon: this.purpleMarker }).bindPopup(popup);
           this.mapRef.state.map.addLayer(eventMarker);
           this.state.eventMarkers.push(eventMarker);
         }
