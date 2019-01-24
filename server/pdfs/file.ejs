@@ -11,74 +11,105 @@
             margin: 0;
             padding: 0;
         }
+
+        #chartdiv {
+            display: block;
+            white-space: wrap;
+            margin-top: 15px;
+        }
+
+        table {
+            page-break-inside: avoid;
+        }
+
+        tbody {
+            border-top: 1px solid rgba(34, 36, 38, .1);
+        }
     </style>
 </head>
 
 <body>
-  <div id="pageHeader-first" class="ui huge header center aligned">
-    <h1><%= start + " til " + end%></h1>
-  </div>
+    <div id="pageHeader-first" class="ui huge header center aligned">
+        <h1><%= start + " til " + end%></h1>
+    </div>
     <div class="ui container center aligned">
-      <h2 class="ui large header center aligned">Varslingsstatistikk</h2>
+        <h2 class="ui large header center aligned">Varslingsstatistikk</h2>
         <table class="ui celled structured table large">
             <thead>
                 <tr>
-                    <th rowspan="1">Overkategori</th>
-                    <th rowspan="1">Underkategori</th>
-                    <th rowspan="1">Antall varslinger</th>
+                    <th rowspan="1" width="25%">Overkategori</th>
+                    <th rowspan="1" width="55%">Underkategori</th>
+                    <th rowspan="1" width="20%">Antall varslinger</th>
                 </tr>
             </thead>
-            <tbody>
-                <% var total = 0; %>
-                <% for(var i = 0; i < categories.length; i++) { %>
-                  <% if(categories[i].subs.length == 0) { %>
-                    <tr>
-                      <td class=""><b><%= categories[i].name %></b></td>
-                      <td></td>
-                      <td>0</td>
-                    </tr>
-                  <% } %>
-                  <% for(var j = 0; j < categories[i].subs.length; j++) { %>
-                    <% total = total + categories[i].subs[j].amount; %>
-                    <% if(j == 0) { %>
-                      <tr style="page-break-inside: avoid;">
-                        <td class="" rowspan="<%= categories[i].subs.length %>"><b><%= categories[i].name %></b></td>
-                        <td><%= categories[i].subs[j].name %></td>
-                        <td><%= categories[i].subs[j].amount %></td>
-                      </tr>
-                    <% } else { %>
-                      <tr>
-                        <td><%= categories[i].subs[j].name %></td>
-                        <td><%= categories[i].subs[j].amount %></td>
-                      </tr>
-                    <% } %>
-                  <% } %>
-                  <% if(i != (categories.length - 1)) { %>
-                    <tr class="active"><td colspan="3" style="padding:2px"</td></tr>
-                  <% } %>
-                <% } %>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th>Total</th>
-                <th></th>
-                <th><b><%= total %></b></th>
-              </tr>
-            </tfoot>
         </table>
-        <div class="ui grid center aligned" style="page-break-before:always;">
-          <div style="width:50%;">
-            <h2 class="ui header center aligned">Brukerstatistikk</h2>
-          </div>
-          <div class="sixteen wide column">
-            <div id="piechart1" style="height:500px; width:500px;"></div>
-          </div>
-        </div>
+
+        <% var total = 0; %>
+            <% for(var i = 0; i < categories.length; i++) { %>
+                <table class="ui celled structured table large">
+                    <tbody>
+                        <% if(categories[i].subs.length == 0) { %>
+                            <tr>
+                                <td width="25%"><b><%= categories[i].name %></b></td>
+                                <td width="55%"></td>
+                                <td width="20%">0</td>
+                            </tr>
+                            <% } %>
+                                <% for(var j = 0; j < categories[i].subs.length; j++) { %>
+                                    <% total = total + categories[i].subs[j].amount; %>
+                                        <% if(j == 0) { %>
+                                            <tr style="page-break-inside: avoid;">
+                                                <td width="25%" rowspan="<%= categories[i].subs.length %>"><b><%= categories[i].name %></b></td>
+                                                <td width="55%">
+                                                    <%= categories[i].subs[j].name %>
+                                                </td>
+                                                <td width="20%">
+                                                    <%= categories[i].subs[j].amount %>
+                                                </td>
+                                            </tr>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td width="55%">
+                                                        <%= categories[i].subs[j].name %>
+                                                    </td>
+                                                    <td width="20%">
+                                                        <%= categories[i].subs[j].amount %>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                                    <% } %>
+                                                        <% if(i != (categories.length - 1)) { %>
+                                                            <tr class="active">
+                                                                <td colspan="3" style="padding:2px" </td>
+                                                            </tr>
+                                                            <% } %>
+                    </tbody>
+                </table>
+                <% } %>
+
+                    <table class="ui celled structured table large">
+                        <tfoot>
+                            <tr>
+                                <th width="25%">Total</th>
+                                <th width="55%"></th>
+                                <th width="20%"><b><%= total %></b></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div class="ui grid center aligned" style="page-break-before:always;">
+                        <div style="width:100%; position:absolute;">
+                            <h2 class="ui header center aligned">Brukerstatistikk</h2>
+                        </div>
+                        <div id="chartdiv" class="sixteen wide column">
+                            <div id="piechart1" style="height:500px; width:820px;"></div>
+                        </div>
+                    </div>
+                    <!--
         <div class="ui grid center aligned" style="page-break-before:always;">
           <h2 class="ui header center aligned">Annen statistikk</h2>
         </div>
-      </div>
-
+      -->
+    </div>
 
     <script type="text/javascript">
         google.charts.load('current', {
@@ -91,17 +122,20 @@
         }
 
         function drawChart1() {
+            var start1 = <%- users.start %>;
+            var increase = <%- users.increase %>;
+            var date = '<%- start %>';
             var data = google.visualization.arrayToDataTable([
-                ['Task', 'Hours per Day'],
-                ['Work', 8],
-                ['Eat', 2],
-                ['TV', 4],
-                ['Gym', 2],
-                ['Sleep', 8]
+                ['', ''],
+                ['Brukere før ' + date, start1],
+                ['Brukere etter ' + date, increase]
             ]);
 
             var options = {
-                'title': 'My Average Day 1'
+                'title': 'Brukere',
+                'legend': {
+                    position: 'bottom'
+                }
             };
             var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
             chart.draw(data, options);

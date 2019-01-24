@@ -44,15 +44,21 @@ export class AdminRegisterWidget extends React.Component {
       this.state.phone &&
       this.state.selectedOption
     ) {
-      let newUser = {
-        name: this.state.firstname + ' ' + this.state.lastname,
-        email: this.state.email,
-        phone: this.state.phone,
-        municipalId: this.state.selectedOption
-      };
+      if (this.state.phone.length < 10) {
+        let newUser = {
+          name: this.state.firstname + ' ' + this.state.lastname,
+          email: this.state.email,
+          phone: this.state.phone,
+          municipalId: this.state.selectedOption
+        };
 
-      console.log(newUser);
-      this.props.handleRegister(newUser);
+        console.log(newUser);
+        this.props.handleRegister(newUser);
+      } else {
+        toast.error('Telefonnummeret kan ikke være lengre enn 9 siffer');
+      }
+    } else {
+      toast.error('Vennligst fyll inn alle felt');
     }
   };
 
@@ -118,6 +124,7 @@ export class AdminRegisterWidget extends React.Component {
                     icon="envelope"
                     iconPosition="left"
                     placeholder="E-postadresse"
+                    type={'email'}
                     value={this.state.email}
                     onChange={(event, data) => {
                       this.handleInput('email', data.value);

@@ -43,39 +43,46 @@ app.use(cookieParser());
 app.use(cors());
 
 app.get('/api/pdf', (req, res) => {
-  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
-    ejs.renderFile('./pdfs/file.ejs', { categories: result.data, start: result.start, end: result.end }, function(
-      err,
-      html
-    ) {
-      let config = {
-        format: 'A4',
-        orientation: 'portrait',
-        border: {
-          top: '0mm',
-          right: '30mm',
-          bottom: '10mm',
-          left: '30mm'
-        },
-        timeout: 30000,
-        renderDelay: 2000
-      };
-      let filepath = './pdfs/file.pdf';
-      pdf.create(html, config).toFile(filepath, function(err, file) {
-        res.json({ filename: file.filename });
-      });
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(cats) {
+    userManager.userIncrease(1, 2019, null, 4, function(users) {
+      ejs.renderFile(
+        './pdfs/file.ejs',
+        { categories: cats.data, users: users, start: cats.start, end: cats.end },
+        function(err, html) {
+          let config = {
+            format: 'A4',
+            orientation: 'portrait',
+            border: {
+              top: '0mm',
+              right: '30mm',
+              bottom: '10mm',
+              left: '30mm'
+            },
+            timeout: 30000,
+            renderDelay: 2000
+          };
+          let filepath = './pdfs/file.pdf';
+          pdf.create(html, config).toFile(filepath, function(err, file) {
+            res.json({ filename: file.filename });
+          });
+        }
+      );
     });
   });
 });
 
 app.get('/api/pdf/html', (req, res) => {
   let municipalId = 1;
-  ticketManager.getTicketStatistics(1, 2019, null, 4, function(result) {
-    ejs.renderFile('./pdfs/file.ejs', { categories: result.data, start: result.start, end: result.end }, function(
-      err,
-      html
-    ) {
-      res.send(html);
+  ticketManager.getTicketStatistics(1, 2019, null, 4, function(cats) {
+    userManager.userIncrease(1, 2019, null, 4, function(users) {
+      console.log(users);
+      ejs.renderFile(
+        './pdfs/file.ejs',
+        { categories: cats.data, users: users, start: cats.start, end: cats.end },
+        function(err, html) {
+          res.send(html);
+        }
+      );
     });
   });
 });
