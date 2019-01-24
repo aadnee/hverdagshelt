@@ -66,7 +66,6 @@ export class TicketFormWidget extends Component {
     this.state.allCats.map(cat => {
       if (cat.id === category) {
         subCats = cat.subs;
-        console.log(subCats);
       }
     });
     subCats.map(subCat => {
@@ -89,7 +88,6 @@ export class TicketFormWidget extends Component {
           if (this.props.ticket) {
             cat.subs.map(subCat => {
               if (subCat.id === this.state.receivedCategory) {
-                console.log(subCat.id);
                 parentId = subCat.parentId;
                 this.getSubCategories(parentId);
               }
@@ -272,9 +270,7 @@ export class TicketFormWidget extends Component {
                                 }
                               });
 
-                              this.setState({ image: newImages }, () => {
-                                console.log(this.state.image);
-                              });
+                              this.setState({ image: newImages }, () => {});
                             }}
                             content={image.name || image.filename}
                           />

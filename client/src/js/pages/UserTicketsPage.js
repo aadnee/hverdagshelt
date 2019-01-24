@@ -10,6 +10,8 @@ import { toast } from 'react-toastify';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
 import { SOFT_DELETED } from '../commons';
+import { categoryService } from '../services/CategoryServices';
+import { newsService } from '../services/NewsServices';
 
 export class UserTicketsPage extends Component {
   constructor(props) {
@@ -23,7 +25,9 @@ export class UserTicketsPage extends Component {
       ticket: null,
       tickets: [],
       messageOpen: false,
-      selectedTicket: ''
+      selectedTicket: '',
+      news: [],
+      newsOptions: []
     };
   }
 
@@ -32,36 +36,34 @@ export class UserTicketsPage extends Component {
       toast.error('Vennligst fyll inn alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });
+    } else {
+      ticketService
+        .updateTicket(id, title, description, lat, lng, address, category, municipalId, subscribed, image)
+        .then(res => {
+          if (res.success) {
+            this.setState({ showEditTicket: false });
+            toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
+            //finding index to old ticket
+            let index = -1;
+            this.state.tickets.filter((t, i) => (t.id === id ? (index = i) : null));
+
+            //setting variable to old ticket to new ticket values
+            let ti = this.state.tickets;
+            ti[index].title = title;
+            ti[index].description = description;
+            ti[index].category = category;
+            ti[index].subscribed = subscribed;
+            ti[index].image = image;
+            ti[index].status = status;
+
+            this.setState({ tickets: ti });
+
+            this.close();
+          } else {
+            toast.error(res.message.no, { position: toast.POSITION.TOP_RIGHT });
+          }
+        });
     }
-    console.log(id, title, description, lat, lng, address, category, municipalId, subscribed, image, status);
-    ticketService
-      .updateTicket(id, title, description, lat, lng, address, category, municipalId, subscribed, image)
-      .then(res => {
-        if (res.success) {
-          this.setState({ showEditTicket: false });
-          toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
-          //finding index to old ticket
-          let index = -1;
-          this.state.tickets.filter((t, i) => (t.id === id ? (index = i) : null));
-
-          //setting variable to old ticket to new ticket values
-          let ti = this.state.tickets;
-          ti[index].title = title;
-          ti[index].description = description;
-          ti[index].category = category;
-          ti[index].subscribed = subscribed;
-          ti[index].image = image;
-          ti[index].status = status;
-
-          console.log(ti);
-
-          this.setState({ tickets: ti });
-
-          this.close();
-        } else {
-          toast.error(res.message.no, { position: toast.POSITION.TOP_RIGHT });
-        }
-      });
   };
 
   close = state => {
@@ -73,14 +75,35 @@ export class UserTicketsPage extends Component {
   };
 
   componentWillMount() {
-    ticketService.getTickets().then(res => {
-      console.log(res.data);
-      this.setState({ tickets: res.data });
-    });
+    let news = [];
+    let ids = [];
+    let newsOptions = [];
+    ticketService
+      .getTickets()
+      .then(res => {
+        this.setState({ tickets: res.data });
+      })
+      .then(() => {
+        categoryService
+          .getCategories()
+          .then(res => {
+            res.data.map(cat => {
+              ids.push(cat.id);
+            });
+          })
+          .then(() => {
+            newsService.getFilteredNews(Cookies.get('municipalId'), ids, 0, 0).then(res => {
+              res.data.map(news => {
+                newsOptions.push({ key: news.id, value: news.id, text: news.title });
+              });
+              news = res.data;
+              this.setState({ news: news, newsOptions: newsOptions });
+            });
+          });
+      });
   }
 
   deleteTicket(id) {
-    console.log(id);
     if (!id) {
       toast.error('Noe gikk galt, prøv igjen', {
         position: toast.POSITION.TOP_RIGHT
@@ -113,7 +136,12 @@ export class UserTicketsPage extends Component {
               {this.state.tickets.map(ticket =>
                 ticket.status !== SOFT_DELETED ? (
                   <Grid.Column key={ticket.id}>
-                    <TicketWidget ticket={ticket} show={this.show} />
+                    <TicketWidget
+                      ticket={ticket}
+                      show={this.show}
+                      news={this.state.news}
+                      newsOptions={this.state.newsOptions}
+                    />
                   </Grid.Column>
                 ) : null
               )}

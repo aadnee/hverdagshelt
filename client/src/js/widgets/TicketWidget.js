@@ -10,6 +10,7 @@ import { newsService } from '../services/NewsServices';
 import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
 import { ticketService } from '../services/TicketServices';
+import { NewsCaseWidget } from './NewsCaseWidget';
 
 /*
 const options = [
@@ -24,12 +25,17 @@ export class TicketWidget extends Component {
     super(props);
     this.state = {
       open: false,
+      letters: 100,
       regModalOpen: false,
+      newsModalOpen: false,
       selectedNews: '',
       dropdownOpen: false,
-      newsOptions: [],
+
       ticket: this.props.ticket,
-      createdAt: this.props.ticket.createdAt
+      createdAt: this.props.ticket.createdAt,
+      newsOptions: [],
+      news: [],
+      newsCase: null
     };
   }
 
@@ -39,42 +45,38 @@ export class TicketWidget extends Component {
   handleInput(state, value) {
     this.setState({ [state]: value });
   }
-
+  /*
   componentWillMount() {
-    let catIds = [];
-    let dropdownOptions = [];
-    categoryService
-      .getCategories()
-      .then(res => {
-        res.data.map(c => {
-          catIds.push(c.id);
-        });
-      })
-      .then(() => {
-        //change Cookies.get('municipalId) with Consumer._currentValue.user.municipalId
-        //didnt work for me
-
-        newsService.getFilteredNews(Cookies.get('municipalId'), catIds, 0, 0).then(res => {
-          res.data.map(news => {
-            dropdownOptions.push({ key: news.id, value: news.id, text: news.title });
-          });
-          this.setState({ newsOptions: dropdownOptions });
-          //console.log(dropdownOptions);
-        });
-      });
+    if (this.props.news) {
+      console.log(this.props.news);
+      this.setState({ news: this.props.news, newsOptions: this.props.newsOptions });
+    }
+  }*/
+  componentWillReceiveProps(nextProps, nextContext) {
+    this.setState({ news: nextProps.news });
   }
 
   link() {
-    console.log('link');
     this.setState({ open: false });
     this.props.link(this.state.selectedNews);
   }
 
+  showNews(id) {
+    let news = null;
+    console.log(this.state.news);
+    news = this.state.news.find(n => n.id === id);
+
+    this.setState({ newsCase: news }, () => {
+      this.setState({ newsModalOpen: true });
+    });
+  }
+
   render() {
+    let more = false;
     return (
       <Card centered>
         <Image>
-          <Image src="img/thumbnaildiv.png" />
+          <Image src={this.state.ticket.uploads.length > 0 ? '/uploads/' + this.state.ticket.uploads[0].filename : null} />
           {this.state.ticket.status === PENDING && !this.props.employee ? (
             <Label color="yellow" ribbon="right">
               {STATUS[PENDING - 1].norwegian}
@@ -102,7 +104,36 @@ export class TicketWidget extends Component {
             </Header.Content>
           </Header>
           <Card.Meta>{Consumer._currentValue.convDbString(this.state.createdAt)}</Card.Meta>
-          <Card.Description>{this.state.ticket.description}</Card.Description>
+          <Card.Description>
+            {this.state.ticket.description
+              .split('')
+              .map((letter, i) => (i < this.state.letters ? letter : (more = true)))}
+            {more ? (
+              <>
+                ...{' '}
+                <span
+                  className="showInMap"
+                  onClick={() => {
+                    this.setState({ letters: Number.MAX_SAFE_INTEGER });
+                  }}
+                >
+                  Vis mer
+                </span>{' '}
+              </>
+            ) : this.state.letters === Number.MAX_SAFE_INTEGER ? (
+              <>
+                {'\n'}
+                <span
+                  className="showInMap"
+                  onClick={() => {
+                    this.setState({ letters: 100 });
+                  }}
+                >
+                  Vis mindre
+                </span>{' '}
+              </>
+            ) : null}
+          </Card.Description>
         </Card.Content>
         {this.props.employee ? (
           this.state.ticket.status === PENDING ? (
@@ -140,11 +171,12 @@ export class TicketWidget extends Component {
                     size={'tiny'}
                     closeIcon
                   >
-                    <Modal.Header>Knytt til samme nyhet</Modal.Header>
+                    <Modal.Header>Knytt til lik nyhet</Modal.Header>
                     <Modal.Content>
                       <Dropdown
                         fluid
                         search
+                        selection
                         placeholder={'Søk etter Nyhet på tittel'}
                         options={this.state.newsOptions}
                         value={this.state.selectedNews}
@@ -167,9 +199,25 @@ export class TicketWidget extends Component {
         ) : this.state.ticket.status === DONE ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
-              <Button inverted primary>
-                Gå til nyheten
+              <Button
+                inverted
+                primary
+                onClick={() => {
+                  this.showNews(this.props.ticket.newsId);
+                }}
+              >
+                Vis nyheten
               </Button>
+              <Modal
+                open={this.state.newsModalOpen}
+                onClose={() => this.setState({ newsModalOpen: false })}
+                onOpen={() => this.setState({ newsModalOpen: true })}
+                closeIcon
+              >
+                <Modal.Content>
+                  <NewsCaseWidget newscase={this.state.newsCase} show />
+                </Modal.Content>
+              </Modal>
             </Button.Group>
           </Card.Content>
         ) : this.state.ticket.status === PENDING ? (

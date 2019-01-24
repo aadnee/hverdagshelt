@@ -1,6 +1,18 @@
 import React from 'react';
 import { Component } from 'react';
-import { Divider, Segment, Container, Grid, Label, Header, Image, Form, Modal, Button } from 'semantic-ui-react';
+import {
+  Divider,
+  Segment,
+  Container,
+  Grid,
+  Label,
+  Header,
+  Image,
+  Form,
+  Modal,
+  Button,
+  Dropdown
+} from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { Consumer } from './../context';
 import { ShowInMapWidget } from './ShowInMapWidget';
@@ -11,13 +23,20 @@ import { subscriptionService } from './../services/SubscriptionServices';
 import { toast } from 'react-toastify';
 
 import { INPROGRESS, DONE, SOFT_DELETED, STATUS } from '../commons';
+import { MessageWidget } from './MessageWidget';
+import { companyService } from '../services/CompanyServices';
 
 export class NewsCaseWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
       renderMap: false,
-      editModalOpen: false
+      editModalOpen: false,
+      messageModalOpen: false,
+      companyModalOpen: false,
+      company: '',
+      companyOptions: [],
+      executedBy: ''
     };
     this.close = this.close.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -31,13 +50,36 @@ export class NewsCaseWidget extends Component {
     this.setState({ editModalOpen: false });
   }
 
-  componentWillMount() {}
+  closeMessageModal = () => {
+    this.setState({ messageModalOpen: false });
+  };
 
-  editNews = (title, description, category, status, published, company) => {
-    this.props.editNews(title, description, category, status, published, company);
+  componentWillMount() {
+    if (this.props.companies) {
+      this.setState({ companyOptions: this.props.companyOptions });
+    }
+  }
 
+  editNews = (title, description, category, published) => {
+    this.props.editNews(title, description, category, published);
     this.closeModal();
   };
+
+  setStatus() {
+    if (this.props.setStatus()) {
+      this.setState({ messageModalOpen: false });
+    }
+  }
+
+  sendToCompany(companyId) {
+    if (!companyId) {
+      toast.error('Velg en bedrift');
+    } else {
+      if (this.props.sendToCompany(companyId)) {
+        this.setState({ companyModalOpen: false });
+      }
+    }
+  }
 
   followCase = () => {
     subscriptionService.addSubscription(this.props.newscase.id).then(res => {
@@ -77,7 +119,7 @@ export class NewsCaseWidget extends Component {
               {newscase.uploads ? (
                 newscase.uploads.length > 0 ? (
                   <Grid.Column width={4} align="right" only="tablet computer">
-                    <Image fluid src={'/uploads/' + newscase.uploads[0].filename} target="_blank" />
+                    <Image fluid src={'uploads/' + newscase.uploads[0].filename} target="_blank" />
                   </Grid.Column>
                 ) : null
               ) : null}
@@ -86,7 +128,7 @@ export class NewsCaseWidget extends Component {
           <Segment basic>
             <Grid stackable>
               <Grid.Column width={16}>
-                Hendelses-adresse: {newscase.address},
+                Hendelses-adresse: {newscase.address}
                 <ShowInMapWidget
                   callback={this.close}
                   renderMap={this.state.renderMap}
@@ -98,29 +140,89 @@ export class NewsCaseWidget extends Component {
                   latlng={[newscase.lat, newscase.lon]}
                 />
               </Grid.Column>
+              <Grid.Column width={16}>
+                {newscase.companyId ? 'Oppdrag utføres av firmaet: ' + this.props.newscase.executedBy : null}
+              </Grid.Column>
               {this.props.employee ? (
                 <Grid.Column floated={'right'} width={2}>
-                  <Button.Group>
-                    <Modal
-                      open={this.state.editModalOpen}
-                      closeIcon
-                      trigger={<Button color={'teal'}>Behandle</Button>}
-                      onClose={() => this.closeModal()}
-                      onOpen={() => this.setState({ editModalOpen: true })}
-                    >
-                      <Modal.Header>Behandle Nyhet</Modal.Header>
-                      <Modal.Content>
-                        <PublishNewsFormWidget
-                          submitButton={'Lagre endringer'}
-                          news={newscase}
-                          close={this.closeModal}
-                          editNews={this.editNews}
-                        />
-                      </Modal.Content>
-                    </Modal>
-                  </Button.Group>
+                  <Dropdown text={'Behandle'} simple>
+                    <Dropdown.Menu>
+                      <Modal
+                        open={this.state.editModalOpen}
+                        closeIcon
+                        trigger={<Dropdown.Item color={'teal'}>Endre</Dropdown.Item>}
+                        onClose={() => this.closeModal()}
+                        onOpen={() => this.setState({ editModalOpen: true })}
+                      >
+                        <Modal.Header>Behandle Nyhet</Modal.Header>
+                        <Modal.Content>
+                          <PublishNewsFormWidget
+                            submitButton={'Lagre endringer'}
+                            news={newscase}
+                            close={this.closeModal}
+                            editNews={this.editNews}
+                          />
+                        </Modal.Content>
+                      </Modal>
+                      <Dropdown.Item onClick={() => this.setState({ messageModalOpen: true })}>
+                        Ferdigstill
+                      </Dropdown.Item>
+                      <Modal
+                        size={'tiny'}
+                        open={this.state.messageModalOpen}
+                        onOpen={() => this.setState({ messageModalOpen: true })}
+                        onClose={() => this.setState({ messageModalOpen: false })}
+                      >
+                        <Modal.Header>Ferdigstilling av nyhet</Modal.Header>
+                        <Modal.Content>
+                          <p>Er du sikker på at du vil ferdigstille nyheten</p>
+                        </Modal.Content>
+                        <Modal.Actions>
+                          <Button negative onClick={() => this.setState({ messageModalOpen: false })}>
+                            Nei
+                          </Button>
+                          <Button
+                            positive
+                            icon="checkmark"
+                            labelPosition="right"
+                            content="Ja"
+                            onClick={() => this.setStatus()}
+                          />
+                        </Modal.Actions>
+                      </Modal>
+                      <Modal
+                        open={this.state.companyModalOpen}
+                        onOpen={() => this.setState({ companyModalOpen: true })}
+                        onClose={() => this.setState({ companyModalOpen: false })}
+                        trigger={<Dropdown.Item>Knytt til bedrift</Dropdown.Item>}
+                        size={'tiny'}
+                        closeIcon
+                      >
+                        <Modal.Header>Send til bedrift</Modal.Header>
+                        <Modal.Content>
+                          <Dropdown
+                            fluid
+                            search
+                            selection
+                            placeholder={'Søk etter bedrift på navn'}
+                            options={this.state.companyOptions}
+                            value={this.state.company}
+                            onChange={(target, data) => {
+                              this.setState({ company: data.value });
+                            }}
+                          />
+                        </Modal.Content>
+                        <Modal.Actions>
+                          <Button color={'green'} onClick={() => this.sendToCompany(this.state.company)}>
+                            Lagre
+                          </Button>
+                          <Button onClick={() => this.setState({ companyModalOpen: false })}>Avbryt</Button>
+                        </Modal.Actions>
+                      </Modal>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </Grid.Column>
-              ) : this.props.following ? (
+              ) : this.props.show ? null : this.props.following ? (
                 this.props.frontpage ? null : (
                   <Button onClick={this.props.show}>Avslutt abonnement</Button>
                 )

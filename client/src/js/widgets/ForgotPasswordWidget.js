@@ -1,9 +1,11 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink, Redirect } from 'react-router-dom';
-import { Container, Grid, Header, Image, Segment, Form, Message, Button, Input } from 'semantic-ui-react';
+import { Container, Grid, Header, Image, Segment, Form, Message, Button, Input, Modal, Icon } from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
 import { Consumer } from '../context';
+import { MessageWidget } from './MessageWidget';
+import { toast } from 'react-toastify';
 
 //import {} from './';
 
@@ -21,7 +23,10 @@ export class ForgotPasswordWidget extends Component {
       email: this.props.email ? this.props.email : '',
       password: '',
       sentMail: true,
-      loading: false
+      loading: false,
+      messageModal: false,
+      titleModal: '',
+      message: ''
     };
   }
 
@@ -35,13 +40,32 @@ export class ForgotPasswordWidget extends Component {
       if (res.success) {
         this.setState({ sentMail: false });
         console.log(res);
+      } else {
+        toast.error(res.message.no);
+        this.setState({ loading: false });
       }
     });
   };
 
+  handleMessage = () => {
+    Consumer._currentValue.history.push('/login');
+  };
+
+  closeMessage = () => {
+    this.setState({ messageModal: false });
+  };
+
   confirmResetPassword = () => {
     userService.resetPassword(this.state.email, this.state.password).then(res => {
-      console.log(res);
+      if (res.success) {
+        this.setState({
+          messageModal: true,
+          titleModal: 'Gjennopretting av passord',
+          message: 'Du har nå fått tilsendt nytt passord på mail'
+        });
+      } else {
+        toast.error('Feil kode');
+      }
     });
   };
 
@@ -121,6 +145,17 @@ export class ForgotPasswordWidget extends Component {
                 )}
               </Grid.Column>
             </Grid>
+            <Modal open={this.state.messageModal} onClose={this.closeMessage} basic size="small">
+              <Header icon="user" content={this.state.titleModal} />
+              <Modal.Content>
+                <h3>{this.state.message}</h3>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button color="green" onClick={this.handleMessage} inverted>
+                  <Icon name="checkmark" /> Ok
+                </Button>
+              </Modal.Actions>
+            </Modal>
           </Container>
         )}
       </Consumer>

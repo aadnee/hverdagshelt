@@ -254,15 +254,19 @@ module.exports = {
         where: { parentId: null }
       }).then(res => {
         let stats = [];
+        let total;
         res.map((cat, i) => {
-          stats.push({ name: cat.name, subs: [] });
+          total = 0;
+          stats.push({ name: cat.name, total: 0, subs: [] });
           cat.subs.map(sub => {
             stats[i].subs.push({
               name: sub.name,
               tickets: sub.tickets.length,
               finished: sub.news.length
             });
+            total += parseInt(sub.tickets.length);
           });
+          stats[i].total = total;
         });
         callback({ success: true, data: stats, start: start.format('DD/MM/YYYY'), end: end.format('DD/MM/YYYY') }),
           err => callback({ success: false, message: err });

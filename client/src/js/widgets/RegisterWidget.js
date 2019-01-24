@@ -1,4 +1,19 @@
-import { Button, Container, Image, Input, Message, Segment, Grid, Form, Dropdown, Modal } from 'semantic-ui-react';
+import {
+  Button,
+  Container,
+  Image,
+  Input,
+  Message,
+  Segment,
+  Grid,
+  Form,
+  Dropdown,
+  Dimmer,
+  Loader,
+  Icon,
+  Header,
+  Modal
+} from 'semantic-ui-react';
 import { userService } from '../services/UserServices';
 import { municipalService } from '../services/MunicipalServices';
 import { NavLink } from 'react-router-dom';
@@ -16,10 +31,10 @@ export class RegisterWidget extends React.Component {
       phone: '',
       selectedOption: '',
       options: [],
-      showModal: false,
-      showRegisterModal: false,
-      popupMessage: '',
-      popupSuccess: ''
+      success: true,
+      message: '',
+      titleModal: '',
+      messageModal: false
     };
   }
 
@@ -39,6 +54,10 @@ export class RegisterWidget extends React.Component {
     this.setState({ [key]: value });
   };
 
+  handleMessage = () => {
+    Consumer._currentValue.history.push('/login');
+  };
+
   handleSubmit = () => {
     //USERSERICE -> request cookie
     console.log('submitting');
@@ -50,6 +69,7 @@ export class RegisterWidget extends React.Component {
       this.state.selectedOption
     ) {
       if (this.state.phone.length < 10) {
+        this.setState({ success: false });
         userService
           .register(
             this.state.firstname + ' ' + this.state.lastname,
@@ -59,9 +79,16 @@ export class RegisterWidget extends React.Component {
           )
           .then(res => {
             if (res.success) {
+              this.setState({ success: true });
+
               toast.success(res.message.no);
-              Consumer._currentValue.history.push('/login');
+              this.setState({
+                messageModal: true,
+                titleModal: 'Registering vellykket',
+                message: 'Du har nå fått tilsendt passord på mail'
+              });
             } else {
+              this.setState({ success: false });
               toast.error(res.message.no);
             }
           });
@@ -71,11 +98,6 @@ export class RegisterWidget extends React.Component {
     } else {
       toast.error('Vennligst fyll inn alle felt');
     }
-  };
-
-  handleComplete = () => {
-    this.setState({ showRegisterModal: false });
-    this.state.popupSuccess ? Consumer._currentValue.history.push({ pathname: '/login' }) : null;
   };
 
   render() {
@@ -164,12 +186,23 @@ export class RegisterWidget extends React.Component {
                       this.handleSubmit();
                     }}
                   >
-                    Registrer deg
+                    {!this.state.success ? <Icon size={'small'} name="circle notched" loading /> : 'Registrer deg'}
                   </Button>
                 </Segment>
               </Form>
             </Grid.Column>
           </Grid>
+          <Modal open={this.state.messageModal} onClose={this.closeMessage} basic size="small">
+            <Header icon="user" content={this.state.titleModal} />
+            <Modal.Content>
+              <h3>{this.state.message}</h3>
+            </Modal.Content>
+            <Modal.Actions>
+              <Button color="green" onClick={this.handleMessage} inverted>
+                <Icon name="checkmark" /> Ok
+              </Button>
+            </Modal.Actions>
+          </Modal>
         </Container>
       </>
     );

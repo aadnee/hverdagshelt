@@ -77,8 +77,8 @@ export class PublishNewsFormWidget extends Component {
     if (this.props.news) {
       let news = this.props.news;
       let statusOptions = [
-        { key: 1, value: 2, text: STATUS[2].norwegian },
-        { key: 2, value: 3, text: STATUS[3].norwegian }
+        { key: 1, value: 2, text: STATUS[1].norwegian },
+        { key: 2, value: 3, text: STATUS[2].norwegian }
       ];
       let companyOptions = [];
       //MunicipalId should be fetched from context
@@ -96,6 +96,7 @@ export class PublishNewsFormWidget extends Component {
           receivedCategory: news.categoryId,
           category: news.categoryId,
           address: news.address,
+          position: [news.lat, news.lon],
           status: news.status,
           statusOptions: statusOptions,
           company: news.companyId ? news.companyId : 4,
@@ -114,7 +115,8 @@ export class PublishNewsFormWidget extends Component {
         receivedCategory: ticket.categoryId,
         category: ticket.categoryId,
         address: ticket.address,
-        image: ticket.uploads
+        image: ticket.uploads,
+        position: [ticket.lat, ticket.lon]
       });
     }
     let parentId = -1;
@@ -263,7 +265,7 @@ export class PublishNewsFormWidget extends Component {
                 ) : null}
 
                 {/*IF NEWS EXISTS */}
-                {this.props.news ? (
+                {/*{this.props.news ? (
                   <Form.Field>
                     <Grid columns={'equal'}>
                       <Grid.Column>
@@ -295,8 +297,8 @@ export class PublishNewsFormWidget extends Component {
                       </Grid.Column>
                     </Grid>
                   </Form.Field>
-                ) : null}
-
+                ) : null}*/}
+                {/*}
                 <Form.Field>
                   <Grid>
                     <Grid.Column>
@@ -311,7 +313,7 @@ export class PublishNewsFormWidget extends Component {
                     </Grid.Column>
                   </Grid>
                 </Form.Field>
-
+*/}
                 <Button.Group fluid>
                   <Button onClick={() => this.props.close()}>Avbryt</Button>
                   <Button

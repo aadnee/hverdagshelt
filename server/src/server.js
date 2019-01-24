@@ -217,7 +217,22 @@ app.post('/api/news/archive', (req, res) => {
 app.put('/api/news/:id', ensureEmployee, (req, res) => {
   let b = req.body;
   let p = req.params;
-  newsManager.updateNews(p.id, b.title, b.description, b.status, b.categoryId, b.companyId, function(result) {
+  newsManager.updateNews(p.id, b.title, b.description, b.categoryId, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/news/:id/finish', ensureEmployee, (req, res) => {
+  let p = req.params;
+  newsManager.finishNews(p.id, function(result) {
+    res.json(result);
+  });
+});
+
+app.put('/api/news/:id/company', ensureEmployee, (req, res) => {
+  let b = req.body;
+  let p = req.params;
+  newsManager.assignCompany(p.id, b.companyId, function(result) {
     res.json(result);
   });
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import { Grid, Container, Divider, Header, Segment, Button, Modal, Form, Label } from 'semantic-ui-react';
+import { Grid, Container, Divider, Header, Segment, Button, Modal, Form, Label, Dropdown } from 'semantic-ui-react';
 import { AdminCategoriesWidget } from '../widgets/AdminCategoriesWidget';
 import { categoryService } from '../services/CategoryServices';
 import { toast } from 'react-toastify';
@@ -10,7 +10,6 @@ import { toast } from 'react-toastify';
 export class AdminCategoriesPage extends Component {
   constructor(props) {
     super(props);
-    this.selectedCat = this.selectedCat.bind(this);
     this.addCategory = this.addCategory.bind(this);
     this.state = {
       newCategoryName: '',
@@ -23,8 +22,32 @@ export class AdminCategoriesPage extends Component {
 
   componentWillMount() {
     categoryService.getCategories().then(res => {
-      console.log(res.data);
-      this.setState({ categories: res.data });
+      let listCat = [];
+      let listSubCat = [];
+      res.data.map((cat, index) => {
+        cat.subs.map((sub, subIndex) => {
+          listSubCat.push({
+            value: sub.id,
+            key: subIndex,
+            text: sub.name,
+            parentid: sub.parentId,
+            name: sub.name,
+            id: sub.id
+          });
+        });
+        listCat.push({
+          value: cat.id,
+          key: index,
+          text: cat.name,
+          parentid: cat.parentId,
+          name: cat.name,
+          id: cat.id,
+          subs: listSubCat
+        });
+        listSubCat = [];
+      });
+
+      this.setState({ categories: listCat });
     });
   }
 
@@ -44,43 +67,41 @@ export class AdminCategoriesPage extends Component {
     this.setState({ selectedCategory: selCat });
   };
 
-  deleteCategory = () => {
-    categoryService.deleteCategory(this.state.selectedCategory.id).then(res => {
+  deleteCategory = selectedCat => {
+    categoryService.deleteCategory(selectedCat.id).then(res => {
       if (res.success) {
         toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
         if (res.success) {
-          if (this.state.selectedCategory.parentId) {
-            console.log('sub');
+          if (selectedCat.parentid) {
             this.state.categories.find((category, mainIndex) => {
-              if (category.id === this.state.selectedCategory.parentId) {
-                console.log(mainIndex, 'mainIndex');
+              if (category.id === selectedCat.parentid) {
                 category.subs.find((subCategory, subIndex) => {
-                  if (subCategory.id === this.state.selectedCategory.id) {
-                    console.log(subIndex, 'sunIndex');
+                  if (subCategory.id === selectedCat.id) {
                     let subarr = this.state.categories[mainIndex].subs;
                     subarr.splice(subIndex, 1);
 
                     let mainCat = this.state.categories;
 
                     mainCat[mainIndex] = {
+                      value: this.state.categories[mainIndex].id,
+                      key: this.state.categories[mainIndex].key,
+                      text: this.state.categories[mainIndex].text,
                       id: this.state.categories[mainIndex].id,
                       name: this.state.categories[mainIndex].name,
-                      active: 1,
-                      parentId: null,
+                      parentid: null,
                       subs: subarr
                     };
 
                     this.setState({ categories: mainCat });
 
-                    console.log(this.state.categories);
+                    return true;
                   }
                 });
               }
             });
           } else {
-            console.log('main');
             this.state.categories.find((category, index) => {
-              if (this.state.selectedCategory.id === category.id) {
+              if (selectedCat.id === category.id) {
                 let mainCat = this.state.categories;
                 mainCat.splice(index, 1);
                 this.setState({ categories: mainCat, mainCategory: '' });
@@ -95,57 +116,62 @@ export class AdminCategoriesPage extends Component {
     });
   };
 
-  editCategory = () => {
-    categoryService.editCategory(this.state.selectedCategory.id, this.state.newName).then(res => {
+  editCategory = (selectedCat, newName) => {
+    console.log(selectedCat);
+    categoryService.editCategory(selectedCat.id, newName).then(res => {
       res.success
         ? toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT })
         : toast.error(res.message.no, { position: toast.POSITION.TOP_RIGHT });
       if (res.success) {
-        if (this.state.selectedCategory.parentId) {
-          console.log('sub', this.state.selectedCategory);
+        if (selectedCat.parentid) {
           this.state.categories.find((category, mainIndex) => {
-            if (this.state.selectedCategory.parentId === category.id) {
+            if (selectedCat.parentid === category.id) {
               category.subs.find((subCategory, subIndex) => {
-                if (subCategory.id === this.state.selectedCategory.id) {
-                  console.log(subIndex, 'subIndex');
+                if (subCategory.id === selectedCat.id) {
                   let subarr = this.state.categories[mainIndex].subs;
                   subarr.splice(subIndex, 1, {
-                    id: this.state.selectedCategory.id,
-                    name: this.state.newName,
-                    active: 1,
-                    parentId: this.state.selectedCategory.parentId
+                    value: selectedCat.id,
+                    key: selectedCat.key,
+                    text: newName,
+                    id: selectedCat.id,
+                    name: newName,
+                    parentid: selectedCat.parentid
                   });
 
                   let mainCat = this.state.categories;
 
                   mainCat[mainIndex] = {
+                    value: this.state.categories[mainIndex].id,
+                    key: this.state.categories[mainIndex].key,
+                    text: this.state.categories[mainIndex].name,
                     id: this.state.categories[mainIndex].id,
                     name: this.state.categories[mainIndex].name,
-                    active: 1,
-                    parentId: null,
+                    parentid: null,
                     subs: subarr
                   };
 
                   this.setState({ categories: mainCat });
 
-                  console.log(this.state.categories);
+                  return true;
                 }
               });
             }
           });
         } else {
-          console.log('main', this.state.selectedCategory);
           this.state.categories.find((category, index) => {
-            if (category.id === this.state.selectedCategory.id) {
+            if (category.id === selectedCat.id) {
               let mainCat = this.state.categories;
               mainCat.splice(index, 1, {
-                id: this.state.selectedCategory.id,
-                name: this.state.newName,
-                active: 1,
-                parentId: this.state.selectedCategory.parentId
+                value: selectedCat.id,
+                key: selectedCat.key,
+                text: newName,
+                id: selectedCat.id,
+                name: newName,
+                parentid: selectedCat.parentid
               });
 
               this.setState({ categories: mainCat });
+              return true;
             }
           });
         }
@@ -154,45 +180,48 @@ export class AdminCategoriesPage extends Component {
     this.close();
   };
 
-  addCategory = (name, id) => {
-    categoryService.addCategory(name, id).then(res => {
+  addCategory = (name, parentid) => {
+    categoryService.addCategory(name, parentid).then(res => {
       if (res.success) {
         toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT });
-        if (id) {
-          console.log(id, 'id');
+        if (parentid) {
           this.state.categories.find((category, index) => {
-            if (category.id === id) {
+            if (category.id === parentid) {
               let subarr = this.state.categories[index].subs;
               subarr.push({
+                value: res.id,
+                key: res.id,
+                text: name,
                 id: res.id,
                 name: name,
-                active: 1,
-                parentId: id
+                parentid: parentid
               });
 
               let mainCat = this.state.categories;
 
               mainCat[index] = {
+                value: this.state.categories[index].id,
+                key: this.state.categories[index].key,
+                text: this.state.categories[index].name,
                 id: this.state.categories[index].id,
                 name: this.state.categories[index].name,
-                active: 1,
-                parentId: null,
+                parentid: null,
                 subs: subarr
               };
 
               this.setState({ categories: mainCat });
-
-              console.log(this.state.categories);
             }
           });
         } else {
           let mainCat = this.state.categories;
 
           mainCat.push({
+            value: res.id,
+            key: res.id,
+            text: name,
             id: res.id,
             name: name,
-            active: 1,
-            parentId: null,
+            parentid: null,
             subs: []
           });
 
@@ -211,10 +240,6 @@ export class AdminCategoriesPage extends Component {
         <Divider hidden />
         <Header as="h1">Administrer kategorier</Header>
         <Segment basic color="blue">
-          <Button.Group floated="right">
-            <Button positive content="Rediger" onClick={this.open} />
-            <Button negative content="Slett" onClick={this.deleteCategory} />
-          </Button.Group>
           <p>Marker kategori og velg om du vil slette eller endre</p>
           <Grid divided>
             <Grid.Column>
@@ -222,32 +247,14 @@ export class AdminCategoriesPage extends Component {
                 mainCategory={this.state.mainCategory}
                 addCategory={this.addCategory}
                 categories={this.state.categories}
+                deleteCat={this.deleteCategory.bind(this)}
+                editCat={this.editCategory.bind(this)}
+                addCat={this.addCategory.bind(this)}
                 func={this.selectedCat}
               />
             </Grid.Column>
           </Grid>
         </Segment>
-        <Modal size="tiny" open={this.state.openEdit} onClose={this.close}>
-          <Modal.Header>Endre navn på kategori: {this.state.selectedCategory.name}</Modal.Header>
-          <Modal.Content>
-            <Header as="h3">Endre navn:</Header>
-            <Form.Input
-              fluid
-              placeholder="Name"
-              name="newName"
-              value={this.state.newName}
-              onChange={(event, data) => {
-                this.handleChange('newName', data.value);
-              }}
-            />
-          </Modal.Content>
-          <Modal.Actions>
-            <Button onClick={this.close} negative>
-              Avbryt
-            </Button>
-            <Button positive onClick={this.editCategory} icon="checkmark" labelPosition="right" content="Endre" />
-          </Modal.Actions>
-        </Modal>
       </Container>
     );
   }
