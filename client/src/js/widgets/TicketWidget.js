@@ -76,7 +76,9 @@ export class TicketWidget extends Component {
     return (
       <Card centered>
         <Image>
-          <Image src={this.state.ticket.uploads.length > 0 ? '/uploads/' + this.state.ticket.uploads[0].filename : null} />
+          <Image
+            src={this.state.ticket.uploads.length > 0 ? '/uploads/' + this.state.ticket.uploads[0].filename : null}
+          />
           {this.state.ticket.status === PENDING && !this.props.employee ? (
             <Label color="yellow" ribbon="right">
               {STATUS[PENDING - 1].norwegian}
