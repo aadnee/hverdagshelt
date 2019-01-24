@@ -10,6 +10,8 @@ import { toast } from 'react-toastify';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { MessageWidget } from '../widgets/MessageWidget';
 import { SOFT_DELETED } from '../commons';
+import { categoryService } from '../services/CategoryServices';
+import { newsService } from '../services/NewsServices';
 
 export class UserTicketsPage extends Component {
   constructor(props) {
@@ -23,7 +25,9 @@ export class UserTicketsPage extends Component {
       ticket: null,
       tickets: [],
       messageOpen: false,
-      selectedTicket: ''
+      selectedTicket: '',
+      news: [],
+      newsOptions: []
     };
   }
 
@@ -71,9 +75,32 @@ export class UserTicketsPage extends Component {
   };
 
   componentWillMount() {
-    ticketService.getTickets().then(res => {
-      this.setState({ tickets: res.data });
-    });
+    let news = [];
+    let ids = [];
+    let newsOptions = [];
+    ticketService
+      .getTickets()
+      .then(res => {
+        this.setState({ tickets: res.data });
+      })
+      .then(() => {
+        categoryService
+          .getCategories()
+          .then(res => {
+            res.data.map(cat => {
+              ids.push(cat.id);
+            });
+          })
+          .then(() => {
+            newsService.getFilteredNews(Cookies.get('municipalId'), ids, 0, 0).then(res => {
+              res.data.map(news => {
+                newsOptions.push({ key: news.id, value: news.id, text: news.title });
+              });
+              news = res.data;
+              this.setState({ news: news, newsOptions: newsOptions });
+            });
+          });
+      });
   }
 
   deleteTicket(id) {
@@ -98,6 +125,7 @@ export class UserTicketsPage extends Component {
   }
 
   render() {
+    console.log(this.state.news);
     return (
       <>
         <Container>
@@ -109,7 +137,12 @@ export class UserTicketsPage extends Component {
               {this.state.tickets.map(ticket =>
                 ticket.status !== SOFT_DELETED ? (
                   <Grid.Column key={ticket.id}>
-                    <TicketWidget ticket={ticket} show={this.show} />
+                    <TicketWidget
+                      ticket={ticket}
+                      show={this.show}
+                      news={this.state.news}
+                      newsOptions={this.state.newsOptions}
+                    />
                   </Grid.Column>
                 ) : null
               )}
