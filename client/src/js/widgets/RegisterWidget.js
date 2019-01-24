@@ -4,6 +4,7 @@ import { municipalService } from '../services/MunicipalServices';
 import { NavLink } from 'react-router-dom';
 import React from 'react';
 import { Consumer } from '../context';
+import { toast } from 'react-toastify';
 
 export class RegisterWidget extends React.Component {
   constructor(props) {
@@ -41,21 +42,35 @@ export class RegisterWidget extends React.Component {
   handleSubmit = () => {
     //USERSERICE -> request cookie
     console.log('submitting');
-    userService
-      .register(
-        this.state.firstname + ' ' + this.state.lastname,
-        this.state.email,
-        this.state.phone,
-        this.state.selectedOption
-      )
-      .then(res => {
-        this.setState({
-          popupMessage: res.message.no,
-          popupSuccess: res.success,
-          showRegisterModal: true
-        });
-        console.log(res);
-      });
+    if (
+      this.state.firstname &&
+      this.state.lastname &&
+      this.state.email &&
+      this.state.phone &&
+      this.state.selectedOption
+    ) {
+      if (this.state.phone.length < 10) {
+        userService
+          .register(
+            this.state.firstname + ' ' + this.state.lastname,
+            this.state.email,
+            this.state.phone,
+            this.state.selectedOption
+          )
+          .then(res => {
+            if (res.success) {
+              toast.success(res.message.no);
+              Consumer._currentValue.history.push('/login');
+            } else {
+              toast.error(res.message.no);
+            }
+          });
+      } else {
+        toast.error('Telefonnummeret kan ikke inneholde mer enn 9 siffer');
+      }
+    } else {
+      toast.error('Vennligst fyll inn alle felt');
+    }
   };
 
   handleComplete = () => {
@@ -156,15 +171,6 @@ export class RegisterWidget extends React.Component {
             </Grid.Column>
           </Grid>
         </Container>
-        <Modal size={'tiny'} open={this.state.showRegisterModal}>
-          <Modal.Header>Registreringsstatus: {this.state.popupSuccess ? 'Suksess' : 'Error'}</Modal.Header>
-          <Modal.Content>
-            <p>{this.state.popupMessage}</p>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button icon="check" content="Ok" onClick={this.handleComplete} />
-          </Modal.Actions>
-        </Modal>
       </>
     );
   }
