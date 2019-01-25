@@ -60,11 +60,9 @@ export class UserEditFormWidget extends Component {
     municipalService
       .getMunicipals()
       .then(res => {
-        return res.data
-          .filter(mun => !this.state.followedMunicipals.find(f => f.key === mun.id))
-          .map(mun => {
-            return { key: mun.id, value: mun.name, text: mun.name };
-          });
+        return res.data.filter(mun => !this.state.followedMunicipals.find(f => f.key === mun.id)).map(mun => {
+          return { key: mun.id, value: mun.name, text: mun.name };
+        });
       })
       .then(opt => {
         console.log(opt);
@@ -216,7 +214,6 @@ export class UserEditFormWidget extends Component {
         <Grid.Column>
           <Form size="large">
             <Segment stacked color="blue" basic>
-              <p>Litt informasjon om brukeren</p>
               <Divider hidden />
               <Divider horizontal>
                 <Icon name="user" />
