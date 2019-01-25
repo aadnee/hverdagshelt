@@ -30,7 +30,7 @@ class NewsService {
     });
   }
 
-  getArcivedNews(municipalIds, categoryIds, page, limit) {
+  getArchivedNews(municipalIds, categoryIds, page, limit) {
     return api.post('/api/news/archive', {
       municipalIds: municipalIds,
       categoryIds: categoryIds,

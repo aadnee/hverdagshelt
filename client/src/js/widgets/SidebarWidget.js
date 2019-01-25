@@ -99,13 +99,19 @@ class MunicipalOptions extends Component {
     this.state = {
       pending: 0
     };
+
+    this.updtInterval = null;
   }
 
   componentWillMount() {
     this.updateTicketCount();
-    setInterval(() => {
+    this.updtInterval = setInterval(() => {
       this.updateTicketCount();
     }, 60000);
+  }
+
+  componentWillUnmount() {
+    clearIntervall(this.updtInterval);
   }
 
   updateTicketCount() {
@@ -143,6 +149,9 @@ class MunicipalOptions extends Component {
         </NavLink>
         <NavLink exact to="/employee/event" activeClassName="active" className="ui item">
           Registrer arrangement
+        </NavLink>
+        <NavLink exact to="/employee/Statistics" activeClassName="active" className="ui item">
+          Statistikk
         </NavLink>
         <div className="ui item disabled" />
       </Menu>

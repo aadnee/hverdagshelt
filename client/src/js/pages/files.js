@@ -13,6 +13,7 @@ export * from './EmployeeEditNewscasePage';
 export * from './EmployeeManageAssignmentsPage';
 export * from './EmployeeEditAssignmentPage';
 export * from './EmployeeRegisterEventPage';
+export * from './StatisticsPage';
 export * from './EntrepreneurAssignmentPage';
 export * from './ForgotPasswordPage';
 export * from './UserPage';

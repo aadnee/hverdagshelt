@@ -55,7 +55,6 @@ export class UserReportTicketPage extends Component {
                   address={this.state.address}
                   submit={Consumer._currentValue.ticketSubmit}
                   setupClick={this.setupClick}
-                  returnAddress={this.returnAddress}
                 />
                 <Divider hidden />
               </Grid.Column>

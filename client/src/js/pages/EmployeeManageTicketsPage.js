@@ -103,7 +103,7 @@ export class EmployeeManageTicketsPage extends React.Component {
         <Segment color="blue" basic>
           <Grid stackable container columns={3}>
             {!this.state.hasTickets ? (
-              <Grid.Row centered>
+              <Grid.Row centered="true">
                 <Message size={'massive'}>
                   <p>Du har ingen flere varsler å administrere</p>
                 </Message>
@@ -187,7 +187,7 @@ export class EmployeeManageTicketsPage extends React.Component {
           <Divider hidden />
           <Divider hidden />
           <Divider hidden />
-          {!this.state.loading ? (
+          {!this.state.loading && this.state.totalPages > 1 ? (
             <Pagination
               defaultActivePage={this.state.page}
               firstItem={null}
