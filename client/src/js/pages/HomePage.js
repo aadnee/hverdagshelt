@@ -26,6 +26,9 @@ export class HomePage extends Component {
       eventMarkers: [],
       eventPolys: []
     };
+
+    this.renderedOnce = false;
+
     this.yellowMarker = new L.Icon({
       iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -60,43 +63,50 @@ export class HomePage extends Component {
   }
 
   placeMarkers() {
-    this.state.news.map(newscase => {
-      if (newscase.municipalId === 1) {
-        let popup = `<p><b>${newscase.title}</b><br/>Addresse: ${newscase.address}</p>`;
-        let newsMarker = L.marker([newscase.lat, newscase.lon], { icon: this.yellowMarker }).bindPopup(popup);
-        this.mapRef.state.map.addLayer(newsMarker);
-        this.state.newsMarkers.push(newsMarker);
-      }
-    });
-    this.state.events.map(event => {
-      if (event.municipalId === 1) {
-        const area = JSON.parse(event.area).map(cord => {
-          return [cord.lat, cord.lng];
+    if (!this.renderedOnce) {
+      this.renderedOnce = true;
+      console.log('Render: ' + this.renderedOnce);
+      setTimeout(() => {
+        this.state.news.map(newscase => {
+          if (newscase.municipalId === 1) {
+            let popup = `<p><b>${newscase.title}</b><br/>Addresse: ${newscase.address}</p>`;
+            let newsMarker = L.marker([newscase.lat, newscase.lon], { icon: this.yellowMarker }).bindPopup(popup);
+            this.mapRef.state.map.addLayer(newsMarker);
+            this.state.newsMarkers.push(newsMarker);
+          }
         });
-        let popup = `<p><b>${event.title}</b><br/>Addresse: ${event.address}</p>`;
-        if (area.length > 1) {
-          let poly = L.polygon(area, { color: 'purple' }).bindPopup(popup);
-          this.mapRef.state.map.addLayer(poly);
-          this.state.eventPolys.push(poly);
-        } else {
-          let eventMarker = L.marker(area[0], { icon: this.purpleMarker }).bindPopup(popup);
-          this.mapRef.state.map.addLayer(eventMarker);
-          this.state.eventMarkers.push(eventMarker);
-        }
-      }
-    });
+        this.state.events.map(event => {
+          if (event.municipalId === 1) {
+            const area = JSON.parse(event.area).map(cord => {
+              return [cord.lat, cord.lng];
+            });
+            let popup = `<p><b>${event.title}</b><br/>Addresse: ${event.address}</p>`;
+            if (area.length > 1) {
+              let poly = L.polygon(area, { color: 'purple' }).bindPopup(popup);
+              this.mapRef.state.map.addLayer(poly);
+              this.state.eventPolys.push(poly);
+            } else {
+              let eventMarker = L.marker(area[0], { icon: this.purpleMarker }).bindPopup(popup);
+              this.mapRef.state.map.addLayer(eventMarker);
+              this.state.eventMarkers.push(eventMarker);
+            }
+          }
+        });
+      }, 100);
+    }
   }
 
   render() {
-
-    const map = <MapWidget
+    const map = (
+      <MapWidget
         modal
         onRef={ref => (this.mapRef = ref)}
         searchControl
         openSearch
         submit={Consumer._currentValue.ticketSubmit}
         homepage
-    />
+      />
+    );
     let panes = [
       {
         menuItem: 'Nyheter',
@@ -117,28 +127,28 @@ export class HomePage extends Component {
     ];
 
     return (
-        <Container className="homePageContainer">
-          <Segment basic className="mapGrid">
-            <Grid className="mapGrid">
-              <Grid.Row columns={2} className="mapRow">
-                <Grid.Column computer={10} mobile={16} className="mapRow">
-                  {map}
-                  {this.placeMarkers()}
-                </Grid.Column>
-                <Grid.Column computer={6} only="computer" className="frontPageFeed">
-                  <Tab menu={{text: true, secondary: true, pointing: true, color: 'blue'}} panes={panes}/>
-                  <Divider hidden/>
-                </Grid.Column>
-              </Grid.Row>
+      <Container className="homePageContainer">
+        <Segment basic className="mapGrid">
+          <Grid className="mapGrid">
+            <Grid.Row columns={2} className="mapRow">
+              <Grid.Column computer={10} mobile={16} className="mapRow">
+                {map}
+                {this.placeMarkers()}
+              </Grid.Column>
+              <Grid.Column computer={6} only="computer" className="frontPageFeed">
+                <Tab menu={{ text: true, secondary: true, pointing: true, color: 'blue' }} panes={panes} />
+                <Divider hidden />
+              </Grid.Column>
+            </Grid.Row>
 
-              {/*<Grid.Row columns={1} only="mobile tablet" className="mapRow">
+            {/*<Grid.Row columns={1} only="mobile tablet" className="mapRow">
                 <Grid.Column colSpan={2} className="mapGrid">
                   {map}
                 </Grid.Column>
               </Grid.Row>*/}
-            </Grid>
-          </Segment>
-        </Container>
+          </Grid>
+        </Segment>
+      </Container>
     );
   }
 }

@@ -124,7 +124,7 @@ export class NewsCaseWidget extends Component {
                   </Card.Meta>
                 </Container>
                 <Card.Content style={{ padding: 14, borderTop: 0 }}>
-                  <Card.Description>
+                  <Card.Description style={{ height: 'auto' }}>
                     <>
                       {newscase.description
                         .split('')
@@ -263,7 +263,7 @@ export class NewsCaseWidget extends Component {
                 </Card.Content>
               </Grid.Column>
 
-              <Grid.Column width={8} style={{ width: '100%', height: '100%' }}>
+              <Grid.Column width={8} style={{ width: '100%', height: '100%', maxHeight: 233 }}>
                 <Image style={{ width: '100%', height: '100%' }}>
                   {this.props.newscase.uploads.length > 0 ? (
                     <Image src={'/uploads/' + this.props.newscase.uploads[0].filename} />

@@ -240,7 +240,7 @@ export class EventFeedWidget extends Component {
           {this.state.totalPages > 1 ? (
             <>
               <Pagination
-                activePage={this.state.activePage}
+                defaultActivePage={this.state.activePage}
                 firstItem={null}
                 lastItem={null}
                 pointing

@@ -353,7 +353,7 @@ export class NewsFeedWidget extends Component {
                 secondary
                 totalPages={this.state.totalPages}
                 onPageChange={(e, d) => {
-                  this.setState({ page: d.activePage });
+                  this.setState({ activePage: d.activePage });
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               />
