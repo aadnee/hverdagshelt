@@ -233,6 +233,11 @@ export class TicketWidget extends Component {
               </Button>
             </Button.Group>
           </Card.Content>
+        ) : this.state.ticket.status === REJECTED ? (
+          <Card.Content extra>
+            <p>Melding fra ansatt:</p>
+            <p>{this.state.ticket.feedback ? this.state.ticket.feedback : 'Ingen tilbakemelding.'}</p>
+          </Card.Content>
         ) : null}
       </Card>
     );
