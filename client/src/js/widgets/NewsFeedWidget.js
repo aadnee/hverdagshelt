@@ -167,7 +167,7 @@ export class NewsFeedWidget extends Component {
             ? this.state.selectedCategories
             : this.state.categories.map(c => c.key);
         newsService
-          .getFilteredNews(munsearch, catsearch, 0, 0)
+          .getArcivedNews(munsearch, catsearch, 0, 0)
           .then(res => {
             if (res.success) {
               this.setState({ news: res.data, loading: false });
