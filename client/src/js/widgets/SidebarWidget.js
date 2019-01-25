@@ -143,7 +143,7 @@ class MunicipalOptions extends Component {
           Behandle avslåtte oppdrag
         </NavLink>*/}
         <NavLink exact to="/employee/news" activeClassName="active" className="ui item">
-          Administrer nyheter
+          Behandle nyheter
         </NavLink>
         <NavLink exact to="/employee/event" activeClassName="active" className="ui item">
           Registrer arrangement
