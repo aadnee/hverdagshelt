@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Container, Divider, Header, Message, Segment, Grid, Label } from 'semantic-ui-react';
+import { Container, Divider, Header, Message, Segment, Grid, Label, Icon } from 'semantic-ui-react';
 import { NewsCaseWidget } from '../widgets/NewsCaseWidget';
 import { newsService } from '../services/NewsServices';
 import { categoryService } from '../services/CategoryServices';
@@ -52,7 +52,6 @@ export class EmployeeManageNewsPage extends Component {
           news = res.data;
           news.map((n, i) => {
             if (n.companyId) {
-              console.log(news[i]);
               let company = companies.find(comp => comp.id === n.companyId);
               news[i].executedBy = company.name;
             }
@@ -128,11 +127,13 @@ export class EmployeeManageNewsPage extends Component {
 
         <Grid container>
           {this.state.news.length < 1 ? (
-            <Grid.Row centered>
-              <Message size={'massive'}>
-                <p>Du har ingen nyheter å administrere</p>
-              </Message>
-            </Grid.Row>
+            <Message icon success>
+              <Icon name="folder open outline" />
+              <Message.Content>
+                <Message.Header>Tomt!</Message.Header>
+                Du har ingen nyheter å behandling.
+              </Message.Content>
+            </Message>
           ) : null}
           {this.state.news.map(news => {
             return (

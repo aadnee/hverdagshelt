@@ -37,7 +37,7 @@ export class EmployeeManageTicketsPage extends React.Component {
 
       newsOptions: [],
       loading: true,
-      page: 1,
+      activePage: 1,
       totalPages: 0
     };
     this.reject = this.reject.bind(this);
@@ -93,11 +93,16 @@ export class EmployeeManageTicketsPage extends React.Component {
         <Segment color="blue" basic>
           <Grid stackable container columns={3}>
             {!this.state.hasTickets ? (
-              <Grid.Row centered="true">
-                <Message size={'massive'}>
-                  <p>Du har ingen flere varsler å administrere</p>
+              <>
+                <Divider hidden />
+                <Message icon success>
+                  <Icon name="folder open outline" />
+                  <Message.Content>
+                    <Message.Header>Tomt!</Message.Header>
+                    Det er ingen varslinger å behandle.
+                  </Message.Content>
                 </Message>
-              </Grid.Row>
+              </>
             ) : null}
             {this.state.loading ? (
               <>
@@ -170,14 +175,14 @@ export class EmployeeManageTicketsPage extends React.Component {
           <Divider hidden />
           {!this.state.loading && this.state.totalPages > 1 ? (
             <Pagination
-              activePage={this.state.totalPages}
+              activePage={this.state.activePage}
               firstItem={null}
               lastItem={null}
               pointing
               secondary
               totalPages={this.state.totalPages}
               onPageChange={(e, d) => {
-                this.setState({ page: d.activePage });
+                this.setState({ activePage: d.activePage });
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             />

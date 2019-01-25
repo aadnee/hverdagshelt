@@ -20,6 +20,9 @@ export class UserNewsFeedPage extends Component {
             <Grid.Column width={16}>
               <Divider hidden />
               <NewsFeedWidget />
+              <Divider hidden />
+              <Divider hidden />
+              <Divider hidden />
             </Grid.Column>
           </Grid>
         </Segment>

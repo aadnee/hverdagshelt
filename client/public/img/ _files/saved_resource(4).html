@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_filter -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body contenteditable="false">
+
+<p>Click the button to get every element in the array that has a value of 18 or more.</p>
+
+<button onclick="myFunction()">Try it</button>
+
+<p id="demo">32,33,40</p>
+
+<script>
+var ages = [32, 33, 16, 40];
+
+function checkAdult(age) {
+  return age >= 18;
+}
+
+function myFunction() {
+  document.getElementById("demo").innerHTML = ages.filter(checkAdult);
+}
+
+console.log(ages.filter(t => t > 16).length);
+</script>
+
+
+
+</body></html>
