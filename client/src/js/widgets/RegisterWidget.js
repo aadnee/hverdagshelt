@@ -192,7 +192,7 @@ export class RegisterWidget extends React.Component {
               </Form>
             </Grid.Column>
           </Grid>
-          <Modal open={this.state.messageModal} onClose={this.closeMessage} basic size="small">
+          <Modal open={this.state.messageModal} onClose={this.closeMessage} basic size="small" closeIcon>
             <Header icon="user" content={this.state.titleModal} />
             <Modal.Content>
               <h3>{this.state.message}</h3>

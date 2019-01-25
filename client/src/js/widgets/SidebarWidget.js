@@ -111,7 +111,7 @@ class MunicipalOptions extends Component {
   }
 
   componentWillUnmount() {
-    clearIntervall(this.updtInterval);
+    clearInterval(this.updtInterval);
   }
 
   updateTicketCount() {

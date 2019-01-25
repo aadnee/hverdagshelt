@@ -306,6 +306,7 @@ export class UserEditFormWidget extends Component {
                 <label>Legg til flere kommuner:</label>
                 <Dropdown
                   placeholder="Kommune"
+                  text={'Kommune'}
                   search
                   selection
                   options={this.state.municipalOptions}

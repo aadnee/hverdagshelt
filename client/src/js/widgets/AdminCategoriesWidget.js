@@ -165,7 +165,7 @@ export class AdminCategoriesWidget extends Component {
           </Segment>
         ) : null}
 
-        <Modal size="tiny" open={this.state.categoriesModal} onClose={this.closeModalNewName}>
+        <Modal size="tiny" open={this.state.categoriesModal} onClose={this.closeModalNewName} closeIcon>
           <Modal.Header>Velg navn på kategori:</Modal.Header>
           <Modal.Content>
             <Header as="h3">Navn:</Header>

@@ -98,17 +98,17 @@ export class PageController extends Component {
     return date + ' ' + clock;
   };
 
-  ticketSubmit = (title, description, lat, lon, address, catId, municipalId, subscribed, image) => {
+  ticketSubmit = (title, description, lat, lon, address, catId, subscribed, image, municipalName) => {
     //lat, lon  is fetched from the map
 
-    if (!title || !description || !lat || !lon || !catId || !municipalId) {
-      console.log(title, description, lat, lon, catId, municipalId, subscribed, image);
+    if (!title || !description || !lat || !lon || !catId || !municipalName) {
+      console.log(title, description, lat, lon, catId, subscribed, image);
       toast.error('Vennligst fyll ut alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });
     } else {
       ticketService
-        .addTicket(title, description, lat, lon, address, catId, municipalId, subscribed, image)
+        .addTicket(title, description, lat, lon, address, catId, subscribed, image, municipalName)
         .then(res => {
           console.log(res);
           if (res.success) {

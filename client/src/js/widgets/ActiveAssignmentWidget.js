@@ -139,7 +139,7 @@ export class ActiveAssignmentWidget extends Component {
             </Dropdown.Menu>
           </Dropdown>
         </Container>
-        <Modal size={'tiny'} open={this.state.modal} onClose={this.closeModal}>
+        <Modal size={'tiny'} open={this.state.modal} onClose={this.closeModal} closeIcon>
           <Modal.Header>Er du sikker?</Modal.Header>
           <Modal.Content>
             <Form>

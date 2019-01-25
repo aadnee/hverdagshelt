@@ -90,9 +90,9 @@ app.post('/api/statistics/:municipalId', (req, res) => {
   ticketManager.getTicketStatistics(p.municipalId, b.year, b.month, b.week, function(cats) {
     userManager.userIncrease(p.municipalId, b.year, b.month, b.week, function(users) {
       let period = b.month ? b.month + ' / 2019' : b.week ? 'uke ' + b.week + ' 2019' : b.year;
-      var projectRoot = process.cwd();
+      let projectRoot = process.cwd();
       projectRoot = projectRoot.replace(/\\/g, '/');
-      var link = 'file:///' + projectRoot + '/pdfs/';
+      let link = 'file:///' + projectRoot + '/pdfs/';
       ejs.renderFile(
         './pdfs/file.ejs',
         { categories: cats.data, users: users, start: cats.start, end: cats.end, period: period, link: link },
@@ -564,13 +564,6 @@ app.post('/api/subscriptions', ensureLogin, (req, res) => {
     subscriptionManager.addSubscription(b.newsId, userId, function(result) {
       res.json(result);
     });
-  });
-});
-
-app.post('/api/subscriptions', ensureAdmin, (req, res) => {
-  let b = req.body;
-  subscriptionManager.addSubscription(b.newsId, b.userId, function(result) {
-    res.json(result);
   });
 });
 
