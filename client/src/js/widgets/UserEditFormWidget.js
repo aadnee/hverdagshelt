@@ -60,9 +60,11 @@ export class UserEditFormWidget extends Component {
     municipalService
       .getMunicipals()
       .then(res => {
-        return res.data.filter(mun => !this.state.followedMunicipals.find(f => f.key === mun.id)).map(mun => {
-          return { key: mun.id, value: mun.name, text: mun.name };
-        });
+        return res.data
+          .filter(mun => !this.state.followedMunicipals.find(f => f.key === mun.id))
+          .map(mun => {
+            return { key: mun.id, value: mun.name, text: mun.name };
+          });
       })
       .then(opt => {
         console.log(opt);
@@ -311,8 +313,9 @@ export class UserEditFormWidget extends Component {
                   selection
                   options={this.state.municipalOptions}
                   onChange={(event, data) => {
-                    this.addMunicipals(data.options.map(e => e.value).indexOf(data.value));
-                    this.setState({ selectedMunicipal: true });
+                    if ((event.type !== 'keydown' && event.type !== 'blur') || event.key === 'Enter') {
+                      this.addMunicipals(data.options.map(e => e.value).indexOf(data.value));
+                    }
                   }}
                 />
               </Form.Field>
