@@ -11,27 +11,15 @@ export class StatisticsWidget extends React.Component {
         { text: '1', value: '01' },
         { text: '2', value: '02' },
         { text: '3', value: '03' },
-
-        {
-          text: '4',
-          value: '04'
-        },
+        { text: '4', value: '04' },
         { text: '5', value: '05' },
         { text: '6', value: '06' },
         { text: '7', value: '07' },
-
-        {
-          text: '8',
-          value: '08'
-        },
+        { text: '8', value: '08' },
         { text: '9', value: '09' },
         { text: '10', value: '10' },
         { text: '11', value: '11' },
-
-        {
-          text: '12',
-          value: '12'
-        }
+        { text: '12', value: '12' }
       ],
       week: [],
       selYear: '',
@@ -116,7 +104,7 @@ export class StatisticsWidget extends React.Component {
                 }}
               />
               <Button
-                content="Last ned statestikk for måne"
+                content="Last ned statestikk for måned"
                 floated={'right'}
                 color={'blue'}
                 icon={'download'}
