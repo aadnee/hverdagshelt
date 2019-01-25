@@ -42,6 +42,10 @@ class NewsService {
   getNews() {
     return api.get('/api/news');
   }
+
+  getArticle(newsId) {
+    return api.get('/api/news/' + newsId);
+  }
 }
 
 export let newsService = new NewsService();

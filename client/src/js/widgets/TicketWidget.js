@@ -11,14 +11,7 @@ import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
 import { ticketService } from '../services/TicketServices';
 import { NewsCaseWidget } from './NewsCaseWidget';
-
-/*
-const options = [
-  { key: 'reject', icon: 'delete', text: 'Avslå', value: 'reject' },
-  { key: 'publish', icon: 'newspaper', text: 'Publiser som nyhet', value: 'publish' },
-  { key: 'company', icon: 'warehouse', text: 'Knytt til bedrift', value: 'company' },
-  { key: 'user', icon: 'user', text: 'Knytt til bruker', value: 'user' }
-];*/
+import { toast } from 'react-toastify';
 
 export class TicketWidget extends Component {
   constructor(props) {
@@ -33,8 +26,7 @@ export class TicketWidget extends Component {
 
       ticket: this.props.ticket,
       createdAt: this.props.ticket.createdAt,
-      newsOptions: [],
-      news: [],
+
       newsCase: null
     };
   }
@@ -45,15 +37,16 @@ export class TicketWidget extends Component {
   handleInput(state, value) {
     this.setState({ [state]: value });
   }
-  /*
+
   componentWillMount() {
-    if (this.props.news) {
-      console.log(this.props.news);
-      this.setState({ news: this.props.news, newsOptions: this.props.newsOptions });
+    if (this.props.ticket) {
+      if (this.props.ticket.newsId) {
+        let newsId = this.props.ticket.newsId;
+        newsService.getArticle(newsId).then(res => {
+          this.setState({ newsCase: res.data });
+        });
+      }
     }
-  }*/
-  componentWillReceiveProps(nextProps, nextContext) {
-    this.setState({ news: nextProps.news });
   }
 
   link() {
@@ -61,15 +54,19 @@ export class TicketWidget extends Component {
     this.props.link(this.state.selectedNews);
   }
 
-  showNews(id) {
-    let news = null;
-    console.log(this.state.news);
-    news = this.state.news.find(n => n.id === id);
-
-    this.setState({ newsCase: news }, () => {
-      this.setState({ newsModalOpen: true });
-    });
+  showNews() {
+    this.setState({ newsModalOpen: true });
   }
+
+  accept = (title, description, lat, lon, address, subCategory, publish, mun, image) => {
+    if (this.props.accept(title, description, lat, lon, address, subCategory, publish, mun, image)) {
+      this.closeRegModal();
+    } else {
+      toast.error('Vennligst fyll ut alle felt', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    }
+  };
 
   render() {
     let more = false;
@@ -98,7 +95,7 @@ export class TicketWidget extends Component {
         <Card.Content>
           <Header>
             <Header.Content>
-              {this.state.ticket.title}
+              {this.state.ticket.title + this.state.ticket.id}
               <Header.Subheader>{this.state.ticket.category}</Header.Subheader>
               {this.state.ticket.subCategory ? (
                 <Header.Subheader>{this.state.ticket.subCategory}</Header.Subheader>
@@ -155,7 +152,7 @@ export class TicketWidget extends Component {
                       <Modal.Description>
                         <PublishNewsFormWidget
                           ticket={this.props.ticket}
-                          accept={this.props.accept}
+                          accept={this.accept}
                           submitButton={'Publiser'}
                           close={this.closeRegModal}
                         />
@@ -205,7 +202,7 @@ export class TicketWidget extends Component {
                 inverted
                 primary
                 onClick={() => {
-                  this.showNews(this.props.ticket.newsId);
+                  this.showNews();
                 }}
               >
                 Vis nyheten
@@ -232,6 +229,11 @@ export class TicketWidget extends Component {
                 Trekk tilbake
               </Button>
             </Button.Group>
+          </Card.Content>
+        ) : this.state.ticket.status === REJECTED ? (
+          <Card.Content extra>
+            <p>Melding fra ansatt:</p>
+            <p>{this.state.ticket.feedback ? this.state.ticket.feedback : 'Ingen tilbakemelding.'}</p>
           </Card.Content>
         ) : null}
       </Card>

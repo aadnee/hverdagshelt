@@ -88,6 +88,15 @@ export class HomePage extends Component {
   }
 
   render() {
+
+    const map = <MapWidget
+        modal
+        onRef={ref => (this.mapRef = ref)}
+        searchControl
+        openSearch
+        submit={Consumer._currentValue.ticketSubmit}
+        homepage
+    />
     let panes = [
       {
         menuItem: 'Nyheter',
@@ -108,34 +117,28 @@ export class HomePage extends Component {
     ];
 
     return (
-      <Container className="homePageContainer">
-        <Segment basic className="mapGrid">
-          <Grid className="mapGrid">
-            <Grid.Row columns={2} only="computer" className="mapRow">
-              <Grid.Column width={10} className="mapRow">
-                <MapWidget
-                  modal
-                  onRef={ref => (this.mapRef = ref)}
-                  searchControl
-                  openSearch
-                  submit={Consumer._currentValue.ticketSubmit}
-                />
-                {this.placeMarkers()}
-              </Grid.Column>
-              <Grid.Column width={6} only="computer" className="frontPageFeed">
-                <Tab menu={{ text: true, secondary: true, pointing: true, color: 'blue' }} panes={panes} />
-                <Divider hidden />
-              </Grid.Column>
-            </Grid.Row>
+        <Container className="homePageContainer">
+          <Segment basic className="mapGrid">
+            <Grid className="mapGrid">
+              <Grid.Row columns={2} className="mapRow">
+                <Grid.Column computer={10} mobile={16} className="mapRow">
+                  {map}
+                  {this.placeMarkers()}
+                </Grid.Column>
+                <Grid.Column computer={6} only="computer" className="frontPageFeed">
+                  <Tab menu={{text: true, secondary: true, pointing: true, color: 'blue'}} panes={panes}/>
+                  <Divider hidden/>
+                </Grid.Column>
+              </Grid.Row>
 
-            <Grid.Row columns={1} only="mobile tablet" className="mapRow">
-              <Grid.Column colSpan={2} className="mapGrid">
-                <MapWidget modal callback={this.callback} submit={Consumer._currentValue.ticketSubmit} />
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
-      </Container>
+              {/*<Grid.Row columns={1} only="mobile tablet" className="mapRow">
+                <Grid.Column colSpan={2} className="mapGrid">
+                  {map}
+                </Grid.Column>
+              </Grid.Row>*/}
+            </Grid>
+          </Segment>
+        </Container>
     );
   }
 }

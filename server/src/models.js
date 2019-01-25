@@ -443,18 +443,7 @@ export function syncDatabase(callback) {
         municipalId: 1,
         subscribed: true
       });
-      await Tickets.create({
-        title: 'Vei problem',
-        description: 'Pls sett opp brøytestikker her.',
-        status: 3,
-        lat: 1,
-        lon: 1,
-        address: 'Test street',
-        categoryId: 7,
-        userId: 1,
-        municipalId: 1,
-        subscribed: true
-      });
+
       await News.create({
         title: 'Problem ved vei i TRD sentrum.',
         description: 'Brøytestikker skal bli satt opp.',
@@ -484,6 +473,19 @@ export function syncDatabase(callback) {
         address: 'Test street',
         categoryId: 7,
         municipalId: 1
+      });
+      await Tickets.create({
+        title: 'Vei problem',
+        description: 'Pls sett opp brøytestikker her.',
+        status: 3,
+        lat: 1,
+        lon: 1,
+        address: 'Test street',
+        categoryId: 7,
+        userId: 1,
+        municipalId: 1,
+        newsId: 1,
+        subscribed: true
       });
       await Subscriptions.create({
         newsId: 1,
