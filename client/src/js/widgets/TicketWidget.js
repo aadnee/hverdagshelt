@@ -27,6 +27,9 @@ export class TicketWidget extends Component {
       ticket: this.props.ticket,
       createdAt: this.props.ticket.createdAt,
 
+      news: [],
+      newsOptions: [],
+
       newsCase: null
     };
   }
@@ -46,6 +49,9 @@ export class TicketWidget extends Component {
           this.setState({ newsCase: res.data });
         });
       }
+    }
+    if (this.props.newsOptions) {
+      this.setState({ newsOptions: this.props.newsOptions });
     }
   }
 
@@ -95,7 +101,7 @@ export class TicketWidget extends Component {
         <Card.Content>
           <Header>
             <Header.Content>
-              {this.state.ticket.title + this.state.ticket.id}
+              {this.state.ticket.title}
               <Header.Subheader>{this.state.ticket.category}</Header.Subheader>
               {this.state.ticket.subCategory ? (
                 <Header.Subheader>{this.state.ticket.subCategory}</Header.Subheader>
