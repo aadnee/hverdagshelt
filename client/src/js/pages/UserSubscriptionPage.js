@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Modal, Button, Message, Container, Segment, Divider } from 'semantic-ui-react';
+import { Grid, Header, Modal, Button, Message, Container, Segment, Divider, Icon } from 'semantic-ui-react';
 
 import { NewsCaseWidget } from '../widgets/NewsCaseWidget';
 import { subscriptionService } from '../services/SubscriptionServices';
@@ -57,11 +57,17 @@ export class UserSubscriptionPage extends Component {
             <Segment color="blue" basic>
               <Grid container>
                 {this.state.news.length < 1 ? (
-                  <Grid.Row centered>
-                    <Message size={'massive'}>
-                      <p>Du abonnerer ikke på noen nyheter</p>
+                  <>
+                    <Divider hidden />
+                    <Message icon success>
+                      <Icon name="folder open outline" />
+                      <Message.Content>
+                        <Message.Header>Tomt!</Message.Header>
+                        Du følger ingen nyheter. Følg dem fra forsiden, eller i{' '}
+                        <NavLink to="/feed">nyhetsstrøm</NavLink>
+                      </Message.Content>
                     </Message>
-                  </Grid.Row>
+                  </>
                 ) : null}
                 {this.state.news.map(news => {
                   return (

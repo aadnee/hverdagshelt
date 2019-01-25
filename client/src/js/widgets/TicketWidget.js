@@ -3,7 +3,7 @@ import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal, Dropdown } from 'semantic-ui-react';
 import { Consumer } from './../context';
-import { PENDING, DONE, REJECTED, STATUS } from '../commons';
+import { PENDING, DONE, REJECTED, STATUS, INPROGRESS } from '../commons';
 import { ShowInMapWidget } from './ShowInMapWidget';
 
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
@@ -87,7 +87,7 @@ export class TicketWidget extends Component {
           )}
           {this.state.ticket.status === PENDING && !this.props.employee ? (
             <Label color="yellow" ribbon="right">
-              {STATUS[PENDING - 1].norwegian}
+              {STATUS[INPROGRESS - 1].norwegian}
             </Label>
           ) : null}
           {this.state.ticket.status === DONE && !this.props.employee ? (

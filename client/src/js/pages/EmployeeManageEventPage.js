@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Message, Container, Segment, Divider, Modal } from 'semantic-ui-react';
+import { Grid, Header, Message, Container, Segment, Divider, Modal, Icon } from 'semantic-ui-react';
 import { MessageWidget } from '../widgets/MessageWidget';
 import { eventService } from '../services/EventServices';
 import { ticketService } from '../services/TicketServices';
@@ -104,6 +104,15 @@ export class EmployeeManageEventPage extends React.Component {
         <Divider hidden />
         <Header as="h1">Behandle event</Header>
         <Segment color="blue" basic>
+          {this.state.eventList.length == 0 ? (
+            <Message icon success>
+              <Icon name="folder open outline" />
+              <Message.Content>
+                <Message.Header>Tomt!</Message.Header>
+                Du har ingen arrangementer å behandling.
+              </Message.Content>
+            </Message>
+          ) : null}
           <Divider hidden />
           <Divider hidden />
           <Grid stackable container columns={3}>
