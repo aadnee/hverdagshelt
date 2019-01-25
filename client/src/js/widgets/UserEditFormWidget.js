@@ -29,13 +29,13 @@ export class UserEditFormWidget extends Component {
 
     this.state = {
       firstName: this.props.user.firstName,
-      lastName: this.props.user.lastName ? this.props.user.lastName : '',
+      lastName: this.props.user.lastName,
       email: this.props.user.email,
       phone: this.props.user.phone,
       municipalId: this.props.user.municipalId,
-      newPassword: '',
-      oldPassword: '',
-      repeatedPassword: '',
+      newPassword: null,
+      oldPassword: null,
+      repeatedPassword: null,
       editFirstname: false,
       editLastname: false,
       editPhonenumber: false,
@@ -120,7 +120,7 @@ export class UserEditFormWidget extends Component {
   };
 
   submit = () => {
-    if (this.state.oldPassword === '' && this.state.newPassword === '' && this.state.repeatedPassword === '') {
+    if (this.state.oldPassword === null && this.state.newPassword === null && this.state.repeatedPassword === null) {
       userService
         .editMe(
           this.state.firstName,
@@ -143,16 +143,7 @@ export class UserEditFormWidget extends Component {
             draggable: true
           })
         );
-    } else if(this.state.oldPassword != '' && this.state.newPassword==='' || this.state.repeatedPassword===''){
-        toast.error('Passordfeltene kan ikke være tomme. Prøv igjen.', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true
-        });
-    } else if (this.state.oldPassword != '' && this.state.newPassword != this.state.repeatedPassword) {
+    } else if (this.state.oldPassword != null && this.state.newPassword != this.state.repeatedPassword) {
       toast.error('Passordene stemmer ikke overens. Prøv igjen.', {
         position: 'top-right',
         autoClose: 5000,
@@ -161,9 +152,8 @@ export class UserEditFormWidget extends Component {
         pauseOnHover: true,
         draggable: true
       });
-    } else if (this.state.oldPassword != '' && this.state.newPassword === this.state.repeatedPassword) {
-      if(this.state.newPassword.length>=8){
-        userService
+    } else if (this.state.oldPassword != null && this.state.newPassword === this.state.repeatedPassword) {
+      userService
         .editMe(
           this.state.firstName,
           this.state.lastName,
@@ -196,21 +186,11 @@ export class UserEditFormWidget extends Component {
             });
           }
         });
-      }else {
-          toast.error('Passordet må være minst 8 tegn', {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true
-          });
-      }
     }
   };
 
   render() {
-    console.log(Consumer._currentValue.user);
+    //console.log(Consumer._currentValue.user);
     return (
       <Container>
         <Grid.Column>
@@ -218,6 +198,7 @@ export class UserEditFormWidget extends Component {
             <Segment stacked color="blue" basic>
               <p>Litt informasjon om brukeren</p>
               <Divider hidden />
+
               <Divider horizontal>
                 <Icon name="user" />
               </Divider>
@@ -232,7 +213,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.firstName}
                       onChange={(event, data) => {
                         this.handleInput('firstName', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
@@ -242,7 +224,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.lastName}
                       onChange={(event, data) => {
                         this.handleInput('lastName', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                 </Grid>
               </Form.Field>
@@ -258,7 +241,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.phone}
                       onChange={(event, data) => {
                         this.handleInput('phone', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
@@ -305,13 +289,17 @@ export class UserEditFormWidget extends Component {
                 <br />
                 <label>Legg til flere kommuner:</label>
                 <Dropdown
-                  placeholder="Kommune"
+                  placeholder="Velg kommune"
+                  text="Velg kommune"
                   search
                   selection
                   options={this.state.municipalOptions}
                   onChange={(event, data) => {
-                    this.addMunicipals(data.options.map(e => e.value).indexOf(data.value));
-                    this.setState({ selectedMunicipal: true });
+                    if ((event.type !== 'keydown' && event.type !== 'blur') || event.key === 'Enter') {
+                      let index = data.options.map(e => e.value).indexOf(data.value);
+                      this.addMunicipals(index);
+                    }
+                    //this.setState({ selectedMunicipal: true });
                   }}
                 />
               </Form.Field>

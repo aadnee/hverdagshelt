@@ -136,7 +136,8 @@ module.exports = {
         phone: phone,
         municipalId: municipalId,
         notifications: notifications,
-        rank: rank
+        rank: rank,
+        reset: null
       },
       { where: { id: userId, rank: { $not: 2 } } }
     ).then(

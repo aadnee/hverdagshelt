@@ -89,7 +89,9 @@ module.exports = {
         } else {
           News.update(
             {
-              companyId: companyId
+              companyId: companyId,
+              feedback: null,
+              companyStatus: 1
             },
             {
               where: { id: id }
