@@ -7,7 +7,7 @@
 
 ## Installasjon
 1. Last ned eller klon prosjektet lokalt
-2. Lag en '.env' fil ('.env.' på Windows) med følgende detailer fylt inn
+2. Lag en '.env' fil ('.env.' på Windows) med følgende detaljer fylt inn
 ```TEXT
 JWT=EN_TILFELDIG_STRENG
 MYSQL_DB=DITT_MYSQL_DATABASENAVN
