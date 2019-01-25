@@ -144,13 +144,13 @@ export class NewsCaseWidget extends Component {
               <Grid.Column width={16}>
                 {newscase.companyId ? 'Oppdrag utføres av firmaet: ' + this.props.newscase.executedBy : null}
               </Grid.Column>
-              {this.props.employee && this.props.newscase.companyStatus === REJECTED ? (
+              {this.props.employee && newscase.companyStatus === REJECTED ? (
                 <Grid.Column width={16}>
                   <Card.Content extra>
                     <p>
                       <b>Firma avslo oppdraget:</b>
                     </p>
-                    <p>{this.props.newscase.feedback ? this.props.newscase.feedback : 'Ingen tilbakemelding.'}</p>
+                    <p>{newscase.feedback ? newscase.feedback : 'Ingen tilbakemelding.'}</p>
                   </Card.Content>
                 </Grid.Column>
               ) : null}
