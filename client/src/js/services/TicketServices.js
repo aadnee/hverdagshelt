@@ -1,7 +1,7 @@
 import api from './api';
 
 class TicketServices {
-  addTicket(title, description, lat, lon, address, categoryId, municipalId, subscribed, images) {
+  addTicket(title, description, lat, lon, address, categoryId, subscribed, images, municipalName) {
     let formData = new FormData();
     for (let i = 0; i < images.length; i++) {
       formData.append('images', images[i]);
@@ -12,7 +12,7 @@ class TicketServices {
     formData.append('lon', lon);
     formData.append('address', address);
     formData.append('categoryId', categoryId);
-    formData.append('municipalId', municipalId);
+    formData.append('municipalName', municipalName);
     formData.append('subscribed', subscribed);
     return api.post('/api/tickets', formData, {
       headers: {

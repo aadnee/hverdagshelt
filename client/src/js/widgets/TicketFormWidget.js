@@ -30,6 +30,7 @@ export class TicketFormWidget extends Component {
     this.state = {
       address: this.props.address ? this.props.address : '',
       latlng: this.props.latlng ? this.props.latlng : [null, null],
+      subregion: this.props.subregion ? this.props.subregion : '',
       title: this.props.ticket ? this.props.ticket.title : '',
       description: this.props.ticket ? this.props.ticket.description : '',
       category: '',
@@ -52,7 +53,7 @@ export class TicketFormWidget extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps != this.props) {
       //console.log(this.props);
-      this.setState({ address: this.props.address, latlng: this.props.latlng });
+      this.setState({ address: this.props.address, latlng: this.props.latlng, subregion: this.props.subregion });
     }
   }
 
@@ -335,9 +336,9 @@ export class TicketFormWidget extends Component {
                                 this.state.address,
 
                                 this.state.subCategory ? this.state.subCategory : this.state.category,
-                                Cookies.get('municipalId'),
                                 this.state.subscribed,
-                                this.state.image
+                                this.state.image,
+                                this.state.subregion
                             );
                           }}
                       >

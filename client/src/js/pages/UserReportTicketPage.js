@@ -14,7 +14,8 @@ export class UserReportTicketPage extends Component {
     super(props);
     this.state = {
       latlng: [null, null],
-      address: null
+      address: null,
+      subregion: ''
     };
     this.callback = this.callback.bind(this);
     this.setupClick = this.setupClick.bind(this);
@@ -26,8 +27,8 @@ export class UserReportTicketPage extends Component {
     this.mapWidget.state.searchControl._input.value = address;
   };
 
-  callback(latlng, address) {
-    this.setState({ latlng: latlng, address: address });
+  callback(latlng, address, subregion) {
+    this.setState({ latlng: latlng, address: address, subregion: subregion });
   }
 
   callbackFake() {}
@@ -53,6 +54,7 @@ export class UserReportTicketPage extends Component {
                   borderless
                   latlng={this.state.latlng}
                   address={this.state.address}
+                  subregion={this.state.subregion}
                   submit={Consumer._currentValue.ticketSubmit}
                   setupClick={this.setupClick}
                 />
