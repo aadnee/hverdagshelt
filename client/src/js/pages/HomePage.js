@@ -91,7 +91,7 @@ export class HomePage extends Component {
             }
           }
         });
-      }, 10);
+      }, 1500);
     }
   }
 

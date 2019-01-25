@@ -155,13 +155,16 @@ export class UserTicketsPage extends Component {
                     </React.Fragment>
                   ))
               ) : (
-                <Message icon success>
-                  <Icon name="folder open outline" />
-                  <Message.Content>
-                    <Message.Header>Tomt!</Message.Header>
-                    Du har ingen varslinger under behandling.
-                  </Message.Content>
-                </Message>
+                <>
+                  <Divider hidden />
+                  <Message icon success>
+                    <Icon name="folder open outline" />
+                    <Message.Content>
+                      <Message.Header>Tomt!</Message.Header>
+                      Du har ingen varslinger under behandling.
+                    </Message.Content>
+                  </Message>
+                </>
               )}
             </Grid>
           </Tab.Pane>
@@ -190,13 +193,16 @@ export class UserTicketsPage extends Component {
                     </React.Fragment>
                   ))
               ) : (
-                <Message icon success>
-                  <Icon name="folder open outline" />
-                  <Message.Content>
-                    <Message.Header>Tomt!</Message.Header>
-                    Du har ingen godkjente varslinger.
-                  </Message.Content>
-                </Message>
+                <>
+                  <Divider hidden />
+                  <Message icon success>
+                    <Icon name="folder open outline" />
+                    <Message.Content>
+                      <Message.Header>Tomt!</Message.Header>
+                      Du har ingen godkjente varslinger.
+                    </Message.Content>
+                  </Message>
+                </>
               )}
             </Grid>
           </Tab.Pane>
@@ -225,13 +231,16 @@ export class UserTicketsPage extends Component {
                     </React.Fragment>
                   ))
               ) : (
-                <Message icon success>
-                  <Icon name="folder open outline" />
-                  <Message.Content>
-                    <Message.Header>Tomt!</Message.Header>
-                    Du har ingen avslåtte varslinger.
-                  </Message.Content>
-                </Message>
+                <>
+                  <Divider hidden />
+                  <Message icon success>
+                    <Icon name="folder open outline" />
+                    <Message.Content>
+                      <Message.Header>Tomt!</Message.Header>
+                      Du har ingen avslåtte varslinger.
+                    </Message.Content>
+                  </Message>
+                </>
               )}
             </Grid>
           </Tab.Pane>
