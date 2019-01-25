@@ -161,11 +161,13 @@ module.exports = {
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
-  getArchivedNews: function(municipalIds, callback) {
+  getArchivedNews: function(municipalIds, categoryIds, page, limit, callback) {
     News.findAll({
-      include: [{ model: Uploads }],
+      include: [{ model: Uploads }, { attributes: [], model: Categories, where: { parentId: categoryIds } }],
       where: { municipalId: municipalIds, status: 3 },
-      order: [['updatedAt', 'DESC']]
+      offset: page == 0 ? null : (page - 1) * limit,
+      limit: limit == 0 ? null : limit,
+      order: [['id', 'DESC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }
 };
