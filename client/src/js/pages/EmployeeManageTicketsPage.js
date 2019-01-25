@@ -34,7 +34,7 @@ export class EmployeeManageTicketsPage extends React.Component {
       modalParam: '',
       message: '',
       bindNewsModalOpen: false,
-      news: [],
+
       newsOptions: [],
       loading: true,
       page: 1,
@@ -56,7 +56,7 @@ export class EmployeeManageTicketsPage extends React.Component {
     //Fetch id based on user bound to municipal
     let tickets = [];
     let ids = [];
-    let news = [];
+
     let newsOptions = [];
     ticketService
       .getMunicipalTickets(Cookies.get('municipalId'))
@@ -67,28 +67,18 @@ export class EmployeeManageTicketsPage extends React.Component {
         tickets = res.data;
       })
       .then(() => {
-        categoryService
-          .getCategories()
-          .then(res => {
-            res.data.map(cat => {
-              ids.push(cat.id);
-            });
-          })
-          .then(() => {
-            newsService.getFilteredNews(Cookies.get('municipalId'), ids, 0, 0).then(res => {
-              res.data.map(news => {
-                newsOptions.push({ key: news.id, value: news.id, text: news.title });
-              });
-              news = res.data;
-              this.setState({
-                tickets: tickets,
-                news: news,
-                newsOptions: newsOptions,
-                totalPages: Math.ceil(tickets.length / 9),
-                loading: false
-              });
-            });
+        newsService.getFilteredNews(Cookies.get('municipalId'), [], 0, 0).then(res => {
+          res.data.map(news => {
+            newsOptions.push({ key: news.id, value: news.id, text: news.title });
           });
+
+          this.setState({
+            tickets: tickets,
+            newsOptions: newsOptions,
+            totalPages: Math.ceil(tickets.length / 9),
+            loading: false
+          });
+        });
       });
   }
 
@@ -173,14 +163,6 @@ export class EmployeeManageTicketsPage extends React.Component {
               </Button>
             </Modal.Actions>
           </Modal>
-          {/*<MessageWidget
-            title={'Avslå nyhet'}
-            size={'tiny'}
-            open={this.state.modalOpen}
-            message="Er du sikker på at du vil avslå innsendingen?"
-            customFunc={this.reject.bind(this, this.state.modalParam)}
-            callback={this.close}
-          />*/}
         </Segment>
         <Container textAlign="center">
           <Divider hidden />
