@@ -25,9 +25,7 @@ export class UserTicketsPage extends Component {
       ticket: null,
       tickets: [],
       messageOpen: false,
-      selectedTicket: '',
-      news: [],
-      newsOptions: []
+      selectedTicket: ''
     };
   }
 
@@ -75,32 +73,9 @@ export class UserTicketsPage extends Component {
   };
 
   componentWillMount() {
-    let news = [];
-    let ids = [];
-    let newsOptions = [];
-    ticketService
-      .getTickets()
-      .then(res => {
-        this.setState({ tickets: res.data });
-      })
-      .then(() => {
-        categoryService
-          .getCategories()
-          .then(res => {
-            res.data.map(cat => {
-              ids.push(cat.id);
-            });
-          })
-          .then(() => {
-            newsService.getFilteredNews(Cookies.get('municipalId'), ids, 0, 0).then(res => {
-              res.data.map(news => {
-                newsOptions.push({ key: news.id, value: news.id, text: news.title });
-              });
-              news = res.data;
-              this.setState({ news: news, newsOptions: newsOptions });
-            });
-          });
-      });
+    ticketService.getTickets().then(res => {
+      this.setState({ tickets: res.data });
+    });
   }
 
   deleteTicket(id) {
@@ -136,12 +111,7 @@ export class UserTicketsPage extends Component {
               {this.state.tickets.map(ticket =>
                 ticket.status !== SOFT_DELETED ? (
                   <Grid.Column key={ticket.id}>
-                    <TicketWidget
-                      ticket={ticket}
-                      show={this.show}
-                      news={this.state.news}
-                      newsOptions={this.state.newsOptions}
-                    />
+                    <TicketWidget ticket={ticket} show={this.show} />
                   </Grid.Column>
                 ) : null
               )}
