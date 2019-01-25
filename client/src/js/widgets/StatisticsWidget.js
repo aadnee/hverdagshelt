@@ -53,7 +53,6 @@ export class StatisticsWidget extends React.Component {
   }
 
   handleChange = (name, value) => {
-    console.log(name, value);
     this.setState({ [name]: value });
   };
 

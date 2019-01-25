@@ -50,7 +50,6 @@ export class UserEditFormWidget extends Component {
 
   componentWillMount() {
     let prom = this.getFollowedMunicipals();
-    console.log(prom);
     Promise.all([prom]).then(() => {
       this.getMunicipalOptions();
     });
@@ -67,9 +66,8 @@ export class UserEditFormWidget extends Component {
           });
       })
       .then(opt => {
-        console.log(opt);
         this.setState({ municipalOptions: opt });
-        setTimeout(() => console.log(this.state.municipalOptions), 10);
+        // setTimeout(() => console.log(this.state.municipalOptions), 10);
         return opt;
       });
   }
@@ -132,8 +130,7 @@ export class UserEditFormWidget extends Component {
           null,
           this.state.notifications
         )
-        .then(
-          res => console.log(res),
+        .then(() =>
           toast.success('Bruker oppdatert!', {
             position: 'top-right',
             autoClose: 5000,
@@ -176,15 +173,14 @@ export class UserEditFormWidget extends Component {
           )
           .then(res => {
             if (res.success) {
-              console.log(res.success),
-                toast.success('Bruker oppdatert!', {
-                  position: 'top-right',
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true
-                });
+              toast.success('Bruker oppdatert!', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true
+              });
             } else {
               toast.error(res.message.no, {
                 position: 'top-right',

@@ -16,9 +16,11 @@ import {
   Segment,
   TextArea
 } from 'semantic-ui-react';
-import DatePicker from 'react-datepicker';
-import { Consumer } from '../context';
-import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from "react-datepicker";
+import {Consumer} from '../context';
+import "react-datepicker/dist/react-datepicker.css";
+import {toast} from 'react-toastify';
+
 
 import { categoryService } from '../services/CategoryServices';
 
@@ -51,7 +53,6 @@ export class RegisterEventWidget extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps != this.props) {
-      console.log(this.props);
       this.setState({ address: this.props.address, latlng: this.props.latlng });
     }
   }
@@ -135,8 +136,6 @@ export class RegisterEventWidget extends Component {
                       options={this.state.tags}
                       placeholder="Legg til tagger"
                       onAddItem={(event, data) => {
-                        console.log(data.value);
-                        console.log(this.state.tags);
                         this.state.tags.push({ key: data.value, value: data.value, text: data.value });
                       }}
                     />
@@ -173,7 +172,9 @@ export class RegisterEventWidget extends Component {
                         this.state.startFormatted,
                         this.state.endFormatted,
                         Cookies.get('municipalId'),
-                        this.state.url
+                        this.state.url,
+                          this.state.address,
+                          this.state.latlng
                       );
                     }}
                   >

@@ -31,7 +31,6 @@ export class UserComponentListWidget extends React.Component {
   setUser = (user, modal) => {
     this.setState({ user: user, selectedName: user.name }, () => {
       this.open(modal);
-      console.log(this.state.user);
     });
   };
 
@@ -90,7 +89,6 @@ export class UserComponentListWidget extends React.Component {
   handleEdit = user => {
     if (this.props.usertype) {
       userService.editUser(user.id, user.name, user.email, user.phone, user.municipalId, user.rank).then(res => {
-        console.log(res);
         if (res.success) {
           //Find old user
 
@@ -132,8 +130,6 @@ export class UserComponentListWidget extends React.Component {
     //USERSERICE -> request cookie
     this.props.usertype
       ? userService.register(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
-          console.log(res);
-
           if (res.success) {
             this.close('regModalOpen');
             let newArrayUsers = this.state.users;
@@ -145,7 +141,6 @@ export class UserComponentListWidget extends React.Component {
           }
         })
       : companyService.addCompany(newUser.name, newUser.email, newUser.phone, newUser.municipalId).then(res => {
-          console.log(res);
           if (res.success) {
             this.close('regModalOpen');
 
@@ -172,15 +167,12 @@ export class UserComponentListWidget extends React.Component {
               let newArr = [];
 
               this.state.allUsers.map(user => {
-                console.log(user.name.toLowerCase());
-                console.log(this.state.searchValue);
                 if (user.name.toLowerCase().includes(this.state.searchValue)) {
                   newArr.push(user);
                 } else {
                   return null;
                 }
               });
-              console.log(newArr);
               this.setState({ users: newArr });
             });
           }}
@@ -190,10 +182,10 @@ export class UserComponentListWidget extends React.Component {
             <List.Item key={i}>
               <List.Content floated="right">
                 <Button.Group compact={false}>
-                  <Button color="green" onClick={this.setUser.bind(this, user, 'editModalOpen')}>
+                  <Button inverted color="blue" onClick={this.setUser.bind(this, user, 'editModalOpen')}>
                     Endre
                   </Button>
-                  <Button color="red" onClick={this.setUser.bind(this, user, 'deleteModalOpen')} inverted>
+                  <Button color="blue" onClick={this.setUser.bind(this, user, 'deleteModalOpen')}>
                     Slett
                   </Button>
                 </Button.Group>
@@ -244,7 +236,7 @@ export class UserComponentListWidget extends React.Component {
           onClose={() => this.close('regModalOpen')}
           onOpen={() => this.open('regModalOpen')}
           open={this.state.regModalOpen}
-          trigger={<Button icon="add" inverted color="green" />}
+          trigger={<Button icon="add" inverted color="blue" />}
           closeIcon
         >
           <Modal.Header>

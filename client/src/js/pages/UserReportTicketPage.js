@@ -21,11 +21,10 @@ export class UserReportTicketPage extends Component {
     this.setupClick = this.setupClick.bind(this);
   }
 
-  setupClick(address){
-    console.log(address);
+  setupClick(address) {
     this.mapWidget.state.searchControl._setupClick();
     this.mapWidget.state.searchControl._input.value = address;
-  };
+  }
 
   callback(latlng, address, subregion) {
     this.setState({ latlng: latlng, address: address, subregion: subregion });
@@ -40,7 +39,14 @@ export class UserReportTicketPage extends Component {
           <Grid className="mapGrid">
             <Grid.Row columns={2} only="computer" className="mapRow">
               <Grid.Column width={10} className="mapRow">
-                <MapWidget onRef={ref => (this.mapWidget = ref)} locate callback={this.callback} searchControl ticket submit={Consumer._currentValue.ticketSubmit} />
+                <MapWidget
+                  onRef={ref => (this.mapWidget = ref)}
+                  locate
+                  callback={this.callback}
+                  searchControl
+                  ticket
+                  submit={Consumer._currentValue.ticketSubmit}
+                />
               </Grid.Column>
               <Grid.Column width={6} only="computer" className="frontPageFeed">
                 <Divider hidden />

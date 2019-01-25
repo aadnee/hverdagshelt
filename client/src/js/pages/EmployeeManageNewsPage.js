@@ -56,7 +56,6 @@ export class EmployeeManageNewsPage extends Component {
               news[i].executedBy = company.name;
             }
           });
-          console.log(companyOptions);
           this.setState({ news: news, companies: companies, companyOptions: companyOptions, executedBy: executedBy });
         });
       });
@@ -81,9 +80,7 @@ export class EmployeeManageNewsPage extends Component {
   }
 
   setStatus(id) {
-    console.log(id);
     return newsService.finishNews(id).then(res => {
-      console.log(res);
       if (res.success) {
         let index = -1;
         this.state.news.map((news, i) => (news.id === id ? (index = i) : null));
@@ -106,7 +103,6 @@ export class EmployeeManageNewsPage extends Component {
         this.state.news.map((news, i) => (news.id === id ? (index = i) : null));
         let news = this.state.news;
         news[index].companyId = id;
-        console.log(news[index].executedBy);
         news[index].executedBy = companyName;
         this.setState({ news: news });
         toast.success(res.message.no);

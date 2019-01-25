@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import * as React from 'react';
 import { Component, createContext } from 'react';
 import Cookies from 'js-cookie';
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, NavLink } from 'react-router-dom';
 import { Sidebar, Container, Segment, Dimmer, Loader, Image, Divider } from 'semantic-ui-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,16 +26,19 @@ export class PageController extends Component {
       user: null,
       login: this.login,
       logout: this.logout,
+      prompt: this.promptUser,
       ticketSubmit: this.ticketSubmit,
       unsubscribeNews: this.unsubscribeNews,
       convDbString: this.dbStringConverter,
       visible: false,
-      renderReady: false
+      renderReady: false,
+      prompted: false
     };
 
     this.toggleSideBar = this.toggleSideBar.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this.promptUser = this.promptUser.bind(this);
     this.unsubscribeNews = this.unsubscribeNews.bind(this);
   }
 
@@ -46,7 +49,6 @@ export class PageController extends Component {
   componentWillMount() {
     if (Cookies.get('token') && this.state.user == null) {
       userService.getMe().then(res => {
-        console.log(res);
         if (res.success) {
           this.setState({ user: res.data, renderReady: true });
         } else {
@@ -85,6 +87,37 @@ export class PageController extends Component {
     this.setState({ user: null });
   };
 
+  promptUser = () => {
+    console.log('prompted: ' + this.state.prompted);
+    if (!this.state.prompted) {
+      toast.info(
+        this.state.loggedIn ? (
+          'Trykk på kartet for å melde inn en sak'
+        ) : (
+          <>
+            <NavLink to={'/login'} style={{ color: 'white', textDecoration: 'underline' }}>
+              <b>Logg inn</b>
+            </NavLink>{' '}
+            eller{' '}
+            <NavLink to={'/register'} style={{ color: 'white', textDecoration: 'underline' }}>
+              <b>registrer deg</b>
+            </NavLink>{' '}
+            for å melde en sak
+          </>
+        ),
+        {
+          position: 'bottom-left',
+          autoClose: false,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true
+        }
+      );
+      this.setState({ prompted: true });
+    }
+  };
+
   dbStringConverter = (dbString, array) => {
     let type = array ? array : false;
     const dateArr = dbString.split('T')[0].split('-');
@@ -107,7 +140,6 @@ export class PageController extends Component {
     //lat, lon  is fetched from the map
 
     if (!title || !description || !lat || !lon || !catId || !municipalName) {
-      console.log(title, description, lat, lon, catId, subscribed, image);
       toast.error('Vennligst fyll ut alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });
@@ -115,7 +147,6 @@ export class PageController extends Component {
       ticketService
         .addTicket(title, description, lat, lon, address, catId, subscribed, image, municipalName)
         .then(res => {
-          console.log(res);
           if (res.success) {
             toast.success(res.message.no, {
               position: toast.POSITION.TOP_RIGHT
@@ -131,15 +162,12 @@ export class PageController extends Component {
   };
 
   unsubscribeNews(newsId) {
-    console.log(newsId);
-
     if (!newsId) {
       toast.error('Noe gikk galt, prøv igjen', {
         position: toast.POSITION.TOP_RIGHT
       });
     } else {
       return subscriptionService.deleteSubscription(newsId).then(res => {
-        console.log(res);
         return res;
       });
     }

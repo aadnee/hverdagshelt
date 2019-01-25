@@ -194,10 +194,12 @@ export class TicketWidget extends Component {
                       />
                     </Modal.Content>
                     <Modal.Actions>
-                      <Button color={'green'} onClick={() => this.link()}>
+                      <Button color={'blue'} onClick={() => this.link()}>
                         Lagre
                       </Button>
-                      <Button onClick={this.close}>Avbryt</Button>
+                      <Button inverted color="blue" onClick={this.close}>
+                        Avbryt
+                      </Button>
                     </Modal.Actions>
                   </Modal>
                 </Dropdown.Menu>
@@ -233,10 +235,10 @@ export class TicketWidget extends Component {
         ) : this.state.ticket.status === PENDING ? (
           <Card.Content extra>
             <Button.Group fluid size="small">
-              <Button inverted primary onClick={() => this.props.show('showEditTicket', this.state.ticket, null)}>
+              <Button inverted color="blue" onClick={() => this.props.show('showEditTicket', this.state.ticket, null)}>
                 Endre
               </Button>
-              <Button inverted secondary onClick={() => this.props.show('messageOpen', null, this.state.ticket.id)}>
+              <Button color="blue" onClick={() => this.props.show('messageOpen', null, this.state.ticket.id)}>
                 Trekk tilbake
               </Button>
             </Button.Group>

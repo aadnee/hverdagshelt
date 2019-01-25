@@ -44,7 +44,6 @@ export class AssignmentWidget extends Component {
   };
 
   handleChange = (name, value) => {
-    console.log(name, value);
     this.setState({ [name]: value });
   };
 
@@ -54,7 +53,6 @@ export class AssignmentWidget extends Component {
 
   handleAssignment = () => {
     if (this.state.modalType === 'acceptModal') {
-      console.log(1);
       companyService.acceptTask(this.props.assignment.id).then(res => {
         if (res.success) {
           toast.success(res.message.no);
@@ -162,10 +160,10 @@ export class AssignmentWidget extends Component {
             </Modal.Content>
           ) : null}
           <Modal.Actions>
-            <Button color="red" onClick={this.closeModal}>
+            <Button inverted color="blue" onClick={this.closeModal}>
               Nei
             </Button>
-            <Button positive onClick={this.handleAssignment}>
+            <Button color="blue" onClick={this.handleAssignment}>
               Ja
             </Button>
           </Modal.Actions>

@@ -504,7 +504,7 @@ app.get('/api/categories', (req, res) => {
 });
 
 app.get('/api/tickets/pending', ensureEmployee, (req, res) => {
-  ticketManager.getPendingTicketCount(function(result) {
+  ticketManager.getPendingTicketCount(req.cookies['municipalId'], function(result) {
     res.json(result);
   });
 });

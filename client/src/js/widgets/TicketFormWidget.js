@@ -52,7 +52,6 @@ export class TicketFormWidget extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps != this.props) {
-      //console.log(this.props);
       this.setState({ address: this.props.address, latlng: this.props.latlng, subregion: this.props.subregion });
     }
   }
@@ -98,7 +97,6 @@ export class TicketFormWidget extends Component {
         });
       })
       .then(() => {
-        console.log(cats);
         !this.props.ticket ? this.setState({ categoryOptions: cats, receivedCategory: -1 }) : null;
 
         this.props.ticket
@@ -110,7 +108,6 @@ export class TicketFormWidget extends Component {
               },
               () => {
                 this.setState({ categoryOptions: cats, receivedCategory: -1 });
-                console.log(this.state);
               }
             )
           : null;
@@ -133,7 +130,17 @@ export class TicketFormWidget extends Component {
                     placeholder="Velg posisjon på kartet"
                     defaultValue={this.state.address}
                     readOnly
-                    onClick={this.props.setupClick ? () => this.props.setupClick(this.state.address) : null}
+                    onClick={
+                      this.props.setupClick
+                        ? () => this.props.setupClick(this.state.address)
+                        : this.props.editTicket
+                        ? () =>
+                            toast.info(
+                              'Endring av posisjon er foreløpig ikke mulig, registrer saken på nytt om det haster',
+                              { autoClose: 5000 }
+                            )
+                        : () => toast.info('Gå tilbake for å endre posisjon')
+                    }
                   />
                 </Form.Field>
                 <Divider hidden />
@@ -299,7 +306,6 @@ export class TicketFormWidget extends Component {
                       fluid
                       size="large"
                       onClick={() => {
-                        console.log(this.state);
                         this.props.editTicket(
                           this.props.ticket.id,
                           this.state.title,

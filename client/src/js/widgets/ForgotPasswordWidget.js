@@ -39,7 +39,6 @@ export class ForgotPasswordWidget extends Component {
     userService.sendReset(this.state.email).then(res => {
       if (res.success) {
         this.setState({ sentMail: false });
-        console.log(res);
       } else {
         toast.error(res.message.no);
         this.setState({ loading: false });
@@ -151,7 +150,7 @@ export class ForgotPasswordWidget extends Component {
                 <h3>{this.state.message}</h3>
               </Modal.Content>
               <Modal.Actions>
-                <Button color="green" onClick={this.handleMessage} inverted>
+                <Button color="blue" onClick={this.handleMessage} inverted>
                   <Icon name="checkmark" /> Ok
                 </Button>
               </Modal.Actions>

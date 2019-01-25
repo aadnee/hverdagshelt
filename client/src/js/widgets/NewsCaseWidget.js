@@ -197,11 +197,11 @@ export class NewsCaseWidget extends Component {
                               <p>Er du sikker på at du vil ferdigstille nyheten</p>
                             </Modal.Content>
                             <Modal.Actions>
-                              <Button negative onClick={() => this.setState({ messageModalOpen: false })}>
+                              <Button inverted color="blue" onClick={() => this.setState({ messageModalOpen: false })}>
                                 Nei
                               </Button>
                               <Button
-                                positive
+                                color="blue"
                                 icon="checkmark"
                                 labelPosition="right"
                                 content="Ja"
@@ -233,12 +233,10 @@ export class NewsCaseWidget extends Component {
                             </Modal.Content>
                             <Modal.Actions>
                               <Button
-                                color={'green'}
+                                color={'blue'}
                                 onClick={() => {
-                                  console.log(this.state);
                                   let compName = this.state.companyOptions.find(c => c.value === this.state.company)
                                     .text;
-                                  console.log(compName);
                                   this.sendToCompany(this.state.company, compName);
                                 }}
                               >
@@ -250,9 +248,11 @@ export class NewsCaseWidget extends Component {
                         </Dropdown.Menu>
                       </Dropdown>
                     </Grid.Column>
-                  ) : this.props.show ? null : this.props.following ? (
+                  ) : this.props.following ? (
                     this.props.mynews ? (
-                      <Button onClick={this.props.show}>Avslutt abonnement</Button>
+                      <Button color="blue" onClick={this.props.show}>
+                        Avslutt abonnement
+                      </Button>
                     ) : null
                   ) : Consumer._currentValue.user && !this.props.archive ? (
                     <Button onClick={this.followCase} icon labelPosition="left" color="blue">
@@ -264,7 +264,6 @@ export class NewsCaseWidget extends Component {
               </Grid.Column>
 
               <Grid.Column width={8} style={{ width: '100%', height: '100%', maxHeight: 233 }}>
-                {console.log(this.props.newscase.uploads)}
                 <Image style={{ width: '100%', height: '100%' }}>
                   {this.props.newscase.uploads ? (
                     this.props.newscase.uploads.length > 0 ? (

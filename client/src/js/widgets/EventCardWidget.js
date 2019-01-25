@@ -15,8 +15,8 @@ export class EventCardWidget extends React.Component {
         <Card.Content header={this.props.header} />
         <Card.Content description={this.props.description} />
         <Card.Content extra>
-          <Button onClick={this.props.deleteEvent} content={'Fjern event'} floated={'right'} negative />
-          <Button onClick={this.props.editEvent} content={'Rediger event'} floated={'right'} positive />
+          <Button onClick={this.props.deleteEvent} content={'Fjern event'} floated={'right'} inverted color="blue" />
+          <Button onClick={this.props.editEvent} content={'Rediger event'} floated={'right'} color="blue" />
         </Card.Content>
       </Card>
     );
