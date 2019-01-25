@@ -48,6 +48,7 @@ class UserService {
   async getMe() {
     let name;
     let me = await api.get('/api/me').then(res => {
+      console.log(res);
       name = res.data.name.split(' ');
       if (name.length > 1) {
         res.data.lastName = name.pop();
