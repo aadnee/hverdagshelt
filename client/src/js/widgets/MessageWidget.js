@@ -36,8 +36,8 @@ export class MessageWidget extends React.Component {
         </Modal.Content>
         <Modal.Actions>
           <Button inverted color="blue" onClick={this.close}>
-              <Icon name="remove"/>
-              Nei
+            <Icon name="remove" />
+            Nei
           </Button>
           <Button color="blue" icon="checkmark" labelPosition="right" content="Ja" onClick={() => this.customFunc()} />
         </Modal.Actions>

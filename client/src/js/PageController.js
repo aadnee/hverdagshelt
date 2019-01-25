@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import * as React from 'react';
 import { Component, createContext } from 'react';
 import Cookies from 'js-cookie';
-import {HashRouter, NavLink} from 'react-router-dom';
+import { HashRouter, NavLink } from 'react-router-dom';
 import { Sidebar, Container, Segment, Dimmer, Loader, Image, Divider } from 'semantic-ui-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -88,24 +88,38 @@ export class PageController extends Component {
   };
 
   promptUser = () => {
-    console.log('prompted: '+ this.state.prompted);
-    if(!this.state.prompted) {
-      toast.info(this.state.loggedIn ? "Trykk på kartet for å melde inn en sak" :
-          <><NavLink to={'/login'} style={{color: 'white', textDecoration: 'underline'}}><b>Logg inn</b></NavLink> eller <NavLink to={'/register'} style={{color: 'white', textDecoration: 'underline'}}><b>registrer deg</b></NavLink> for å
-            melde en sak</>, {
-        position: 'bottom-left',
-        autoClose: false,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true
-      });
-      this.setState({prompted: true});
+    console.log('prompted: ' + this.state.prompted);
+    if (!this.state.prompted) {
+      toast.info(
+        this.state.loggedIn ? (
+          'Trykk på kartet for å melde inn en sak'
+        ) : (
+          <>
+            <NavLink to={'/login'} style={{ color: 'white', textDecoration: 'underline' }}>
+              <b>Logg inn</b>
+            </NavLink>{' '}
+            eller{' '}
+            <NavLink to={'/register'} style={{ color: 'white', textDecoration: 'underline' }}>
+              <b>registrer deg</b>
+            </NavLink>{' '}
+            for å melde en sak
+          </>
+        ),
+        {
+          position: 'bottom-left',
+          autoClose: false,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true
+        }
+      );
+      this.setState({ prompted: true });
     }
   };
 
   dbStringConverter = (dbString, array) => {
-  let type = array ? array : false;
+    let type = array ? array : false;
     const dateArr = dbString.split('T')[0].split('-');
     const date = dateArr[2] + '/' + dateArr[1] + '/' + dateArr[0];
 

@@ -197,7 +197,9 @@ export class TicketWidget extends Component {
                       <Button color={'blue'} onClick={() => this.link()}>
                         Lagre
                       </Button>
-                      <Button inverted color="blue" onClick={this.close}>Avbryt</Button>
+                      <Button inverted color="blue" onClick={this.close}>
+                        Avbryt
+                      </Button>
                     </Modal.Actions>
                   </Modal>
                 </Dropdown.Menu>

@@ -86,7 +86,7 @@ export class EmployeeRegisterEventPage extends Component {
             <Grid.Row columns={2} only="computer" className="mapRow">
               <Grid.Column width={10} className="mapRow">
                 <MapWidget
-                    event
+                  event
                   onRef={ref => (this.mapWidget = ref)}
                   searchControl
                   locate
@@ -149,14 +149,14 @@ export class EmployeeRegisterEventPage extends Component {
               </Grid.Column>
             </Grid.Row>
 
-              <Grid.Row columns={1} only="mobile tablet" className={'mapRow'}>
-                <Grid.Column colSpan={2}>
-                  <MapWidget modal event locate submit={this.submit} callback={this.callbackFake}/>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Segment>
-        </Container>
+            <Grid.Row columns={1} only="mobile tablet" className={'mapRow'}>
+              <Grid.Column colSpan={2}>
+                <MapWidget modal event locate submit={this.submit} callback={this.callbackFake} />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Segment>
+      </Container>
     );
   }
 }

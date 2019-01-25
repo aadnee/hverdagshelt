@@ -248,7 +248,7 @@ export class NewsCaseWidget extends Component {
                         </Dropdown.Menu>
                       </Dropdown>
                     </Grid.Column>
-                  ) : this.props.show ? null : this.props.following ? (
+                  ) : this.props.following ? (
                     this.props.mynews ? (
                       <Button onClick={this.props.show}>Avslutt abonnement</Button>
                     ) : null
