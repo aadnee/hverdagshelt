@@ -11,14 +11,7 @@ import { categoryService } from '../services/CategoryServices';
 import Cookies from 'js-cookie';
 import { ticketService } from '../services/TicketServices';
 import { NewsCaseWidget } from './NewsCaseWidget';
-
-/*
-const options = [
-  { key: 'reject', icon: 'delete', text: 'Avslå', value: 'reject' },
-  { key: 'publish', icon: 'newspaper', text: 'Publiser som nyhet', value: 'publish' },
-  { key: 'company', icon: 'warehouse', text: 'Knytt til bedrift', value: 'company' },
-  { key: 'user', icon: 'user', text: 'Knytt til bruker', value: 'user' }
-];*/
+import { toast } from 'react-toastify';
 
 export class TicketWidget extends Component {
   constructor(props) {
@@ -45,13 +38,12 @@ export class TicketWidget extends Component {
   handleInput(state, value) {
     this.setState({ [state]: value });
   }
-  /*
+
   componentWillMount() {
     if (this.props.news) {
-      console.log(this.props.news);
       this.setState({ news: this.props.news, newsOptions: this.props.newsOptions });
     }
-  }*/
+  }
   componentWillReceiveProps(nextProps, nextContext) {
     this.setState({ news: nextProps.news });
   }
@@ -70,6 +62,16 @@ export class TicketWidget extends Component {
       this.setState({ newsModalOpen: true });
     });
   }
+
+  accept = (title, description, lat, lon, address, subCategory, publish, mun, image) => {
+    if (this.props.accept(title, description, lat, lon, address, subCategory, publish, mun, image)) {
+      this.closeRegModal();
+    } else {
+      toast.error('Vennligst fyll ut alle felt', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    }
+  };
 
   render() {
     let more = false;
@@ -98,7 +100,7 @@ export class TicketWidget extends Component {
         <Card.Content>
           <Header>
             <Header.Content>
-              {this.state.ticket.title}
+              {this.state.ticket.title + this.state.ticket.id}
               <Header.Subheader>{this.state.ticket.category}</Header.Subheader>
               {this.state.ticket.subCategory ? (
                 <Header.Subheader>{this.state.ticket.subCategory}</Header.Subheader>
@@ -155,7 +157,7 @@ export class TicketWidget extends Component {
                       <Modal.Description>
                         <PublishNewsFormWidget
                           ticket={this.props.ticket}
-                          accept={this.props.accept}
+                          accept={this.accept}
                           submitButton={'Publiser'}
                           close={this.closeRegModal}
                         />

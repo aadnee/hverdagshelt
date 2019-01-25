@@ -360,7 +360,7 @@ export class ModalTicketWidget extends Component {
 
   render() {
     return (
-      <Modal open={this.props.open}>
+      <Modal open={this.props.open} closeIcon>
         <TicketFormWidget
           editTicket={this.props.editTicket}
           close={this.props.close}
