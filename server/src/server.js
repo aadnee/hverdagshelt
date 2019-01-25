@@ -83,15 +83,13 @@ let upload = multer({
   })
 });
 
-app.get('/api/pdf', (req, res) => {
-  let municipalId = 1;
-  let year = 2019;
-  let month;
-  let week;
+app.post('/api/statistics/:municipalId', (req, res) => {
+  let b = req.body;
+  let p = req.params;
 
-  ticketManager.getTicketStatistics(municipalId, year, month, week, function(cats) {
-    userManager.userIncrease(municipalId, year, month, week, function(users) {
-      let period = month ? month + ' / 2019' : week ? 'uke ' + week + ' 2019' : year;
+  ticketManager.getTicketStatistics(p.municipalId, b.year, b.month, b.week, function(cats) {
+    userManager.userIncrease(p.municipalId, b.year, b.month, b.week, function(users) {
+      let period = b.month ? b.month + ' / 2019' : b.week ? 'uke ' + b.week + ' 2019' : b.year;
       var projectRoot = process.cwd();
       projectRoot = projectRoot.replace(/\\/g, '/');
       var link = 'file:///' + projectRoot + '/pdfs/';
@@ -176,6 +174,13 @@ app.delete('/api/events/:eventId', ensureEmployee, (req, res) => {
 
 app.get('/api/news', (req, res) => {
   newsManager.getNews(function(result) {
+    res.json(result);
+  });
+});
+
+app.get('/api/news/:newsId', (req, res) => {
+  let p = req.params;
+  newsManager.getArticle(p.newsId, function(result) {
     res.json(result);
   });
 });
@@ -682,7 +687,7 @@ http.createServer(app).listen(3000);
 https.createServer(options, app).listen(3001);
 
 var job = new CronJob(
-  '45 34 20 * * 1-7',
+  '00 00 00 * * 1-7',
   function() {
     companyManager.checkTimeLimits(result => {});
   },

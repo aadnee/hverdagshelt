@@ -109,7 +109,7 @@
                     </table>
                     <div class="ui grid center aligned" style="page-break-before:always;">
                         <div style="width:100%; position:absolute;">
-                            <h2 class="ui header center aligned">Brukerstatistikk</h2>
+                            <h2 class="ui header center aligned" id="title1">Brukerstatistikk</h2>
                         </div>
                         <div id="chartdiv" class="sixteen wide column">
                             <div id="piechart1" style="height:500px; width:820px;"></div>
@@ -126,10 +126,11 @@
         google.charts.load('current', {
             'packages': ['corechart']
         });
-        google.charts.setOnLoadCallback(drawCharts);
+        //google.charts.setOnLoadCallback(drawCharts);
+        setTimeout(drawCharts, 3000);
 
         function drawCharts() {
-            drawChart1();
+          drawChart1();
         }
 
         function drawChart1() {
