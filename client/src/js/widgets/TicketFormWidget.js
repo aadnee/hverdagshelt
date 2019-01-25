@@ -269,7 +269,7 @@ export class TicketFormWidget extends Component {
                                   newImages.push(img);
                                 }
                               });
-
+                              document.getElementById('upload').value = '';
                               this.setState({ image: newImages }, () => {});
                             }}
                             content={image.name || image.filename}

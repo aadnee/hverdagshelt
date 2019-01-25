@@ -2,7 +2,18 @@ import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { Segment, Header, Icon, Dropdown, Button, Grid, Divider, Message } from 'semantic-ui-react';
+import {
+  Segment,
+  Header,
+  Icon,
+  Dropdown,
+  Button,
+  Grid,
+  Divider,
+  Message,
+  Pagination,
+  Container
+} from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 import { Consumer } from './../context';
 
@@ -23,9 +34,11 @@ export class EventFeedWidget extends Component {
       categories: [],
       selectedCategories: [],
       news: [],
-      page: 0,
-      limit: 0,
-      empty: false
+      empty: false,
+      roof: this.props.roof || 0,
+      page: 1,
+      activePage: 0,
+      totalPages: 0
     };
   }
 
@@ -86,10 +99,15 @@ export class EventFeedWidget extends Component {
     this.setState({ loading: true });
     setTimeout(() => {
       eventService
-        .getFilteredEvents(this.state.selectedMunicipals, this.state.page, this.state.limit)
+        .getFilteredEvents(this.state.selectedMunicipals, 0, 0)
         .then(res => {
           if (res.success) {
-            this.setState({ news: res.data, loading: false });
+            this.setState({
+              news: res.data,
+              loading: false,
+              totalPages: Math.ceil(res.data.length / 6),
+              activePage: 1
+            });
           } else {
             this.setState({ loading: false });
           }
@@ -148,19 +166,13 @@ export class EventFeedWidget extends Component {
     } else if (this.state.news.length > 0) {
       return (
         <>
-          {this.state.news.map(nc => (
-            <EventWidget key={nc.id} event={nc} />
+          {this.state.news.map((nc, i) => (
+            <React.Fragment key={i}>
+              {i <= this.state.page * 6 - 1 && i > (this.state.page - 1) * 6 - 1 ? (
+                <EventWidget key={nc.id} event={nc} />
+              ) : null}
+            </React.Fragment>
           ))}
-          {!this.state.empty && !this.state.limit == 0 ? (
-            <Button
-              primary
-              onClick={() => {
-                this.loadMoreNews();
-              }}
-            >
-              Last inn flere
-            </Button>
-          ) : null}
         </>
       );
     } else {
@@ -181,45 +193,67 @@ export class EventFeedWidget extends Component {
       return <>{this.displayNews()}</>;
     }
     return (
-      <Grid divided stackable columns={2}>
-        <Grid.Column width={5}>
-          <Segment>
-            <Header as="h5">
-              <Icon name="filter" />
-              <Header.Content>
-                Filter
-                <Header.Subheader>Endre hva som skal vises</Header.Subheader>
-              </Header.Content>
-            </Header>
-            <Header as="h6">
-              <Header.Subheader>Velg kommuner</Header.Subheader>
-            </Header>
-            <Dropdown
-              deburr
-              fluid
-              options={this.state.municipals}
-              value={this.state.selectedMunicipals}
-              onChange={(event, data) => {
-                this.selectMunicipal(data.value);
+      <>
+        <Grid divided stackable columns={2}>
+          <Grid.Column width={5}>
+            <Segment>
+              <Header as="h5">
+                <Icon name="filter" />
+                <Header.Content>
+                  Filter
+                  <Header.Subheader>Endre hva som skal vises</Header.Subheader>
+                </Header.Content>
+              </Header>
+              <Header as="h6">
+                <Header.Subheader>Velg kommuner</Header.Subheader>
+              </Header>
+              <Dropdown
+                deburr
+                fluid
+                options={this.state.municipals}
+                value={this.state.selectedMunicipals}
+                onChange={(event, data) => {
+                  this.selectMunicipal(data.value);
+                }}
+                placeholder="Søk etter kommune"
+                search
+                multiple
+                selection
+              />
+              <Divider hidden />
+              <Button
+                primary
+                onClick={() => {
+                  this.getNews();
+                }}
+              >
+                Oppdater
+              </Button>
+            </Segment>
+          </Grid.Column>
+          <Grid.Column width={11}>{this.displayNews()}</Grid.Column>
+        </Grid>
+        <Divider hidden />
+        <Divider hidden />
+        <Divider hidden />
+        <Container textAlign="center">
+          {this.state.totalPages > 1 ? (
+            <Pagination
+              defaultActivePage={this.state.page}
+              activePage={this.state.activePage}
+              firstItem={null}
+              lastItem={null}
+              pointing
+              secondary
+              totalPages={this.state.totalPages}
+              onPageChange={(e, d) => {
+                this.setState({ page: d.activePage });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              placeholder="Søk etter kommune"
-              search
-              multiple
-              selection
             />
-            <Divider hidden />
-            <Button
-              primary
-              onClick={() => {
-                this.getNews();
-              }}
-            >
-              Oppdater
-            </Button>
-          </Segment>
-        </Grid.Column>
-        <Grid.Column width={11}>{this.displayNews()}</Grid.Column>
-      </Grid>
+          ) : null}
+        </Container>
+      </>
     );
   }
 }

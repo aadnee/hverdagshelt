@@ -93,7 +93,7 @@ export class HomePage extends Component {
         menuItem: 'Nyheter',
         render: () => (
           <Tab.Pane className="frontPageFeedTab">
-            <NewsFeedWidget onRef={ref => (this.newsFeedRef = ref)} newsOnly frontpage />
+            <NewsFeedWidget onRef={ref => (this.newsFeedRef = ref)} roof={5} newsOnly frontpage />
           </Tab.Pane>
         )
       },
@@ -101,7 +101,7 @@ export class HomePage extends Component {
         menuItem: 'Arrangementer',
         render: () => (
           <Tab.Pane className="frontPageFeedTab">
-            <EventFeedWidget onRef={ref => (this.eventFeedRef = ref)} newsOnly />
+            <EventFeedWidget onRef={ref => (this.eventFeedRef = ref)} roof={5} newsOnly />
           </Tab.Pane>
         )
       }
