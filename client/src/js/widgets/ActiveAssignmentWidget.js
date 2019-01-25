@@ -25,7 +25,8 @@ export class ActiveAssignmentWidget extends Component {
     this.state = {
       renderMap: false,
       modal: false,
-      modalType: ''
+      modalType: '',
+      feedback: ''
     };
     this.close = this.close.bind(this);
   }
@@ -45,7 +46,7 @@ export class ActiveAssignmentWidget extends Component {
   handleStatus = () => {
     console.log(this.state.modalType);
     if (this.state.modalType === 'cancelModal') {
-      companyService.rejectTask(this.props.assignment.id).then(res => {
+      companyService.rejectTask(this.props.assignment.id, this.state.feedback).then(res => {
         if (res.success) {
           toast.success(res.message.no);
           this.props.handleDelete();
@@ -55,15 +56,20 @@ export class ActiveAssignmentWidget extends Component {
       });
     } else if (this.state.modalType === 'doneModal') {
       console.log(this.state.modalType, 'done');
-      companyService.finishTask(this.props.assignment.id).then(res => {
+      companyService.finishTask(this.props.assignment.id, this.state.feedback).then(res => {
         if (res.success) {
           toast.success(res.message.no);
-          this.props.handleStatus(3);
+          this.props.handleStatus(3, this.state.feedback);
         } else {
           toast.error(res.message.no);
         }
       });
     }
+  };
+
+  handleChange = (name, value) => {
+    console.log(name, value);
+    this.setState({ [name]: value });
   };
 
   componentWillMount() {
@@ -135,6 +141,20 @@ export class ActiveAssignmentWidget extends Component {
         </Container>
         <Modal size={'tiny'} open={this.state.modal} onClose={this.closeModal}>
           <Modal.Header>Er du sikker?</Modal.Header>
+          <Modal.Content>
+            <Form>
+              <Form.Field>
+                <Form.Input
+                  label={'Tilbakemelding'}
+                  fluid
+                  placeholder="Tilbakemelding..."
+                  onChange={(event, data) => {
+                    this.handleChange('feedback', data.value);
+                  }}
+                />
+              </Form.Field>
+            </Form>
+          </Modal.Content>
           <Modal.Actions>
             <Button color="red" onClick={this.closeModal}>
               Nei

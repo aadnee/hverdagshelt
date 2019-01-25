@@ -54,6 +54,7 @@ export class EmployeeManageTicketsPage extends React.Component {
 
   componentWillMount() {
     //Fetch id based on user bound to municipal
+    console.log('mounting');
     let tickets = [];
     let ids = [];
     let news = [];
@@ -80,6 +81,7 @@ export class EmployeeManageTicketsPage extends React.Component {
                 newsOptions.push({ key: news.id, value: news.id, text: news.title });
               });
               news = res.data;
+
               this.setState({
                 tickets: tickets,
                 news: news,
@@ -94,7 +96,7 @@ export class EmployeeManageTicketsPage extends React.Component {
 
   render() {
     const { news, newsOptions } = this.state;
-
+    console.log(this.state.tickets);
     return (
       <Container>
         <Divider hidden />
@@ -123,7 +125,7 @@ export class EmployeeManageTicketsPage extends React.Component {
             ) : (
               <>
                 {this.state.tickets.map((ticket, i) => (
-                  <React.Fragment key={i}>
+                  <React.Fragment key={ticket.id}>
                     {i <= this.state.page * 9 - 1 && i > (this.state.page - 1) * 9 - 1 ? (
                       <Grid.Column>
                         <TicketWidget
@@ -161,7 +163,7 @@ export class EmployeeManageTicketsPage extends React.Component {
               </Form>
             </Modal.Content>
             <Modal.Actions>
-              <Button secondary>
+              <Button secondary onClick={() => this.close()}>
                 <Icon name="remove" /> Avbryt
               </Button>
               <Button
@@ -217,7 +219,7 @@ export class EmployeeManageTicketsPage extends React.Component {
         position: toast.POSITION.TOP_RIGHT
       });
     } else {
-      ticketService.rejectTicket(id).then(res => {
+      ticketService.rejectTicket(id, msg).then(res => {
         if (res.success) {
           this.setState({ tickets: this.state.tickets.filter(t => t.id !== id), modalOpen: false });
 
@@ -236,31 +238,47 @@ export class EmployeeManageTicketsPage extends React.Component {
     }
   }
 
-  accept(id, title, description, lat, lon, address, categoryId, publish, municipalId, images) {
+  accept = (id, title, description, lat, lon, address, categoryId, publish, municipalId, images) => {
     if (!title || !description || !lat || !lon || !categoryId) {
-      toast.error('Vennligst fyll ut alle felt', {
-        position: toast.POSITION.TOP_RIGHT
-      });
+      console.log(title, description, lat, lon, categoryId);
+      return false;
     } else {
       let imgIds = images.map(i => i.id);
-      console.log(imgIds);
-      ticketService
+      return ticketService
         .acceptTicket(id, title, description, lat, lon, address, categoryId, publish, municipalId, imgIds)
         .then(res => {
           if (res.success) {
-            let ticket = this.state.tickets.find(t => t.id === id);
+            let index = -1;
+            let ticket = null;
+            let tick = this.state.tickets;
+            tick.map((t, i) => {
+              if (t.id === id) {
+                index = i;
+                ticket = t;
+                return true;
+              }
+            });
+
+            console.log(index);
+            console.log(id);
+
+            console.log(tick.splice(index, 1));
+            console.log(tick);
+            this.setState({ tickets: tick });
             if (ticket.subscribed) {
               subscriptionService.addSubscription(res.id, ticket.userId).then(res => {
-                console.log(res.message.no);
+                if (res.success) {
+                  console.log(res.message.no);
+                }
               });
             }
-            this.setState({ tickets: this.state.tickets.filter(t => t.id !== id) });
             if (this.state.tickets.length < 1) {
               this.setState({ hasTickets: false });
             }
             toast.success(res.message.no, {
               position: toast.POSITION.TOP_RIGHT
             });
+            return true;
           } else {
             toast.error(res.message.no, {
               position: toast.POSITION.TOP_RIGHT
@@ -268,7 +286,7 @@ export class EmployeeManageTicketsPage extends React.Component {
           }
         });
     }
-  }
+  };
 
   bindUserToNews(ticketId, newsId) {
     if (!ticketId || !newsId) {
@@ -278,6 +296,8 @@ export class EmployeeManageTicketsPage extends React.Component {
     }
     ticketService.linkTicket(ticketId, newsId).then(res => {
       if (res.success) {
+        this.setState({ tickets: this.state.tickets.filter(t => t.id !== id), modalOpen: false });
+
         toast.success(res.message.no, {
           position: toast.POSITION.TOP_RIGHT
         });

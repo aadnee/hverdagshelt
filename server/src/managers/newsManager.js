@@ -153,13 +153,20 @@ module.exports = {
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
+  getArticle: function(newsId, callback) {
+    News.findOne({ where: { id: newsId }, include: [{ model: Uploads }] }).then(
+      res => callback({ success: true, data: res }),
+      err => callback({ success: false, message: err })
+    );
+  },
+
   getFilteredNews: function(municipalIds, categoryIds, page, limit, callback) {
     News.findAll({
       include: [{ model: Uploads }, { attributes: [], model: Categories, where: { parentId: categoryIds } }],
       where: { municipalId: municipalIds, status: 2 },
       offset: page == 0 ? null : (page - 1) * limit,
       limit: limit == 0 ? null : limit,
-      order: [['id', 'DESC']]
+      order: [['updatedAt', 'DESC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 

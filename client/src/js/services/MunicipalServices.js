@@ -8,6 +8,19 @@ class MunicipalServices {
   addMunicipal() {
     return api.post('/api/municipals');
   }
+
+  getMunicipalStatistics(municipalId, year, month, week) {
+    return api({
+      method: most,
+      url: '/api/statistics/' + municipalId,
+      data: {
+        year: year,
+        month: month,
+        week: week
+      },
+      responseType: 'stream'
+    });
+  }
 }
 
 export let municipalService = new MunicipalServices();
