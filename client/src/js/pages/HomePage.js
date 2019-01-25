@@ -93,7 +93,7 @@ export class HomePage extends Component {
         menuItem: 'Nyheter',
         render: () => (
           <Tab.Pane className="frontPageFeedTab">
-            <NewsFeedWidget onRef={ref => (this.newsFeedRef = ref)} newsOnly frontpage />
+            <NewsFeedWidget onRef={ref => (this.newsFeedRef = ref)} roof={5} newsOnly frontpage />
           </Tab.Pane>
         )
       },

@@ -99,13 +99,19 @@ class MunicipalOptions extends Component {
     this.state = {
       pending: 0
     };
+
+    this.updtInterval = null;
   }
 
   componentWillMount() {
     this.updateTicketCount();
-    setInterval(() => {
+    this.updtInterval = setInterval(() => {
       this.updateTicketCount();
     }, 60000);
+  }
+
+  componentWillUnmount() {
+    clearIntervall(this.updtInterval);
   }
 
   updateTicketCount() {

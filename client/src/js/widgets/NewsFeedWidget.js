@@ -2,7 +2,18 @@ import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { Segment, Header, Icon, Dropdown, Button, Grid, Divider, Message } from 'semantic-ui-react';
+import {
+  Segment,
+  Header,
+  Icon,
+  Dropdown,
+  Button,
+  Grid,
+  Divider,
+  Message,
+  Pagination,
+  Container
+} from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 import { Consumer } from './../context';
 
@@ -25,10 +36,12 @@ export class NewsFeedWidget extends Component {
       selectedCategories: [],
       news: [],
       subs: [],
-      page: 0,
-      limit: 0,
       empty: false,
-      ready: false
+      ready: false,
+      roof: this.props.roof || 0,
+      page: 1,
+      activePage: 0,
+      totalPages: 0
     };
   }
 
@@ -144,7 +157,12 @@ export class NewsFeedWidget extends Component {
         .getFilteredNews(munsearch, catsearch, 0, 0)
         .then(res => {
           if (res.success) {
-            this.setState({ news: res.data, loading: false });
+            this.setState({
+              news: res.data,
+              loading: false,
+              totalPages: Math.ceil(res.data.length / 6),
+              activePage: 1
+            });
           } else {
             this.setState({ loading: false });
           }
@@ -154,22 +172,6 @@ export class NewsFeedWidget extends Component {
           this.setState({ loading: false });
         });
     }, 10);
-  }
-
-  loadMoreNews() {
-    newsService
-      .getFilteredNews(this.state.selectedMunicipals, this.state.selectedCategories, this.state.page, this.state.limit)
-      .then(res => {
-        if (res.data.length == 0) {
-          toast.warning('Ingen flere nyheter å laste');
-          this.setState({ empty: true });
-        } else {
-          this.setState({ news: this.state.news.concat(res.data), page: this.state.page + 1 });
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      });
   }
 
   selectMunicipal(value) {
@@ -198,29 +200,40 @@ export class NewsFeedWidget extends Component {
         </Message>
       );
     } else if (this.state.news.length > 0) {
-      return (
-        <>
-          {this.state.news.map(nc => (
-            <NewsCaseWidget
-              key={nc.id}
-              newscase={nc}
-              following={this.state.subs.find(id => id === nc.id) ? true : false}
-              startFollowCallBack={this.followCallback}
-              frontpage={this.props.frontpage ? true : false}
-            />
-          ))}
-          {!this.state.empty ? (
-            <Button
-              primary
-              onClick={() => {
-                this.loadMoreNews();
-              }}
-            >
-              Last inn flere
-            </Button>
-          ) : null}
-        </>
-      );
+      if (this.state.frontpage) {
+        return (
+          <>
+            {this.state.news.map((nc, i) => (
+              <React.Fragment key={i}>
+                {i < this.state.roof || this.state.roof === 0 ? (
+                  <NewsCaseWidget
+                    newscase={nc}
+                    following={this.state.subs.find(id => id === nc.id) ? true : false}
+                    startFollowCallBack={this.followCallback}
+                    frontpage={this.props.frontpage ? true : false}
+                  />
+                ) : null}
+              </React.Fragment>
+            ))}
+          </>
+        );
+      } else {
+        return (
+          <>
+            {this.state.news.map((nc, i) => (
+              <React.Fragment key={i}>
+                {i <= this.state.page * 6 - 1 && i > (this.state.page - 1) * 6 - 1 ? (
+                  <NewsCaseWidget
+                    newscase={nc}
+                    following={this.state.subs.find(id => id === nc.id) ? true : false}
+                    startFollowCallBack={this.followCallback}
+                  />
+                ) : null}
+              </React.Fragment>
+            ))}
+          </>
+        );
+      }
     } else {
       return (
         <Message icon success>
@@ -249,61 +262,83 @@ export class NewsFeedWidget extends Component {
       );
     } else {
       return (
-        <Grid divided stackable columns={2}>
-          <Grid.Column width={5}>
-            <Segment>
-              <Header as="h5">
-                <Icon name="filter" />
-                <Header.Content>
-                  Filter
-                  <Header.Subheader>Endre hva som skal vises</Header.Subheader>
-                </Header.Content>
-              </Header>
-              <Header as="h6">
-                <Header.Subheader>Velg kommuner</Header.Subheader>
-              </Header>
-              <Dropdown
-                deburr
-                fluid
-                options={this.state.municipals}
-                value={this.state.selectedMunicipals}
-                onChange={(event, data) => {
-                  this.selectMunicipal(data.value);
+        <>
+          <Grid divided stackable columns={2}>
+            <Grid.Column width={5}>
+              <Segment>
+                <Header as="h5">
+                  <Icon name="filter" />
+                  <Header.Content>
+                    Filter
+                    <Header.Subheader>Endre hva som skal vises</Header.Subheader>
+                  </Header.Content>
+                </Header>
+                <Header as="h6">
+                  <Header.Subheader>Velg kommuner</Header.Subheader>
+                </Header>
+                <Dropdown
+                  deburr
+                  fluid
+                  options={this.state.municipals}
+                  value={this.state.selectedMunicipals}
+                  onChange={(event, data) => {
+                    this.selectMunicipal(data.value);
+                  }}
+                  placeholder="Søk etter kommune"
+                  search
+                  multiple
+                  selection
+                />
+                <Header as="h6">
+                  <Header.Subheader>Velg kategorier</Header.Subheader>
+                </Header>
+                <Dropdown
+                  deburr
+                  fluid
+                  options={this.state.categories}
+                  value={this.state.selectedCategories}
+                  onChange={(event, data) => {
+                    this.selectCategory(data.value);
+                  }}
+                  placeholder="Søk etter kategori"
+                  search
+                  multiple
+                  selection
+                />
+                <Divider hidden />
+                <Button
+                  primary
+                  onClick={() => {
+                    this.getNews();
+                  }}
+                >
+                  Oppdater
+                </Button>
+              </Segment>
+            </Grid.Column>
+            <Grid.Column width={11}>{this.displayNews()}</Grid.Column>
+          </Grid>
+          <Divider hidden />
+          <Divider hidden />
+          <Divider hidden />
+          <Container textAlign="center">
+            {this.state.news.length > 0 ? (
+              <Pagination
+                defaultActivePage={this.state.page}
+                activePage={this.state.activePage}
+                firstItem={null}
+                lastItem={null}
+                pointing
+                secondary
+                totalPages={this.state.totalPages}
+                onPageChange={(e, d) => {
+                  this.setState({ page: d.activePage });
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                placeholder="Søk etter kommune"
-                search
-                multiple
-                selection
               />
-              <Header as="h6">
-                <Header.Subheader>Velg kategorier</Header.Subheader>
-              </Header>
-              <Dropdown
-                deburr
-                fluid
-                options={this.state.categories}
-                value={this.state.selectedCategories}
-                onChange={(event, data) => {
-                  this.selectCategory(data.value);
-                }}
-                placeholder="Søk etter kategori"
-                search
-                multiple
-                selection
-              />
-              <Divider hidden />
-              <Button
-                primary
-                onClick={() => {
-                  this.getNews();
-                }}
-              >
-                Oppdater
-              </Button>
-            </Segment>
-          </Grid.Column>
-          <Grid.Column width={11}>{this.displayNews()}</Grid.Column>
-        </Grid>
+            ) : null}
+          </Container>
+        </>
       );
     }
   }
