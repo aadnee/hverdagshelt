@@ -171,7 +171,7 @@ export class PageController extends Component {
                 draggable
                 pauseOnHover
               />
-              {/*<FooterWidget />*/}
+              <FooterWidget />
             </>
           </HashRouter>
         </Provider>
