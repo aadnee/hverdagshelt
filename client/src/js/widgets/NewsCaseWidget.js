@@ -250,7 +250,9 @@ export class NewsCaseWidget extends Component {
                     </Grid.Column>
                   ) : this.props.following ? (
                     this.props.mynews ? (
-                      <Button onClick={this.props.show}>Avslutt abonnement</Button>
+                      <Button color="blue" onClick={this.props.show}>
+                        Avslutt abonnement
+                      </Button>
                     ) : null
                   ) : Consumer._currentValue.user && !this.props.archive ? (
                     <Button onClick={this.followCase} icon labelPosition="left" color="blue">
