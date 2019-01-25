@@ -5,11 +5,10 @@ import L from 'leaflet';
 import * as ELG from 'esri-leaflet-geocoder';
 import 'esri-leaflet';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Button, Icon, Modal } from 'semantic-ui-react';
+import { Button, Icon, Modal, Container} from 'semantic-ui-react';
 import { TicketFormWidget } from '../widgets/TicketFormWidget';
 import { toast } from 'react-toastify';
 import { Consumer } from '../context';
-
 //import {} from './';
 
 export class MapWidget extends Component {
@@ -110,6 +109,25 @@ export class MapWidget extends Component {
       self.setState({ searchControl: searchControl });
     }
     this.setState({ map: map, reverseSearch: reverseSearch });
+
+
+
+    setTimeout(()=>{
+      console.log('timeout');
+      console.log(this.state.placedMarker);
+      if(!this.state.placedMarker && this.props.homepage){
+        this.goToast('bottom-left');
+      }
+    }, 1000);
+  }
+  goToast(pos){
+    toast.info(this.state.loggedIn ? "Trykk på kartet for å melde inn en sak": <><NavLink to={'/login'}>Logg inn for å melde en sak</NavLink></>, {
+      position: pos,
+      autoClose: false,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true });
   }
 
   render() {
@@ -161,8 +179,9 @@ export class MapWidget extends Component {
               <Popup open={true}>
                 <b>{this.state.info}</b>
                 <br />
+                {!this.state.loggedIn ? (<i>Du må <NavLink to={'/login'}>logge inn</NavLink> for å melde saker</i>): null}
                 {this.props.modal && this.state.loggedIn ? (
-                  <Modal basic trigger={<Button>Meld hendelse her</Button>} closeIcon>
+                    <Modal basic trigger={<Container textAlign={'center'}><Button>Meld hendelse her</Button></Container>} closeIcon>
                     <TicketFormWidget
                       submit={this.props.submit}
                       latlng={this.state.markerPos}
@@ -178,8 +197,8 @@ export class MapWidget extends Component {
               <Popup open={true}>
                 <b>Din posisjon: {this.state.userInfo}</b>
                 <br />
-                {this.props.modal && this.props.loggedIn ? (
-                  <Modal basic trigger={<Button>Meld hendelse her</Button>}>
+                {this.props.modal && this.state.loggedIn ? (
+                  <Modal basic trigger={<Container textAlign={'center'}><Button>Meld hendelse her</Button></Container>} closeIcon>
                     <TicketFormWidget
                       submit={this.props.submit}
                       latlng={this.state.userPos}
@@ -288,6 +307,9 @@ export class MapWidget extends Component {
   handleClick = e => {
     let self = this;
     let info = '';
+    if(this.props.homepage){
+      toast.dismiss();
+    }
 
     if (this.state.areaToggle) {
       this.state.area.push(e.latlng);

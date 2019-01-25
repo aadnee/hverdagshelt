@@ -25,7 +25,8 @@ export class AssignmentWidget extends Component {
     this.state = {
       renderMap: false,
       modal: false,
-      modalType: ''
+      modalType: '',
+      feedback: ''
     };
     this.close = this.close.bind(this);
   }
@@ -42,6 +43,11 @@ export class AssignmentWidget extends Component {
     this.setState({ modal: true, modalType: modalType });
   };
 
+  handleChange = (name, value) => {
+    console.log(name, value);
+    this.setState({ [name]: value });
+  };
+
   componentWillUnmount() {
     this.closeModal();
   }
@@ -52,13 +58,13 @@ export class AssignmentWidget extends Component {
       companyService.acceptTask(this.props.assignment.id).then(res => {
         if (res.success) {
           toast.success(res.message.no);
-          this.props.handleStatus(2);
+          this.props.handleStatus(2, null);
         } else {
           toast.error(res.message.no);
         }
       });
     } else if (this.state.modalType === 'declineModal') {
-      companyService.rejectTask(this.props.assignment.id).then(res => {
+      companyService.rejectTask(this.props.assignment.id, this.state.feedback).then(res => {
         if (res.success) {
           toast.success(res.message.no);
           this.props.handleDelete();
@@ -92,6 +98,13 @@ export class AssignmentWidget extends Component {
                       <Image fluid src={'/uploads/' + assignment.uploads[0].filename} target="_blank" />
                     </Grid.Column>
                   ) : null
+                ) : null}
+                {assignment.feedback ? (
+                  <Grid.Column width={12} textAlign="left">
+                    <p>
+                      <b>Tilbakemelding:</b> {assignment.feedback}
+                    </p>
+                  </Grid.Column>
                 ) : null}
               </Grid>
             </Container>
@@ -132,6 +145,22 @@ export class AssignmentWidget extends Component {
         </Container>
         <Modal size={'tiny'} open={this.state.modal} onClose={this.closeModal}>
           <Modal.Header>Er du sikker?</Modal.Header>
+          {this.state.modalType === 'declineModal' ? (
+            <Modal.Content>
+              <Form>
+                <Form.Field>
+                  <Form.Input
+                    label={'Tilbakemelding'}
+                    fluid
+                    placeholder="Tilbakemelding..."
+                    onChange={(event, data) => {
+                      this.handleChange('feedback', data.value);
+                    }}
+                  />
+                </Form.Field>
+              </Form>
+            </Modal.Content>
+          ) : null}
           <Modal.Actions>
             <Button color="red" onClick={this.closeModal}>
               Nei

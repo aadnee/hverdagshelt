@@ -134,7 +134,8 @@ module.exports = {
   getMyTickets: function(userId, callback) {
     Tickets.findAll({
       include: [{ model: Uploads }],
-      where: { userId: userId }
+      where: { userId: userId },
+      order: [['id', 'DESC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
@@ -142,7 +143,8 @@ module.exports = {
   getLocalTickets: function(municipalId, callback) {
     Tickets.findAll({
       include: [{ model: Uploads, required: false }],
-      where: { municipalId: municipalId, status: 1 }
+      where: { municipalId: municipalId, status: 1 },
+      order: [['id', 'ASC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   },
 
