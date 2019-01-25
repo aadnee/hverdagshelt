@@ -57,7 +57,6 @@ export class EntrepreneurAssignmentPage extends Component {
         menuItem: 'Forespørsler',
         render: () => (
           <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
-            {console.log('status 1: ' + this.state.assignments.filter(res => res.companyStatus === 1).length)}
             {this.state.assignments.filter(res => res.companyStatus === 1).length > 0 ? (
               this.state.assignments.map((asg, i) =>
                 asg.companyStatus === 1 ? (
@@ -86,7 +85,6 @@ export class EntrepreneurAssignmentPage extends Component {
         menuItem: 'Aktiv',
         render: () => (
           <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
-            {console.log('status 2: ' + this.state.assignments.filter(res => res.companyStatus === 2).length)}
             {this.state.assignments.filter(res => res.companyStatus === 2).length > 0 ? (
               this.state.assignments.map((asg, i) =>
                 asg.companyStatus === 2 ? (
@@ -115,7 +113,6 @@ export class EntrepreneurAssignmentPage extends Component {
         menuItem: 'Fullført',
         render: () => (
           <Tab.Pane className="companyActiveAssignmentTab frontPageFeedTab">
-            {console.log('status 3: ' + this.state.assignments.filter(res => res.companyStatus === 3).length)}
             {this.state.assignments.filter(res => res.companyStatus === 3).length > 0 ? (
               this.state.assignments.map((asg, i) =>
                 asg.companyStatus === 3 ? (

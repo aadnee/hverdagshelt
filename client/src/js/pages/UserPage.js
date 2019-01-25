@@ -15,7 +15,6 @@ export class UserPage extends Component {
 
   componentWillMount() {
     userService.getMe().then(res => {
-      console.log(res);
       this.setState({ user: res.data });
     });
   }

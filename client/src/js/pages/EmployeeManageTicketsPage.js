@@ -219,7 +219,6 @@ export class EmployeeManageTicketsPage extends React.Component {
 
   accept = (id, title, description, lat, lon, address, categoryId, publish, municipalId, images) => {
     if (!title || !description || !lat || !lon || !categoryId) {
-      console.log(title, description, lat, lon, categoryId);
       return false;
     } else {
       let imgIds = images.map(i => i.id);
@@ -237,17 +236,10 @@ export class EmployeeManageTicketsPage extends React.Component {
                 return true;
               }
             });
-
-            console.log(index);
-            console.log(id);
-
-            console.log(tick.splice(index, 1));
-            console.log(tick);
             this.setState({ tickets: tick });
             if (ticket.subscribed) {
               subscriptionService.addSubscription(res.id, ticket.userId).then(res => {
                 if (res.success) {
-                  console.log(res.message.no);
                 }
               });
             }
