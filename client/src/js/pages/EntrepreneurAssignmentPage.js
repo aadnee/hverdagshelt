@@ -28,16 +28,19 @@ export class EntrepreneurAssignmentPage extends Component {
         let tempAssigments = this.state.assignments;
         tempAssigments.splice(index, 1);
         this.setState({ assignments: tempAssigments });
+        return true;
       }
     });
   };
 
   handleStatus = (assigmentId, status) => {
+    console.log(2);
     this.state.assignments.map((assigment, index) => {
       if (assigment.id === assigmentId) {
         let tempAssigments = this.state.assignments;
         tempAssigments[index].companyStatus = status;
         this.setState({ assignments: tempAssigments });
+        return true;
       }
     });
   };

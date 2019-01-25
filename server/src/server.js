@@ -189,7 +189,7 @@ app.post('/api/news/filter', (req, res) => {
 
 app.post('/api/news/archive', (req, res) => {
   let b = req.body;
-  newsManager.getArchivedNews(b.municipalIds, function(result) {
+  newsManager.getArchivedNews(b.municipalIds, b.categoryIds, b.page, b.limit, function(result) {
     res.json(result);
   });
 });

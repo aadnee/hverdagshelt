@@ -4,6 +4,7 @@ export * from './AdminCompanyPage';
 export * from './AdminEditUserPage';
 export * from './AdminCategoriesPage';
 export * from './AdminEditCategoryPage';
+export * from './ArchivePage';
 export * from './EmployeeManageTicketsPage';
 export * from './EmployeePublishTicketPage';
 export * from './EmployeeManageNewsPage';
