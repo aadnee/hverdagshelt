@@ -42,13 +42,17 @@ export class AssignmentWidget extends Component {
     this.setState({ modal: true, modalType: modalType });
   };
 
+  componentWillUnmount() {
+    this.closeModal();
+  }
+
   handleAssignment = () => {
     if (this.state.modalType === 'acceptModal') {
+      console.log(1);
       companyService.acceptTask(this.props.assignment.id).then(res => {
         if (res.success) {
           toast.success(res.message.no);
           this.props.handleStatus(2);
-          this.closeModal();
         } else {
           toast.error(res.message.no);
         }
@@ -58,7 +62,6 @@ export class AssignmentWidget extends Component {
         if (res.success) {
           toast.success(res.message.no);
           this.props.handleDelete();
-          this.closeModal();
         } else {
           toast.error(res.message.no);
         }
