@@ -234,7 +234,7 @@ export class NewsCaseWidget extends Component {
                 this.props.frontpage ? null : (
                   <Button onClick={this.props.show}>Avslutt abonnement</Button>
                 )
-              ) : Consumer._currentValue.user ? (
+              ) : Consumer._currentValue.user && !this.props.archive ? (
                 <Button onClick={this.followCase}>Følg saken</Button>
               ) : null}
             </Grid>

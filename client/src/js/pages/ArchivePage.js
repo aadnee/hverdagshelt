@@ -14,7 +14,7 @@ export class ArchivePage extends Component {
       <Container>
         <Divider hidden />
         <Divider hidden />
-        <Header as="h1">Nyhets arkiv</Header>
+        <Header as="h1">Nyhetsarkiv</Header>
         <Segment color="blue" basic>
           <Grid columns={2} centered>
             <Grid.Column width={16}>
