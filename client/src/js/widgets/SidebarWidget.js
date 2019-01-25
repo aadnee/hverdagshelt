@@ -185,6 +185,7 @@ class PrivateOptions extends Component {
         <NavLink exact to="/feed" activeClassName="active" className="ui item">
           Nyhetsstrøm
         </NavLink>
+
         <NavLink exact to="/events" activeClassName="active" className="ui item">
           Arrangementer
         </NavLink>
@@ -193,6 +194,10 @@ class PrivateOptions extends Component {
         </NavLink>
         <NavLink exact to="/subscriptions" activeClassName="active" className="ui item">
           Nyheter jeg følger
+        </NavLink>
+        <div className="ui item disabled" />
+        <NavLink exact to="/archive" activeClassName="active" className="ui item">
+          Nyhetsarkiv
         </NavLink>
         <div className="ui item disabled" />
       </Menu>

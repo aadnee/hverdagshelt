@@ -227,15 +227,27 @@ export class NewsFeedWidget extends Component {
     } else if (this.state.news.length > 0) {
       return (
         <>
-          {this.state.news.map(nc => (
-            <NewsCaseWidget
-              key={nc.id}
-              newscase={nc}
-              following={this.state.subs.find(id => id === nc.id) ? true : false}
-              startFollowCallBack={this.followCallback}
-              frontpage={this.props.frontpage ? true : false}
-            />
-          ))}
+          {this.props.archive
+            ? this.state.news.map(nc => (
+                <NewsCaseWidget
+                  key={nc.id}
+                  archive
+                  newscase={nc}
+                  following={this.state.subs.find(id => id === nc.id) ? true : false}
+                  startFollowCallBack={this.followCallback}
+                  frontpage={this.props.frontpage ? true : false}
+                />
+              ))
+            : this.state.news.map(nc => (
+                <NewsCaseWidget
+                  key={nc.id}
+                  newscase={nc}
+                  following={this.state.subs.find(id => id === nc.id) ? true : false}
+                  startFollowCallBack={this.followCallback}
+                  frontpage={this.props.frontpage ? true : false}
+                />
+              ))}
+
           {!this.state.empty ? (
             <Button
               primary
