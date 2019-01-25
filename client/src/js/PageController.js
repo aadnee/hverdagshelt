@@ -85,7 +85,8 @@ export class PageController extends Component {
     this.setState({ user: null });
   };
 
-  dbStringConverter = dbString => {
+  dbStringConverter = (dbString, array) => {
+    let type = array ? array : false;
     const dateArr = dbString.split('T')[0].split('-');
     const date = dateArr[2] + '/' + dateArr[1] + '/' + dateArr[0];
 
@@ -95,7 +96,11 @@ export class PageController extends Component {
       .split(':');
 
     const clock = clockArr[0] + ':' + clockArr[1];
-    return date + ' ' + clock;
+    if (!type) {
+      return date + ' ' + clock;
+    } else {
+      return [date, clock];
+    }
   };
 
   ticketSubmit = (title, description, lat, lon, address, catId, subscribed, image, municipalName) => {

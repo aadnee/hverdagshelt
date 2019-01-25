@@ -388,7 +388,7 @@ export function syncDatabase(callback) {
         parentId: 6
       });
       await Users.create({
-        name: 'Ola',
+        name: 'Ola Nordmann',
         email: 'user@user.com',
         phone: 123,
         password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
@@ -396,7 +396,7 @@ export function syncDatabase(callback) {
         municipalId: 1
       });
       await Users.create({
-        name: 'Ola',
+        name: 'Ola Nordmann',
         email: 'employee@employee.com',
         phone: 1234,
         password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',
@@ -404,7 +404,7 @@ export function syncDatabase(callback) {
         municipalId: 1
       });
       await Users.create({
-        name: 'Ola',
+        name: 'Ola Nordmann',
         email: 'admin@admin.com',
         phone: 12345,
         password: '$2a$12$4CioQiWjDQ8Cq3d973m7m.dZE1YHTSixgwQV8Dj06xsAvOqLRELTu',

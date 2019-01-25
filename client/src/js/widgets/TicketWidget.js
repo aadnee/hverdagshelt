@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal, Dropdown } from 'semantic-ui-react';
 import { Consumer } from './../context';
 import { PENDING, DONE, REJECTED, STATUS } from '../commons';
+import { ShowInMapWidget } from './ShowInMapWidget';
 
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 import { newsService } from '../services/NewsServices';
@@ -79,9 +80,11 @@ export class TicketWidget extends Component {
     return (
       <Card centered>
         <Image>
-          <Image
-            src={this.state.ticket.uploads.length > 0 ? '/uploads/' + this.state.ticket.uploads[0].filename : null}
-          />
+          {this.state.ticket.uploads.length > 0 ? (
+            <Image src={'/uploads/' + this.state.ticket.uploads[0].filename} />
+          ) : (
+            <ShowInMapWidget latlng={[[this.state.ticket.lat, this.state.ticket.lon]]} ticketMapOnly />
+          )}
           {this.state.ticket.status === PENDING && !this.props.employee ? (
             <Label color="yellow" ribbon="right">
               {STATUS[PENDING - 1].norwegian}
@@ -89,7 +92,7 @@ export class TicketWidget extends Component {
           ) : null}
           {this.state.ticket.status === DONE && !this.props.employee ? (
             <Label color="green" ribbon="right">
-              {STATUS[DONE - 1].norwegian}
+              {STATUS[DONE - 1].tickNor}
             </Label>
           ) : null}
           {this.state.ticket.status === REJECTED && !this.props.employee ? (
@@ -218,9 +221,11 @@ export class TicketWidget extends Component {
                 onClose={() => this.setState({ newsModalOpen: false })}
                 onOpen={() => this.setState({ newsModalOpen: true })}
                 closeIcon
+                basic
+                style={{ color: '#000' }}
               >
-                <Modal.Content>
-                  <NewsCaseWidget newscase={this.state.newsCase} show />
+                <Modal.Content inverted="true">
+                  <NewsCaseWidget newscase={this.state.newsCase} show showAll />
                 </Modal.Content>
               </Modal>
             </Button.Group>
