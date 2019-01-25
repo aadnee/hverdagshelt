@@ -79,7 +79,8 @@ export let News = sequelize.define('news', {
   lat: { type: Sequelize.FLOAT, allowNull: false },
   lon: { type: Sequelize.FLOAT, allowNull: false },
   address: { type: Sequelize.STRING },
-  companyStatus: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 1 }
+  companyStatus: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 1 },
+  feedback: { type: Sequelize.TEXT, length: 'medium', allowNull: true }
 });
 
 export let Events = sequelize.define('events', {

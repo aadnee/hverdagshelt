@@ -1,7 +1,5 @@
 import companyManager from '../src/managers/companyManager';
 
-jest.setTimeout(30000);
-
 // Testing if we can find companies
 describe('Finding all companies', () => {
   it('correct data', done => {
@@ -122,7 +120,7 @@ describe('Finding,accepting, rejecting and finnishing tasks', () => {
   });
   //Test for rejecting a task with correct data
   it('Reject task, correct data', done => {
-    companyManager.rejectTask(4, 1, function(result) {
+    companyManager.rejectTask(4, 1, 'Oppdraget var ugyldig.', function(result) {
       expect({
         success: result.success,
         message: result.message.en
@@ -135,7 +133,7 @@ describe('Finding,accepting, rejecting and finnishing tasks', () => {
   });
   //Test for setting a task to finished with correct data
   it('Finish task, correct data', done => {
-    companyManager.finishTask(4, 1, function(result) {
+    companyManager.finishTask(4, 1, 'Oppdraget var lett og fullført', function(result) {
       expect({
         success: result.success,
         message: result.message.en

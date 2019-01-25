@@ -142,20 +142,19 @@ export class NewsFeedWidget extends Component {
   }
 
   getNews() {
-    this.setState({ loading: true });
-    setTimeout(() => {
-      const munsearch =
-        this.state.selectedMunicipals.length > 0
-          ? this.state.selectedMunicipals
-          : this.state.municipals.map(m => m.key);
-      const catsearch =
-        this.state.selectedCategories.length > 0
-          ? this.state.selectedCategories
-          : this.state.categories.map(c => c.key);
+    if (!this.props.archive) {
+      this.setState({ loading: true });
+      setTimeout(() => {
+        const munsearch =
+          this.state.selectedMunicipals.length > 0
+            ? this.state.selectedMunicipals
+            : this.state.municipals.map(m => m.key);
+        const catsearch =
+          this.state.selectedCategories.length > 0
+            ? this.state.selectedCategories
+            : this.state.categories.map(c => c.key);
 
-      newsService
-        .getFilteredNews(munsearch, catsearch, 0, 0)
-        .then(res => {
+        newsService.getFilteredNews(munsearch, catsearch, 0, 0).then(res => {
           if (res.success) {
             this.setState({
               news: res.data,
@@ -166,12 +165,34 @@ export class NewsFeedWidget extends Component {
           } else {
             this.setState({ loading: false });
           }
-        })
-        .catch(err => {
-          console.error(err);
-          this.setState({ loading: false });
         });
-    }, 10);
+      }, 10);
+    } else {
+      this.setState({ loading: true });
+      setTimeout(() => {
+        const munsearch =
+          this.state.selectedMunicipals.length > 0
+            ? this.state.selectedMunicipals
+            : this.state.municipals.map(m => m.key);
+        const catsearch =
+          this.state.selectedCategories.length > 0
+            ? this.state.selectedCategories
+            : this.state.categories.map(c => c.key);
+
+        newsService.getArchivedNews(munsearch, catsearch, 0, 0).then(res => {
+          if (res.success) {
+            this.setState({
+              news: res.data,
+              loading: false,
+              totalPages: Math.ceil(res.data.length / 6),
+              activePage: 1
+            });
+          } else {
+            this.setState({ loading: false });
+          }
+        }, 10);
+      });
+    }
   }
 
   selectMunicipal(value) {
@@ -225,6 +246,7 @@ export class NewsFeedWidget extends Component {
                 {i <= this.state.page * 6 - 1 && i > (this.state.page - 1) * 6 - 1 ? (
                   <NewsCaseWidget
                     newscase={nc}
+                    archive={this.props.archive ? true : false}
                     following={this.state.subs.find(id => id === nc.id) ? true : false}
                     startFollowCallBack={this.followCallback}
                   />
@@ -322,7 +344,7 @@ export class NewsFeedWidget extends Component {
           <Divider hidden />
           <Divider hidden />
           <Container textAlign="center">
-            {this.state.news.length > 0 ? (
+            {this.state.totalPages > 1 ? (
               <Pagination
                 defaultActivePage={this.state.page}
                 activePage={this.state.activePage}

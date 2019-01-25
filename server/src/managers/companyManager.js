@@ -67,15 +67,21 @@ module.exports = {
     );
   },
 
-  rejectTask: function(companyId, newsId, callback) {
-    News.update({ companyStatus: 4, companyId: null }, { where: { id: newsId, companyId: companyId } }).then(
+  rejectTask: function(companyId, newsId, feedback, callback) {
+    News.update(
+      { companyStatus: 4, companyId: null, feedback: feedback },
+      { where: { id: newsId, companyId: companyId } }
+    ).then(
       res => callback({ success: true, message: { en: 'Task rejected.', no: 'Oppdraget ble avslått.' } }),
       err => callback({ success: false, message: err })
     );
   },
 
-  finishTask: function(companyId, newsId, callback) {
-    News.update({ status: 3, companyStatus: 3 }, { where: { id: newsId, companyId: companyId } }).then(
+  finishTask: function(companyId, newsId, feedback, callback) {
+    News.update(
+      { status: 3, companyStatus: 3, feedback: feedback },
+      { where: { id: newsId, companyId: companyId } }
+    ).then(
       res => {
         News.findOne({
           attributes: ['title'],
@@ -107,6 +113,37 @@ module.exports = {
           },
           err => callback({ success: false, message: err })
         );
+      },
+      err => callback({ success: false, message: err })
+    );
+  },
+
+  checkTimeLimits: function(callback) {
+    var days = new Date(Date.now() - 60 * 60 * 24 * 7 * 1000);
+    News.findAll({ where: { companyStatus: 1, updatedAt: { $lte: days } } }).then(
+      res => {
+        if (res.length > 0) {
+          res.map((article, i) => {
+            News.update(
+              { companyId: null, companyStatus: 4, feedback: 'Oppdrag utgått etter 7 dager.' },
+              { where: { id: article.id } }
+            ).then(
+              res =>
+                i == res.length - 1
+                  ? callback({
+                      success: true,
+                      message: {
+                        en: res.length + ' task(s) returned.',
+                        no: res.length + ' oppdrag har utgått og ble sendt tilbake.'
+                      }
+                    })
+                  : null,
+              err => callback({ success: false, message: err })
+            );
+          });
+        } else {
+          callback({ success: true, message: { en: 'No expired tasks.', no: 'Ingen utgåtte oppdrag.' } });
+        }
       },
       err => callback({ success: false, message: err })
     );

@@ -71,11 +71,11 @@ export class NewsCaseWidget extends Component {
     }
   }
 
-  sendToCompany(companyId) {
+  sendToCompany(companyId, companyName) {
     if (!companyId) {
       toast.error('Velg en bedrift');
     } else {
-      if (this.props.sendToCompany(companyId)) {
+      if (this.props.sendToCompany(companyId, companyName)) {
         this.setState({ companyModalOpen: false });
       }
     }
@@ -213,7 +213,15 @@ export class NewsCaseWidget extends Component {
                           />
                         </Modal.Content>
                         <Modal.Actions>
-                          <Button color={'green'} onClick={() => this.sendToCompany(this.state.company)}>
+                          <Button
+                            color={'green'}
+                            onClick={() => {
+                              console.log(this.state);
+                              let compName = this.state.companyOptions.find(c => c.value === this.state.company).text;
+                              console.log(compName);
+                              this.sendToCompany(this.state.company, compName);
+                            }}
+                          >
                             Lagre
                           </Button>
                           <Button onClick={() => this.setState({ companyModalOpen: false })}>Avbryt</Button>
@@ -226,7 +234,7 @@ export class NewsCaseWidget extends Component {
                 this.props.frontpage ? null : (
                   <Button onClick={this.props.show}>Avslutt abonnement</Button>
                 )
-              ) : Consumer._currentValue.user ? (
+              ) : Consumer._currentValue.user && !this.props.archive ? (
                 <Button onClick={this.followCase}>Følg saken</Button>
               ) : null}
             </Grid>

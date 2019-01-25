@@ -1,7 +1,5 @@
 import userManager from '../src/managers/userManager';
 
-jest.setTimeout(30000);
-
 //Test for registering an account in use
 describe('Registering in use account', () => {
   it('Wrong data', done => {

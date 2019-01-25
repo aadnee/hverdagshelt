@@ -1,7 +1,5 @@
 import categoryManager from '../src/managers/categoryManager';
 
-jest.setTimeout(30000);
-
 describe('Get categories', () => {
   it('correct data', done => {
     categoryManager.getCategories(function(result) {

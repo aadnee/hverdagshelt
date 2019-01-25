@@ -29,13 +29,13 @@ export class UserEditFormWidget extends Component {
 
     this.state = {
       firstName: this.props.user.firstName,
-      lastName: this.props.user.lastName,
+      lastName: this.props.user.lastName ? this.props.user.lastName : '',
       email: this.props.user.email,
       phone: this.props.user.phone,
       municipalId: this.props.user.municipalId,
-      newPassword: null,
-      oldPassword: null,
-      repeatedPassword: null,
+      newPassword: '',
+      oldPassword: '',
+      repeatedPassword: '',
       editFirstname: false,
       editLastname: false,
       editPhonenumber: false,
@@ -120,7 +120,7 @@ export class UserEditFormWidget extends Component {
   };
 
   submit = () => {
-    if (this.state.oldPassword === null && this.state.newPassword === null && this.state.repeatedPassword === null) {
+    if (this.state.oldPassword === '' && this.state.newPassword === '' && this.state.repeatedPassword === '') {
       userService
         .editMe(
           this.state.firstName,
@@ -143,7 +143,16 @@ export class UserEditFormWidget extends Component {
             draggable: true
           })
         );
-    } else if (this.state.oldPassword != null && this.state.newPassword != this.state.repeatedPassword) {
+    } else if ((this.state.oldPassword != '' && this.state.newPassword === '') || this.state.repeatedPassword === '') {
+      toast.error('Passordfeltene kan ikke være tomme. Prøv igjen.', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true
+      });
+    } else if (this.state.oldPassword != '' && this.state.newPassword != this.state.repeatedPassword) {
       toast.error('Passordene stemmer ikke overens. Prøv igjen.', {
         position: 'top-right',
         autoClose: 5000,
@@ -152,22 +161,32 @@ export class UserEditFormWidget extends Component {
         pauseOnHover: true,
         draggable: true
       });
-    } else if (this.state.oldPassword != null && this.state.newPassword === this.state.repeatedPassword) {
-      userService
-        .editMe(
-          this.state.firstName,
-          this.state.lastName,
-          this.state.email,
-          this.state.phone,
-          this.state.municipalId,
-          this.state.oldPassword,
-          this.state.newPassword,
-          this.state.notifications
-        )
-        .then(res => {
-          if (res.success) {
-            console.log(res.success),
-              toast.success('Bruker oppdatert!', {
+    } else if (this.state.oldPassword != '' && this.state.newPassword === this.state.repeatedPassword) {
+      if (this.state.newPassword.length >= 8) {
+        userService
+          .editMe(
+            this.state.firstName,
+            this.state.lastName,
+            this.state.email,
+            this.state.phone,
+            this.state.municipalId,
+            this.state.oldPassword,
+            this.state.newPassword,
+            this.state.notifications
+          )
+          .then(res => {
+            if (res.success) {
+              console.log(res.success),
+                toast.success('Bruker oppdatert!', {
+                  position: 'top-right',
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true
+                });
+            } else {
+              toast.error(res.message.no, {
                 position: 'top-right',
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -175,17 +194,18 @@ export class UserEditFormWidget extends Component {
                 pauseOnHover: true,
                 draggable: true
               });
-          } else {
-            toast.error(res.message.no, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true
-            });
-          }
+            }
+          });
+      } else {
+        toast.error('Passordet må være minst 8 tegn', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true
         });
+      }
     }
   };
 
@@ -212,7 +232,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.firstName}
                       onChange={(event, data) => {
                         this.handleInput('firstName', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
@@ -222,7 +243,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.lastName}
                       onChange={(event, data) => {
                         this.handleInput('lastName', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                 </Grid>
               </Form.Field>
@@ -238,7 +260,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.phone}
                       onChange={(event, data) => {
                         this.handleInput('phone', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
@@ -348,17 +371,22 @@ export class UserEditFormWidget extends Component {
                     <input />
                   </Input>
                 </Form.Field>
+                <Form.Field>
+                  <Button
+                    color="blue"
+                    floated="right"
+                    size="large"
+                    onClick={() => {
+                      this.submit();
+                    }}
+                  >
+                    Lagre endringer
+                  </Button>
+                  <Divider hidden />
+                  <Divider hidden />
+                  <Divider hidden />
+                </Form.Field>
               </Form.Field>
-              <Button
-                color="blue"
-                fluid
-                size="large"
-                onClick={() => {
-                  this.submit();
-                }}
-              >
-                Lagre endringer
-              </Button>
             </Segment>
           </Form>
         </Grid.Column>

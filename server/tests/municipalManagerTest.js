@@ -1,7 +1,5 @@
 import municipalManager from '../src/managers/municipalManager';
 
-jest.setTimeout(30000);
-
 describe('MunicipalManager tests', () => {
   it('correct data', done => {
     municipalManager.getMunicipals(function(result) {

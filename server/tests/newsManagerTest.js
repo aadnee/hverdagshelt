@@ -1,8 +1,6 @@
 import { News } from '../src/models';
 import newsManager from '../src/managers/newsManager';
 
-jest.setTimeout(30000);
-
 // Testing adding a new article
 describe('Adding article', () => {
   let id;
@@ -91,7 +89,7 @@ describe('Get filtered News', () => {
 // Test for finding archived news
 describe('Get archived News', () => {
   it('correct data', done => {
-    newsManager.getArchivedNews(1, function(news) {
+    newsManager.getArchivedNews([1], [4], 1, 1, function(news) {
       expect({
         success: news.success
       }).toEqual({

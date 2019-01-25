@@ -49,7 +49,6 @@ export class ActiveAssignmentWidget extends Component {
         if (res.success) {
           toast.success(res.message.no);
           this.props.handleDelete();
-          this.closeModal();
         } else {
           toast.error(res.message.no);
         }
@@ -60,7 +59,6 @@ export class ActiveAssignmentWidget extends Component {
         if (res.success) {
           toast.success(res.message.no);
           this.props.handleStatus(3);
-          this.closeModal();
         } else {
           toast.error(res.message.no);
         }
@@ -70,6 +68,10 @@ export class ActiveAssignmentWidget extends Component {
 
   componentWillMount() {
     console.log(this.state.modalType);
+  }
+
+  componentWillUnmount() {
+    this.closeModal();
   }
 
   render() {
