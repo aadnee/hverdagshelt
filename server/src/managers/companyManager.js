@@ -67,15 +67,21 @@ module.exports = {
     );
   },
 
-  rejectTask: function(companyId, newsId, callback) {
-    News.update({ companyStatus: 4, companyId: null }, { where: { id: newsId, companyId: companyId } }).then(
+  rejectTask: function(companyId, newsId, feedback, callback) {
+    News.update(
+      { companyStatus: 4, companyId: null, feedback: feedback },
+      { where: { id: newsId, companyId: companyId } }
+    ).then(
       res => callback({ success: true, message: { en: 'Task rejected.', no: 'Oppdraget ble avslått.' } }),
       err => callback({ success: false, message: err })
     );
   },
 
-  finishTask: function(companyId, newsId, callback) {
-    News.update({ status: 3, companyStatus: 3 }, { where: { id: newsId, companyId: companyId } }).then(
+  finishTask: function(companyId, newsId, feedback, callback) {
+    News.update(
+      { status: 3, companyStatus: 3, feedback: feedback },
+      { where: { id: newsId, companyId: companyId } }
+    ).then(
       res => {
         News.findOne({
           attributes: ['title'],
@@ -118,7 +124,10 @@ module.exports = {
       res => {
         if (res.length > 0) {
           res.map((article, i) => {
-            News.update({ companyId: null, companyStatus: 4 }, { where: { id: article.id } }).then(
+            News.update(
+              { companyId: null, companyStatus: 4, feedback: 'Oppdrag utgått etter 7 dager.' },
+              { where: { id: article.id } }
+            ).then(
               res =>
                 i == res.length - 1
                   ? callback({
