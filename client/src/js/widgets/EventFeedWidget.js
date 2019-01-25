@@ -42,7 +42,7 @@ export class EventFeedWidget extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({ loading: true });
     if (Consumer._currentValue.user) {
       let munRes = municipalService
@@ -102,12 +102,15 @@ export class EventFeedWidget extends Component {
         .getFilteredEvents(this.state.selectedMunicipals, 0, 0)
         .then(res => {
           if (res.success) {
-            this.setState({
-              news: res.data,
-              loading: false,
-              totalPages: Math.ceil(res.data.length / 6),
-              activePage: 1
-            });
+            setTimeout(
+              this.setState({
+                news: res.data,
+                loading: false,
+                totalPages: Math.ceil(res.data.length / 6),
+                activePage: 1
+              }),
+              100
+            );
           } else {
             this.setState({ loading: false });
           }
