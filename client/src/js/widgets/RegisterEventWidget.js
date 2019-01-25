@@ -53,7 +53,6 @@ export class RegisterEventWidget extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps != this.props) {
-      console.log(this.props);
       this.setState({ address: this.props.address, latlng: this.props.latlng });
     }
   }
@@ -72,85 +71,96 @@ export class RegisterEventWidget extends Component {
 
   render() {
     return (
-        <Container>
-          <Grid verticalAlign="middle">
-            <Grid.Column>
-              <Form size="large">
-                <Segment stacked={!this.props.borderless} basic={this.props.borderless}>
-                  <Form.Field>
-                    <label>Adresse:</label>
-                    <Input
-                        fluid
-                        icon="map"
-                        iconPosition="left"
-                        placeholder="Velg posisjon på kartet"
-                        defaultValue={this.state.address}
-                        readOnly
-                        onClick={this.props.setupClick ? (()=>this.props.setupClick(this.state.address)) : (()=>toast.info("Gå tilbake for å sette ny posisjon"))}
+      <Container>
+        <Grid verticalAlign="middle">
+          <Grid.Column>
+            <Form size="large">
+              <Segment stacked={!this.props.borderless} basic={this.props.borderless}>
+                <Form.Field>
+                  <label>Adresse:</label>
+                  <Input
+                    fluid
+                    icon="map"
+                    iconPosition="left"
+                    placeholder="Velg posisjon på kartet"
+                    defaultValue={this.state.address}
+                    readOnly
+                    onClick={this.props.setupClick ? () => this.props.setupClick(this.state.address) : null}
+                  />
+                  <label>Hvilket arrangement vil du legge inn?</label>
+                  <Input
+                    fluid
+                    icon="connectdevelop"
+                    iconPosition="left"
+                    placeholder={'Hva heter arrangementet'}
+                    value={this.state.title}
+                    onChange={(event, data) => {
+                      this.handleInput('title', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Tilleggsinformasjon</label>
+                  <TextArea
+                    autoHeight
+                    placeholder={'Beskrivelse'}
+                    value={this.state.description}
+                    onChange={(event, data) => {
+                      this.handleInput('description', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>URL til arrangement:</label>
+                  <Input
+                    fluid
+                    icon="linkify"
+                    iconPosition="left"
+                    placeholder="Link"
+                    value={this.state.url}
+                    onChange={(event, data) => {
+                      this.handleInput('url', data.value);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Grid.Column>
+                    <label>Tagger</label>
+                    <Dropdown
+                      fluid
+                      search
+                      selection
+                      multiple
+                      allowAdditions
+                      additionLabel={'Legg til '}
+                      options={this.state.tags}
+                      placeholder="Legg til tagger"
+                      onAddItem={(event, data) => {
+                        this.state.tags.push({ key: data.value, value: data.value, text: data.value });
+                      }}
                     />
-                    <label>Hvilket arrangement vil du legge inn?</label>
-                    <Input
-                        fluid
-                        icon="connectdevelop"
-                        iconPosition="left"
-                        placeholder={'Hva heter arrangementet'}
-                        value={this.state.title}
-                        onChange={(event, data) => {
-                          this.handleInput('title', data.value);
-                        }}
-                    />
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Tilleggsinformasjon</label>
-                    <TextArea
-                        autoHeight
-                        placeholder={'Beskrivelse'}
-                        value={this.state.description}
-                        onChange={(event, data) => {
-                          this.handleInput('description', data.value);
-                        }}
-                    />
-                  </Form.Field>
-                  <Form.Field>
-                    <label>URL til arrangement:</label>
-                    <Input
-                        fluid
-                        icon='linkify'
-                        iconPosition='left'
-                        placeholder='Link'
-                        value={this.state.url}
-                        onChange={(event, data) => {
-                          this.handleInput('url', data.value);
-                        }}/>
-                  </Form.Field>
-                  <Form.Field>
-                    <Grid.Column>
-                      <label>Tagger</label>
-                      <Dropdown
-                          fluid
-                          search
-                          selection
-                          multiple
-                          allowAdditions
-                          additionLabel={'Legg til '}
-                          options={this.state.tags}
-                          placeholder="Legg til tagger"
-                          onAddItem={(event, data) => {
-                            console.log(data.value);
-                            console.log(this.state.tags);
-                            this.state.tags.push({key: data.value, value: data.value, text: data.value});
-                          }}
-                      />
-                    </Grid.Column>
-                    <label>Starttidspunkt:</label>
-                    <DatePicker selected={this.state.start} timeIntervals={5} timeFormat='HH:mm'
-                                dateFormat='dd.MM.yyyy HH:mm' showTimeSelect onChange={this.setStartDate}/>
-                    <label>Sluttidspunkt</label>
-                    <DatePicker selected={this.state.end} minDate={this.state.start} timeIntervals={5}
-                                timeFormat='HH:mm' dateFormat='dd.MM.yyyy HH:mm' showTimeSelect
-                                onChange={this.setEndDate}/>
-                  </Form.Field>
-                  {this.props.submit ? (
+                  </Grid.Column>
+                  <label>Starttidspunkt:</label>
+                  <DatePicker
+                    selected={this.state.start}
+                    timeIntervals={5}
+                    timeFormat="HH:mm"
+                    dateFormat="dd.MM.yyyy HH:mm"
+                    showTimeSelect
+                    onChange={this.setStartDate}
+                  />
+                  <label>Sluttidspunkt</label>
+                  <DatePicker
+                    selected={this.state.end}
+                    minDate={this.state.start}
+                    timeIntervals={5}
+                    timeFormat="HH:mm"
+                    dateFormat="dd.MM.yyyy HH:mm"
+                    showTimeSelect
+                    onChange={this.setEndDate}
+                  />
+                </Form.Field>
+                {this.props.submit ? (
                   <Button
                     color="blue"
                     fluid

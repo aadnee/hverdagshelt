@@ -48,7 +48,6 @@ class UserService {
   async getMe() {
     let name;
     let me = await api.get('/api/me').then(res => {
-      console.log(res);
       name = res.data.name.split(' ');
       if (name.length > 1) {
         res.data.lastName = name.pop();
@@ -62,7 +61,6 @@ class UserService {
   }
 
   editMe(firstName, lastName, email, phone, municipalId, oldPassword, newPassword, notifications) {
-    console.log(name + ' ' + email);
     return api.put('/api/me', {
       name: String(firstName + ' ' + lastName),
       email: email,
@@ -79,14 +77,12 @@ class UserService {
   }
 
   addMunicipal(municipalId) {
-    console.log('add' + municipalId);
     return api.post('/api/mymunicipals', {
       municipalId: municipalId
     });
   }
 
   deleteMunicipal(municipalId) {
-    console.log('delete' + municipalId);
     return api.delete('/api/mymunicipals/' + municipalId);
   }
 }

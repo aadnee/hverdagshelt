@@ -49,7 +49,6 @@ export class PageController extends Component {
   componentWillMount() {
     if (Cookies.get('token') && this.state.user == null) {
       userService.getMe().then(res => {
-        console.log(res);
         if (res.success) {
           this.setState({ user: res.data, renderReady: true });
         } else {
@@ -127,7 +126,6 @@ export class PageController extends Component {
     //lat, lon  is fetched from the map
 
     if (!title || !description || !lat || !lon || !catId || !municipalName) {
-      console.log(title, description, lat, lon, catId, subscribed, image);
       toast.error('Vennligst fyll ut alle felt', {
         position: toast.POSITION.TOP_RIGHT
       });
@@ -135,7 +133,6 @@ export class PageController extends Component {
       ticketService
         .addTicket(title, description, lat, lon, address, catId, subscribed, image, municipalName)
         .then(res => {
-          console.log(res);
           if (res.success) {
             toast.success(res.message.no, {
               position: toast.POSITION.TOP_RIGHT
@@ -151,15 +148,12 @@ export class PageController extends Component {
   };
 
   unsubscribeNews(newsId) {
-    console.log(newsId);
-
     if (!newsId) {
       toast.error('Noe gikk galt, prøv igjen', {
         position: toast.POSITION.TOP_RIGHT
       });
     } else {
       return subscriptionService.deleteSubscription(newsId).then(res => {
-        console.log(res);
         return res;
       });
     }

@@ -115,10 +115,8 @@ class MunicipalOptions extends Component {
   }
 
   updateTicketCount() {
-    console.log('Menu get info');
     ticketService.getTicketsPending().then(res => {
       if (res.success && res.data != this.state.pending) {
-        console.log('Update');
         this.setState({ pending: res.data });
       }
     });

@@ -548,9 +548,9 @@ export function syncDatabase(callback) {
         area:
           '[{"lat":63.43201612964023,"lng":10.407967632807194},{"lat":63.43090857520207,"lng":10.40639117486217},{"lat":63.43048129510122,"lng":10.405108908398882},{"lat":63.42946152566984,"lng":10.403993069095725},{"lat":63.42806794456033,"lng":10.403021440771646},{"lat":63.42797195972445,"lng":10.405984788670711},{"lat":63.42945968855248,"lng":10.406176606337663},{"lat":63.43100492510339,"lng":10.410233922250184},{"lat":63.43183029681879,"lng":10.408772207870129}]',
         address: 'Nedre Bakklandet 47E, Trondheim',
-        start: '2019-01-23',
-        end: '2019-01-23',
-        municipalId: 2
+        start: '2019-02-05',
+        end: '2019-02-05',
+        municipalId: 1
       });
       await Events.create({
         title: 'Taco buffet LINDESNES',
@@ -560,7 +560,7 @@ export function syncDatabase(callback) {
         address: 'Kongsgårdsgata, Trondheim',
         start: '2019-02-29',
         end: '2019-02-29',
-        municipalId: 2
+        municipalId: 1
       });
       callback('Database synced.');
     }
