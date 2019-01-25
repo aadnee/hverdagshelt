@@ -54,7 +54,6 @@ export class EmployeeManageTicketsPage extends React.Component {
 
   componentWillMount() {
     //Fetch id based on user bound to municipal
-    console.log('mounting');
     let tickets = [];
     let ids = [];
     let news = [];
@@ -81,7 +80,6 @@ export class EmployeeManageTicketsPage extends React.Component {
                 newsOptions.push({ key: news.id, value: news.id, text: news.title });
               });
               news = res.data;
-
               this.setState({
                 tickets: tickets,
                 news: news,
@@ -95,8 +93,8 @@ export class EmployeeManageTicketsPage extends React.Component {
   }
 
   render() {
-    const { news, newsOptions } = this.state;
-    console.log(this.state.tickets);
+    const { newsOptions } = this.state;
+
     return (
       <Container>
         <Divider hidden />
@@ -134,7 +132,6 @@ export class EmployeeManageTicketsPage extends React.Component {
                           accept={this.accept.bind(this, ticket.id)}
                           show={this.show.bind(this, ticket.id)}
                           link={this.bindUserToNews.bind(this, ticket.id)}
-                          news={news}
                           newsOptions={newsOptions}
                         />
                       </Grid.Column>
@@ -296,7 +293,7 @@ export class EmployeeManageTicketsPage extends React.Component {
     }
     ticketService.linkTicket(ticketId, newsId).then(res => {
       if (res.success) {
-        this.setState({ tickets: this.state.tickets.filter(t => t.id !== id), modalOpen: false });
+        this.setState({ tickets: this.state.tickets.filter(t => t.id !== ticketId), modalOpen: false });
 
         toast.success(res.message.no, {
           position: toast.POSITION.TOP_RIGHT

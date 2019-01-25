@@ -161,8 +161,9 @@ module.exports = {
   },
 
   getFilteredNews: function(municipalIds, categoryIds, page, limit, callback) {
+    let whereStataments = categoryIds.length == 0 ? {} : { parentId: categoryIds };
     News.findAll({
-      include: [{ model: Uploads }, { attributes: [], model: Categories, where: { parentId: categoryIds } }],
+      include: [{ model: Uploads }, { attributes: [], model: Categories, where: whereStataments }],
       where: { municipalId: municipalIds, status: 2 },
       offset: page == 0 ? null : (page - 1) * limit,
       limit: limit == 0 ? null : limit,
@@ -171,12 +172,13 @@ module.exports = {
   },
 
   getArchivedNews: function(municipalIds, categoryIds, page, limit, callback) {
+    let whereStataments = categoryIds.length == 0 ? {} : { parentId: categoryIds };
     News.findAll({
-      include: [{ model: Uploads }, { attributes: [], model: Categories, where: { parentId: categoryIds } }],
+      include: [{ model: Uploads }, { attributes: [], model: Categories, where: whereStataments }],
       where: { municipalId: municipalIds, status: 3 },
       offset: page == 0 ? null : (page - 1) * limit,
       limit: limit == 0 ? null : limit,
-      order: [['id', 'DESC']]
+      order: [['updatedAt', 'DESC']]
     }).then(res => callback({ success: true, data: res }), err => callback({ success: false, message: err }));
   }
 };

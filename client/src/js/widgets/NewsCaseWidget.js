@@ -98,8 +98,11 @@ export class NewsCaseWidget extends Component {
   render() {
     const newscase = this.props.newscase;
     const dateInfo = Consumer._currentValue.convDbString(newscase.createdAt, true);
-    console.log(dateInfo);
     let more = false;
+
+    if (this.props.showAll) {
+      this.state.letters = Number.MAX_SAFE_INTEGER;
+    }
 
     return (
       <>
@@ -125,31 +128,35 @@ export class NewsCaseWidget extends Component {
                     <>
                       {newscase.description
                         .split('')
-                        .map((letter, i) => (i < this.state.letters ? letter : (more = true)))}
-                      {more ? (
-                        <>
-                          ...{' '}
-                          <span
-                            className="showInMap"
-                            onClick={() => {
-                              this.setState({ letters: Number.MAX_SAFE_INTEGER });
-                            }}
-                          >
-                            Vis mer
-                          </span>{' '}
-                        </>
-                      ) : this.state.letters === Number.MAX_SAFE_INTEGER ? (
-                        <>
-                          {'\n'}
-                          <span
-                            className="showInMap"
-                            onClick={() => {
-                              this.setState({ letters: 100 });
-                            }}
-                          >
-                            Vis mindre
-                          </span>{' '}
-                        </>
+                        .map((letter, i) =>
+                          i < this.state.letters ? letter === '\n' ? <br key={[letter, i]} /> : letter : (more = true)
+                        )}
+                      {!this.props.showAll ? (
+                        more ? (
+                          <>
+                            ...{' '}
+                            <span
+                              className="showInMap"
+                              onClick={() => {
+                                this.setState({ letters: Number.MAX_SAFE_INTEGER });
+                              }}
+                            >
+                              Vis mer
+                            </span>{' '}
+                          </>
+                        ) : this.state.letters === Number.MAX_SAFE_INTEGER ? (
+                          <>
+                            {'\n'}
+                            <span
+                              className="showInMap"
+                              onClick={() => {
+                                this.setState({ letters: 100 });
+                              }}
+                            >
+                              Vis mindre
+                            </span>{' '}
+                          </>
+                        ) : null
                       ) : null}
                     </>
                   </Card.Description>

@@ -17,21 +17,6 @@ export class ShortCutWidget extends Component {
       <Grid centered columns={3}>
         <Grid.Column>
           <div ref={this.handleContextRef}>
-            {/*<Placeholder/>
-                            <Placeholder/>
-                            <Placeholder/>
-
-                            <Rail position='left'>
-                                <Placeholder/>
-                                <Placeholder/>
-                                <Placeholder/>
-
-                                <Sticky context={contextRef}>
-                                    <Header as='h3'>Stuck Content</Header>
-                                    <Image src='https://react.semantic-ui.com/images/wireframe/image.png'/>
-                                </Sticky>
-                            </Rail>
-*/}
             <Rail position="right">
               <Sticky context={contextRef}>
                 <NavLink to={'#'}>Mine varslinger</NavLink>

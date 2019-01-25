@@ -114,6 +114,22 @@ describe('Get news', () => {
   });
 });
 
+//Test for finding an Article
+describe('Get article', () => {
+  it('correct data', done => {
+    newsManager.getArticle(0, function(result) {
+      expect({
+        success: result.success,
+        data: result.data
+      }).toEqual({
+        success: true,
+        data: null
+      });
+      done();
+    });
+  });
+});
+
 // Test for finish news
 describe('Get news', () => {
   it('incorrect data', done => {
