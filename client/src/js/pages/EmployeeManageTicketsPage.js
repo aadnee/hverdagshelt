@@ -241,6 +241,7 @@ export class EmployeeManageTicketsPage extends React.Component {
                 return true;
               }
             });
+            tick.splice(index, 1);
             this.setState({ tickets: tick });
             if (ticket.subscribed) {
               subscriptionService.addSubscription(res.id, ticket.userId).then(res => {
