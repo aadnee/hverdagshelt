@@ -7,7 +7,7 @@ export const SOFT_DELETED = 5;
 export const STATUS = [
   { value: PENDING, norwegian: 'Påventende', english: 'Pending' },
   { value: INPROGRESS, norwegian: 'Under behandling', english: 'In progress' },
-  { value: DONE, norwegian: 'Ferdig', english: 'Done' },
+  { value: DONE, tickNor: 'Godkjent', norwegian: 'Ferdig', english: 'Done' },
   { value: REJECTED, norwegian: 'Avslått', english: 'Rejected' }
 ];
 

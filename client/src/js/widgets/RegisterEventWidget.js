@@ -221,7 +221,7 @@ export class ModalTicketWidget extends Component {
 
   render() {
     return (
-      <Modal open={this.props.open}>
+      <Modal open={this.props.open} onClose={this.props.close}>
         <TicketFormWidget
           editTicket={this.props.editTicket}
           close={this.props.close}

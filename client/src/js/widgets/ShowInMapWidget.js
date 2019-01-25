@@ -14,6 +14,24 @@ export class ShowInMapWidget extends Component {
     super(props);
     this.state = {};
     this.mapRef = React.createRef();
+
+    this.yellowMarker = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [20, 33],
+      iconAnchor: [10, 33],
+      popupAnchor: [1, -26],
+      shadowSize: [33, 33]
+    });
+
+    this.purpleMarker = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [20, 33],
+      iconAnchor: [10, 33],
+      popupAnchor: [1, -29],
+      shadowSize: [33, 33]
+    });
   }
 
   render() {
@@ -28,9 +46,9 @@ export class ShowInMapWidget extends Component {
     } else {
       cent = this.props.latlng[0];
     }
+    const mouseStyle = this.props.pointer ? 'mapPointer' : '';
 
     if (this.props.mapOnly) {
-      const mouseStyle = this.props.pointer ? 'mapPointer' : '';
       return (
         <Map
           ref={this.mapRef}
@@ -47,9 +65,55 @@ export class ShowInMapWidget extends Component {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
           {this.props.latlng.length > 2 ? (
-            <Polygon positions={this.props.latlng} />
+            <Polygon color="purple" positions={this.props.latlng} />
           ) : (
-            <Marker position={this.props.latlng[0]} />
+            <Marker icon={this.props.event ? this.purpleMarker : this.yellowMarker} position={this.props.latlng[0]} />
+          )}
+        </Map>
+      );
+    } else if (this.props.ticketMapOnly) {
+      return (
+        <Map
+          ref={this.mapRef}
+          dragging={false}
+          center={cent}
+          zoomControl={false}
+          scrollWheelZoom={false}
+          zoom={this.props.zoom || 15}
+          style={{ height: 200, width: '100%' }}
+          className={mouseStyle}
+        >
+          <TileLayer
+            url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {this.props.latlng.length > 2 ? (
+            <Polygon color="purple" positions={this.props.latlng} />
+          ) : (
+            <Marker icon={this.props.event ? this.purpleMarker : this.yellowMarker} position={this.props.latlng[0]} />
+          )}
+        </Map>
+      );
+    } else if (this.props.newsMapOnly) {
+      return (
+        <Map
+          ref={this.mapRef}
+          dragging={false}
+          center={cent}
+          zoomControl={false}
+          scrollWheelZoom={false}
+          zoom={this.props.zoom || 15}
+          style={{ height: '100%', width: '100%' }}
+          className={mouseStyle}
+        >
+          <TileLayer
+            url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {this.props.latlng.length > 2 ? (
+            <Polygon color="purple" positions={this.props.latlng} />
+          ) : (
+            <Marker icon={this.props.event ? this.purpleMarker : this.yellowMarker} position={this.props.latlng[0]} />
           )}
         </Map>
       );
@@ -68,9 +132,12 @@ export class ShowInMapWidget extends Component {
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               />
               {this.props.latlng.length > 2 ? (
-                <Polygon positions={this.props.latlng} />
+                <Polygon color="purple" positions={this.props.latlng} />
               ) : (
-                <Marker position={this.props.latlng[0]} />
+                <Marker
+                  icon={this.props.event ? this.purpleMarker : this.yellowMarker}
+                  position={this.props.latlng[0]}
+                />
               )}
             </Map>
           ) : null}

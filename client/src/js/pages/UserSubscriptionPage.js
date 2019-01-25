@@ -68,7 +68,7 @@ export class UserSubscriptionPage extends Component {
                 {this.state.news.map(news => {
                   return (
                     <Grid.Row key={news.id}>
-                      <NewsCaseWidget show={this.show.bind(this, news.id)} newscase={news} following />
+                      <NewsCaseWidget show={this.show.bind(this, news.id)} mynews newscase={news} following />
                     </Grid.Row>
                   );
                 })}

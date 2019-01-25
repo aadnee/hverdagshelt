@@ -39,8 +39,7 @@ export class NewsFeedWidget extends Component {
       empty: false,
       ready: false,
       roof: this.props.roof || 0,
-      page: 1,
-      activePage: 0,
+      activePage: 1,
       totalPages: 0
     };
   }
@@ -242,8 +241,8 @@ export class NewsFeedWidget extends Component {
         return (
           <>
             {this.state.news.map((nc, i) => (
-              <React.Fragment key={i}>
-                {i <= this.state.page * 6 - 1 && i > (this.state.page - 1) * 6 - 1 ? (
+              <React.Fragment key={nc.id}>
+                {i <= this.state.activePage * 6 - 1 && i > (this.state.activePage - 1) * 6 - 1 ? (
                   <NewsCaseWidget
                     newscase={nc}
                     archive={this.props.archive ? true : false}
@@ -346,7 +345,6 @@ export class NewsFeedWidget extends Component {
           <Container textAlign="center">
             {this.state.totalPages > 1 ? (
               <Pagination
-                defaultActivePage={this.state.page}
                 activePage={this.state.activePage}
                 firstItem={null}
                 lastItem={null}
@@ -354,7 +352,7 @@ export class NewsFeedWidget extends Component {
                 secondary
                 totalPages={this.state.totalPages}
                 onPageChange={(e, d) => {
-                  this.setState({ page: d.activePage });
+                  this.setState({ activePage: d.activePage });
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               />

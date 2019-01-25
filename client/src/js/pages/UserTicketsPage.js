@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Container, Modal, Segment, Divider } from 'semantic-ui-react';
+import { Grid, Header, Container, Modal, Segment, Divider, Pagination } from 'semantic-ui-react';
 import { TicketWidget } from '../widgets/TicketWidget';
 import { ticketService } from '../services/TicketServices';
 import { ModalTicketWidget } from '../widgets/TicketFormWidget';
@@ -25,7 +25,11 @@ export class UserTicketsPage extends Component {
       ticket: null,
       tickets: [],
       messageOpen: false,
-      selectedTicket: ''
+      selectedTicket: '',
+      news: [],
+      newsOptions: [],
+      activePage: 1,
+      totalPages: 0
     };
   }
 
@@ -73,9 +77,32 @@ export class UserTicketsPage extends Component {
   };
 
   componentWillMount() {
-    ticketService.getTickets().then(res => {
-      this.setState({ tickets: res.data });
-    });
+    let news = [];
+    let ids = [];
+    let newsOptions = [];
+    ticketService
+      .getTickets()
+      .then(res => {
+        this.setState({ tickets: res.data, totalPages: Math.ceil(res.data.length / 9) });
+      })
+      .then(() => {
+        categoryService
+          .getCategories()
+          .then(res => {
+            res.data.map(cat => {
+              ids.push(cat.id);
+            });
+          })
+          .then(() => {
+            newsService.getFilteredNews(Cookies.get('municipalId'), ids, 0, 0).then(res => {
+              res.data.map(news => {
+                newsOptions.push({ key: news.id, value: news.id, text: news.title });
+              });
+              news = res.data;
+              this.setState({ news: news, newsOptions: newsOptions });
+            });
+          });
+      });
   }
 
   deleteTicket(id) {
@@ -107,17 +134,46 @@ export class UserTicketsPage extends Component {
           <Divider hidden />
           <Header as="h1">Mine varslinger</Header>
           <Segment basic color="blue">
-            <Grid stackable container columns={3}>
-              {this.state.tickets.map(ticket =>
-                ticket.status !== SOFT_DELETED ? (
-                  <Grid.Column key={ticket.id}>
-                    <TicketWidget ticket={ticket} show={this.show} />
-                  </Grid.Column>
-                ) : null
-              )}
+            <Grid stackable container doubling columns={3}>
+              {this.state.tickets.map((ticket, i) => (
+                <React.Fragment key={ticket.id}>
+                  {i <= this.state.activePage * 9 - 1 && i > (this.state.activePage - 1) * 9 - 1 ? (
+                    <Grid.Column key={ticket.id}>
+                      <TicketWidget
+                        ticket={ticket}
+                        show={this.show}
+                        news={this.state.news}
+                        newsOptions={this.state.newsOptions}
+                      />
+                    </Grid.Column>
+                  ) : null}
+                </React.Fragment>
+              ))}
             </Grid>
           </Segment>
         </Container>
+        <Divider hidden />
+        <Divider hidden />
+        <Divider hidden />
+        {this.state.totalPages > 1 ? (
+          <Container textAlign="center">
+            <Pagination
+              defaultActivePage={this.state.activePage}
+              firstItem={null}
+              lastItem={null}
+              pointing
+              secondary
+              totalPages={this.state.totalPages}
+              onPageChange={(e, d) => {
+                this.setState({ activePage: d.activePage });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+            <Divider hidden />
+            <Divider hidden />
+            <Divider hidden />
+          </Container>
+        ) : null}
         <ModalTicketWidget
           open={this.state.showEditTicket}
           editTicket={this.editTicket}
