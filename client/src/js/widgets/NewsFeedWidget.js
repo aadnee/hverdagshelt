@@ -129,31 +129,58 @@ export class NewsFeedWidget extends Component {
   }
 
   getNews() {
-    this.setState({ loading: true });
-    setTimeout(() => {
-      const munsearch =
-        this.state.selectedMunicipals.length > 0
-          ? this.state.selectedMunicipals
-          : this.state.municipals.map(m => m.key);
-      const catsearch =
-        this.state.selectedCategories.length > 0
-          ? this.state.selectedCategories
-          : this.state.categories.map(c => c.key);
+    if (!this.props.archive) {
+      this.setState({ loading: true });
+      setTimeout(() => {
+        const munsearch =
+          this.state.selectedMunicipals.length > 0
+            ? this.state.selectedMunicipals
+            : this.state.municipals.map(m => m.key);
+        const catsearch =
+          this.state.selectedCategories.length > 0
+            ? this.state.selectedCategories
+            : this.state.categories.map(c => c.key);
 
-      newsService
-        .getFilteredNews(munsearch, catsearch, 0, 0)
-        .then(res => {
-          if (res.success) {
-            this.setState({ news: res.data, loading: false });
-          } else {
+        newsService
+          .getFilteredNews(munsearch, catsearch, 0, 0)
+          .then(res => {
+            if (res.success) {
+              this.setState({ news: res.data, loading: false });
+            } else {
+              this.setState({ loading: false });
+            }
+          })
+          .catch(err => {
+            console.error(err);
             this.setState({ loading: false });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          this.setState({ loading: false });
-        });
-    }, 10);
+          });
+      }, 10);
+    } else {
+      this.setState({ loading: true });
+      setTimeout(() => {
+        const munsearch =
+          this.state.selectedMunicipals.length > 0
+            ? this.state.selectedMunicipals
+            : this.state.municipals.map(m => m.key);
+        const catsearch =
+          this.state.selectedCategories.length > 0
+            ? this.state.selectedCategories
+            : this.state.categories.map(c => c.key);
+        newsService
+          .getFilteredNews(munsearch, catsearch, 0, 0)
+          .then(res => {
+            if (res.success) {
+              this.setState({ news: res.data, loading: false });
+            } else {
+              this.setState({ loading: false });
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            this.setState({ loading: false });
+          });
+      }, 10);
+    }
   }
 
   loadMoreNews() {
