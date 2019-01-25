@@ -419,12 +419,13 @@ export function syncDatabase(callback) {
         rank: 2,
         municipalId: 1
       });
+
       await Tickets.create({
         title: 'Vei problem',
         description: 'Pls sett opp brøytestikker her.',
         status: 4,
-        lat: 1,
-        lon: 1,
+        lat: 64.5124,
+        lon: 10.876,
         address: 'Test street',
         categoryId: 7,
         userId: 1,
@@ -432,11 +433,23 @@ export function syncDatabase(callback) {
         subscribed: true
       });
       await Tickets.create({
-        title: 'Vei problem',
-        description: 'Pls sett opp brøytestikker her.',
+        title: 'Brøt veien her',
+        description: 'Veldig mye snø i veien.',
         status: 1,
-        lat: 1,
-        lon: 1,
+        lat: 63.7,
+        lon: 10.44,
+        address: 'Test street',
+        categoryId: 7,
+        userId: 1,
+        municipalId: 1,
+        subscribed: true
+      });
+      await Tickets.create({
+        title: 'Tre i veien',
+        description: 'Stort tre i veien som stenger for gjennomkjørlsel',
+        status: 1,
+        lat: 63,
+        lon: 10,
         address: 'Test street',
         categoryId: 8,
         userId: 1,
@@ -448,38 +461,41 @@ export function syncDatabase(callback) {
         title: 'Problem ved vei i TRD sentrum.',
         description: 'Brøytestikker skal bli satt opp.',
         status: 3,
-        lat: 1,
-        lon: 1,
+        lat: 63.78538,
+        lon: 10.7426,
         address: 'Test street',
         categoryId: 7,
         municipalId: 1
       });
       await News.create({
-        title: 'Enda en nyhet!',
-        description: 'Brøytestikker skal bli satt opp.',
+        title: 'Tre i veien ved Frostaveien 4',
+        description:
+          'Stort tre ligger i veien ved Frostaveien 4 på Buran. Vaktmestere er sendt til gata og jobber med saken',
         status: 2,
-        lat: 1,
-        lon: 1,
+        lat: 63.8,
+        lon: 10.763246,
         address: 'Test street',
         categoryId: 8,
         municipalId: 1
       });
       await News.create({
-        title: 'En nyhet',
-        description: 'Nyhet beskrivelse.',
-        status: 2,
-        lat: 1,
-        lon: 1,
+        title: 'Søppel i park',
+        description:
+          'Særdeles mye søppel i parken. Vaktmester har blitt varlset og problemet skal fikses i løpet av dagen. ',
+        status: 3,
+        lat: 63.2,
+        lon: 10.724,
         address: 'Test street',
         categoryId: 7,
         municipalId: 1
       });
+
       await Tickets.create({
-        title: 'Vei problem',
-        description: 'Pls sett opp brøytestikker her.',
+        title: 'Oversvømmelse',
+        description: 'Oversvømmelse på i Buran park. ',
         status: 3,
-        lat: 1,
-        lon: 1,
+        lat: 63.5,
+        lon: 10.65,
         address: 'Test street',
         categoryId: 7,
         userId: 1,
@@ -487,6 +503,20 @@ export function syncDatabase(callback) {
         newsId: 1,
         subscribed: true
       });
+      await Tickets.create({
+        title: 'Mye søppel',
+        description: 'Mye søppel i veien og rundt i parken. Ekkelt.',
+        status: 3,
+        lat: 63,
+        lon: 10.7,
+        address: 'Test street',
+        categoryId: 8,
+        userId: 1,
+        municipalId: 1,
+        newsId: 2,
+        subscribed: true
+      });
+
       await Subscriptions.create({
         newsId: 1,
         userId: 1
@@ -511,27 +541,16 @@ export function syncDatabase(callback) {
         userId: 3,
         municipalId: 1
       });
-      await Uploads.create({
-        filename: '123.png',
-        ticketId: 1
-      });
-      await Uploads.create({
-        filename: '123.png',
-        ticketId: 1
-      });
-      await Uploads.create({
-        filename: '123.png',
-        ticketId: 2
-      });
+
       await Events.create({
         title: 'Taco buffet',
         description: 'Deilig taco buffet med ost og lefser',
         area:
           '[{"lat":63.43201612964023,"lng":10.407967632807194},{"lat":63.43090857520207,"lng":10.40639117486217},{"lat":63.43048129510122,"lng":10.405108908398882},{"lat":63.42946152566984,"lng":10.403993069095725},{"lat":63.42806794456033,"lng":10.403021440771646},{"lat":63.42797195972445,"lng":10.405984788670711},{"lat":63.42945968855248,"lng":10.406176606337663},{"lat":63.43100492510339,"lng":10.410233922250184},{"lat":63.43183029681879,"lng":10.408772207870129}]',
         address: 'Nedre Bakklandet 47E, Trondheim',
-        start: '2019-01-23',
-        end: '2019-01-23',
-        municipalId: 2
+        start: '2019-02-05',
+        end: '2019-02-05',
+        municipalId: 1
       });
       await Events.create({
         title: 'Taco buffet LINDESNES',
@@ -541,7 +560,7 @@ export function syncDatabase(callback) {
         address: 'Kongsgårdsgata, Trondheim',
         start: '2019-02-29',
         end: '2019-02-29',
-        municipalId: 2
+        municipalId: 1
       });
       callback('Database synced.');
     }

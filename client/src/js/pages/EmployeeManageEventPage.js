@@ -32,7 +32,6 @@ export class EmployeeManageEventPage extends React.Component {
   componentWillMount() {
     //Fetch events
     eventService.getFilteredEvents(Cookies.get('municipalId'), 0, 0).then(res => {
-      console.log(res.data);
       this.setState({ eventList: res.data });
     });
   }
