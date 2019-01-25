@@ -51,7 +51,6 @@ export class RegisterEventWidget extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps != this.props) {
-      console.log(this.props);
       this.setState({ address: this.props.address, latlng: this.props.latlng });
     }
   }
@@ -135,8 +134,6 @@ export class RegisterEventWidget extends Component {
                       options={this.state.tags}
                       placeholder="Legg til tagger"
                       onAddItem={(event, data) => {
-                        console.log(data.value);
-                        console.log(this.state.tags);
                         this.state.tags.push({ key: data.value, value: data.value, text: data.value });
                       }}
                     />

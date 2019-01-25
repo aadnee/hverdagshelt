@@ -117,8 +117,6 @@ export class MapWidget extends Component {
     this.setState({ map: map, reverseSearch: reverseSearch });
 
     setTimeout(() => {
-      console.log('timeout');
-      console.log(this.state.placedMarker);
       if (!this.state.placedMarker && this.props.homepage) {
         this.goToast('bottom-left');
       }
@@ -357,7 +355,6 @@ export class MapWidget extends Component {
       toast.dismiss();
     }
     this.state.reverseSearch.latlng(e.latlng).run(function(error, result) {
-      console.log(result);
       if (result.address.CountryCode === 'NOR') {
         if (self.state.areaToggle) {
           self.state.area.push(e.latlng);

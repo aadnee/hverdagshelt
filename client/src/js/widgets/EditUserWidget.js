@@ -47,10 +47,6 @@ export class EditUserWidget extends Component {
     this.setState({ [key]: value });
   };
 
-  componentDidMount() {
-    console.log(this.state);
-  }
-
   handle = () => {
     if (this.state.name && this.state.email && this.state.phone && this.state.municipalId) {
       if (this.state.phone.toString().length < 10) {

@@ -73,7 +73,6 @@ export class LoginWidget extends Component {
                       fluid
                       size="large"
                       onClick={() => {
-                        console.log('click');
                         login(this.state.email, this.state.password);
                       }}
                     >

@@ -52,7 +52,6 @@ export class AdminRegisterWidget extends React.Component {
           municipalId: this.state.selectedOption
         };
 
-        console.log(newUser);
         this.props.handleRegister(newUser);
       } else {
         toast.error('Telefonnummeret kan ikke være lengre enn 9 siffer');

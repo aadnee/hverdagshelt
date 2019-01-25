@@ -88,24 +88,18 @@ export class PublishNewsFormWidget extends Component {
           companyOptions.push({ key: 2, value: company.id + 1, text: 'Company' });
         });
       });
-      //console.log(news);
-      this.setState(
-        {
-          title: news.title,
-          description: news.description,
-          receivedCategory: news.categoryId,
-          category: news.categoryId,
-          address: news.address,
-          position: [news.lat, news.lon],
-          status: news.status,
-          statusOptions: statusOptions,
-          company: news.companyId ? news.companyId : 4,
-          companyOptions: companyOptions
-        },
-        () => {
-          console.log(this.state.company);
-        }
-      );
+      this.setState({
+        title: news.title,
+        description: news.description,
+        receivedCategory: news.categoryId,
+        category: news.categoryId,
+        address: news.address,
+        position: [news.lat, news.lon],
+        status: news.status,
+        statusOptions: statusOptions,
+        company: news.companyId ? news.companyId : 4,
+        companyOptions: companyOptions
+      });
     }
     if (this.props.ticket) {
       let ticket = this.props.ticket;
@@ -245,9 +239,7 @@ export class PublishNewsFormWidget extends Component {
                                     }
                                   });
 
-                                  this.setState({ image: newImages }, () => {
-                                    console.log(this.state.image);
-                                  });
+                                  this.setState({ image: newImages });
                                 }}
                                 as={'a'}
                                 content={image.filename || image.name}
