@@ -198,6 +198,7 @@ export class UserEditFormWidget extends Component {
             <Segment stacked color="blue" basic>
               <p>Litt informasjon om brukeren</p>
               <Divider hidden />
+
               <Divider horizontal>
                 <Icon name="user" />
               </Divider>
