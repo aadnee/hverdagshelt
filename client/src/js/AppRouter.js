@@ -22,6 +22,7 @@ import {
   EmployeeEditNewscasePage,
   EmployeeManageAssignmentsPage,
   EmployeeEditAssignmentPage,
+  StatisticsPage,
   EntrepreneurAssignmentPage,
   ForgotPasswordPage,
   UserPage,
@@ -62,6 +63,7 @@ export class AppRouter extends Component {
           <EmployeeRoute exact path="/employee/news/:newscaseid/edit" component={EmployeeEditNewscasePage} />
           <EmployeeRoute exact path="/employee/assignments" component={EmployeeManageAssignmentsPage} />
           <EmployeeRoute exact path="/employee/assignments/:assignmentid/edit" component={EmployeeEditAssignmentPage} />
+          <EmployeeRoute exact path="/employee/Statistics" component={StatisticsPage} />
           {/* Entrepreneur */}
           <CompanyRoute exact path="/assignments" component={EntrepreneurAssignmentPage} />
           {/* Normal User */}

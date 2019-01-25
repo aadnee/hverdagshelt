@@ -33,12 +33,12 @@ export class EntrepreneurAssignmentPage extends Component {
     });
   };
 
-  handleStatus = (assigmentId, status) => {
-    console.log(2);
+  handleStatus = (assigmentId, status, feedback) => {
     this.state.assignments.map((assigment, index) => {
       if (assigment.id === assigmentId) {
         let tempAssigments = this.state.assignments;
         tempAssigments[index].companyStatus = status;
+        tempAssigments[index].feedback = feedback;
         this.setState({ assignments: tempAssigments });
         return true;
       }
