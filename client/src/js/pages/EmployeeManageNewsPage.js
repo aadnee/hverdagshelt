@@ -57,6 +57,7 @@ export class EmployeeManageNewsPage extends Component {
               news[i].executedBy = company.name;
             }
           });
+          console.log(companyOptions);
           this.setState({ news: news, companies: companies, companyOptions: companyOptions, executedBy: executedBy });
         });
       });
@@ -99,16 +100,16 @@ export class EmployeeManageNewsPage extends Component {
     });
   }
 
-  sendToCompany(id, companyId) {
+  sendToCompany(id, companyId, companyName) {
     return newsService.assignCompany(id, companyId).then(res => {
       if (res.success) {
         let index = -1;
         this.state.news.map((news, i) => (news.id === id ? (index = i) : null));
         let news = this.state.news;
         news[index].companyId = id;
-        //SET STATE EXECUTEDBY
+        console.log(news[index].executedBy);
+        news[index].executedBy = companyName;
         this.setState({ news: news });
-        this.forceUpdate();
         toast.success(res.message.no);
         return true;
       } else {
