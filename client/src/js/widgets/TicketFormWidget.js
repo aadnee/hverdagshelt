@@ -119,101 +119,101 @@ export class TicketFormWidget extends Component {
 
   render() {
     return (
-      <Container>
-        <Grid verticalAlign="middle">
-          <Grid.Column>
-            <Form size="large">
-              <Segment stacked={!this.props.borderless} basic={this.props.borderless}>
-                <Form.Field>
-                  <label>Addresse:</label>
-                  <Input
-                    fluid
-                    icon="map"
-                    iconPosition="left"
-                    placeholder="Velg posisjon på kartet"
-                    defaultValue={this.state.address}
-                    readOnly
-                    onClick={this.props.setupClick ? () => this.props.setupClick(this.state.address) : null}
-                  />
-                </Form.Field>
-                <Divider hidden />
-                <Form.Field>
-                  <label>Hva vil du melde inn?</label>
-                  <Input
-                    fluid
-                    icon="warning"
-                    iconPosition="left"
-                    placeholder={'Hva er problemet?'}
-                    value={this.state.title}
-                    onChange={(event, data) => {
-                      this.handleInput('title', data.value);
-                    }}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Utdyp problemet</label>
-                  <TextArea
-                    autoHeight
-                    placeholder={'Beskrivelse'}
-                    value={this.state.description}
-                    onChange={(event, data) => {
-                      this.handleInput('description', data.value);
-                    }}
-                  />
-                </Form.Field>
-                <Divider hidden />
-                <Form.Field>
-                  <Grid columns={'equal'}>
-                    <Grid.Column>
-                      <Form.Field>
-                        <label>Kategori</label>
-                        <Dropdown
-                          fluid
-                          search
-                          selection
-                          value={this.state.category}
-                          options={this.state.categoryOptions}
-                          placeholder="Kategori"
-                          onChange={(event, data) => {
-                            this.handleInput('category', data.value);
-                            this.setState({ selectedCategory: true }, () => {
-                              this.getSubCategories(data.value);
-                            });
-                          }}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Form.Field>
-                        <label>Underkategori</label>
-                        <Dropdown
-                          disabled={!this.state.category}
-                          fluid
-                          search
-                          selection
-                          options={this.state.subCategoryOptions}
-                          placeholder={'Underkategori'}
-                          value={this.state.subCategory}
-                          onChange={(event, data) => {
-                            this.handleInput('subCategory', data.value);
-                          }}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                  </Grid>
-                </Form.Field>
-                <Divider hidden />
-                <Form.Field>
-                  {!this.props.ticket ? (
-                    <Label as={'label'} basic htmlFor={'upload'}>
-                      <Button
-                        icon={'upload'}
-                        label={{
-                          basic: true,
-                          content: 'Last opp bilde'
+        <Container>
+          <Grid verticalAlign="middle">
+            <Grid.Column>
+              <Form size="large">
+                <Segment stacked={!this.props.borderless} basic={this.props.borderless}>
+                  <Form.Field>
+                    <label>Addresse:</label>
+                    <Input
+                        fluid
+                        icon="map"
+                        iconPosition="left"
+                        placeholder="Velg posisjon på kartet"
+                        defaultValue={this.state.address}
+                        readOnly
+                        onClick={this.props.setupClick ? () => this.props.setupClick(this.state.address) : (this.props.editTicket ? ()=>toast.info("Endring av posisjon er foreløpig ikke mulig, registrer saken på nytt om det haster", {autoClose: 5000}) : ()=> toast.info("Gå tilbake for å endre posisjon"))}
+                    />
+                  </Form.Field>
+                  <Divider hidden/>
+                  <Form.Field>
+                    <label>Hva vil du melde inn?</label>
+                    <Input
+                        fluid
+                        icon="warning"
+                        iconPosition="left"
+                        placeholder={'Hva er problemet?'}
+                        value={this.state.title}
+                        onChange={(event, data) => {
+                          this.handleInput('title', data.value);
                         }}
-                        labelPosition={'right'}
-                      />
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Utdyp problemet</label>
+                    <TextArea
+                        autoHeight
+                        placeholder={'Beskrivelse'}
+                        value={this.state.description}
+                        onChange={(event, data) => {
+                          this.handleInput('description', data.value);
+                        }}
+                    />
+                  </Form.Field>
+                  <Divider hidden/>
+                  <Form.Field>
+                    <Grid columns={'equal'}>
+                      <Grid.Column>
+                        <Form.Field>
+                          <label>Kategori</label>
+                          <Dropdown
+                              fluid
+                              search
+                              selection
+                              value={this.state.category}
+                              options={this.state.categoryOptions}
+                              placeholder="Kategori"
+                              onChange={(event, data) => {
+                                this.handleInput('category', data.value);
+                                this.setState({selectedCategory: true}, () => {
+                                  this.getSubCategories(data.value);
+                                });
+                              }}
+                          />
+                        </Form.Field>
+                      </Grid.Column>
+                      <Grid.Column>
+                        <Form.Field>
+                          <label>Underkategori</label>
+                          <Dropdown
+                              disabled={!this.state.category}
+                              fluid
+                              search
+                              selection
+                              options={this.state.subCategoryOptions}
+                              placeholder={'Underkategori'}
+                              value={this.state.subCategory}
+                              onChange={(event, data) => {
+                                this.handleInput('subCategory', data.value);
+                              }}
+                          />
+                        </Form.Field>
+                      </Grid.Column>
+                    </Grid>
+                  </Form.Field>
+                  <Divider hidden/>
+                  <Form.Field>
+                    {!this.props.ticket ? (
+                        <Label as={'label'} basic htmlFor={'upload'}>
+                          <Button
+                              icon={'upload'}
+                              label={{
+                                basic: true,
+                                content: 'Last opp bilde'
+                              }}
+                              labelPosition={'right'}
+                          />
 
                       <input
                         hidden

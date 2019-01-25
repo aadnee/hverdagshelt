@@ -10,5 +10,6 @@ export const { Provider, Consumer } = createContext({
   logout: () => {},
   unsubscribeNews: () => {},
   ticketSubmit: () => {},
-  convDbString: () => {}
+  convDbString: () => {},
+  prompt: () => {}
 });

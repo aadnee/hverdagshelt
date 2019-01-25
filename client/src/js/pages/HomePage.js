@@ -104,6 +104,7 @@ export class HomePage extends Component {
         openSearch
         submit={Consumer._currentValue.ticketSubmit}
         homepage
+        locate
       />
     );
     let panes = [

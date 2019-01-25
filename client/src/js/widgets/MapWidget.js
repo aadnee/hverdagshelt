@@ -4,11 +4,13 @@ import { NavLink } from 'react-router-dom';
 import L from 'leaflet';
 import * as ELG from 'esri-leaflet-geocoder';
 import 'esri-leaflet';
-import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Button, Icon, Modal, Container } from 'semantic-ui-react';
-import { TicketFormWidget } from '../widgets/TicketFormWidget';
-import { toast } from 'react-toastify';
-import { Consumer } from '../context';
+import {Map, Marker, Popup, TileLayer} from 'react-leaflet';
+import {Button, Icon, Modal, Container} from 'semantic-ui-react';
+import {TicketFormWidget} from '../widgets/TicketFormWidget';
+import {toast} from 'react-toastify';
+import {Consumer} from '../context';
+import {RegisterEventWidget} from "./RegisterEventWidget";
+import {eventService} from "../services/EventServices";
 
 //import {} from './';
 
@@ -16,9 +18,9 @@ export class MapWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      lat: 63.430478482010294,
-      lng: 10.395047769353868,
-      zoom: 13,
+      lat: 65.430478482010294,
+      lng: 12.395047769353868,
+      zoom: 5,
       placedMarker: false,
       markerPos: [null, null],
       map: null,
@@ -27,12 +29,12 @@ export class MapWidget extends Component {
       userPosMarker: null,
       userPos: [null, null],
       foundPos: false,
-      userInfo: null,
+      userInfo: '',
       area: [],
       counter: 0,
       poly: null,
       areaToggle: false,
-      info: null,
+      info: '',
       reverseSearch: null,
       reverseSearchRes: null,
       searchControl: null,
@@ -67,31 +69,27 @@ export class MapWidget extends Component {
     }
     if (this.props.locate) {
       map
-        .locate({ setView: true, maxZoom: 15, enableHighAccuracy: true })
-        .on('locationfound', function(e) {
-          if (e.accuracy < 100) {
-            reverseSearch.latlng(e.latlng).run(function(error, result) {
-              self.setState({
-                userInfo: result.address.Address + ', ' + result.address.Subregion,
-                userPos: [e.latitude, e.longitude],
-                foundPos: true
+          .locate({setView: true, maxZoom: 15, enableHighAccuracy: true})
+          .on('locationfound', function (e) {
+            if (e.accuracy < 100) {
+              reverseSearch.latlng(e.latlng).run(function (error, result) {
+                self.setState({
+                  userInfo: result.address.Address + ', ' + result.address.Subregion,
+                  userPos: e.latlng,
+                  foundPos: true
+                });
+                if (self.props.callbackPoint) {
+                  self.props.callbackPoint(e.latlng, result.address.Address + ', ' + result.address.Subregion);
+                }
+                if (self.props.callback) {
+                  self.props.callback(e.latlng, result.address.Address + ', ' + result.address.Subregion, result.address.Subregion);
+                }
               });
-              if (self.props.callbackPoint) {
-                self.props.callbackPoint(e.latlng, result.address.Address + ', ' + result.address.Subregion);
-              }
-              if (self.props.callback) {
-                self.props.callback(
-                  e.latlng,
-                  result.address.Address + ', ' + result.address.Subregion,
-                  result.address.Subregion
-                );
-              }
-            });
-          }
-        })
-        .on('locationerror', function(e) {
-          self.setState({ foundPos: false });
-        });
+            }
+          })
+          .on('locationerror', function (e) {
+            self.setState({foundPos: false});
+          });
     }
 
     if (this.props.searchControl) {
@@ -126,136 +124,156 @@ export class MapWidget extends Component {
   }
 
   goToast(pos) {
-    toast.info(
-      this.state.loggedIn ? (
-        'Trykk på kartet for å melde inn en sak'
-      ) : (
-        <>
-          <NavLink to={'/login'} style={{ color: 'white', textDecoration: 'underline' }}>
-            <b>Logg inn</b>
-          </NavLink>{' '}
-          eller{' '}
-          <NavLink to={'/register'} style={{ color: 'white', textDecoration: 'underline' }}>
-            <b>registrer deg</b>
-          </NavLink>{' '}
-          for å melde en sak
-        </>
-      ),
-      {
-        position: pos,
-        autoClose: false,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true
-      }
-    );
+    toast.info(this.state.loggedIn ? "Trykk på kartet for å melde inn en sak" :
+        <><NavLink to={'/login'} style={{color: 'white', textDecoration: 'underline'}}><b>Logg inn</b></NavLink> eller <NavLink to={'/register'} style={{color: 'white', textDecoration: 'underline'}}><b>registrer deg</b></NavLink> for å
+      melde en sak</>, {
+      position: pos,
+      autoClose: false,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true
+    });
   }
 
+  submitEvent = (title, description, start, end, municipalId, url, address, area) => {
+
+    //lat, lon  is fetched from the map
+
+    if (!title || !description || !area || !municipalId) {
+      toast.error('Vennligst fyll ut alle felt', {
+        position: toast.POSITION.TOP_RIGHT
+      });
+    } else {
+      eventService
+          .addEvent(title, description, JSON.stringify(area), address, start, end, municipalId, url)
+          .then(res => {
+            console.log(res);
+            if (res.success) {
+              toast.success(res.message.no, {
+                position: toast.POSITION.TOP_RIGHT
+              });
+              Consumer._currentValue.history.push({pathname: '/events'});
+            } else {
+              toast.error(res.message.no, {
+                position: toast.POSITION.TOP_RIGHT
+              });
+            }
+            console.log(res);
+          });
+    }
+  };
+
   render() {
+    setTimeout(() => {
+      if (!this.state.placedMarker && this.props.homepage) {
+        Consumer._currentValue.prompt();
+      }
+    }, 1000);
     let pos = [this.state.lat, this.state.lng];
     return (
-      <div>
-        {this.props.event ? (
-          <>
-            <Button.Group>
-              <Button toggle active={!this.state.areaToggle} onClick={() => this.areaToggler()}>
-                Punkt
-              </Button>
-              <Button.Or text="&harr;" />
-              <Button toggle active={this.state.areaToggle} onClick={() => this.areaToggler()}>
-                Område
-              </Button>
-            </Button.Group>
-            {this.state.areaToggle ? (
+        <div>
+          {this.props.areaControl ? (
               <>
-                <Button icon="undo" disabled={!this.state.area.length > 0} onClick={() => this.undoArea()} />
-                <Button icon="trash alternate" disabled={!this.state.area.length > 0} onClick={() => this.clear()} />
+                <Button.Group>
+                  <Button toggle active={!this.state.areaToggle} onClick={() => this.areaToggler()}>
+                    Punkt
+                  </Button>
+                  <Button.Or text="&harr;"/>
+                  <Button toggle active={this.state.areaToggle} onClick={() => this.areaToggler()}>
+                    Område
+                  </Button>
+                </Button.Group>
+                {this.state.areaToggle ? (
+                    <>
+                      <Button icon="undo" disabled={!this.state.area.length > 0} onClick={() => this.undoArea()}/>
+                      <Button icon="trash alternate" disabled={!this.state.area.length > 0}
+                              onClick={() => this.clear()}/>
+                    </>
+                ) : null}
+                {!this.state.areaToggle ? (
+                    <>
+                      <Button
+                          icon="trash alternate"
+                          disabled={!this.state.placedMarker}
+                          onClick={() => this.removeMarker()}
+                      />
+                    </>
+                ) : null}
               </>
-            ) : null}
-            {!this.state.areaToggle ? (
-              <>
-                <Button
-                  icon="trash alternate"
-                  disabled={!this.state.placedMarker}
-                  onClick={() => this.removeMarker()}
-                />
-              </>
-            ) : null}
-          </>
-        ) : null}
-        <Map
-          ref={this.mapRef}
-          center={pos}
-          zoom={this.state.zoom}
-          onClick={this.handleClick}
-          zoomControl={false}
-          maxZoom={19}
-        >
-          <TileLayer
-            url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
-          {this.state.placedMarker ? (
-            <Marker ref={this.markerRef} position={this.state.markerPos}>
-              <Popup open={true}>
-                <b>{this.state.info}</b>
-                <br />
-                {!this.state.loggedIn ? (
-                  <i>
-                    Du må <NavLink to={'/login'}>logge inn</NavLink> eller{' '}
-                    <NavLink to={'/register'}>registrere deg</NavLink> for å melde inn saker
-                  </i>
-                ) : null}
-                {this.props.modal && this.state.loggedIn ? (
-                  <Modal
-                    basic
-                    trigger={
-                      <Container textAlign={'center'}>
-                        <Button>Meld hendelse her</Button>
-                      </Container>
-                    }
-                    closeIcon
-                  >
-                    <TicketFormWidget
-                      submit={this.props.submit}
-                      latlng={this.state.markerPos}
-                      subregion={this.state.subregion}
-                      address={this.state.info}
-                    />
-                  </Modal>
-                ) : null}
-              </Popup>
-            </Marker>
           ) : null}
-          {this.state.foundPos ? (
-            <Marker ref={this.userMarkerPosRef} position={this.state.userPos} icon={this.greenIcon}>
-              <Popup open={true}>
-                <b>Din posisjon: {this.state.userInfo}</b>
-                <br />
-                {this.props.modal && this.state.loggedIn ? (
-                  <Modal
-                    basic
-                    trigger={
-                      <Container textAlign={'center'}>
-                        <Button>Meld hendelse her</Button>
-                      </Container>
-                    }
-                    closeIcon
-                  >
-                    <TicketFormWidget
-                      submit={this.props.submit}
-                      latlng={this.state.userPos}
-                      subregion={this.state.subregion}
-                      address={this.state.userInfo}
-                    />
-                  </Modal>
-                ) : null}
-              </Popup>
-            </Marker>
-          ) : null}
-        </Map>
-      </div>
+          <Map
+              ref={this.mapRef}
+              center={this.state.homepage ? pos: [65.23166147357855, 12.752327593637785]}
+              zoom={this.props.homepage ? this.state.zoom : 13}
+              onClick={this.handleClick}
+              zoomControl={false}
+              maxZoom={19}
+              minZoom={5}
+          >
+            <TileLayer
+                url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {this.state.placedMarker ? (
+                <Marker ref={this.markerRef} position={this.state.markerPos}>
+                  <Popup open={true}>
+                    <b>{this.state.info}</b>
+                    <br/>
+                    {!this.state.loggedIn ? (
+                        <i>Du må <NavLink to={'/login'}>logge inn</NavLink> eller <NavLink to={'/register'}>registrere deg</NavLink> for å melde inn saker</i>) : null}
+                    {this.props.modal && this.state.loggedIn ? (
+                        <Modal basic
+                               trigger={<Container textAlign={'center'}><Button> {this.props.event ? "Lag arrangement her" : "Meld hendelse her"}</Button></Container>}
+                               closeIcon>
+                          {this.props.event ?
+                              <RegisterEventWidget
+                                  latlng={[this.state.markerPos]}
+                                  address={this.state.info}
+                                  submit={this.submitEvent}
+                              />
+                          :<TicketFormWidget
+                                  submit={this.props.submit}
+                                  latlng={this.state.markerPos}
+                                  subregion={this.state.subregion}
+                                  address={this.state.info}
+                              />
+                          }
+
+                        </Modal>
+                    ) : null}
+                  </Popup>
+                </Marker>
+            ) : null}
+            {this.state.foundPos ? (
+                <Marker ref={this.userMarkerPosRef} position={this.state.userPos} icon={this.greenIcon}>
+                  <Popup open={true}>
+                    <b>Din posisjon: {this.state.userInfo}</b>
+                    <br/>
+                    {this.props.modal && this.state.loggedIn ? (
+                        <Modal basic
+                               trigger={<Container textAlign={'center'}><Button>Meld hendelse her</Button></Container>}
+                               closeIcon>
+                          {this.props.event ?
+                              <RegisterEventWidget
+                                  latlng={[this.state.userPos]}
+                                  address={this.state.userInfo}
+                                  submit={this.submitEvent}
+                              />
+                              : <TicketFormWidget
+                                  submit={this.props.submit}
+                                  latlng={this.state.userPos}
+                                  subregion={this.state.subregion}
+                                  address={this.state.userInfo}
+                              />
+                          }
+                        </Modal>
+                    ) : null}
+                  </Popup>
+                </Marker>
+            ) : null}
+          </Map>
+        </div>
     );
   }
 
@@ -294,16 +312,16 @@ export class MapWidget extends Component {
   clear() {
     this.state.map.removeLayer(this.state.poly);
     this.state.map.removeLayer(this.state.marker);
-    this.state.map.flyTo([this.state.lat, this.state.lng], 14);
-    this.setState({ placedMarker: false, area: [] });
+    this.state.map.flyTo(this.state.markerPos, 14);
+    this.setState({placedMarker: false, area: []});
     this.props.callbackArea([], '');
     this.props.placedMarker(false);
   }
 
   removeMarker() {
     this.state.map.removeLayer(this.state.marker);
-    this.state.map.flyTo([this.state.lat, this.state.lng], 14);
-    this.setState({ marker: null, placedMarker: false });
+    this.state.map.flyTo(this.state.markerPos, 14);
+    this.setState({marker: null, placedMarker: false});
     this.props.callbackPoint([], '');
     this.props.placedMarker(false);
   }
