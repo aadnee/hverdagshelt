@@ -44,12 +44,12 @@ class CompanyServices {
     return api.put('/api/tasks/' + newsId + '/accept');
   }
 
-  rejectTask(newsId) {
-    return api.put('/api/tasks/' + newsId + '/reject');
+  rejectTask(newsId, feedback) {
+    return api.put('/api/tasks/' + newsId + '/reject', { feedback: feedback });
   }
 
-  finishTask(newsId) {
-    return api.put('/api/tasks/' + newsId + '/finish');
+  finishTask(newsId, feedback) {
+    return api.put('/api/tasks/' + newsId + '/finish', { feedback: feedback });
   }
 }
 
