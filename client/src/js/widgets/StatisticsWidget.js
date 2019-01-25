@@ -1,6 +1,9 @@
 import React from 'react';
 import { Button, Segment, Dropdown, Label, Divider, Grid } from 'semantic-ui-react';
 import moment from 'moment';
+import { municipalService } from '../services/MunicipalServices';
+import { Consumer } from './../context';
+import FileSaver from 'file-saver';
 
 export class StatisticsWidget extends React.Component {
   constructor(props) {
@@ -24,11 +27,16 @@ export class StatisticsWidget extends React.Component {
       week: [],
       selYear: '',
       selMonth: '',
-      selWeek: ''
+      selWeek: '',
+      municipalId: null,
+      loading1: false,
+      loading2: false,
+      loading3: false
     };
   }
 
   componentWillMount(props) {
+    this.setState({ municipalId: Consumer._currentValue.user.municipalId });
     let weeks = [];
     for (let i = 1; i < 53; i++) {
       weeks.push({ text: i, value: i });
@@ -51,13 +59,44 @@ export class StatisticsWidget extends React.Component {
 
   handleGetState = type => {
     if (type === 'year') {
-      console.log(type);
+      this.setState({ loading1: true });
+      municipalService.getMunicipalStatistics(this.state.municipalId, this.state.selYear, null, null).then(res => {
+        let file = new Blob([res], { type: 'application/pdf' });
+        FileSaver.saveAs(file, 'hverdagshelt-' + this.state.municipalId + '-' + this.state.selYear + '.pdf');
+        this.setState({ loading1: false });
+      });
     }
     if (type === 'month') {
-      console.log(type);
+      this.setState({ loading2: true });
+      municipalService
+        .getMunicipalStatistics(this.state.municipalId, this.state.selYear, this.state.selMonth, null)
+        .then(res => {
+          let file = new Blob([res], { type: 'application/pdf' });
+          FileSaver.saveAs(
+            file,
+            'hverdagshelt-' +
+              this.state.municipalId +
+              '-' +
+              this.state.selYear +
+              '-month' +
+              this.state.selMonth +
+              '.pdf'
+          );
+          this.setState({ loading2: false });
+        });
     }
     if (type === 'week') {
-      console.log(type);
+      this.setState({ loading3: true });
+      municipalService
+        .getMunicipalStatistics(this.state.municipalId, this.state.selYear, null, this.state.selWeek)
+        .then(res => {
+          let file = new Blob([res], { type: 'application/pdf' });
+          FileSaver.saveAs(
+            file,
+            'hverdagshelt-' + this.state.municipalId + '-' + this.state.selYear + '-week' + this.state.selWeek + '.pdf'
+          );
+          this.setState({ loading3: false });
+        });
     }
   };
 
@@ -65,10 +104,9 @@ export class StatisticsWidget extends React.Component {
     return (
       <>
         <Grid>
-          <Grid.Column>
-            <label>Velg år:</label>
+          <Grid.Column width="4">
             <Dropdown
-              placeholder="Velg år:"
+              placeholder="Velg år"
               search
               fluid
               selection
@@ -77,9 +115,13 @@ export class StatisticsWidget extends React.Component {
                 this.handleChange('selYear', data.value);
               }}
             />
+          </Grid.Column>
+          <Grid.Column width="4">
             <Button
+              loading={this.state.loading1}
+              fluid
               floated={'right'}
-              content="Last ned statestikk for år"
+              content="Last ned for år"
               color={'blue'}
               icon={'download'}
               disabled={!this.state.selYear}
@@ -91,10 +133,9 @@ export class StatisticsWidget extends React.Component {
         </Grid>
         {this.state.selYear ? (
           <Grid>
-            <Grid.Column>
-              <label>Velg måned</label>
+            <Grid.Column width="4">
               <Dropdown
-                placeholder="Velg måned:"
+                placeholder="Velg måned"
                 search
                 fluid
                 selection
@@ -103,8 +144,12 @@ export class StatisticsWidget extends React.Component {
                   this.handleChange('selMonth', data.value);
                 }}
               />
+            </Grid.Column>
+            <Grid.Column width="4">
               <Button
-                content="Last ned statestikk for måned"
+                loading={this.state.loading2}
+                fluid
+                content="Last ned for måned"
                 floated={'right'}
                 color={'blue'}
                 icon={'download'}
@@ -118,10 +163,9 @@ export class StatisticsWidget extends React.Component {
         ) : null}
         {this.state.selYear ? (
           <Grid>
-            <Grid.Column>
-              <label>Velg uke nr.</label>
+            <Grid.Column width="4">
               <Dropdown
-                placeholder="Velg uke nr:"
+                placeholder="Velg uke nr"
                 search
                 fluid
                 selection
@@ -130,9 +174,12 @@ export class StatisticsWidget extends React.Component {
                   this.handleChange('selWeek', data.value);
                 }}
               />
-
+            </Grid.Column>
+            <Grid.Column width="4">
               <Button
-                content={'Last ned statestikk for uke'}
+                loading={this.state.loading3}
+                fluid
+                content={'Last ned for uke'}
                 floated={'right'}
                 disabled={!this.state.selWeek}
                 color={'blue'}

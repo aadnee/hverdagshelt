@@ -11,14 +11,15 @@ class MunicipalServices {
 
   getMunicipalStatistics(municipalId, year, month, week) {
     return api({
-      method: most,
+      method: 'POST',
       url: '/api/statistics/' + municipalId,
       data: {
         year: year,
         month: month,
         week: week
       },
-      responseType: 'stream'
+      responseType: 'arraybuffer'
+      //accept: 'application/pdf'
     });
   }
 }
