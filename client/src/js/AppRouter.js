@@ -14,6 +14,7 @@ import {
   AdminCompanyPage,
   AdminCategoriesPage,
   AdminEditCategoryPage,
+  ArchivePage,
   EmployeeManageTicketsPage,
   EmployeePublishTicketPage,
   EmployeeManageNewsPage,
@@ -71,6 +72,7 @@ export class AppRouter extends Component {
           <UserRoute exact path="/tickets" component={UserTicketsPage} />
           <UserRoute exact path="/tickets/:ticketid/edit" component={UserTicketsPage} />
           <UserRoute exact path="/subscriptions" component={UserSubscriptionPage} />
+          <UserRoute exact path="/Archive" component={ArchivePage} />
 
           {/* Others */}
           <NonLoggedInRoute exact path="/register" component={RegisterPage} />
