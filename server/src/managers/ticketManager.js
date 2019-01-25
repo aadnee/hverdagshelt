@@ -1,4 +1,4 @@
-import { Tickets, Users, Uploads, Categories, News, sequelize } from '../models';
+import { Tickets, Users, Uploads, Categories, News, Municipals, sequelize } from '../models';
 import newsManager from './newsManager';
 import mailManager from './mailManager';
 import subscriptionManager from './subscriptionManager';
@@ -12,37 +12,44 @@ module.exports = {
     lon,
     address,
     categoryId,
-    municipalId,
+    municipalName,
     subscribed,
     images,
     userId,
     callback
   ) {
-    Tickets.create({
-      title: title,
-      description: description,
-      status: 1,
-      lat: lat,
-      lon: lon,
-      address: address,
-      categoryId: categoryId,
-      userId: userId,
-      subscribed: subscribed,
-      municipalId: municipalId
+    Municipals.findOrCreate({
+      where: { name: municipalName }
     }).then(
       res => {
-        let ticketId = res.id;
-        images.map(img =>
-          Uploads.create({
-            filename: img.filename,
-            ticketId: ticketId
-          }).then(res => null, err => callback({ success: false, message: err }))
+        Tickets.create({
+          title: title,
+          description: description,
+          status: 1,
+          lat: lat,
+          lon: lon,
+          address: address,
+          categoryId: categoryId,
+          userId: userId,
+          subscribed: subscribed,
+          municipalId: res[0].id
+        }).then(
+          res => {
+            let ticketId = res.id;
+            images.map(img =>
+              Uploads.create({
+                filename: img.filename,
+                ticketId: ticketId
+              }).then(res => null, err => callback({ success: false, message: err }))
+            );
+            callback({
+              success: true,
+              message: { en: 'Ticket sent.', no: 'Varslingen ble sendt.' },
+              id: res.id
+            });
+          },
+          err => callback({ success: false, message: err })
         );
-        callback({
-          success: true,
-          message: { en: 'Ticket sent.', no: 'Varslingen ble sendt.' },
-          id: res.id
-        });
       },
       err => callback({ success: false, message: err })
     );
