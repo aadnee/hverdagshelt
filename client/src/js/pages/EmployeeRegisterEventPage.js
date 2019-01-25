@@ -106,11 +106,11 @@ export class EmployeeRegisterEventPage extends Component {
                   </Header>
                 </Divider>
                 <Button.Group>
-                  <Button toggle active={!this.state.areaToggle} onClick={() => this.mapWidget.areaToggler()}>
+                  <Button active={!this.state.areaToggle} color={!this.state.areaToggle ? 'blue' : null} onClick={() => this.mapWidget.areaToggler()}>
                     Punkt
                   </Button>
                   <Button.Or text="&harr;" />
-                  <Button toggle active={this.state.areaToggle} onClick={() => this.mapWidget.areaToggler()}>
+                  <Button active={this.state.areaToggle} color={this.state.areaToggle ? 'blue' : null} onClick={() => this.mapWidget.areaToggler()}>
                     Område
                   </Button>
                 </Button.Group>
