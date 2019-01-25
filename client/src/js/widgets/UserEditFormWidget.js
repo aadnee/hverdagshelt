@@ -216,7 +216,6 @@ export class UserEditFormWidget extends Component {
         <Grid.Column>
           <Form size="large">
             <Segment stacked color="blue" basic>
-              <p>Litt informasjon om brukeren</p>
               <Divider hidden />
               <Divider horizontal>
                 <Icon name="user" />
@@ -309,12 +308,14 @@ export class UserEditFormWidget extends Component {
                 <label>Legg til flere kommuner:</label>
                 <Dropdown
                   placeholder="Kommune"
+                  text={'Kommune'}
                   search
                   selection
                   options={this.state.municipalOptions}
                   onChange={(event, data) => {
-                    this.addMunicipals(data.options.map(e => e.value).indexOf(data.value));
-                    this.setState({ selectedMunicipal: true });
+                    if ((event.type !== 'keydown' && event.type !== 'blur') || event.key === 'Enter') {
+                      this.addMunicipals(data.options.map(e => e.value).indexOf(data.value));
+                    }
                   }}
                 />
               </Form.Field>

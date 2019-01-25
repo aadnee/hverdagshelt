@@ -145,7 +145,7 @@ export class ForgotPasswordWidget extends Component {
                 )}
               </Grid.Column>
             </Grid>
-            <Modal open={this.state.messageModal} onClose={this.closeMessage} basic size="small">
+            <Modal open={this.state.messageModal} onClose={this.closeMessage} closeIcon basic size="small">
               <Header icon="user" content={this.state.titleModal} />
               <Modal.Content>
                 <h3>{this.state.message}</h3>

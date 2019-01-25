@@ -209,7 +209,7 @@ export class RegisterEventWidget extends Component {
     );
   }
 }
-
+/*
 export class ModalTicketWidget extends Component {
   constructor(props) {
     super(props);
@@ -231,4 +231,4 @@ export class ModalTicketWidget extends Component {
       </Modal>
     );
   }
-}
+}*/
