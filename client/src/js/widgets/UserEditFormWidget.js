@@ -190,7 +190,7 @@ export class UserEditFormWidget extends Component {
   };
 
   render() {
-    console.log(Consumer._currentValue.user);
+    //console.log(Consumer._currentValue.user);
     return (
       <Container>
         <Grid.Column>
@@ -212,7 +212,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.firstName}
                       onChange={(event, data) => {
                         this.handleInput('firstName', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
@@ -222,7 +223,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.lastName}
                       onChange={(event, data) => {
                         this.handleInput('lastName', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                 </Grid>
               </Form.Field>
@@ -238,7 +240,8 @@ export class UserEditFormWidget extends Component {
                       value={this.state.phone}
                       onChange={(event, data) => {
                         this.handleInput('phone', data.value);
-                      }}/>
+                      }}
+                    />
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Input
@@ -285,13 +288,19 @@ export class UserEditFormWidget extends Component {
                 <br />
                 <label>Legg til flere kommuner:</label>
                 <Dropdown
-                  placeholder="Kommune"
+                  placeholder="Velg kommune"
+                  text="Velg kommune"
                   search
                   selection
                   options={this.state.municipalOptions}
                   onChange={(event, data) => {
-                    this.addMunicipals(data.options.map(e => e.value).indexOf(data.value));
-                    this.setState({ selectedMunicipal: true });
+                    console.log(event);
+
+                    if ((event.type !== 'keydown' && event.type !== 'blur') || event.key === 'Enter') {
+                      let index = data.options.map(e => e.value).indexOf(data.value);
+                      this.addMunicipals(index);
+                    }
+                    //this.setState({ selectedMunicipal: true });
                   }}
                 />
               </Form.Field>
