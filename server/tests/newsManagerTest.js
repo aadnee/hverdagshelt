@@ -113,3 +113,31 @@ describe('Get news', () => {
     });
   });
 });
+
+// Test for finish news
+describe('Get news', () => {
+  it('incorrect data', done => {
+    newsManager.finishNews('abc', function(news) {
+      expect({
+        success: news.success
+      }).toEqual({
+        success: false
+      });
+      done();
+    });
+  });
+});
+
+// Test for assign company
+describe('Get news', () => {
+  it('incorrect data', done => {
+    newsManager.assignCompany('abc', 1, function(news) {
+      expect({
+        success: news.success
+      }).toEqual({
+        success: false
+      });
+      done();
+    });
+  });
+});

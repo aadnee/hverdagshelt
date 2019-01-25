@@ -210,7 +210,7 @@ export class UserEditFormWidget extends Component {
   };
 
   render() {
-    console.log(Consumer._currentValue.user);
+    //console.log(Consumer._currentValue.user);
     return (
       <Container>
         <Grid.Column>

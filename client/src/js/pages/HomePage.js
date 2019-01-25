@@ -101,7 +101,7 @@ export class HomePage extends Component {
         menuItem: 'Arrangementer',
         render: () => (
           <Tab.Pane className="frontPageFeedTab">
-            <EventFeedWidget onRef={ref => (this.eventFeedRef = ref)} newsOnly />
+            <EventFeedWidget onRef={ref => (this.eventFeedRef = ref)} roof={5} newsOnly />
           </Tab.Pane>
         )
       }
