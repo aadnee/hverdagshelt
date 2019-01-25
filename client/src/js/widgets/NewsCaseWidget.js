@@ -264,9 +264,14 @@ export class NewsCaseWidget extends Component {
               </Grid.Column>
 
               <Grid.Column width={8} style={{ width: '100%', height: '100%', maxHeight: 233 }}>
+                {console.log(this.props.newscase.uploads)}
                 <Image style={{ width: '100%', height: '100%' }}>
-                  {this.props.newscase.uploads.length > 0 ? (
-                    <Image src={'/uploads/' + this.props.newscase.uploads[0].filename} />
+                  {this.props.newscase.uploads ? (
+                    this.props.newscase.uploads.length > 0 ? (
+                      <Image src={'/uploads/' + this.props.newscase.uploads[0].filename} />
+                    ) : (
+                      <ShowInMapWidget latlng={[[this.props.newscase.lat, this.props.newscase.lon]]} newsMapOnly />
+                    )
                   ) : (
                     <ShowInMapWidget latlng={[[this.props.newscase.lat, this.props.newscase.lon]]} newsMapOnly />
                   )}

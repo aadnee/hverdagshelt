@@ -114,7 +114,7 @@ export class EmployeeManageTicketsPage extends React.Component {
               <>
                 {this.state.tickets.map((ticket, i) => (
                   <React.Fragment key={ticket.id}>
-                    {i <= this.state.page * 9 - 1 && i > (this.state.page - 1) * 9 - 1 ? (
+                    {i <= this.state.activePage * 9 - 1 && i > (this.state.activePage - 1) * 9 - 1 ? (
                       <Grid.Column>
                         <TicketWidget
                           employee

@@ -39,8 +39,7 @@ export class NewsFeedWidget extends Component {
       empty: false,
       ready: false,
       roof: this.props.roof || 0,
-      page: 1,
-      activePage: 0,
+      activePage: 1,
       totalPages: 0
     };
   }
@@ -243,7 +242,7 @@ export class NewsFeedWidget extends Component {
           <>
             {this.state.news.map((nc, i) => (
               <React.Fragment key={nc.id}>
-                {i <= this.state.page * 6 - 1 && i > (this.state.page - 1) * 6 - 1 ? (
+                {i <= this.state.activePage * 6 - 1 && i > (this.state.activePage - 1) * 6 - 1 ? (
                   <NewsCaseWidget
                     newscase={nc}
                     archive={this.props.archive ? true : false}

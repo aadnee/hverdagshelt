@@ -28,7 +28,7 @@ export class UserTicketsPage extends Component {
       selectedTicket: '',
       news: [],
       newsOptions: [],
-      page: 1,
+      activePage: 1,
       totalPages: 0
     };
   }
@@ -137,7 +137,7 @@ export class UserTicketsPage extends Component {
             <Grid stackable container doubling columns={3}>
               {this.state.tickets.map((ticket, i) => (
                 <React.Fragment key={ticket.id}>
-                  {i <= this.state.page * 9 - 1 && i > (this.state.page - 1) * 9 - 1 ? (
+                  {i <= this.state.activePage * 9 - 1 && i > (this.state.activePage - 1) * 9 - 1 ? (
                     <Grid.Column key={ticket.id}>
                       <TicketWidget
                         ticket={ticket}
@@ -158,14 +158,14 @@ export class UserTicketsPage extends Component {
         {this.state.totalPages > 1 ? (
           <Container textAlign="center">
             <Pagination
-              defaultActivePage={this.state.page}
+              defaultActivePage={this.state.activePage}
               firstItem={null}
               lastItem={null}
               pointing
               secondary
               totalPages={this.state.totalPages}
               onPageChange={(e, d) => {
-                this.setState({ page: d.activePage });
+                this.setState({ activePage: d.activePage });
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             />
