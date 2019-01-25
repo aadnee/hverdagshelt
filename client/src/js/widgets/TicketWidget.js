@@ -26,8 +26,10 @@ export class TicketWidget extends Component {
 
       ticket: this.props.ticket,
       createdAt: this.props.ticket.createdAt,
-      newsOptions: [],
+
       news: [],
+      newsOptions: [],
+
       newsCase: null
     };
   }
@@ -40,12 +42,17 @@ export class TicketWidget extends Component {
   }
 
   componentWillMount() {
-    if (this.props.news) {
-      this.setState({ news: this.props.news, newsOptions: this.props.newsOptions });
+    if (this.props.ticket) {
+      if (this.props.ticket.newsId) {
+        let newsId = this.props.ticket.newsId;
+        newsService.getArticle(newsId).then(res => {
+          this.setState({ newsCase: res.data });
+        });
+      }
     }
-  }
-  componentWillReceiveProps(nextProps, nextContext) {
-    this.setState({ news: nextProps.news });
+    if (this.props.newsOptions) {
+      this.setState({ newsOptions: this.props.newsOptions });
+    }
   }
 
   link() {
@@ -53,14 +60,8 @@ export class TicketWidget extends Component {
     this.props.link(this.state.selectedNews);
   }
 
-  showNews(id) {
-    let news = null;
-    console.log(this.state.news);
-    news = this.state.news.find(n => n.id === id);
-
-    this.setState({ newsCase: news }, () => {
-      this.setState({ newsModalOpen: true });
-    });
+  showNews() {
+    this.setState({ newsModalOpen: true });
   }
 
   accept = (title, description, lat, lon, address, subCategory, publish, mun, image) => {
@@ -100,7 +101,7 @@ export class TicketWidget extends Component {
         <Card.Content>
           <Header>
             <Header.Content>
-              {this.state.ticket.title + this.state.ticket.id}
+              {this.state.ticket.title}
               <Header.Subheader>{this.state.ticket.category}</Header.Subheader>
               {this.state.ticket.subCategory ? (
                 <Header.Subheader>{this.state.ticket.subCategory}</Header.Subheader>
@@ -207,7 +208,7 @@ export class TicketWidget extends Component {
                 inverted
                 primary
                 onClick={() => {
-                  this.showNews(this.props.ticket.newsId);
+                  this.showNews();
                 }}
               >
                 Vis nyheten
