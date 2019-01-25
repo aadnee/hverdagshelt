@@ -219,7 +219,7 @@ export class EmployeeManageTicketsPage extends React.Component {
         position: toast.POSITION.TOP_RIGHT
       });
     } else {
-      ticketService.rejectTicket(id).then(res => {
+      ticketService.rejectTicket(id, msg).then(res => {
         if (res.success) {
           this.setState({ tickets: this.state.tickets.filter(t => t.id !== id), modalOpen: false });
 
