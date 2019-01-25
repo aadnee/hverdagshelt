@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { Card, Image, Icon, Button, Header, Placeholder, Label, Modal, Dropdown } from 'semantic-ui-react';
 import { Consumer } from './../context';
 import { PENDING, DONE, REJECTED, STATUS } from '../commons';
+import { ShowInMapWidget } from './ShowInMapWidget';
 
 import { PublishNewsFormWidget } from './PublishNewsFormWidget';
 import { newsService } from '../services/NewsServices';
@@ -76,9 +77,11 @@ export class TicketWidget extends Component {
     return (
       <Card centered>
         <Image>
-          <Image
-            src={this.state.ticket.uploads.length > 0 ? '/uploads/' + this.state.ticket.uploads[0].filename : null}
-          />
+          {this.state.ticket.uploads.length > 0 ? (
+            <Image src={'/uploads/' + this.state.ticket.uploads[0].filename} />
+          ) : (
+            <ShowInMapWidget latlng={[[this.state.ticket.lat, this.state.ticket.lon]]} ticketMapOnly />
+          )}
           {this.state.ticket.status === PENDING && !this.props.employee ? (
             <Label color="yellow" ribbon="right">
               {STATUS[PENDING - 1].norwegian}

@@ -123,7 +123,7 @@ export class EmployeeManageTicketsPage extends React.Component {
             ) : (
               <>
                 {this.state.tickets.map((ticket, i) => (
-                  <React.Fragment key={i}>
+                  <React.Fragment key={ticket.id}>
                     {i <= this.state.page * 9 - 1 && i > (this.state.page - 1) * 9 - 1 ? (
                       <Grid.Column>
                         <TicketWidget
@@ -189,13 +189,16 @@ export class EmployeeManageTicketsPage extends React.Component {
           <Divider hidden />
           {!this.state.loading && this.state.totalPages > 1 ? (
             <Pagination
-              defaultActivePage={this.state.page}
+              activePage={this.state.totalPages}
               firstItem={null}
               lastItem={null}
               pointing
               secondary
               totalPages={this.state.totalPages}
-              onPageChange={(e, d) => this.setState({ page: d.activePage })}
+              onPageChange={(e, d) => {
+                this.setState({ page: d.activePage });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             />
           ) : null}
           <Divider hidden />
@@ -209,9 +212,6 @@ export class EmployeeManageTicketsPage extends React.Component {
   }
 
   reject(id, msg) {
-    console.log(id);
-    console.log(msg);
-
     if (!id) {
       toast.error('Noe gikk galt, prøv igjen', {
         position: toast.POSITION.TOP_RIGHT

@@ -28,9 +28,9 @@ export class ShowInMapWidget extends Component {
     } else {
       cent = this.props.latlng[0];
     }
+    const mouseStyle = this.props.pointer ? 'mapPointer' : '';
 
     if (this.props.mapOnly) {
-      const mouseStyle = this.props.pointer ? 'mapPointer' : '';
       return (
         <Map
           ref={this.mapRef}
@@ -40,6 +40,52 @@ export class ShowInMapWidget extends Component {
           scrollWheelZoom={false}
           zoom={this.props.zoom || 15}
           style={{ height: '200px', width: '200px' }}
+          className={mouseStyle}
+        >
+          <TileLayer
+            url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {this.props.latlng.length > 2 ? (
+            <Polygon positions={this.props.latlng} />
+          ) : (
+            <Marker position={this.props.latlng[0]} />
+          )}
+        </Map>
+      );
+    } else if (this.props.ticketMapOnly) {
+      return (
+        <Map
+          ref={this.mapRef}
+          dragging={false}
+          center={cent}
+          zoomControl={false}
+          scrollWheelZoom={false}
+          zoom={this.props.zoom || 15}
+          style={{ height: 200, width: '100%' }}
+          className={mouseStyle}
+        >
+          <TileLayer
+            url="https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {this.props.latlng.length > 2 ? (
+            <Polygon positions={this.props.latlng} />
+          ) : (
+            <Marker position={this.props.latlng[0]} />
+          )}
+        </Map>
+      );
+    } else if (this.props.newsMapOnly) {
+      return (
+        <Map
+          ref={this.mapRef}
+          dragging={false}
+          center={cent}
+          zoomControl={false}
+          scrollWheelZoom={false}
+          zoom={this.props.zoom || 15}
+          style={{ height: 150, width: '100%' }}
           className={mouseStyle}
         >
           <TileLayer

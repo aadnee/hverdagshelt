@@ -242,7 +242,7 @@ export class NewsFeedWidget extends Component {
         return (
           <>
             {this.state.news.map((nc, i) => (
-              <React.Fragment key={i}>
+              <React.Fragment key={nc.id}>
                 {i <= this.state.page * 6 - 1 && i > (this.state.page - 1) * 6 - 1 ? (
                   <NewsCaseWidget
                     newscase={nc}
@@ -346,7 +346,6 @@ export class NewsFeedWidget extends Component {
           <Container textAlign="center">
             {this.state.totalPages > 1 ? (
               <Pagination
-                defaultActivePage={this.state.page}
                 activePage={this.state.activePage}
                 firstItem={null}
                 lastItem={null}

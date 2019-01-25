@@ -167,7 +167,7 @@ export class EventFeedWidget extends Component {
       return (
         <>
           {this.state.news.map((nc, i) => (
-            <React.Fragment key={i}>
+            <React.Fragment key={nc.id}>
               {i <= this.state.page * 6 - 1 && i > (this.state.page - 1) * 6 - 1 ? (
                 <EventWidget key={nc.id} event={nc} />
               ) : null}
@@ -238,19 +238,23 @@ export class EventFeedWidget extends Component {
         <Divider hidden />
         <Container textAlign="center">
           {this.state.totalPages > 1 ? (
-            <Pagination
-              defaultActivePage={this.state.page}
-              activePage={this.state.activePage}
-              firstItem={null}
-              lastItem={null}
-              pointing
-              secondary
-              totalPages={this.state.totalPages}
-              onPageChange={(e, d) => {
-                this.setState({ page: d.activePage });
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-            />
+            <>
+              <Pagination
+                activePage={this.state.activePage}
+                firstItem={null}
+                lastItem={null}
+                pointing
+                secondary
+                totalPages={this.state.totalPages}
+                onPageChange={(e, d) => {
+                  this.setState({ page: d.activePage });
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+              <Divider hidden />
+              <Divider hidden />
+              <Divider hidden />
+            </>
           ) : null}
         </Container>
       </>
