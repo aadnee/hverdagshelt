@@ -60,7 +60,6 @@ export class RegisterWidget extends React.Component {
 
   handleSubmit = () => {
     //USERSERICE -> request cookie
-    console.log('submitting');
     if (
       this.state.firstname &&
       this.state.lastname &&

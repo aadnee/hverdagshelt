@@ -168,7 +168,7 @@ export class EventFeedWidget extends Component {
         <>
           {this.state.news.map((nc, i) => (
             <React.Fragment key={nc.id}>
-              {i <= this.state.page * 6 - 1 && i > (this.state.page - 1) * 6 - 1 ? (
+              {i <= this.state.activePage * 6 - 1 && i > (this.state.activePage - 1) * 6 - 1 ? (
                 <EventWidget key={nc.id} event={nc} />
               ) : null}
             </React.Fragment>
@@ -240,14 +240,14 @@ export class EventFeedWidget extends Component {
           {this.state.totalPages > 1 ? (
             <>
               <Pagination
-                defaultActivePage={this.state.activePage}
+                activePage={this.state.activePage}
                 firstItem={null}
                 lastItem={null}
                 pointing
                 secondary
                 totalPages={this.state.totalPages}
                 onPageChange={(e, d) => {
-                  this.setState({ page: d.activePage });
+                  this.setState({ activePage: d.activePage });
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               />

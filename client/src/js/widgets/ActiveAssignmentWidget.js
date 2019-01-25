@@ -44,7 +44,6 @@ export class ActiveAssignmentWidget extends Component {
   };
 
   handleStatus = () => {
-    console.log(this.state.modalType);
     if (this.state.modalType === 'cancelModal') {
       companyService.rejectTask(this.props.assignment.id, this.state.feedback).then(res => {
         if (res.success) {
@@ -55,7 +54,6 @@ export class ActiveAssignmentWidget extends Component {
         }
       });
     } else if (this.state.modalType === 'doneModal') {
-      console.log(this.state.modalType, 'done');
       companyService.finishTask(this.props.assignment.id, this.state.feedback).then(res => {
         if (res.success) {
           toast.success(res.message.no);
@@ -68,13 +66,8 @@ export class ActiveAssignmentWidget extends Component {
   };
 
   handleChange = (name, value) => {
-    console.log(name, value);
     this.setState({ [name]: value });
   };
-
-  componentWillMount() {
-    console.log(this.state.modalType);
-  }
 
   componentWillUnmount() {
     this.closeModal();

@@ -39,7 +39,6 @@ export class ForgotPasswordWidget extends Component {
     userService.sendReset(this.state.email).then(res => {
       if (res.success) {
         this.setState({ sentMail: false });
-        console.log(res);
       } else {
         toast.error(res.message.no);
         this.setState({ loading: false });

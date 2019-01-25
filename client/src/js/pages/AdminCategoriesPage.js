@@ -117,7 +117,6 @@ export class AdminCategoriesPage extends Component {
   };
 
   editCategory = (selectedCat, newName) => {
-    console.log(selectedCat);
     categoryService.editCategory(selectedCat.id, newName).then(res => {
       res.success
         ? toast.success(res.message.no, { position: toast.POSITION.TOP_RIGHT })

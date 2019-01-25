@@ -235,10 +235,8 @@ export class NewsCaseWidget extends Component {
                               <Button
                                 color={'blue'}
                                 onClick={() => {
-                                  console.log(this.state);
                                   let compName = this.state.companyOptions.find(c => c.value === this.state.company)
                                     .text;
-                                  console.log(compName);
                                   this.sendToCompany(this.state.company, compName);
                                 }}
                               >
@@ -265,8 +263,12 @@ export class NewsCaseWidget extends Component {
 
               <Grid.Column width={8} style={{ width: '100%', height: '100%', maxHeight: 233 }}>
                 <Image style={{ width: '100%', height: '100%' }}>
-                  {this.props.newscase.uploads.length > 0 ? (
-                    <Image src={'/uploads/' + this.props.newscase.uploads[0].filename} />
+                  {this.props.newscase.uploads ? (
+                    this.props.newscase.uploads.length > 0 ? (
+                      <Image src={'/uploads/' + this.props.newscase.uploads[0].filename} />
+                    ) : (
+                      <ShowInMapWidget latlng={[[this.props.newscase.lat, this.props.newscase.lon]]} newsMapOnly />
+                    )
                   ) : (
                     <ShowInMapWidget latlng={[[this.props.newscase.lat, this.props.newscase.lon]]} newsMapOnly />
                   )}

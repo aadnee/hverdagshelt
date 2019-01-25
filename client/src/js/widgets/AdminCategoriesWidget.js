@@ -51,7 +51,6 @@ export class AdminCategoriesWidget extends Component {
   };
 
   editCat = (cat, newName) => {
-    console.log(cat);
     this.props.editCat(cat, newName);
     this.closeModalNewName();
     this.setState({ mainCategory: '', subCategory: '' });
@@ -76,7 +75,6 @@ export class AdminCategoriesWidget extends Component {
   };
 
   handleChange = (name, value) => {
-    console.log(name, value);
     this.setState({ [name]: value });
   };
 

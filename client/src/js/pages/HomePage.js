@@ -65,7 +65,6 @@ export class HomePage extends Component {
   placeMarkers() {
     if (!this.renderedOnce) {
       this.renderedOnce = true;
-      console.log('Render: ' + this.renderedOnce);
       setTimeout(() => {
         this.state.news.map(newscase => {
           if (newscase.municipalId === 1) {
@@ -92,7 +91,7 @@ export class HomePage extends Component {
             }
           }
         });
-      }, 100);
+      }, 10);
     }
   }
 
@@ -105,6 +104,7 @@ export class HomePage extends Component {
         openSearch
         submit={Consumer._currentValue.ticketSubmit}
         homepage
+        locate
       />
     );
     let panes = [

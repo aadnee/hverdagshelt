@@ -193,8 +193,8 @@ module.exports = {
     );
   },
 
-  getPendingTicketCount: function(callback) {
-    Tickets.count({ where: { status: 1 } }).then(
+  getPendingTicketCount: function(municipalId, callback) {
+    Tickets.count({ where: { status: 1, municipalId: municipalId } }).then(
       res => callback({ success: true, data: res }),
       err => callback({ success: false, message: err })
     );
