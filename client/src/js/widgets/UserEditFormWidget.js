@@ -295,8 +295,6 @@ export class UserEditFormWidget extends Component {
                   selection
                   options={this.state.municipalOptions}
                   onChange={(event, data) => {
-                    console.log(event);
-
                     if ((event.type !== 'keydown' && event.type !== 'blur') || event.key === 'Enter') {
                       let index = data.options.map(e => e.value).indexOf(data.value);
                       this.addMunicipals(index);
