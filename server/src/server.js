@@ -189,7 +189,7 @@ app.post('/api/news/filter', (req, res) => {
 
 app.post('/api/news/archive', (req, res) => {
   let b = req.body;
-  newsManager.getArchivedNews(b.municipalIds, function(result) {
+  newsManager.getArchivedNews(b.municipalIds, b.categoryIds, b.page, b.limit, function(result) {
     res.json(result);
   });
 });
@@ -323,18 +323,20 @@ app.put('/api/tasks/:newsId/accept', ensureLogin, (req, res) => {
 });
 
 app.put('/api/tasks/:newsId/reject', ensureLogin, (req, res) => {
+  let b = req.body;
   let p = req.params;
   getUserId(req, function(userId) {
-    companyManager.rejectTask(userId, p.newsId, function(result) {
+    companyManager.rejectTask(userId, p.newsId, b.feedback, function(result) {
       res.json(result);
     });
   });
 });
 
 app.put('/api/tasks/:newsId/finish', ensureLogin, (req, res) => {
+  let b = req.body;
   let p = req.params;
   getUserId(req, function(userId) {
-    companyManager.finishTask(userId, p.newsId, function(result) {
+    companyManager.finishTask(userId, p.newsId, b.feedback, function(result) {
       res.json(result);
     });
   });
