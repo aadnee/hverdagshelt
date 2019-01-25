@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Modal } from 'semantic-ui-react';
+import { Button, Modal, Icon } from 'semantic-ui-react';
 
 export class MessageWidget extends React.Component {
   constructor(props) {
@@ -35,10 +35,11 @@ export class MessageWidget extends React.Component {
           <p>{this.props.message}</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button negative onClick={this.close}>
-            Nei
+          <Button inverted color="blue" onClick={this.close}>
+              <Icon name="remove"/>
+              Nei
           </Button>
-          <Button positive icon="checkmark" labelPosition="right" content="Ja" onClick={() => this.customFunc()} />
+          <Button color="blue" icon="checkmark" labelPosition="right" content="Ja" onClick={() => this.customFunc()} />
         </Modal.Actions>
       </Modal>
     );

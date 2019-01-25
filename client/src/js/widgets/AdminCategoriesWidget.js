@@ -96,9 +96,10 @@ export class AdminCategoriesWidget extends Component {
           <Header as="h3">
             Hovedkategori:
             <Button.Group floated="right">
-              <Button positive content="Rediger" onClick={() => this.openModalNewName('mainEdit')} />
+              <Button color="blue" content="Rediger" onClick={() => this.openModalNewName('mainEdit')} />
               <Button
-                negative
+                inverted
+                color="blue"
                 content="Slett"
                 onClick={() => {
                   this.deleteCat('main');
@@ -110,7 +111,7 @@ export class AdminCategoriesWidget extends Component {
           <List divided relaxed size="large">
             <List.Item>
               <List.Content>
-                <Button inverted color="green" fluid onClick={() => this.openModalNewName('newMainCat')}>
+                <Button inverted color="blue" fluid onClick={() => this.openModalNewName('newMainCat')}>
                   Legg til hovedkategori
                 </Button>
               </List.Content>
@@ -135,14 +136,14 @@ export class AdminCategoriesWidget extends Component {
             <Header as="h3">
               Underkategorier:
               <Button.Group floated="right">
-                <Button positive content="Rediger" onClick={() => this.openModalNewName('subEdit')} />
-                <Button negative content="Slett" onClick={this.deleteCat} />
+                <Button inverted color="blue" content="Rediger" onClick={() => this.openModalNewName('subEdit')} />
+                <Button color="blue" content="Slett" onClick={this.deleteCat} />
               </Button.Group>
             </Header>
             <List divided relaxed size="large">
               <List.Item>
                 <List.Content>
-                  <Button inverted color="green" fluid onClick={() => this.openModalNewName('newSubCat')}>
+                  <Button inverted color="blue" fluid onClick={() => this.openModalNewName('newSubCat')}>
                     Legg til underkategorier i {this.state.mainCategory.name}
                   </Button>
                 </List.Content>
@@ -180,12 +181,12 @@ export class AdminCategoriesWidget extends Component {
             />
           </Modal.Content>
           <Modal.Actions>
-            <Button onClick={() => this.setState({ categoriesModal: false })} negative>
+            <Button onClick={() => this.setState({ categoriesModal: false })} inverted color="blue">
               Avbryt
             </Button>
             {this.state.edit === 'mainEdit' ? (
               <Button
-                positive
+                color="blue"
                 onClick={() => this.editCat(this.state.mainCategory, this.state.name)}
                 icon="checkmark"
                 labelPosition="right"
@@ -194,7 +195,7 @@ export class AdminCategoriesWidget extends Component {
             ) : null}
             {this.state.edit === 'subEdit' ? (
               <Button
-                positive
+                color="blue"
                 onClick={() => this.editCat(this.state.subCategory, this.state.name)}
                 icon="checkmark"
                 labelPosition="right"
@@ -203,7 +204,7 @@ export class AdminCategoriesWidget extends Component {
             ) : null}
             {this.state.edit === 'newMainCat' ? (
               <Button
-                positive
+                color="blue"
                 onClick={() => this.handleAddCategory('main')}
                 icon="checkmark"
                 labelPosition="right"
@@ -212,7 +213,7 @@ export class AdminCategoriesWidget extends Component {
             ) : null}
             {this.state.edit === 'newSubCat' ? (
               <Button
-                positive
+                color="blue"
                 onClick={() => this.handleAddCategory('sub')}
                 icon="checkmark"
                 labelPosition="right"

@@ -197,11 +197,11 @@ export class NewsCaseWidget extends Component {
                               <p>Er du sikker på at du vil ferdigstille nyheten</p>
                             </Modal.Content>
                             <Modal.Actions>
-                              <Button negative onClick={() => this.setState({ messageModalOpen: false })}>
+                              <Button inverted color="blue" onClick={() => this.setState({ messageModalOpen: false })}>
                                 Nei
                               </Button>
                               <Button
-                                positive
+                                color="blue"
                                 icon="checkmark"
                                 labelPosition="right"
                                 content="Ja"
@@ -233,7 +233,7 @@ export class NewsCaseWidget extends Component {
                             </Modal.Content>
                             <Modal.Actions>
                               <Button
-                                color={'green'}
+                                color={'blue'}
                                 onClick={() => {
                                   console.log(this.state);
                                   let compName = this.state.companyOptions.find(c => c.value === this.state.company)

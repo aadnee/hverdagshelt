@@ -190,10 +190,10 @@ export class UserComponentListWidget extends React.Component {
             <List.Item key={i}>
               <List.Content floated="right">
                 <Button.Group compact={false}>
-                  <Button color="green" onClick={this.setUser.bind(this, user, 'editModalOpen')}>
+                  <Button inverted color="blue" onClick={this.setUser.bind(this, user, 'editModalOpen')}>
                     Endre
                   </Button>
-                  <Button color="red" onClick={this.setUser.bind(this, user, 'deleteModalOpen')} inverted>
+                  <Button color="blue" onClick={this.setUser.bind(this, user, 'deleteModalOpen')}>
                     Slett
                   </Button>
                 </Button.Group>
@@ -244,7 +244,7 @@ export class UserComponentListWidget extends React.Component {
           onClose={() => this.close('regModalOpen')}
           onOpen={() => this.open('regModalOpen')}
           open={this.state.regModalOpen}
-          trigger={<Button icon="add" inverted color="green" />}
+          trigger={<Button icon="add" inverted color="blue" />}
           closeIcon
         >
           <Modal.Header>

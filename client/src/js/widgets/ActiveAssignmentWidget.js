@@ -156,10 +156,10 @@ export class ActiveAssignmentWidget extends Component {
             </Form>
           </Modal.Content>
           <Modal.Actions>
-            <Button color="red" onClick={this.closeModal}>
+            <Button inverted color="blue" onClick={this.closeModal}>
               Nei
             </Button>
-            <Button positive onClick={this.handleStatus}>
+            <Button color="blue" onClick={this.handleStatus}>
               Ja
             </Button>
           </Modal.Actions>

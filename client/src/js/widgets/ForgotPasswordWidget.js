@@ -151,7 +151,7 @@ export class ForgotPasswordWidget extends Component {
                 <h3>{this.state.message}</h3>
               </Modal.Content>
               <Modal.Actions>
-                <Button color="green" onClick={this.handleMessage} inverted>
+                <Button color="blue" onClick={this.handleMessage} inverted>
                   <Icon name="checkmark" /> Ok
                 </Button>
               </Modal.Actions>

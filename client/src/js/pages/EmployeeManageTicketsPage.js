@@ -150,11 +150,11 @@ export class EmployeeManageTicketsPage extends React.Component {
               </Form>
             </Modal.Content>
             <Modal.Actions>
-              <Button secondary onClick={() => this.close()}>
+              <Button inverted color="blue" onClick={() => this.close()}>
                 <Icon name="remove" /> Avbryt
               </Button>
               <Button
-                primary
+                color="blue"
                 onClick={() => {
                   this.reject(this.state.modalParam, this.state.message);
                 }}
